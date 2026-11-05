@@ -499,6 +499,8 @@ def plan_turn(
     fallback_index = next(i for i, action in enumerate(view.legal_actions) if action is fallback)
     work = _Work(config)
     before = 0
+    best = None
+    roots_validated = False
     evaluator_calls = evaluator_time_ns = 0
 
     def evaluate(state, shape):
@@ -549,7 +551,6 @@ def plan_turn(
         shape = geometry.describe(state)
         before = evaluate(state, shape)
         baseline = before
-        best = None
         beam = []
         stopped = "depth_limit"
 
@@ -613,6 +614,7 @@ def plan_turn(
         # Missing H baseline under a tiny node budget cannot justify overriding H.
         if fallback.kind != "END_TURN" and not any(n.root == fallback_index for n in beam):
             return result("insufficient_gain", stopped)
+        roots_validated = True
         beam = sorted(beam, key=lambda n: n.order())[: config.beam_width]
         for _depth in range(1, config.max_depth):
             children = {}
@@ -648,6 +650,15 @@ def plan_turn(
             return result("planned", stopped, best)
         return result("insufficient_gain", stopped)
     except _GeometryCap:
+        # A later cap cannot invalidate a fully constructed known winning prefix.
+        # Ordinary prefixes and partially validated root menus still fall back.
+        if (
+            roots_validated
+            and best is not None
+            and best.winning
+            and any(s.kind.startswith("BUILD_") for s in best.steps)
+        ):
+            return result("planned", "geometry_limit", best)
         return result("geometry_limit", "geometry_limit")
     except _PublicContract:
         return result("public_contract_mismatch")

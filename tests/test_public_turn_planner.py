@@ -616,6 +616,80 @@ def test_geometry_cap_after_useful_prefix_discards_entire_search():
     assert limited.first_action is p.HeuristicViewPolicy().act(observation)
 
 
+def test_geometry_cap_before_complete_root_validation_does_not_preserve_a_win():
+    p = planner()
+    observation = view(hand=(4, 0, 0, 2, 3))
+    observation = replace(
+        observation,
+        development=(0, 0, 0, 0, 1),
+        players=(
+            replace(observation.players[0], victory_points=8, development_count=1),
+            *observation.players[1:],
+        ),
+        legal_actions=(Action("BUILD_CITY", 0), trade(receive_resource=4), Action("END_TURN")),
+    )
+    evaluated_wins = []
+
+    def evaluator(root, state, handcraft):
+        if root.own_victory_points + state.building_point_gain >= root.rules.victory_points:
+            evaluated_wins.append(state)
+        return handcraft
+
+    plan = p.plan_turn(
+        observation, p.TurnPlannerConfig(max_geometry_visits=96), evaluator=evaluator
+    )
+    assert evaluated_wins  # The city completes before the next root exhausts geometry.
+    assert plan.nodes == 2
+    assert plan.reason == plan.search_stop == "geometry_limit"
+    assert plan.steps == ()
+    assert plan.first_action is p.HeuristicViewPolicy().act(observation)
+
+
+def test_geometry_cap_preserves_a_completed_win_despite_a_low_evaluator_score():
+    p = planner()
+    observation = view(hand=(4, 0, 0, 2, 3))
+    observation = replace(
+        observation,
+        development=(0, 0, 0, 0, 1),
+        players=(
+            replace(observation.players[0], victory_points=8, development_count=1),
+            *observation.players[1:],
+        ),
+        legal_actions=(Action("BUILD_CITY", 0), Action("END_TURN")),
+    )
+    plan = p.plan_turn(
+        observation,
+        p.TurnPlannerConfig(max_geometry_visits=150),
+        evaluator=lambda root, state, handcraft: -state.building_point_gain * 1_000_000,
+    )
+    assert plan.reason == "planned" and plan.search_stop == "geometry_limit"
+    assert plan.first_action is observation.legal_actions[0]
+    assert plan.steps == (p.PlannedStep("BUILD_CITY", 0),)
+    assert plan.score_after_micro == -1_000_000 < plan.score_before_micro
+    assert plan.geometry_visits == 150
+
+
+def test_geometry_cap_does_not_infer_a_win_from_projected_roads():
+    p = planner()
+    observation = replace(
+        view(hand=(4, 4, 0, 0, 0)),
+        development=(0, 0, 0, 0, 1),
+        roads=(Road(0, 10), Road(1, 10), Road(2, 10), Road(3, 10)),
+        players=(
+            PublicPlayer(10, 8, 8, 1, settlements_left=0, cities_left=0),
+            PublicPlayer(20, 2, 30, 0),
+            PublicPlayer(30, 0, 0, 0),
+            PublicPlayer(40, 0, 0, 0),
+        ),
+        legal_actions=(Action("BUILD_ROAD", 4), Action("BUILD_ROAD", 5), Action("END_TURN")),
+    )
+    plan = p.plan_turn(observation, p.TurnPlannerConfig(max_geometry_visits=150))
+    assert observation.own_victory_points == 9
+    assert plan.reason == plan.search_stop == "geometry_limit"
+    assert plan.steps == ()
+    assert plan.first_action is p.HeuristicViewPolicy().act(observation)
+
+
 def test_h_view_act_and_propose_match_production_h_with_separate_digest_domains():
     p = planner()
     from colonist_rl.contracts import ResourceBelief

@@ -94,10 +94,12 @@ edge in initial adjacency construction, one per tile-vertex yield visit, then
 geometry scans, plus one per visited accessibility vertex, inspected adjacency
 edge and inspected candidate vertex. Shape cache hits are charged exactly the
 cold description's logical work. Caches are local to one decision and cannot
-change action or counters. Geometry work saturates at the configured cap; a
-breach discards all prefixes and returns H_view. Node exhaustion retains the best
-completed prefix, except incomplete root validation returns H_view. This bounds
-logical work, not every Python instruction or H_view's existing computations.
+change action or counters. Geometry work saturates at the configured cap. After
+complete root validation, a breach retains a fully constructed known winning
+prefix containing a build; all other geometry breaches return H_view. Node
+exhaustion retains the best completed prefix, except incomplete root validation
+returns H_view. This bounds logical work, not every Python instruction or H_view's
+existing computations.
 
 The position score is quantized to integer micro-units before comparison:
 
