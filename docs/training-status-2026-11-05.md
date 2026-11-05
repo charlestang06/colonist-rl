@@ -272,3 +272,22 @@ An opt-in path with exact current-weight prefixes and complete episode/outcome
 records is now being implemented before critic warmup and controlled PPO.
 No sustained PPO experiment has started. Rewards remain unchanged; trading or
 road frequency will not be rewarded directly.
+
+
+## Reviewed planning and outcome-learning foundation
+
+Audited current-history collection/PPO, genuine complete-episode reward suffixes,
+value-head-only warmup, optional isolated frozen-BC KL anchoring, and a conservative
+public turn planner are implemented and independently reviewed. Combined checks:
+1,400passed,3skipped. The planner uses public bank bounds and actual legal root
+actions; its projection has not demonstrated stronger play. H_view is a distinct
+deterministic wrapper and cannot be conflated with historical H.
+
+The latest direct user request prioritizes a small targeted learner-state trading
+study before broad PPO. The protocol pairs original-H versus independently
+audited local targets on identical histories, with actual sequential-legality
+checks and fresh decision/game panels. Generic100k and reward changes remain held.
+This tiny audited-label trial is an explicit exception to the earlier global
+planner-teacher proof gate; broader label scaling still needs strength evidence.
+The targeted harness is being corrected after static review and has not launched.
+Broad PPO preparation is preserved on hold, with no empirical PPO run.
