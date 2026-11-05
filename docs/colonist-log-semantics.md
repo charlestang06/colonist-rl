@@ -29,7 +29,7 @@ assert projection.candidate.receive.unknown_count == 0
 assert project_snapshot(snapshot, players) == (projection,)
 ```
 
-All five new record types are frozen:
+All four new record types are frozen:
 
 - `VisiblePlayerName(name, player_id)` supplies an explicit visible-name binding.
   Names must be nonblank strings; IDs are nonnegative integers, excluding bools.

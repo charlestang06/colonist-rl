@@ -35,9 +35,19 @@ strings supplied by the caller; they do not establish that an action committed.
 `UIControl` stored in `state.confirmation`. Both UI and control revision must
 match. The selected action and control action must equal the complete supplied
 `Action`, including target, resource choices, partner, offer identity and terms.
-A confirmation must be a click and have consistent partner metadata. Missing,
-unsupported, incomplete, or stale confirmation bindings raise `PerceptionError`.
+A confirmation must be a click and have consistent partner metadata. Missing
+required descriptor fields or stale/mismatched bindings raise `PerceptionError`.
 Construction errors raise `TypeError` or `ValueError`.
+
+Confirmation validation checks exact equality of the caller-supplied descriptor
+and its control, plus the module's minimum field requirements. It does not prove
+that the descriptor represents a complete legal game action or that a live
+interaction sequence is supported. In particular, PLAY_YEAR_OF_PLENTY requires
+resource but does not require second_resource, and PLAY_ROAD_BUILDING has no
+required road targets in this check. These accepted evidence shapes do not
+certify either card's unverified own-card controls. A future executor must
+establish the complete legal action and verified card-specific sequence before
+issuing gestures.
 
 ```python
 from colonist_rl.contracts import Action
