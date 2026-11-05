@@ -66,6 +66,7 @@ def test_component_fit_is_bitwise_adam_and_counter_parity_with_negative_controls
     a = consequence_from_legacy(GraphPolicy(32))
     b, reset, stripped = deepcopy(a), deepcopy(a), deepcopy(a)
     adam_a, adam_b = (torch.optim.Adam(p.parameters(), lr=0.0003) for p in (a, b))
+    adam_stripped = torch.optim.Adam(stripped.parameters(), lr=0.0003)
     weights = {v.context.kind: 1.0 for c in sequences for e in c for v, _ in e}
     full = fit_sequences(
         a,
@@ -88,6 +89,7 @@ def test_component_fit_is_bitwise_adam_and_counter_parity_with_negative_controls
                 tuple(tuple((v, t) for v, t in e if len(v.legal_actions) > 1) for e in episodes),
                 epochs=1,
                 phase_weights=weights,
+                optimizer=adam_stripped,
                 profile=True,
             )
     equal_tree(a.state_dict(), b.state_dict())
