@@ -842,6 +842,103 @@ def _sequences(records, length, *, stable_keys=False):
     return chunks
 
 
+def _anchor_storage_ids(tensors):
+    tensors = tuple(tensors)
+    if any(t.layout != torch.strided or t.device.type not in ("cpu", "cuda") for t in tensors):
+        raise ValueError("anchor requires dense CPU/CUDA model tensors")
+    return {(t.device, t.untyped_storage()._cdata) for t in tensors}
+
+
+def _anchor_model_tensors(module):
+    yield from module.buffers()
+    for parameter in module.parameters():
+        yield parameter
+        if parameter.grad is not None:
+            yield parameter.grad
+
+
+def _anchor_state_tensors(value):
+    if isinstance(value, torch.Tensor):
+        yield value
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield from _anchor_state_tensors(key)
+            yield from _anchor_state_tensors(item)
+    elif isinstance(value, (tuple, list)):
+        for item in value:
+            yield from _anchor_state_tensors(item)
+
+
+def _validate_anchor(policy, optimizer, reference):
+    # Checkpoint-recognized architectures have observation-only recurrent forwards.
+    # Arbitrary modules/subclasses with untracked mutable state are unsupported.
+    policy_architecture(reference)
+    student_storage = _anchor_storage_ids(_anchor_model_tensors(policy))
+    reference_storage = _anchor_storage_ids(_anchor_model_tensors(reference))
+    if policy is reference or student_storage & reference_storage:
+        raise ValueError("anchor reference and student must not share tensor storage")
+    owned = [p for group in optimizer.param_groups for p in group["params"]]
+    owned_ids = {id(p) for p in owned}
+    if len(owned_ids) != len(owned) or owned_ids != {id(p) for p in policy.parameters()}:
+        raise ValueError("anchor optimizer must own exactly the student parameters")
+    if any(id(key) not in owned_ids for key in optimizer.state) or (
+        _anchor_storage_ids(_anchor_state_tensors(optimizer.state)) & reference_storage
+    ):
+        raise ValueError("anchor optimizer state must not own or alias the reference")
+
+
+def _anchor_log_probabilities(policy, reference, records, traces, deadline):
+    """One invocation's fixed reference cache, replayed from its own reset state.
+
+    Copying instead of changing caller-owned modes/flags also preserves existing
+    reference gradients and buffers on failure or expiry. RNG used by the copy is
+    isolated from actor RNG. No future observation or outcome enters the copy.
+    """
+    if _expired(deadline):
+        return False, {}
+    cuda_devices = sorted({t.device.index for t in _anchor_model_tensors(reference) if t.is_cuda})
+    python_rng, numpy_rng = random.getstate(), np.random.get_state()
+    cache = {}
+    try:
+        with torch.random.fork_rng(devices=cuda_devices), torch.no_grad():
+            frozen = deepcopy(reference)
+            frozen.eval()
+            frozen.requires_grad_(False)
+            if _anchor_storage_ids(_anchor_model_tensors(frozen)) & (
+                _anchor_storage_ids(_anchor_model_tensors(reference))
+                | _anchor_storage_ids(_anchor_model_tensors(policy))
+            ):
+                raise ValueError("anchor reference copy must have isolated tensor storage")
+            last = {}
+            for record in records:
+                last[record.episode_key] = record.observation_index
+            for key, ordinal in last.items():
+                memory = None
+                for index, observation in enumerate(traces[key].observations[: ordinal + 1]):
+                    if _expired(deadline):
+                        return False, {}
+                    output = frozen(observation, memory)
+                    if _expired(deadline):
+                        return False, {}
+                    logits = output.logits
+                    if (
+                        not isinstance(logits, torch.Tensor)
+                        or logits.shape != (len(observation.legal_actions),)
+                        or not logits.is_floating_point()
+                        or not torch.isfinite(logits).all()
+                        or not isinstance(output.memory, torch.Tensor)
+                    ):
+                        raise ValueError(
+                            "anchor reference must return finite full-menu logits and memory"
+                        )
+                    memory = output.memory.detach()
+                    cache[key, index] = logits.log_softmax(0).detach().to(policy.device).clone()
+    finally:
+        random.setstate(python_rng)
+        np.random.set_state(numpy_rng)
+    return not _expired(deadline), cache
+
+
 def ppo_update(
     policy,
     optimizer,
@@ -851,14 +948,28 @@ def ppo_update(
     deadline=None,
     episode_traces=None,
     require_current_history=False,
+    reference_policy=None,
+    anchor_coefficient=0.0,
 ):
     """PPO with legacy stored-state approximation or required current full history.
 
     Opt-in validation precedes all optimizer mutation. Each gradient chunk replays
     only its own complete earlier prefix under the current weights with no_grad.
     Behavior log probabilities/values and nonterminal bootstraps keep their roles.
+    A positive optional coefficient adds KL(frozen reference || current policy)
+    over the full legal menu; its reference replays its own full earlier history.
+    Zero bypasses all reference work and preserves the original metrics.
     """
     _validate_deadline(deadline)
+    try:
+        valid_coefficient = _finite_scalar(anchor_coefficient) and anchor_coefficient >= 0
+    except OverflowError:
+        valid_coefficient = False
+    if not valid_coefficient:
+        raise ValueError("anchor_coefficient must be finite, numeric and nonnegative")
+    anchored = anchor_coefficient > 0
+    if anchored and (require_current_history is not True or reference_policy is None):
+        raise ValueError("positive anchor requires a reference and required current history")
     if type(require_current_history) is not bool:
         raise ValueError("require_current_history must be a boolean")
     config = config or PPOConfig()
@@ -867,6 +978,8 @@ def ppo_update(
     if config.sequence_length < 1 or config.epochs < 1:
         raise ValueError("sequence length and epochs must be positive")
     traces = _validate_current_records(records, episode_traces) if require_current_history else None
+    if anchored:
+        _validate_anchor(policy, optimizer, reference_policy)
     boundaries = [
         r.boundary
         or (
@@ -896,10 +1009,17 @@ def ppo_update(
         "gradient_norm": 0.0,
     }
     updates = 0
+    anchor_sum, anchor_states = 0.0, 0
+    if anchored:
+        anchor_ready, anchor_cache = _anchor_log_probabilities(
+            policy, reference_policy, records, traces, deadline
+        )
     prior_mode = policy.training
     policy.train()
     try:
         for _ in range(config.epochs):
+            if anchored and not anchor_ready:
+                break
             if _expired(deadline):
                 break
             order = list(range(len(chunks)))
@@ -922,6 +1042,7 @@ def ppo_update(
                     memory = initial.to(policy.device).detach() if initial is not None else None
                 losses = []
                 statistics = []
+                anchor_statistics = []
                 for i in indices:
                     if _expired(deadline):
                         break
@@ -943,6 +1064,14 @@ def ppo_update(
                     critic_loss = (output.value - float(returns[i])).square()
                     entropy = distribution.entropy()
                     loss = actor_loss + config.value * critic_loss - config.entropy * entropy
+                    if anchored:
+                        reference_logp = anchor_cache[record.episode_key, record.observation_index]
+                        if output.logits.shape != reference_logp.shape:
+                            raise ValueError("anchor student must return full-menu logits")
+                        current_logp = output.logits.log_softmax(0)
+                        anchor_kl = (reference_logp.exp() * (reference_logp - current_logp)).sum()
+                        loss = loss + anchor_coefficient * anchor_kl
+                        anchor_statistics.append(anchor_kl.detach())
                     losses.append(loss)
                     statistics.append(
                         (
@@ -959,6 +1088,8 @@ def ppo_update(
                 if not torch.isfinite(loss):
                     raise FloatingPointError("PPO loss is not finite")
                 optimizer.zero_grad(set_to_none=True)
+                if anchored and _expired(deadline):
+                    break
                 loss.backward()
                 norm = torch.nn.utils.clip_grad_norm_(
                     policy.parameters(), config.grad, error_if_nonfinite=True
@@ -972,15 +1103,25 @@ def ppo_update(
                     ("policy_loss", "value_loss", "entropy", "approx_kl", "clip_fraction"), range(5)
                 ):
                     totals[key] += torch.stack([s[column] for s in statistics]).mean().item()
+                if anchored:
+                    anchor_sum += torch.stack(anchor_statistics).sum().item()
+                    anchor_states += len(anchor_statistics)
                 updates += 1
     finally:
         policy.train(prior_mode)
-    return {
+    metrics = {
         **{key: value / max(1, updates) for key, value in totals.items()},
         "completed_updates": updates,
         "requested_updates": config.epochs * len(chunks),
         "deadline_reached": int(_expired(deadline)),
     }
+    if anchored:
+        metrics.update(
+            anchor_kl=anchor_sum / max(1, anchor_states),
+            anchor_coefficient=float(anchor_coefficient),
+            anchor_states=anchor_states,
+        )
+    return metrics
 
 
 def imitation_warmstart(policy, decisions=256, seed=0, epochs=2, learning_rate=3e-4):

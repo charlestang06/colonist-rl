@@ -211,3 +211,78 @@ suffixes. Targets sum the recorded learner interval rewards, including off-turn
 rewards; they are never manufactured from winner or VP. With the existing shaping,
 a losing suffix can be negative. No critic warmup, anchor, planning, curriculum
 schedule change or playing-strength claim is part of this foundation.
+
+## Optional frozen-BC PPO anchor
+
+A controlled driver can add an optional policy anchor to the audited-current
+updater. Outcome-based PPO remains the primary objective. This switch supplies
+ablation infrastructure; it is not evidence of improved playing strength and is
+not enabled by the existing curriculum caller.
+
+```python
+metrics = ppo_update(
+    policy, optimizer, records, config,
+    deadline=deadline,
+    episode_traces=collector.episode_traces,
+    require_current_history=True,
+    reference_policy=frozen_bc_policy,
+    anchor_coefficient=0.01,
+)
+```
+
+The new keyword-only arguments default to `reference_policy=None` and
+`anchor_coefficient=0.0`. The coefficient must be a finite, nonnegative Python
+`int` or `float` representable as a finite float; booleans are rejected. Zero
+bypasses reference validation, copying, forwards, mode changes and RNG work, and
+retains the existing update and metric keys exactly. A positive coefficient
+requires the reference, `require_current_history=True`, and all existing validated
+full-history bindings before any optimizer mutation. Coefficient schedules belong
+to later driver calls; this updater does not reduce or schedule the coefficient.
+
+For every optimized own state, the added loss is
+`anchor_coefficient * sum(p_reference * (log_p_reference - log_p_current))`.
+The sum uses the entire actual legal menu in its original order, including
+unsampled actions. A single legal action contributes exactly zero KL. The anchor
+is added before the existing per-chunk mean; PPO clipping, behavior log
+probabilities, GAE, rewards, entropy and value targets retain their existing
+semantics and coefficients.
+
+The reference must have an exact checkpoint-supported architecture:
+`GraphPolicy`, `ConsequenceGraphPolicy`, `ContextLinearConsequencePolicy`, or
+`NonlinearConsequencePolicy`. Student and reference hidden widths may differ.
+Model parameters, buffers, existing gradients and optimizer tensor state must be
+dense CPU/CUDA tensors. Standard optimizer state may contain nested dictionaries,
+lists or tuples. Arbitrary reference subclasses, replacement forwards with
+external mutable state, custom copying behavior and concurrent model mutation
+are outside this contract. The optimizer must own exactly the student parameters,
+without duplicates or extra state owners. Shared storage between student and
+reference parameters, buffers or existing gradients is rejected, as is reference
+ownership or storage aliasing in optimizer state. These checks run only when the
+anchor is enabled.
+
+Each positive invocation makes an isolated local copy of the reference and uses
+it in eval mode with gradients disabled and parameters frozen. The caller's
+reference is never forwarded or changed: its parameters, buffers, existing
+gradient objects, flags and mixed module modes remain intact on success, error
+and deadline expiry. Reference work preserves Python, NumPy and Torch CPU and
+relevant CUDA RNG. CUDA behavior follows these guards but the bounded verification
+fixtures use CPU.
+
+For each referenced episode, the copy starts at `None` and consumes exactly its
+own validated observation prefix, including forced states, up through the last
+requested ordinal. It receives the immutable public Observation and legal menu;
+stored student memories, trace outcomes and future observations are never actor
+inputs. Detached reference log probabilities are cached only for that invocation,
+while student chunks continue to refresh their own current-weight prefixes before
+each update. Reference replay checks the deadline before and after every forward;
+an interrupted cache is discarded. Backward and optimizer steps also have deadline
+guards. Work already in flight can finish, but an expired chunk commits no update.
+
+Enabled metrics add `anchor_kl`, `anchor_coefficient`, and `anchor_states`.
+`anchor_kl` is the raw mean KL over states belonging to committed optimizer steps,
+weighted by state count across unequal chunks. `anchor_states` counts those states
+including repeated epochs and forced states; it excludes cached prefixes and
+abandoned chunks. With no committed step the count and KL are zero. Existing loss
+metrics keep their chunk averaging, with `loss` including the weighted anchor.
+No checkpoint, collector, policy architecture, reward, schema, curriculum schedule
+or empirical-study interface changes accompany this option.
