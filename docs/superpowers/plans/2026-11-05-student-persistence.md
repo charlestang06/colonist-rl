@@ -18,7 +18,7 @@ Validation-only callers must not retain an extra whole-component primitive expor
 ### Task1
 
 Own ONLY src/colonist_rl/student_labels.py, tests/test_student_labels.py,
-docs/student-labels.md and report. Original .venv is3.2.1 and read-only; use it with
+docs/student-labels.md and report. Preserved /private/tmp/colonist-swarm-bxz1k39_/legacy-runtime/.venv/bin/python is3.2.1; use it with
 PYTHONPATH=thisclone/src, bytecodeoff,Torch/BLAS1. Other sources, active/frozen runs,
 original roadmap/runtime/artifacts stay unchanged. No subagents/installs/network.
 
