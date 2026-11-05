@@ -33,6 +33,13 @@ question.
 
 ## Current wave and order
 
+The first learning work package is implemented but **not accepted**. Independent
+review found that no-winner truncations entered strict win-rate and paired
+comparison summaries as losses. The original implementer is correcting this;
+acceptance requires focused regression evidence and a fresh independent review
+of the correction. The adapter UI contracts are written and await independent
+review. Neither status establishes a completed learning or deployment milestone.
+
 | Order | Bounded deliverable | Required evidence | Stop or defer when |
 | --- | --- | --- | --- |
 | 1: L1 + A9 | Reproducible teacher and imitation pilot | Frozen configuration, source identity, disjoint seed splits, complete seat blocks, raw outcomes, coverage and timing | Results cannot be reproduced, observations leak hidden state, or most episodes truncate |
@@ -59,6 +66,11 @@ digests, actual decisions, wall time, completion status and raw per-game records
 Distinct board-seed namespaces are required for training, model selection and
 final testing; merely changing policy sampling seeds does not create new boards.
 Do not consume the final test split repeatedly while selecting experiments.
+Reserve fresh final-test board seeds **70000017** and **70000019**; do not use
+them for throughput probes, training or model selection. The former `100000`
+range may already have been used in historical smoke evaluation and must not
+be presented as an untouched final test split. These two reserved boards are an
+initial reservation, not a sufficient sample for a strength claim.
 
 Start with a short local throughput probe and a bounded demonstration pilot of
 at most 10,000 learner decisions. Treat that as a ceiling for the initial probe,
@@ -87,10 +99,21 @@ sample size before a larger run; the initial pilot only estimates feasibility,
 variance and cost. An improvement claim needs held-out play evidence, not a
 lower supervised loss, finite PPO updates or a winning training episode.
 
+The first review exposed a concrete distinction: a scheduled four-seat block
+is not a finished four-seat block. A game stopped without a winner has a
+censored outcome, not a loss. Strict win-rate summaries must distinguish known
+wins/losses from censored games and expose their denominators. Strict paired
+comparisons require the same four seats to finish on both sides; retain and
+report incomplete blocks instead of filling missing results with zeros. If no
+eligible finished block remains, report the comparison as unavailable. A
+completed-game-only rate can also be biased when completion depends on policy,
+so material or unequal censoring prevents promotion even if that rate improves.
+
 ## Decision gates after results
 
 | Finding | Next bounded response | Evidence needed before expansion |
 | --- | --- | --- |
+| Review finds no-winner truncations scored as losses | Correct outcome aggregation before interpreting pilot results | Regression cases for one-sided censoring, partially finished seat blocks and all-censored samples; independent re-review; no invented loss or paired difference |
 | Teacher does not beat simpler opponents reliably | Diagnose teacher decision traces and benchmark one audited alternative | Comparable four-player board blocks and latency; no hidden-information advantage |
 | Teacher plays well, imitation does not | Check target/action alignment, legal candidates, phase imbalance and recurrent sequence handling | A small deterministic learning probe plus phase-level held-out error and complete games |
 | Imitation agreement is high but play is weak | Inspect non-forced strategic choices and student-induced state distribution | Choice-only metrics and targeted failure positions; consider a bounded student-state relabeling pilot only after this diagnosis |
