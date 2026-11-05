@@ -387,13 +387,16 @@ def _validate_deadline(deadline):
         raise ValueError("deadline must be a finite absolute monotonic time")
 
 
-def _lineup(value):
+def _lineup(value, *, allow_native=False):
     if value is None:
         return None
     value = tuple(value)
-    if len(value) != 3 or any(
-        p not in ("random", "heuristic", "historical", "greedy_no_trade") for p in value
-    ):
+    from .native_opponents import NATIVE_IDS
+
+    allowed = ("random", "heuristic", "historical", "greedy_no_trade")
+    if allow_native:
+        allowed += NATIVE_IDS
+    if len(value) != 3 or any(p not in allowed for p in value):
         raise ValueError(
             "opponent_lineup requires three random/heuristic/historical/greedy_no_trade entries"
         )
@@ -413,6 +416,7 @@ class _MatchDriver:
         reject_trades=False,
         *,
         opponent_lineup=None,
+        allow_native=False,
     ):
         self.env = env
         self.learner = learner
@@ -422,12 +426,17 @@ class _MatchDriver:
         self.offers = 0
         self.trade_responses = 0
         self.policies = {}
-        lineup = _lineup(opponent_lineup)
+        lineup = _lineup(opponent_lineup, allow_native=allow_native)
+        from .native_opponents import NATIVE_IDS, NativeOpponentRunner
+
+        if baseline in NATIVE_IDS and not allow_native:
+            raise ValueError("native opponents are evaluation-only")
+        self.native_opponents = {}
         if lineup is not None and "historical" in lineup and not historical:
             raise ValueError("historical lineup requires a frozen policy pool")
-        if baseline == "greedy_no_trade" and historical and lineup is None:
+        if baseline in ("greedy_no_trade",) + NATIVE_IDS and historical and lineup is None:
             raise ValueError(
-                "greedy_no_trade with historical policies requires an explicit opponent_lineup"
+                f"{baseline} with historical policies requires an explicit opponent_lineup"
             )
         for p in range(4):
             if p == learner:
@@ -435,12 +444,19 @@ class _MatchDriver:
             kind = (
                 lineup[(p - learner - 1) % 4]
                 if lineup is not None
+                else baseline
+                if baseline in NATIVE_IDS
                 else "greedy_no_trade"
                 if baseline == "greedy_no_trade"
                 else "random"
                 if baseline == "random" or (baseline == "mixed" and p == (learner + 2) % 4)
                 else "heuristic"
             )
+            if kind in NATIVE_IDS:
+                self.native_opponents[p] = NativeOpponentRunner(
+                    env, p, kind, planning_seed=seed * 97 + p
+                )
+                continue
             self.policies[p] = (
                 historical[seed % len(historical)]
                 if kind == "historical"
@@ -459,6 +475,8 @@ class _MatchDriver:
 
     def maybe_offer(self, *, deadline=None):
         """Optionally stop between proposal selection and its engine mutation."""
+        if self.native_opponents:
+            return  # declared no-domestic-trades protocol for every opponent
         if deadline is not None and time.monotonic() >= deadline:
             return
         view = self.view
@@ -492,6 +510,9 @@ class _MatchDriver:
         actor = view.player_id
         if actor == self.learner:
             raise ValueError("learner action must come from the learner policy")
+        if actor in self.native_opponents:
+            action = self.native_opponents[actor].select_action()
+            return None if _expired(deadline) else action
         policy = self.policies[actor]
         if _expired(deadline):
             return None
@@ -1199,6 +1220,7 @@ def evaluate(
     deterministic=False,
     deadline=None,
     on_game_end=None,
+    opponent_lineup=None,
 ):
     """Legacy game-count evaluation; explicit board seeds select complete blocks.
 
@@ -1229,4 +1251,5 @@ def evaluate(
         strict_blocks=board_seeds is not None,
         reject_trades=reject_trades,
         on_game_end=on_game_end,
+        opponent_lineup=opponent_lineup,
     )

@@ -18,6 +18,8 @@ def _positive(value):
 
 
 def parser():
+    from .native_opponents import NATIVE_IDS
+
     root = argparse.ArgumentParser(description="Local Catan simulation and recurrent PPO")
     commands = root.add_subparsers(dest="command", required=True)
     board = commands.add_parser("board", help="inspect variable board specifications")
@@ -53,7 +55,22 @@ def parser():
         command.add_argument("--games", type=_positive, default=16)
         command.add_argument("--seed", type=int, default=100000)
         command.add_argument(
-            "--baseline", choices=("random", "heuristic", "greedy_no_trade"), default="heuristic"
+            "--baseline",
+            choices=("random", "heuristic", "greedy_no_trade") + NATIVE_IDS,
+            default="heuristic",
+        )
+        command.add_argument(
+            "--candidate", choices=("heuristic", "random", "greedy_no_trade"), default="heuristic"
+        )
+        command.add_argument(
+            "--opponent-lineup",
+            nargs=3,
+            choices=("random", "heuristic", "greedy_no_trade") + NATIVE_IDS,
+        )
+        command.add_argument(
+            "--wall-seconds",
+            type=float,
+            help="whole-run budget; native opponents require this and an external worker hard cap",
         )
         command.add_argument("--max-game-steps", type=_positive, default=20000)
         command.add_argument("--output", type=Path)
@@ -217,6 +234,9 @@ def main(argv=None):
         "seed": args.seed,
         "baseline": args.baseline,
         "max_game_steps": args.max_game_steps,
+        "candidate": args.candidate,
+        "opponent_lineup": args.opponent_lineup,
+        "deadline": time.monotonic() + args.wall_seconds if args.wall_seconds is not None else None,
     }
     result = evaluate(policy, **kwargs)
     if args.command == "evaluate" and args.compare_rejection:

@@ -12,6 +12,7 @@ import numpy as np
 import torch
 
 from .greedy_no_trade import GreedyNoTrade
+from .native_opponents import NATIVE_IDS, NativeOpponentRunner
 from .opponents import HeuristicPolicy, RandomPolicy
 from .simulator import FourPlayerGame
 from .training import _lineup, _MatchDriver, _wilson
@@ -90,6 +91,8 @@ def _evaluate_matches(
     historical_policies=(),
 ):
     """The authoritative evaluation match loop, also used by training.evaluate."""
+    if isinstance(policy, NativeOpponentRunner):
+        raise TypeError("native opponent runner cannot be a candidate policy")
     if candidate not in ("heuristic", "random", "graph", "greedy_no_trade") or (
         candidate == "graph" and policy is None
     ):
@@ -102,7 +105,7 @@ def _evaluate_matches(
         and not isinstance(policy, GreedyNoTrade)
     ):
         raise ValueError("greedy_no_trade candidate requires no policy or a GreedyNoTrade actor")
-    if baseline not in ("heuristic", "random", "mixed", "greedy_no_trade"):
+    if baseline not in ("heuristic", "random", "mixed", "greedy_no_trade") + NATIVE_IDS:
         raise ValueError("a known opponent baseline is required")
     if type(max_game_steps) is not int or max_game_steps < 1:
         raise ValueError("max_game_steps must be a positive integer")
@@ -116,7 +119,10 @@ def _evaluate_matches(
         raise ValueError("deadline must be a finite absolute monotonic time")
     if on_game_end is not None and not callable(on_game_end):
         raise ValueError("on_game_end must be callable or None")
-    opponent_lineup = _lineup(opponent_lineup)
+    opponent_lineup = _lineup(opponent_lineup, allow_native=True)
+    has_native = any(name in NATIVE_IDS for name in (opponent_lineup or (baseline,)))
+    if has_native and deadline is None:
+        raise ValueError("native evaluation requires an explicit whole-run deadline")
     historical = tuple(deepcopy(p).eval().requires_grad_(False) for p in historical_policies)
     if opponent_lineup is not None and "historical" in opponent_lineup and not historical:
         raise ValueError("historical lineup requires a frozen policy pool")
@@ -161,6 +167,7 @@ def _evaluate_matches(
                 baseline=baseline,
                 reject_trades=reject_trades,
                 opponent_lineup=opponent_lineup,
+                allow_native=True,
             )
             actor = (
                 (
@@ -239,6 +246,7 @@ def _evaluate_matches(
                     "phase_counts": dict(phases),
                     "action_kind_counts": dict(kinds),
                     **_latency_summary(latency),
+                    **_native_game_metrics(driver),
                 }
                 break
             # A final offer can reach the cap before another StepResult exists.
@@ -267,6 +275,7 @@ def _evaluate_matches(
                 "phase_counts": dict(phases),
                 "action_kind_counts": dict(kinds),
                 **_latency_summary(latency),
+                **_native_game_metrics(driver),
             }
             finished.append((row, latency))
             if on_game_end is not None:
@@ -345,13 +354,39 @@ def _evaluate_matches(
             else {}
         ),
         **(
+            {"baseline_identity": baseline}
+            if baseline in NATIVE_IDS and opponent_lineup is None
+            else {}
+        ),
+        **(
             {
                 "opponent_lineup_identities": [
-                    GreedyNoTrade().identity if name == "greedy_no_trade" else None
+                    GreedyNoTrade().identity
+                    if name == "greedy_no_trade"
+                    else name
+                    if name in NATIVE_IDS
+                    else None
                     for name in opponent_lineup
                 ]
             }
-            if opponent_lineup is not None and "greedy_no_trade" in opponent_lineup
+            if opponent_lineup is not None
+            and any(name == "greedy_no_trade" or name in NATIVE_IDS for name in opponent_lineup)
+            else {}
+        ),
+        **(
+            {
+                "native_protocol": {
+                    "information_regime": "public_only_candidate_vs_privileged_native_opponents",
+                    "domestic_trades": "disabled_all_seats",
+                    "discard_adapter": "native_random_bulk_to_per_card",
+                    "trade_adapter": "reject_synthetic_trade_response",
+                    "full_rule_equivalence": False,
+                    "planning_seed_formula": "board_seed * 97 + opponent_seat",
+                    "deadline_enforcement": "between_decisions; external_worker_hard_cap_required",
+                    "search_nodes": None,
+                }
+            }
+            if has_native
             else {}
         ),
         "deterministic": deterministic,
@@ -362,6 +397,17 @@ def _evaluate_matches(
         "outcomes": selected,
         "partial_outcomes": partial,
         "interrupted_game": interrupted,
+    }
+
+
+def _native_game_metrics(driver):
+    if not getattr(driver, "native_opponents", None):
+        return {}
+    return {
+        "native_opponents": [
+            {"metadata": runner.metadata(), "metrics": runner.metrics()}
+            for _, runner in sorted(driver.native_opponents.items())
+        ]
     }
 
 

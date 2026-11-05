@@ -51,7 +51,9 @@ class StepResult:
 class FourPlayerGame:
     """One decision per step, including forced phases and trade responses.
 
-    Player ids refer to seating order. ``game`` is diagnostic, never a policy input.
+    Player ids refer to seating order. ``game`` is diagnostic, never an
+    Observation-policy input. The evaluation-only NativeOpponentRunner is the
+    explicit privileged-opponent exception; learners and teachers receive views.
     """
 
     def __init__(self, rules: RulesConfig | None = None, *, max_steps: int = 20000):
