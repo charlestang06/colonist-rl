@@ -163,7 +163,9 @@ def test_road_building_places_two_roads_without_resource_cost():
         env.game.state.resource_freqdeck[i] += env._hand(p)[i]
         env.game.state.player_state[f"P{p}_{resource}_IN_HAND"] = 0
     env._record_known_changes(before, "TEST_PUBLIC_RETURN", p)
+    env.game.state.development_listdeck.remove("ROAD_BUILDING")
     env.game.state.player_state[f"P{p}_ROAD_BUILDING_IN_HAND"] = 1
+    env.game.state.player_state[f"P{p}_ROAD_BUILDING_OWNED_AT_START"] = True
     env._refresh_actions()
     view = env.observe()
     play = Action("PLAY_ROAD_BUILDING")
@@ -199,7 +201,7 @@ def test_forced_discard_is_player_chosen_and_private_to_discarder(monkeypatch):
     q = (view.player_id + 1) % 4
     grant(env, q, (8, 0, 0, 0, 0))
     env.step(Action("END_TURN"))
-    monkeypatch.setattr("catanatron.state.roll_dice", lambda: (3, 4))
+    monkeypatch.setattr("catanatron.apply_action.roll_dice", lambda: (3, 4))
     view = env.step(Action("ROLL")).observation
     assert view.context.kind == "DISCARD"
     discarder = view.player_id
@@ -270,6 +272,7 @@ def test_old_development_card_resolves_before_roll_without_advancing_turn(card, 
     for development in ("KNIGHT", "ROAD_BUILDING", "YEAR_OF_PLENTY", "MONOPOLY"):
         env.game.state.development_listdeck.remove(development)
         env.game.state.player_state[f"P{actor}_{development}_IN_HAND"] += 1
+        env.game.state.player_state[f"P{actor}_{development}_OWNED_AT_START"] = True
     if card == "MONOPOLY":
         grant(env, other, (2, 0, 0, 0, 0))
     elif card == "ROAD_BUILDING":
@@ -317,7 +320,7 @@ def test_old_development_card_resolves_before_roll_without_advancing_turn(card, 
     assert Action("ROLL") in view.legal_actions
     assert not any(a.kind.startswith("PLAY_") for a in view.legal_actions)
     env.assert_resource_conservation()
-    monkeypatch.setattr("catanatron.state.roll_dice", lambda: (2, 3))
+    monkeypatch.setattr("catanatron.apply_action.roll_dice", lambda: (2, 3))
     view = env.step(Action("ROLL")).observation
     assert view.context.has_rolled
     assert view.context.turn_owner == actor
@@ -326,7 +329,7 @@ def test_old_development_card_resolves_before_roll_without_advancing_turn(card, 
 
 
 def test_new_development_cards_stay_unplayable_before_rolling():
-    from colonist_rl.contracts import DEVELOPMENT_CARDS, Action
+    from colonist_rl.contracts import Action
 
     env = simulator()()
     view = play_to_preroll(env)
@@ -334,6 +337,6 @@ def test_new_development_cards_stay_unplayable_before_rolling():
     for card in ("KNIGHT", "ROAD_BUILDING", "YEAR_OF_PLENTY", "MONOPOLY"):
         env.game.state.development_listdeck.remove(card)
         env.game.state.player_state[f"P{actor}_{card}_IN_HAND"] += 1
-        env._new_development[actor][DEVELOPMENT_CARDS.index(card)] = 1
+        assert not env.game.state.player_state[f"P{actor}_{card}_OWNED_AT_START"]
     env._refresh_actions()
     assert env.observe().legal_actions == (Action("ROLL"),)

@@ -64,10 +64,16 @@ critic is distinct from PPO's value head. See [trade interfaces](docs/trades.md)
 
 ## Backends and deployment
 
-The backend is pinned to published `catanatron==3.2.1`. Its published release
-differs from upstream main; our adapter adds atomic domestic trading and fixes
-selected rule defects, including free-road and development-card timing. The
-adapter and source tests document its current parity boundary.
+The backend is pinned to Catanatron Git commit
+`82aae93ab1f7c267218be0566df573ce477ec3d8` (distribution version `3.3.0`),
+installed from the repository root without its gym extra. Runtime and artifact
+identity is `3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8`, verified against
+PEP 610 Git provenance. The adapter explicitly uses `official_spiral` number
+placement and backend seed `user_seed + 1`; this is a new engine/data cohort,
+so legacy `3.2.1` seed labels and metrics are not comparable. Native development
+timing and free roads are used alongside wrapper atomic domestic trades; native
+trade negotiation is unsupported. See [engine migration](docs/engine-migration.md)
+for compatibility and runtime-transition details.
 
 Offline capture ingestion and coordinate calibration share the observation
 schema. Live Colonist integration requires verified extraction and an explicitly

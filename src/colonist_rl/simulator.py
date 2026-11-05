@@ -2,23 +2,17 @@
 
 from __future__ import annotations
 
-import importlib.metadata
 import random
 import threading
 from contextlib import contextmanager
 from dataclasses import dataclass, replace
 
 from catanatron.game import Game
-from catanatron.models.actions import (
-    generate_playable_actions,
-    monopoly_possibilities,
-    year_of_plenty_possibilities,
-)
+from catanatron.models.actions import generate_playable_actions
 from catanatron.models.enums import Action as EngineAction
-from catanatron.models.enums import ActionPrompt, ActionType
+from catanatron.models.enums import ActionPrompt
 from catanatron.models.map import PORT_DIRECTION_TO_NODEREFS, NodeRef
 from catanatron.models.player import Color, Player
-from catanatron.state_functions import player_can_play_dev
 
 from .board import BoardSpec, Port, RulesConfig
 from .contracts import (
@@ -34,8 +28,13 @@ from .contracts import (
     TradeOffer,
     VisibleEvent,
 )
+from .engine_identity import BACKEND_VERSION as BACKEND_VERSION  # noqa: PLC0414
+from .engine_identity import (
+    NUMBER_PLACEMENT,
+    SEED_OFFSET,
+    verify_engine_installation,
+)
 
-BACKEND_VERSION = "3.2.1"
 _RNG_LOCK = threading.RLock()
 
 
@@ -59,10 +58,9 @@ class FourPlayerGame:
         self.rules = rules or RulesConfig.standard()
         if self.rules.player_count != 4 or self.rules.special_build:
             raise NotImplementedError(
-                "Catanatron 3.2.1 supports four players; six-player simulation is unavailable"
+                "Catanatron supports four players; six-player simulation is unavailable"
             )
-        if importlib.metadata.version("catanatron") != BACKEND_VERSION:
-            raise RuntimeError(f"catanatron=={BACKEND_VERSION} is required")
+        verify_engine_installation()
         self.max_steps = max_steps
         self.version = 0
         self._rng_state = random.Random(0).getstate()
@@ -87,7 +85,8 @@ class FourPlayerGame:
             # Backend treats zero as absent; shift all seeds consistently.
             self.game = Game(
                 [Player(c) for c in Color],
-                seed=seed + 1,
+                seed=seed + SEED_OFFSET,
+                number_placement=NUMBER_PLACEMENT,
                 discard_limit=self.rules.robber_discard_threshold,
                 vps_to_win=self.rules.victory_points,
             )
@@ -103,7 +102,6 @@ class FourPlayerGame:
         self._used_offer_ids = set()
         self._terminated = self._truncated = False
         self._discard_remaining: dict[int, int] = {}
-        self._new_development = [[0] * 5 for _ in range(4)]
         self._events: list[list[VisibleEvent]] = [[] for _ in range(4)]
         self._make_board()
         from .beliefs import BeliefLedger
@@ -166,67 +164,27 @@ class FourPlayerGame:
     def _actual_vp(self) -> tuple[int, ...]:
         return tuple(self.game.state.player_state[f"P{p}_ACTUAL_VICTORY_POINTS"] for p in range(4))
 
+    def _require_supported_phase(self):
+        if self.game.state.current_prompt in (
+            ActionPrompt.DECIDE_TRADE,
+            ActionPrompt.DECIDE_ACCEPTEES,
+        ):
+            raise NotImplementedError("native trade negotiation is unsupported")
+
     def _refresh_actions(self):
-        state = self.game.state
-        if state.is_road_building:
-            p = state.current_player_index
-            if state.free_roads_available and state.player_state[f"P{p}_ROADS_AVAILABLE"]:
-                state.playable_actions = [
-                    EngineAction(state.current_color(), ActionType.BUILD_ROAD, e)
-                    for e in state.board.buildable_edges(state.current_color())
-                ]
-            else:
-                state.playable_actions = []
-            if state.playable_actions:
-                return
-            state.is_road_building = False
-            state.free_roads_available = 0
-        state.playable_actions = generate_playable_actions(state)
-        p = state.current_player_index
-        # All development types may be played before rolling; upstream exposes
-        # only Knights in that phase. Their normal effects preserve HAS_ROLLED.
-        if (
-            state.current_prompt == ActionPrompt.PLAY_TURN
-            and not state.player_state[f"P{p}_HAS_ROLLED"]
-        ):
-            if player_can_play_dev(state, state.current_color(), "YEAR_OF_PLENTY"):
-                state.playable_actions.extend(
-                    year_of_plenty_possibilities(state.current_color(), state.resource_freqdeck)
-                )
-            if player_can_play_dev(state, state.current_color(), "MONOPOLY"):
-                state.playable_actions.extend(monopoly_possibilities(state.current_color()))
-        # Upstream incorrectly gates the card itself on affording a paid road.
-        if (
-            state.current_prompt == ActionPrompt.PLAY_TURN
-            and player_can_play_dev(state, state.current_color(), "ROAD_BUILDING")
-            and state.player_state[f"P{p}_ROADS_AVAILABLE"] > 0
-            and state.board.buildable_edges(state.current_color())
-        ):
-            free_card = EngineAction(state.current_color(), ActionType.PLAY_ROAD_BUILDING, None)
-            if free_card not in state.playable_actions:
-                state.playable_actions.append(free_card)
-        card_kinds = {
-            "PLAY_KNIGHT_CARD": "KNIGHT",
-            "PLAY_YEAR_OF_PLENTY": "YEAR_OF_PLENTY",
-            "PLAY_MONOPOLY": "MONOPOLY",
-            "PLAY_ROAD_BUILDING": "ROAD_BUILDING",
-        }
-        state.playable_actions = [
-            a
-            for a in state.playable_actions
-            if a.action_type.name not in card_kinds
-            or state.player_state[f"P{p}_{card_kinds[a.action_type.name]}_IN_HAND"]
-            > self._new_development[p][DEVELOPMENT_CARDS.index(card_kinds[a.action_type.name])]
-        ]
+        self._require_supported_phase()
+        self.game.playable_actions = generate_playable_actions(self.game.state)
 
     def _convert(self, a: EngineAction) -> Action:
         kind, value = a.action_type.name, a.value
+        if kind in ("OFFER_TRADE", "ACCEPT_TRADE", "REJECT_TRADE", "CONFIRM_TRADE", "CANCEL_TRADE"):
+            raise NotImplementedError("native trade negotiation is unsupported")
         if kind in ("BUILD_SETTLEMENT", "BUILD_CITY"):
             return Action(kind, target=self._node_to_vertex[value])
         if kind == "BUILD_ROAD":
             return Action(kind, target=self._edge_to_id[tuple(sorted(value))])
         if kind == "MOVE_ROBBER":
-            coord, color, _ = value
+            coord, color = value
             partner = None if color is None else self.game.state.color_to_index[color]
             return Action(kind, target=self._coordinate_to_tile[coord], partner=partner)
         if kind == "PLAY_YEAR_OF_PLENTY":
@@ -244,6 +202,7 @@ class FourPlayerGame:
         return Action(kind)
 
     def observe(self, player_id: int | None = None) -> Observation:
+        self._require_supported_phase()
         p = self.current_player if player_id is None else player_id
         if p not in range(4):
             raise ValueError("invalid player id")
@@ -262,7 +221,7 @@ class FourPlayerGame:
             )
         else:
             kind, offer = state.current_prompt.name, None
-            legal = tuple(sorted((self._convert(a) for a in state.playable_actions), key=repr))
+            legal = tuple(sorted((self._convert(a) for a in self.game.playable_actions), key=repr))
         if p != actor or self._terminated or self._truncated:
             legal = ()
         players = []
@@ -400,33 +359,22 @@ class FourPlayerGame:
             self._discard_one(action.resource, actor)
         else:
             engine_action = next(
-                a for a in self.game.state.playable_actions if self._convert(a) == action
-            )
-            free_before = (
-                self.game.state.free_roads_available if self.game.state.is_road_building else 0
+                a for a in self.game.playable_actions if self._convert(a) == action
             )
             with self._randomness():
                 executed = self.game.execute(engine_action)
-            if action.kind == "BUILD_ROAD" and free_before > 1:
-                # Upstream prematurely stops if the player cannot afford a paid road.
-                self.game.state.is_road_building = True
-                self.game.state.free_roads_available = free_before - 1
             if action.kind == "ROLL":
                 self._emit(
-                    VisibleEvent(self.version, "DICE_ROLL", actor, count=sum(executed.value))
+                    VisibleEvent(self.version, "DICE_ROLL", actor, count=sum(executed.result))
                 )
-            if action.kind == "BUY_DEVELOPMENT_CARD":
-                self._new_development[actor][DEVELOPMENT_CARDS.index(executed.value)] += 1
-            if action.kind == "END_TURN":
-                self._new_development[actor] = [0] * 5
-            if action.kind == "ROLL" and sum(executed.value) == 7:
+            if action.kind == "ROLL" and sum(executed.result) == 7:
                 self._discard_remaining = {
                     p: sum(self._hand(p)) // 2
                     for p in range(4)
                     if sum(self._hand(p)) > self.rules.robber_discard_threshold
                 }
             if action.kind == "MOVE_ROBBER" and action.partner is not None:
-                resource = executed.value[2]
+                resource = executed.result
                 for observer, ledger in enumerate(self._ledgers):
                     known = resource if observer in (actor, action.partner) else None
                     ledger.transfer(action.partner, actor, 1, resource=known)

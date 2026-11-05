@@ -9,7 +9,7 @@ description = "Player-visible Catan reinforcement learning with extensible trade
 readme = "README.md"
 license = "GPL-3.0-only"
 requires-python = ">=3.11"
-dependencies = ["catanatron==3.2.1", "numpy>=2.0,<3", "torch>=2.5,<3", "gymnasium>=1.0,<2", "pillow>=10,<14"]
+dependencies = ["catanatron @ git+https://github.com/bcollazo/catanatron.git@82aae93ab1f7c267218be0566df573ce477ec3d8", "numpy>=2.0,<3", "torch>=2.5,<3", "gymnasium>=1.0,<2", "pillow>=10,<14"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.9"]
@@ -27,3 +27,6 @@ line-length = 100
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/colonist_rl"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
