@@ -44,7 +44,8 @@ def evaluate_blocks(
 
     Only complete blocks enter ``outcomes`` and summary metrics. Finished games
     from an interrupted block are retained separately in ``partial_outcomes``.
-    A step-limited game is a completed protocol game with ``truncated=True``.
+    A step-limited game is a completed protocol game with ``truncated=True``
+    and unresolved ``won=None``. Strict win metrics require all games resolved.
     """
     seeds = _seed_list(board_seeds)
     return _evaluate_matches(
@@ -173,7 +174,11 @@ def _evaluate_matches(
                 "game": game_index,
                 "board_seed": board_seed,
                 "seat": seat,
-                "won": result.winner == seat,
+                "won": (
+                    result.winner == seat
+                    if result.terminated and not result.truncated and result.winner is not None
+                    else None
+                ),
                 "winner": result.winner,
                 "victory_points": env._actual_vp()[seat],
                 "terminated": result.terminated,
@@ -207,7 +212,11 @@ def _evaluate_matches(
             selected.append(row)
             selected_latency.extend(latency)
     games = len(selected)
-    wins = sum(row["won"] for row in selected)
+    wins = sum(row["won"] is True for row in selected)
+    resolved_games = sum(row["won"] is not None for row in selected)
+    unresolved_games = games - resolved_games
+    # Strict benchmarks do not estimate wins from a censored subset of games.
+    win_metrics_defined = not strict_blocks or (games > 0 and unresolved_games == 0)
     phase_counts, action_counts = Counter(), Counter()
     for row in selected:
         phase_counts.update(row["phase_counts"])
@@ -222,11 +231,20 @@ def _evaluate_matches(
         "finished_games": len(finished),
         "aggregation_scope": "complete_blocks" if strict_blocks else "finished_games",
         "wins": wins,
-        "win_rate": wins / games if games else 0.0,
-        "win_rate_ci95_nominal_wilson": _wilson(wins, games),
+        "resolved_games": resolved_games,
+        "unresolved_games": unresolved_games,
+        "win_rate_reporting": (
+            "strict_all_games_resolved" if strict_blocks else "legacy_truncations_as_losses"
+        ),
+        "win_rate_denominator": games if win_metrics_defined else None,
+        "win_rate": (wins / games if games else 0.0) if win_metrics_defined else None,
+        "win_rate_ci95_nominal_wilson": (_wilson(wins, games) if win_metrics_defined else None),
         "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
         "mean_victory_points": (
             sum(row["victory_points"] for row in selected) / games if games else 0.0
+        ),
+        "victory_points_note": (
+            "Observed endpoint victory points, including truncations; not final-game competence."
         ),
         "truncations": sum(row["truncated"] for row in selected),
         "terminations": sum(row["terminated"] for row in selected),
@@ -267,6 +285,13 @@ def _paired_rows(result):
         key = (seed, seat)
         if key in rows:
             raise ValueError("duplicate board/seat pair")
+        if (
+            row.get("truncated", False)
+            or row.get("terminated") is False
+            or ("winner" in row and row["winner"] is None)
+            or row["won"] is None
+        ):
+            raise ValueError("paired comparison requires resolved, non-truncated outcomes")
         if type(row["won"]) is not bool or not isinstance(row["victory_points"], (int, float)):
             raise ValueError("invalid paired outcome")
         if not math.isfinite(row["victory_points"]):
@@ -279,7 +304,7 @@ def _paired_rows(result):
 
 
 def paired_block_summary(reference: dict, candidate: dict) -> dict:
-    """Candidate-minus-reference differences, averaged within each board first."""
+    """Board-averaged candidate-minus-reference differences; reject censored games."""
     reference_rows, candidate_rows = _paired_rows(reference), _paired_rows(candidate)
     if reference_rows.keys() != candidate_rows.keys():
         raise ValueError("missing matching board/seat pairs between results")

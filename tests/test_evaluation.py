@@ -201,6 +201,10 @@ def test_expired_deadline_has_no_complete_blocks():
     assert result["games"] == 0
     assert result["outcomes"] == result["partial_outcomes"] == []
     assert result["completed_board_seeds"] == []
+    assert result["resolved_games"] == result["unresolved_games"] == 0
+    assert result["win_rate"] is None
+    assert result["win_rate_denominator"] is None
+    assert result["win_rate_ci95_nominal_wilson"] is None
 
 
 def test_deadline_mid_block_retains_partial_accounting(monkeypatch):
@@ -243,6 +247,10 @@ def test_real_termination_is_distinct_from_a_step_limit(monkeypatch):
     assert result["terminations"] == 4
     assert result["truncations"] == 0
     assert result["wins"] == 1
+    assert result["resolved_games"] == result["win_rate_denominator"] == 4
+    assert result["unresolved_games"] == 0
+    assert result["win_rate"] == 0.25
+    assert isinstance(result["win_rate_ci95_nominal_wilson"], list)
     assert all(row["terminated"] and not row["truncated"] for row in result["outcomes"])
 
 
@@ -267,3 +275,86 @@ def test_deadline_retains_completed_blocks_and_separates_partial_games(monkeypat
     assert result["partial_outcomes"][0]["board_seed"] == 702
     assert result["interrupted_game"]["board_seed"] == 702
     assert result["truncations"] == 4
+
+
+def test_truncated_strict_block_keeps_win_uncertainty_and_refuses_pairing():
+    result = evaluate_blocks(board_seeds=[701], max_game_steps=4)
+    assert result["status"] == "complete"
+    assert result["games"] == result["finished_games"] == result["truncations"] == 4
+    assert [row["won"] for row in result["outcomes"]] == [None, None, None, None]
+    assert all(row["winner"] is None for row in result["outcomes"])
+    assert result["wins"] == result["resolved_games"] == 0
+    assert result["unresolved_games"] == 4
+    assert result["win_rate"] is None
+    assert result["win_rate_denominator"] is None
+    assert result["win_rate_ci95_nominal_wilson"] is None
+    assert result["win_rate_reporting"] == "strict_all_games_resolved"
+    with pytest.raises(ValueError, match="resolved|truncated"):
+        paired_block_summary(result, result)
+    explicit_legacy_entrypoint = evaluate(board_seeds=[701], max_game_steps=4)
+    assert explicit_legacy_entrypoint["win_rate"] is None
+    json.dumps(result, allow_nan=False)
+
+
+def test_mixed_resolved_and_unresolved_strict_results_have_no_win_estimate(monkeypatch):
+    from colonist_rl import evaluation
+    from colonist_rl.board import RulesConfig
+    from colonist_rl.simulator import FourPlayerGame
+
+    games_created = 0
+
+    def mixed_games(*, max_steps):
+        nonlocal games_created
+        games_created += 1
+        target = 1 if games_created <= 4 else 10
+        return FourPlayerGame(
+            replace(RulesConfig.standard(), victory_points=target), max_steps=max_steps
+        )
+
+    # Both groups are real games: the first board ends naturally, the second truncates.
+    monkeypatch.setattr(evaluation, "FourPlayerGame", mixed_games)
+    result = evaluate_blocks(board_seeds=[701, 702], max_game_steps=4)
+    assert result["games"] == 8
+    assert result["resolved_games"] == result["unresolved_games"] == 4
+    assert result["wins"] == 1
+    assert [row["won"] for row in result["outcomes"]] == [True, False, False, False] + [None] * 4
+    assert result["win_rate"] is None
+    assert result["win_rate_denominator"] is None
+    assert result["win_rate_ci95_nominal_wilson"] is None
+    assert result["mean_victory_points"] >= 0
+    assert "endpoint" in result["victory_points_note"]
+    with pytest.raises(ValueError, match="resolved|truncated"):
+        paired_block_summary(result, result)
+    json.dumps(result, allow_nan=False)
+
+
+@pytest.mark.parametrize("side", ["reference", "candidate"])
+@pytest.mark.parametrize("uncertainty", ["truncated", "null_win", "null_winner", "not_terminated"])
+def test_pairing_rejects_unresolved_even_with_legacy_false_win(side, uncertainty):
+    reference = synthetic_result({51: [], 52: []}, {51: [2] * 4, 52: [2] * 4})
+    candidate = deepcopy(reference)
+    row = (reference if side == "reference" else candidate)["outcomes"][0]
+    if uncertainty == "truncated":
+        row["truncated"] = True  # Old reports used won=False for these unresolved games.
+    elif uncertainty == "null_win":
+        row["won"] = None
+    elif uncertainty == "null_winner":
+        row["winner"] = None
+    else:
+        row["terminated"] = False
+    with pytest.raises(ValueError, match="resolved|truncated"):
+        paired_block_summary(reference, candidate)
+
+
+def test_legacy_numeric_report_is_labeled_and_keeps_raw_uncertainty():
+    result = evaluate(None, 4, 701, "heuristic", False, 4)
+    assert result["games"] == 4
+    assert result["wins"] == 0
+    assert result["win_rate"] == 0.0
+    assert isinstance(result["win_rate_ci95_nominal_wilson"], list)
+    assert result["win_rate_denominator"] == 4
+    assert result["win_rate_reporting"] == "legacy_truncations_as_losses"
+    assert result["resolved_games"] == 0
+    assert result["unresolved_games"] == 4
+    assert all(row["won"] is None for row in result["outcomes"])
+    json.dumps(result, allow_nan=False)

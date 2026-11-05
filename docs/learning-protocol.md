@@ -70,19 +70,28 @@ The result contains only JSON-safe primitives and these fields:
 | `aggregation_scope` | `"complete_blocks"` for the strict protocol. |
 | `candidate`, `action_mode`, `deterministic`, `baseline`, `reject_trades`, `max_game_steps` | Actor identity and execution settings; strict calls do not use the legacy rejection ablation. |
 | `outcomes`, `partial_outcomes`, `interrupted_game` | Complete-block game rows; finished game rows from an unfinished block; and in-progress accounting or `None`. |
-| `wins`, `win_rate`, `mean_victory_points`, `truncations`, `terminations`, `trade_responses`, `offers` | Summaries over `outcomes` only. |
+| `wins`, `resolved_games`, `unresolved_games` | Counts over `outcomes` only. Wins count resolved candidate wins; unresolved games are neither wins nor losses. |
+| `win_rate`, `win_rate_denominator`, `win_rate_reporting` | Strict mode is `"strict_all_games_resolved"`: win rate and denominator are `null` if any selected game is unresolved or no games are selected; otherwise rate is wins divided by all selected games. |
+| `mean_victory_points`, `victory_points_note`, `truncations`, `terminations`, `trade_responses`, `offers` | Summaries over `outcomes` only. VP is the descriptive observed endpoint, including truncated games, not final-game competence. |
 | `learner_decisions`, `non_forced_decisions`, `phase_counts`, `action_kind_counts` | Candidate decision totals and counts, summed over `outcomes` only. A non-forced decision has more than one legal action. Phase keys are observation context kinds; action keys are chosen action kinds. |
 | `decision_latency_ms_mean`, `decision_latency_ms_p95` | Mean and 95th percentile over individual candidate decisions in `outcomes`, in milliseconds. No opponent latency is included. |
-| `win_rate_ci95_nominal_wilson`, `confidence_interval_note` | Legacy descriptive Wilson interval and dependence warning. This interval does not model within-board dependence and must not support a significance claim. |
+| `win_rate_ci95_nominal_wilson`, `confidence_interval_note` | Descriptive Wilson interval and dependence warning. Strict results use `null` whenever win rate is undefined. An available interval does not model within-board dependence and must not support a significance claim. |
 
 Each outcome row includes `game` (zero-based schedule index), `board_seed`,
 `seat`, `won`, `winner`, `victory_points`, `terminated`, `truncated`, `steps`,
 `trade_responses`, `offers`, and the same decision counts, count dictionaries,
 and latency summaries. `steps` is the simulator version, including offers.
-`won` is true only when `winner` equals the candidate seat. Natural completion
+`won` is `true` for a resolved candidate win and `false` for a resolved loss.
+It is `null` for unresolved outcomes, including truncations with no winner;
+this uncertainty is retained even in legacy raw outcome rows. Natural completion
 sets `terminated`; the simulator step limit instead sets `truncated`. A
 step-limited game is a finished protocol game and can belong to a complete
-block. It is not evidence of playing competence.
+block, but is neither an automatic loss nor evidence of playing competence.
+Strict `win_rate`, its denominator, and its nominal interval are all `null`
+when even one selected game is unresolved. The protocol does not estimate a
+win rate from only the resolved subset. The resolved/unresolved counts describe
+selected `outcomes`; partial-block games remain separately accounted for in
+`partial_outcomes`.
 
 `deadline` is an optional finite absolute `time.monotonic()` timestamp. The loop
 checks it before each game and before every decision step, including forced
@@ -93,16 +102,22 @@ remain in `outcomes`; any finished games from the interrupted board move to
 `seat`, `steps`, decision counts, count dictionaries, and latency, with no
 fictional terminal outcome or private victory-point read. If expiration occurs
 between games, `interrupted_game` is `None`. With no complete blocks, summary
-counts/rates/means/latencies are zero and the nominal Wilson interval is `[0, 1]`;
-these are empty-result placeholders, not performance estimates.
+counts, observed VP mean, and latencies are zero placeholders, while strict win
+rate, win denominator, and nominal Wilson interval are `null`. None of these
+empty-result values is a performance estimate.
 
 ## Paired comparisons and compatibility
 
 `paired_block_summary(reference, candidate)` requires the exact same unique
 `(board_seed, seat)` keys in both results and all four seats for every board.
-It rejects missing/duplicate pairs and explicitly incomplete results. Synthetic
-results may omit `status`; they must still contain complete outcome rows with
-integer keys, boolean wins, and finite victory points. Differences are
+It rejects missing/duplicate pairs, explicitly incomplete results, and any
+truncated or unresolved outcome in either input. This includes legacy-shaped
+rows with `won=false` and `truncated=true`; a numeric legacy rate does not make
+them eligible for paired performance comparisons. Explicit `terminated=false`,
+`winner=null`, or `won=null` also indicates an unresolved row and is rejected.
+Synthetic results may omit `status` and termination metadata; their complete
+outcome rows must assert resolved boolean wins, integer keys, and finite victory
+points. Differences are
 candidate minus reference. The function first averages win and VP differences
 across a board's four seats, returning `boards` with `board_seed`,
 `win_rate_difference`, and `mean_victory_points_difference`. It then averages
@@ -115,5 +130,12 @@ stochastic graph actions. Its new keyword-only arguments are `board_seeds`,
 `candidate`, `deterministic`, and `deadline`. Explicit `board_seeds` select the
 strict block behavior and determine the schedule. Without them, legacy `games`
 may end with a partial four-seat block and all finished games enter its summary
-(`aggregation_scope="finished_games"`). Both public evaluators use one
-authoritative match loop, preserving CLI, checkpoint, and import behavior.
+(`aggregation_scope="finished_games"`). For compatibility, this mode retains
+numeric `win_rate` (wins divided by all finished games) and its nominal Wilson
+interval, explicitly labeled `win_rate_reporting="legacy_truncations_as_losses"`
+with `win_rate_denominator=games`. At zero legacy games it retains `0.0` and
+`[0, 1]`. These compatibility metrics treat unresolved games as losses in the
+aggregate and must not be used as strict benchmark estimates; raw `won` remains
+`null` for unresolved rows and resolved/unresolved counts remain explicit. Both
+public evaluators use one authoritative match loop, preserving CLI, checkpoint,
+and import signatures.
