@@ -1,10 +1,13 @@
 # Optional real Playwright transport
 
-`colonist_rl.browser` supplies actual Playwright Chromium page control for the
+`colonist_rl.adapters.colonist.browser` supplies Playwright Chromium page control for the
 user-requested web player. Importing it starts no browser and needs no Playwright
 installation. Using `PlaywrightSession` explicitly opens a browser. The transport
 uses public screenshot, mouse, locator, and browser lifecycle APIs; it does not
 use private game APIs, bot-evasion settings, or existing browser sessions.
+The original `colonist_rl.browser` import remains an identity-preserving alias.
+Shared capture/calibration and the physical-photo reader are separate modules;
+see [adapter boundaries](adapters.md).
 
 Install the optional dependency and Chromium in the environment that will run it:
 
@@ -16,7 +19,7 @@ python -m playwright install chromium
 A headed browser with an isolated context is the default:
 
 ```python
-from colonist_rl.browser import PlaywrightSession
+from colonist_rl.adapters.colonist.browser import PlaywrightSession
 
 with PlaywrightSession() as session:  # Defaults to https://colonist.io/.
     page = session.page
@@ -28,7 +31,7 @@ with PlaywrightSession() as session:  # Defaults to https://colonist.io/.
 An existing synchronous Playwright `Page` can instead be injected directly:
 
 ```python
-from colonist_rl.browser import PlaywrightTransport
+from colonist_rl.adapters.colonist.browser import PlaywrightTransport
 
 transport = PlaywrightTransport(page, timeout_ms=10_000)
 png_bytes = transport.screenshot()
@@ -80,7 +83,7 @@ annotated-capture reader. A game should not be described as played or completed
 based on opening the page or capturing an image.
 
 ```python
-from colonist_rl.perception import BrowserAdapter
+from colonist_rl.adapters.colonist.execution import BrowserAdapter
 
 with PlaywrightSession(url="https://colonist.io/") as session:
     adapter = BrowserAdapter(
@@ -131,3 +134,8 @@ install chromium` and omit `PLAYWRIGHT_BROWSERS_PATH`. Generated evidence is in
 `chromium-evidence.json`. This confirms the transport works with real Chromium;
 it does not establish a completed Colonist walkthrough. See
 [live walkthrough status](browser-walkthrough-status.md).
+
+A subsequent manual CUA walkthrough completed a 10-point guest-bot victory in
+67 turns. Its [control reference](colonist-controls.md) records the observed
+multi-stage gestures, private VP display, automatic awards, and remaining checks.
+The existing executor has not been wired to those stages or to a trained policy.

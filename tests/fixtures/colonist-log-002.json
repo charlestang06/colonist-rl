@@ -1,0 +1,189 @@
+{
+  "capture_id": "live-game-002",
+  "captured_at": "2026-11-05T03:01:17.058Z",
+  "rows": [
+    {
+      "row_id": null,
+      "tokens": []
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Kati"
+        },
+        {
+          "kind": "text",
+          "text": " rolled "
+        },
+        {
+          "alt": "dice_1",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "alt": "dice_2",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Eilis"
+        },
+        {
+          "kind": "text",
+          "text": " got "
+        },
+        {
+          "alt": "Ore",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "alt": "Lumber",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Almire"
+        },
+        {
+          "kind": "text",
+          "text": " got "
+        },
+        {
+          "alt": "Ore",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": []
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Donni#0773"
+        },
+        {
+          "kind": "text",
+          "text": " rolled "
+        },
+        {
+          "alt": "dice_3",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "alt": "dice_2",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Donni#0773"
+        },
+        {
+          "kind": "text",
+          "text": " got "
+        },
+        {
+          "alt": "Brick",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "alt": "Brick",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Donni#0773"
+        },
+        {
+          "kind": "text",
+          "text": " wants to give "
+        },
+        {
+          "alt": "Brick",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " for "
+        },
+        {
+          "alt": "Ore",
+          "kind": "icon"
+        }
+      ]
+    },
+    {
+      "row_id": null,
+      "tokens": [
+        {
+          "kind": "text",
+          "text": "Donni#0773"
+        },
+        {
+          "kind": "text",
+          "text": " wants to give "
+        },
+        {
+          "alt": "Brick",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " "
+        },
+        {
+          "alt": "Brick",
+          "kind": "icon"
+        },
+        {
+          "kind": "text",
+          "text": " for "
+        },
+        {
+          "alt": "Ore",
+          "kind": "icon"
+        }
+      ]
+    }
+  ]
+}

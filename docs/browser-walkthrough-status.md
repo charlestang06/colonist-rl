@@ -2,38 +2,55 @@
 
 The user requested a full live Colonist walkthrough and explicitly authorized
 control of a guest bot game, including placement, trading, rolling and ending
-turns. A later request resumed browser testing after adapter work was deferred.
+turns. Normal supported browser access to `https://colonist.io/` was available
+on November 4, 2026, resolving the earlier origin-access blocker.
 
-## What was actually observed
+## Completed manual walkthrough
 
-In the earlier permitted session, the public landing page, room lobby, bot-mode
-selection and a four-player guest bot board were opened. Board geometry was
-canvas-rendered; HUD/player totals and some game-log content were DOM-readable.
-Settlement placement required a separate visible confirmation control.
-No successful placement or completed game was verified before disconnection.
+A four-player Easy bot game was played from setup to victory as guest
+`Donni#0773`. The assistant controlled the browser manually through the
+computer-use interface. The RL policy and `BrowserAdapter` were not connected
+to that live game and did not execute its decisions.
 
-## Current blocker
+The Victory overlay showed **67 turns and 27:27**. The guest's final display was
+`8 (10)`: eight public points plus two private Victory Point cards. The postgame
+overview ranked Donni#0773 10, Kati 4, Eilis 3, and Almire 2.
 
-On November 4, 2026, the supported browser access check rejected navigation to
-`https://colonist.io/` because a saved permission or managed policy denies that
-origin. The check was repeated after the user reported enabling access; the
-same denial remained effective. No alternative browser, raw CDP, private API,
-or indirect navigation was used to work around that denial.
+Verified interactions included snake-order setup; dice and turn controls;
+ordinary road, settlement and city builds; bank trades; outgoing offer
+finalization and incoming acceptance/rejection; Knights, robber confirmation and
+victim selection; Monopoly; development-card purchase timing; automatic private
+Victory Points; Longest Road, its retained tie, and Largest Army. The final
+Victory Point purchase ended the game automatically.
 
-## Remaining live checks
+The durable [controls guide](colonist-controls.md) records exact observed
+sequences, UI-state implications, remaining unverified controls, and links to
+18 screenshots under `docs/assets/colonist-walkthrough-2026-11-04/`.
 
-- Confirm initial settlement and road placement, then complete reverse setup.
-- Read production and hand changes; roll and end turns.
-- Verify bank/port trading and incoming player-trade responses.
-- Verify robber/discard and development-card decisions when encountered.
-- Observe victory/termination and reconcile the visible resource/event ledger.
+## Log evidence and remaining work
 
-These checks require the origin permission to be effective. Passing local
-Chromium tests does not satisfy this live walkthrough.
+DOM text and inline image labels exposed production and other resource events,
+but only a short virtualized log window was mounted at a time. Ordered captures
+001–008 retain partial windows. Later postgame scroll recovery did not recover
+the complete history; the source game was left, the room became unavailable,
+and the browser returned to a guest landing modal. Empty/failed captures are not
+presented as evidence. No complete resource-ledger reconciliation is claimed.
 
-## Completed independent browser checks
+Own discard controls, port trades, incoming-offer editing, own Year of Plenty and
+Road Building, robber destinations with no eligible victim, and award loss were
+not verified. Both Year of Plenty cards were used by bots; the final statistics
+showed no Road Building draw by any player.
 
-Real Chromium 156.0.8078.4 and Playwright 1.64.1 executed the local browser test.
-All 19 browser tests and all 167 tests in the Chromium-enabled suite passed,
-with no skips. Before/after captures and structured evidence are saved under
-`runs/browser-tests/`. No external game was opened by those local tests.
+Autonomous live integration still needs verified current observations,
+phase-specific click/drag/dialog handling, action-bound offer rows, and event
+history with explicit uncertainty. See [adapter architecture](adapters.md) and
+the [offline log reader](colonist-log-reader.md). The completed manual game
+does not establish autonomous browser play.
+
+## Independent local browser checks
+
+The real loopback Chromium fixture was exercised with Playwright 1.64.1 and
+Chromium 156.0.8078.4. The latest full Chromium-enabled suite passed **205 tests
+with no skips**; [verification](validation.md) records the checks. Before/after
+local-fixture captures and evidence remain under `runs/browser-tests/`. Those
+tests do not contact Colonist and are separate from the live manual walkthrough.

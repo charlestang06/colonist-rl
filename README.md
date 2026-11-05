@@ -72,13 +72,29 @@ adapter and source tests document its current parity boundary.
 Offline capture ingestion and coordinate calibration share the observation
 schema. Live Colonist integration requires verified extraction and an explicitly
 authorized transport. No live game is accessed by installation or training.
-Live adapter work is deferred; the optional [Playwright transport](docs/browser.md)
-is available as a separate experimental module.
+The optional [Playwright transport](docs/browser.md) is available as a separate
+experimental module. A manual guest-bot walkthrough completed a 10-point victory;
+the [control reference](docs/colonist-controls.md) records tested gestures, dialogs,
+log evidence, screenshots, and remaining checks. Autonomous policy-to-UI execution
+still needs staged confirmations and pending-trade handling.
 The current reader recognizes verified annotated screenshots by image hash;
 it does not automatically infer an arbitrary Colonist screenshot. See
 [capture format and UI transport](docs/perception.md). Export a schema example with
 `uv run colonist-rl export --output runs/observation.json`; inspect a verified
 capture with `uv run colonist-rl capture --annotation capture.json --screenshot board.png`.
+
+Environment-specific code lives under `colonist_rl.adapters`: shared capture,
+serialization, and calibration modules; `colonist` browser/execution modules; and
+a `physical` photo-reader entry point. Physical photos require a supplied reader
+or complete verified annotation; automatic board recognition is not implemented.
+Existing `colonist_rl.browser` and `colonist_rl.perception` imports remain
+compatible. See [adapter boundaries](docs/adapters.md).
+
+The [offline Colonist log reader](docs/colonist-log-reader.md) preserves ordered
+text and icon labels and reports ambiguous overlaps and missing history. It does
+not yet infer resource-transfer events or update the belief ledger. The
+[roadmap](docs/roadmap.md) separates these next tasks from training improvements.
+
 Colonist's [terms](https://colonist.io/terms) require authorization for service
 data AI development/private API use; training here uses simulator-generated data.
 

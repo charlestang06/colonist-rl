@@ -38,5 +38,31 @@ correlations, and sampled agreement never certifies exact hidden hands.
 
 The capture reader recognizes verified annotations for known screenshot hashes;
 it is not a general Colonist computer-vision model. Browser transport code is
-isolated and optional. Live adapter work was deferred at the user's request.
-No completed Colonist game or verified autonomous browser gameplay is claimed.
+isolated and optional. A manually controlled live Colonist game was completed on
+November 4, 2026; the autonomous adapter and RL policy were not connected to that
+game. Verified autonomous browser gameplay is not claimed.
+
+## November 4 adapter and log-reader verification
+
+The latest full implementation checks, after adapter modularization and the
+offline visible-log reader, completed with:
+
+- **205 tests passed, no skips**, including the opt-in real-Chromium loopback
+  fixture with browser smoke testing enabled.
+- Ruff checks and `ruff format --check src tests` passed.
+- The package wheel built successfully.
+- Two independent final reviews found no actionable issues in the changes.
+
+These local checks cover the shared/Colonist/physical adapter boundaries,
+compatibility imports, optional browser lifecycle and transport, verified
+capture handling, and conservative normalization/history of supplied visible
+log rows. The offline log reader does not infer resource transfers or establish
+complete event history.
+
+Separately, the live manual guest walkthrough reached a verified 10-point victory
+in 67 turns with displayed time 27:27. The final guest display was `8 (10)`, and
+the postgame overview confirmed the win. The [controls guide](colonist-controls.md)
+links 18 durable screenshots and distinguishes exercised controls from remaining
+checks. The [walkthrough status](browser-walkthrough-status.md) records the
+manual/autonomous boundary and partial log-history limitation. Neither the
+manual win nor these local tests establish autonomous playing strength.
