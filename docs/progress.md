@@ -69,3 +69,16 @@ Ruff lint passed and all 49 source/test Python files were already formatted.
 These checks precede the pending follow-on work and final review; they do not
 replace final-source verification. Historical verification above remains the
 earlier baseline.
+
+## November 5 intermediate checkpoint
+
+The first learning wave and both staged-adapter tasks have clean independent
+reviews, including the broad reviews and scoped corrections. The controlled
+uniform/phase-balanced study has completed; the learner still wins zero games
+on its four-board heuristic panel. See [current training evidence and next work](training-status-2026-11-05.md).
+
+Fresh integration at source9e99d88 passed739tests with one optional browser skip
+in15.83seconds. Ruff lint and formatting passed across54source/test files;
+the wheel built offline. All54files parse with Python3.11grammar, while actual
+runtime checks used Python3.13. Separate actual localhost Chromium click and
+drag checks passed; no live autonomous Colonist game is claimed.

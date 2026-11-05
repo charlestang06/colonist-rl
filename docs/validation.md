@@ -66,3 +66,22 @@ links 18 durable screenshots and distinguishes exercised controls from remaining
 checks. The [walkthrough status](browser-walkthrough-status.md) records the
 manual/autonomous boundary and partial log-history limitation. Neither the
 manual win nor these local tests establish autonomous playing strength.
+
+## November 5 reviewed intermediate checkpoint
+
+At source9e99d88, the combined suite passed **739tests,1optionalbrowser skip in
+15.83seconds**, with clean Ruff lint and54formatted source/test files. The wheel
+built offline. All54Python files also parsed under Python3.11grammar; execution
+used Python3.13. Earlier counts above remain historical baselines.
+
+The separately executed realChromium localhost drag fixture reported exactly
+`completed=1 down=1 up=1 moves=10`; screenshot, script and JSON are preserved in
+`runs/swarm-2026-11-04/verification/`. This verifies public transport behavior,
+not live Colonist, screenshot recognition or a full staged-game execution.
+An extracted wheel also performed a real two-decision/one-update legacy
+warmstart without Git metadata, reporting explicit unknown provenance.
+
+These checks cover reviewed evaluation/imitation infrastructure, semantic/UI
+contracts, staged placement/willingness and focused drag. Further behavioral
+features, aggregated student-state training and curriculum study remain under
+development and need their own review and final combined verification.
