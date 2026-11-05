@@ -842,11 +842,26 @@ def _sequences(records, length, *, stable_keys=False):
     return chunks
 
 
-def _anchor_storage_ids(tensors):
+def _anchor_storage_ranges(tensors):
     tensors = tuple(tensors)
     if any(t.layout != torch.strided or t.device.type not in ("cpu", "cuda") for t in tensors):
         raise ValueError("anchor requires dense CPU/CUDA model tensors")
-    return {(t.device, t.untyped_storage()._cdata) for t in tensors}
+    ranges = set()
+    for tensor in tensors:
+        storage = tensor.untyped_storage()
+        if storage.nbytes():
+            start = storage.data_ptr()
+            ranges.add((tensor.device, start, start + storage.nbytes()))
+    return ranges
+
+
+def _anchor_storages_overlap(left, right):
+    # Separate wrappers (e.g. from_numpy/frombuffer) can share allocation bytes.
+    return any(
+        a_device == b_device and a_start < b_end and b_start < a_end
+        for a_device, a_start, a_end in left
+        for b_device, b_start, b_end in right
+    )
 
 
 def _anchor_model_tensors(module):
@@ -873,16 +888,18 @@ def _validate_anchor(policy, optimizer, reference):
     # Checkpoint-recognized architectures have observation-only recurrent forwards.
     # Arbitrary modules/subclasses with untracked mutable state are unsupported.
     policy_architecture(reference)
-    student_storage = _anchor_storage_ids(_anchor_model_tensors(policy))
-    reference_storage = _anchor_storage_ids(_anchor_model_tensors(reference))
-    if policy is reference or student_storage & reference_storage:
+    student_storage = _anchor_storage_ranges(_anchor_model_tensors(policy))
+    reference_storage = _anchor_storage_ranges(_anchor_model_tensors(reference))
+    if policy is reference or _anchor_storages_overlap(student_storage, reference_storage):
         raise ValueError("anchor reference and student must not share tensor storage")
     owned = [p for group in optimizer.param_groups for p in group["params"]]
     owned_ids = {id(p) for p in owned}
     if len(owned_ids) != len(owned) or owned_ids != {id(p) for p in policy.parameters()}:
         raise ValueError("anchor optimizer must own exactly the student parameters")
     if any(id(key) not in owned_ids for key in optimizer.state) or (
-        _anchor_storage_ids(_anchor_state_tensors(optimizer.state)) & reference_storage
+        _anchor_storages_overlap(
+            _anchor_storage_ranges(_anchor_state_tensors(optimizer.state)), reference_storage
+        )
     ):
         raise ValueError("anchor optimizer state must not own or alias the reference")
 
@@ -904,9 +921,10 @@ def _anchor_log_probabilities(policy, reference, records, traces, deadline):
             frozen = deepcopy(reference)
             frozen.eval()
             frozen.requires_grad_(False)
-            if _anchor_storage_ids(_anchor_model_tensors(frozen)) & (
-                _anchor_storage_ids(_anchor_model_tensors(reference))
-                | _anchor_storage_ids(_anchor_model_tensors(policy))
+            if _anchor_storages_overlap(
+                _anchor_storage_ranges(_anchor_model_tensors(frozen)),
+                _anchor_storage_ranges(_anchor_model_tensors(reference))
+                | _anchor_storage_ranges(_anchor_model_tensors(policy)),
             ):
                 raise ValueError("anchor reference copy must have isolated tensor storage")
             last = {}

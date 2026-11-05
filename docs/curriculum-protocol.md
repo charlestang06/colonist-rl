@@ -257,7 +257,9 @@ external mutable state, custom copying behavior and concurrent model mutation
 are outside this contract. The optimizer must own exactly the student parameters,
 without duplicates or extra state owners. Shared storage between student and
 reference parameters, buffers or existing gradients is rejected, as is reference
-ownership or storage aliasing in optimizer state. These checks run only when the
+ownership or storage aliasing in optimizer state. Overlap is checked using
+nonempty underlying storage byte ranges on the same device, including independent
+NumPy/shared-buffer wrappers with different starts. These checks run only when the
 anchor is enabled.
 
 Each positive invocation makes an isolated local copy of the reference and uses

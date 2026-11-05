@@ -567,3 +567,77 @@ def test_supported_reference_architectures_complete_tiny_update(kind):
     metrics = update(student, reference)
     assert metrics["completed_updates"] == metrics["anchor_states"] == 1
     assert math.isfinite(metrics["anchor_kl"])
+
+
+@pytest.mark.parametrize("wrapper", ["numpy", "buffer"])
+@pytest.mark.parametrize("offset", [0, 1])
+@pytest.mark.parametrize(
+    "owner",
+    ["parameter", "buffer", "reference_gradient", "optimizer_state", "optimizer_gradient_state"],
+)
+def test_independent_storage_wrappers_overlap_rejected_before_mutation(wrapper, offset, owner):
+    student, reference = GraphPolicy(4), GraphPolicy(4)
+    shape = student.node_in.weight.shape
+    count = student.node_in.weight.numel()
+    if wrapper == "numpy":
+        backing = np.linspace(0.1, 0.2, count + offset, dtype=np.float32)
+        first = torch.from_numpy(backing[:count]).reshape(shape)
+        second = torch.from_numpy(backing[offset : offset + count]).reshape(shape)
+    else:
+        backing = bytearray((count + offset) * 4)
+        first = torch.frombuffer(backing, dtype=torch.float32, count=count).reshape(shape)
+        second = torch.frombuffer(
+            backing, dtype=torch.float32, count=count, offset=offset * 4
+        ).reshape(shape)
+        first.fill_(0.1)
+    # These are distinct wrappers over equal or partly overlapping byte ranges.
+    assert first.untyped_storage()._cdata != second.untyped_storage()._cdata
+    assert second.data_ptr() - first.data_ptr() == offset * 4
+    optimizer = None
+    if owner == "parameter":
+        student.node_in.weight = torch.nn.Parameter(first)
+        reference.node_in.weight = torch.nn.Parameter(second)
+    elif owner == "buffer":
+        student.register_buffer("shared", first)
+        reference.register_buffer("shared", second)
+    elif owner == "reference_gradient":
+        student.node_in.weight = torch.nn.Parameter(first)
+        reference.node_in.weight.grad = second
+    elif owner == "optimizer_state":
+        reference.node_in.weight = torch.nn.Parameter(second)
+        optimizer = torch.optim.SGD(student.parameters(), lr=0.01, momentum=0.9)
+        optimizer.state[student.node_in.weight]["momentum_buffer"] = first
+    else:
+        reference.node_in.weight.grad = second
+        optimizer = torch.optim.SGD(student.parameters(), lr=0.01, momentum=0.9)
+        optimizer.state[student.node_in.weight]["momentum_buffer"] = first
+    if optimizer is None:
+        optimizer = torch.optim.SGD(student.parameters(), lr=0.01, momentum=0.9)
+    records, traces = batch(policy=student)
+    student_before, reference_before = (
+        deepcopy(student.state_dict()),
+        deepcopy(reference.state_dict()),
+    )
+    optimizer_before = deepcopy(optimizer.state_dict())
+    gradients = [None if p.grad is None else p.grad.clone() for p in reference.parameters()]
+    with pytest.raises(ValueError, match="optimizer|storage"):
+        update(student, reference, records, traces, optimizer=optimizer)
+    equal_tree(student.state_dict(), student_before)
+    equal_tree(reference.state_dict(), reference_before)
+    equal_tree(optimizer.state_dict(), optimizer_before)
+    for parameter, gradient in zip(reference.parameters(), gradients):
+        equal_tree(parameter.grad, gradient)
+
+
+def test_disjoint_adjacent_wrappers_and_empty_storages_are_allowed():
+    student, reference = GraphPolicy(4), GraphPolicy(4)
+    count, shape = student.node_in.weight.numel(), student.node_in.weight.shape
+    backing = np.linspace(0.1, 0.2, count * 2, dtype=np.float32)
+    student.node_in.weight = torch.nn.Parameter(torch.from_numpy(backing[:count]).reshape(shape))
+    reference.node_in.weight = torch.nn.Parameter(torch.from_numpy(backing[count:]).reshape(shape))
+    student.register_buffer("empty", torch.empty(0))
+    reference.register_buffer("empty", torch.empty(0))
+    reference_before = deepcopy(reference.state_dict())
+    metrics = update(student, reference)
+    assert metrics["completed_updates"] == 1
+    equal_tree(reference.state_dict(), reference_before)
