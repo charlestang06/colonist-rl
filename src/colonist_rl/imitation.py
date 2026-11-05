@@ -71,12 +71,22 @@ def _expired(deadline):
 
 
 def _source():
+    """Best-effort collection provenance; nulls explicitly mean unavailable Git."""
     root = Path(__file__).resolve().parents[2]
 
     def git(*args):
-        return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
+        return subprocess.check_output(
+            ["git", "-C", str(root), *args], text=True, stderr=subprocess.DEVNULL
+        ).strip()
 
-    return {"revision": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+    try:
+        if Path(git("rev-parse", "--show-toplevel")).resolve() != root:
+            return {"revision": None, "dirty": None}
+        return {"revision": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+    except (OSError, subprocess.CalledProcessError):
+        # Installed wheels/archives need no Git dependency for legacy warmstart.
+        # Unknown provenance is never represented as a clean committed source.
+        return {"revision": None, "dirty": None}
 
 
 def _coverage(episodes):
@@ -249,9 +259,14 @@ def _validate(dataset):
     if (
         not isinstance(source, dict)
         or set(source) != {"revision", "dirty"}
-        or not isinstance(source["revision"], str)
-        or not source["revision"]
-        or type(source["dirty"]) is not bool
+        or not (
+            (source["revision"] is None and source["dirty"] is None)
+            or (
+                isinstance(source["revision"], str)
+                and source["revision"]
+                and type(source["dirty"]) is bool
+            )
+        )
     ):
         raise ValueError("invalid source provenance")
     teacher = dataset["teacher"]

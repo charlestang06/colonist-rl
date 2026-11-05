@@ -419,6 +419,7 @@ def ppo_update(policy, optimizer, records, config=None):
 
 def imitation_warmstart(policy, decisions=256, seed=0, epochs=2, learning_rate=3e-4):
     """Fit persisted-style observation-only labels with current-weight replay."""
+    from collections import Counter
     from itertools import count
 
     from .imitation import collect_demonstrations, fit_imitation
@@ -430,6 +431,22 @@ def imitation_warmstart(policy, decisions=256, seed=0, epochs=2, learning_rate=3
     result["loss"] = result["loss"] if result["loss"] is not None else 0.0
     result["coverage"] = dataset["coverage"]
     result["collection"] = dataset["collection"]
+    result["source"] = dataset["source"]
+    episodes = dataset["episodes"]
+    result["episode_summary"] = {
+        "total": len(episodes),
+        "completed": sum(episode["complete"] for episode in episodes),
+        "incomplete": sum(not episode["complete"] for episode in episodes),
+        "terminated": sum(episode["terminated"] for episode in episodes),
+        "truncated": sum(episode["truncated"] for episode in episodes),
+        "incomplete_reason_counts": dict(
+            Counter(
+                episode["incomplete_reason"]
+                for episode in episodes
+                if episode["incomplete_reason"] is not None
+            )
+        ),
+    }
     return result
 
 

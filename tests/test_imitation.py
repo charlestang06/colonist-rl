@@ -356,3 +356,124 @@ def test_collection_deadline_after_proposal_prevents_offer_mutation(monkeypatch)
     assert data["collection"]["stop_reason"] == "deadline"
     assert data["episodes"][0]["steps"] == expired_proposals[0]
     assert data["episodes"][0]["incomplete_reason"] == "deadline"
+
+
+@pytest.mark.parametrize("unavailable", ["installed_layout", "missing_git"])
+def test_legacy_warmstart_runs_with_explicit_unavailable_provenance(
+    monkeypatch, tmp_path, unavailable
+):
+    from colonist_rl import experiments, training
+
+    imitation = _imitation()
+    if unavailable == "installed_layout":
+        monkeypatch.setattr(
+            imitation, "__file__", str(tmp_path / "site-packages" / "colonist_rl" / "imitation.py")
+        )
+    else:
+
+        def missing_git(*args, **kwargs):
+            raise FileNotFoundError("git executable is unavailable")
+
+        monkeypatch.setattr(imitation.subprocess, "check_output", missing_git)
+        # Legacy fallback must not turn strict experiment identity into unknown/clean.
+        with pytest.raises(FileNotFoundError):
+            experiments.source_identity()
+    torch.set_num_threads(1)
+    result = training.imitation_warmstart(GraphPolicy(hidden_size=8), decisions=2, epochs=1)
+    assert result["decisions"] == 2 and result["epochs"] == 1
+    assert math.isfinite(result["loss"])
+    assert result["updates"] == 1 and result["supervised_decisions"] == 2
+    assert result["source"] == {"revision": None, "dirty": None}
+    assert result["episode_summary"]["incomplete"] == 1
+    json.dumps(result, allow_nan=False)
+
+
+def test_unavailable_source_roundtrips_but_mixed_provenance_is_rejected(monkeypatch, tmp_path):
+    imitation = _imitation()
+    monkeypatch.setattr(
+        imitation, "__file__", str(tmp_path / "site-packages" / "colonist_rl" / "imitation.py")
+    )
+    data = imitation.collect_demonstrations(board_seeds=[3], max_decisions=2)
+    assert data["source"] == {"revision": None, "dirty": None}
+    path = tmp_path / "installed-demonstrations.json.gz"
+    imitation.save_demonstrations(path, data)
+    assert imitation.load_demonstrations(path) == data
+    for source in (
+        {"revision": None, "dirty": False},
+        {"revision": None, "dirty": True},
+        {"revision": "known-revision", "dirty": None},
+    ):
+        invalid = deepcopy(data)
+        invalid["source"] = source
+        with pytest.raises(ValueError, match="provenance"):
+            imitation.save_demonstrations(path, invalid)
+
+
+def test_legacy_warmstart_reports_completed_and_cap_interrupted_episodes(monkeypatch):
+    from colonist_rl.board import RulesConfig
+    from colonist_rl.training import imitation_warmstart
+
+    imitation = _imitation()
+    created = [0]
+
+    def bounded_games(*, max_steps):
+        created[0] += 1
+        if created[0] == 1:
+            return FourPlayerGame(
+                replace(RulesConfig.standard(), victory_points=1), max_steps=max_steps
+            )
+        return FourPlayerGame(max_steps=1 if created[0] == 2 else max_steps)
+
+    monkeypatch.setattr(imitation, "FourPlayerGame", bounded_games)
+    data = imitation.collect_demonstrations(
+        board_seeds=[3, 4, 5], max_decisions=2, max_game_steps=10
+    )
+    assert [episode["incomplete_reason"] for episode in data["episodes"]] == [
+        None,
+        "step_cap",
+        "decision_cap",
+    ]
+    # Feed the bounded real sequence to the legacy wrapper; keep the real fitter.
+    monkeypatch.setattr(imitation, "collect_demonstrations", lambda **kwargs: data)
+    torch.set_num_threads(1)
+    result = imitation_warmstart(GraphPolicy(hidden_size=8), decisions=2, epochs=1)
+    assert math.isfinite(result["loss"]) and result["decisions"] == 2 and result["epochs"] == 1
+    assert result["episode_summary"] == {
+        "total": 3,
+        "completed": 1,
+        "incomplete": 2,
+        "terminated": 1,
+        "truncated": 1,
+        "incomplete_reason_counts": {"step_cap": 1, "decision_cap": 1},
+    }
+    assert result["source"] == data["source"]
+    assert result["collection"]["stop_reason"] == "decision_cap"
+    json.dumps(result, allow_nan=False)
+
+
+def test_installed_layout_does_not_claim_an_ancestor_repository_revision(monkeypatch, tmp_path):
+    imitation = _imitation()
+    outer = tmp_path / "unrelated-checkout"
+    installed = outer / ".venv" / "lib" / "python3.13" / "site-packages" / "colonist_rl"
+    installed.mkdir(parents=True)
+    subprocess.run(["git", "init", "-q", str(outer)], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(outer),
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.test",
+            "-c",
+            "commit.gpgsign=false",
+            "commit",
+            "--allow-empty",
+            "-qm",
+            "fixture",
+        ],
+        check=True,
+    )
+    monkeypatch.setattr(imitation, "__file__", str(installed / "imitation.py"))
+    assert imitation._source() == {"revision": None, "dirty": None}

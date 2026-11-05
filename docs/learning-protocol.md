@@ -192,7 +192,7 @@ The version-1 dataset has the following exact top-level fields:
 | `format`, `version` | `"colonist-rl.demonstrations"`, `1`. |
 | `backend_version`, `action_kinds` | The simulator backend version and complete ordered policy action vocabulary; incompatible values are rejected. |
 | `teacher` | `name="HeuristicPolicy"`, `seed_rule="board_seed + 100"`, `input="immutable Observation"`, `labels="legal action index"`. |
-| `source` | Actual collection checkout `revision` and boolean `dirty`, read from Git. Collection refuses a changed revision/dirty status at the end. Do not commit or edit the source during collection. A dirty flag does not preserve a source snapshot. |
+| `source` | Actual collection checkout `revision` and boolean `dirty`, read from Git when the package root is the repository root. If Git or checkout metadata is unavailable (including installed wheels/archives), both fields are `null`; mixed known/unknown fields are rejected. Collection refuses a changed provenance state at the end. Do not commit or edit the source during collection. A dirty flag does not preserve a source snapshot. |
 | `collection` | `baseline`, `max_decisions`, `max_game_steps`, `deadline`, `actual_board_seeds` in consumed order, `stop_reason`, `started_unix_seconds`, `elapsed_seconds`. `stop_reason` is `seeds_exhausted`, `decision_cap`, or `deadline`. |
 | `coverage` | `decisions`, `non_forced_decisions`, `phase_counts`, `action_kind_counts`; counts describe actual retained learner observations and chosen teacher kinds. |
 | `episodes` | Ordered episode records, including any empty episode whose step cap precedes its learner's first decision. |
@@ -241,6 +241,17 @@ successful updates and is `null` when there were none. The legacy
 learning_rate=3e-4)` lazily generates consecutive board seeds and uses the same
 collector and trainer. For compatibility its empty-supervision loss is `0.0`;
 its diagnostic `supervised_decisions=0` and `updates=0` identify that case.
+It also returns `source` and a primitive `episode_summary` containing `total`,
+`completed`, `incomplete`, `terminated`, `truncated`, and
+`incomplete_reason_counts`. These counts distinguish natural completion from
+step/decision/deadline interruptions, including earlier truncated episodes.
+Legacy warmstart works without Git; its unknown source is explicitly
+`{revision: null, dirty: null}`, never a clean revision. This adds an accepted
+unknown-provenance state within the existing version-1 dataset fields; existing
+Git-backed version-1 data remains readable. The strict experiment runner uses
+its separate source-identity check and still requires a clean committed checkout
+with exact `git:<revision>` identity before any computation. Unknown legacy
+provenance does not meet that experiment requirement.
 
 `imitation_metrics` replays whole ordered sequences from fresh episode memory
 in evaluation mode and without gradients. It restores every module's prior mode
