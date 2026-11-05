@@ -15,6 +15,11 @@ from torch.distributions import Categorical
 from .consequences import CONSEQUENCE_DIM, CONSEQUENCE_SCHEMA, consequence_features
 from .contracts import RESOURCES, Observation
 from .graph_inputs import NODE_DIM, graph_features
+from .trading_context import (
+    TRADING_CONTEXT_DIM,
+    TRADING_CONTEXT_SCHEMA,
+    trading_context_features,
+)
 
 KINDS = (
     "ROLL",
@@ -297,6 +302,98 @@ class ConsequenceGraphPolicy(GraphPolicy):
         return PolicyOutput(logits, base.value, base.memory)
 
 
+class _TradingResidualConsequencePolicy(ConsequenceGraphPolicy):
+    """Preserve the trained 34D reduction before adding a supported-only branch."""
+
+    def _output(self, view, nodes, offsets, hidden):
+        base = super()._output(view, nodes, offsets, hidden)
+        if not view.legal_actions:
+            return base
+        context = trading_context_features(view, device=self.device).to(
+            dtype=self.consequence.weight.dtype
+        )
+        residual = self._trading_residual(view, context)
+        supported = torch.tensor(
+            [
+                a.kind in ("MARITIME_TRADE", "ACCEPT_TRADE", "REJECT_TRADE", "END_TURN")
+                for a in view.legal_actions
+            ],
+            device=self.device,
+        )
+        logits = base.logits + torch.where(supported, residual, 0)
+        return PolicyOutput(logits, base.value, base.memory)
+
+
+class ContextLinearConsequencePolicy(_TradingResidualConsequencePolicy):
+    """Same-input linear control: the context term is common to supported choices."""
+
+    architecture_kind = "graph_consequence_context_linear_v1"
+
+    def __init__(self, hidden_size=64):
+        super().__init__(hidden_size, feature_set="hand_recipe")
+        self.context_linear = nn.Linear(TRADING_CONTEXT_DIM, 1, bias=False)
+        nn.init.zeros_(self.context_linear.weight)
+
+    def _trading_residual(self, view, context):
+        return self.context_linear(context).expand(len(view.legal_actions))
+
+
+class NonlinearConsequencePolicy(_TradingResidualConsequencePolicy):
+    """Zero-output nonlinear hand/context interaction, with a nonzero hidden map."""
+
+    architecture_kind = "graph_consequence_nonlinear_v1"
+
+    def __init__(self, hidden_size=64, *, residual_hidden_size=16):
+        if type(residual_hidden_size) is not int or residual_hidden_size != 16:
+            raise ValueError("residual_hidden_size must be the exact integer 16")
+        super().__init__(hidden_size, feature_set="hand_recipe")
+        self.residual_hidden_size = residual_hidden_size
+        self.residual = nn.Sequential(
+            nn.Linear(CONSEQUENCE_DIM + TRADING_CONTEXT_DIM, residual_hidden_size),
+            nn.Tanh(),
+            nn.Linear(residual_hidden_size, 1, bias=False),
+        )
+        nn.init.zeros_(self.residual[2].weight)
+
+    def _trading_residual(self, view, context):
+        features = torch.stack(
+            [
+                consequence_features(view, action, device=self.device)
+                for action in view.legal_actions
+            ]
+        ).to(dtype=self.consequence.weight.dtype)
+        features[:, 30:34] = 0
+        return self.residual(
+            torch.cat((features, context.expand(len(features), -1)), dim=1)
+        ).squeeze(1)
+
+
+def trading_residual_from_consequence(
+    policy: ConsequenceGraphPolicy, *, kind, seed=0
+) -> ContextLinearConsequencePolicy | NonlinearConsequencePolicy:
+    """Independently copy an exact hand-recipe parent without changing caller RNG."""
+    if type(policy) is not ConsequenceGraphPolicy or policy.feature_set != "hand_recipe":
+        raise ValueError("trading upgrade requires an exact hand_recipe consequence parent")
+    if kind not in ("context_linear", "nonlinear"):
+        raise ValueError("unsupported trading residual kind")
+    cls = ContextLinearConsequencePolicy if kind == "context_linear" else NonlinearConsequencePolicy
+    with torch.random.fork_rng(devices=[]):
+        # Construction is on CPU; seed only its generator, leaving accelerator RNG alone.
+        torch.random.default_generator.manual_seed(seed)
+        variant = cls(policy.hidden_size)
+    parameter = next(policy.parameters())
+    variant.to(device=parameter.device, dtype=parameter.dtype)
+    variant.load_state_dict({**variant.state_dict(), **policy.state_dict()}, strict=True)
+    parameters = dict(variant.named_parameters())
+    for name, old in policy.named_parameters():
+        parameters[name].requires_grad_(old.requires_grad)
+    old_modules = dict(policy.named_modules())
+    for name, module in variant.named_modules():
+        # Preserve mixed modes; newly added modules follow the overall parent mode.
+        module.training = old_modules[name].training if name in old_modules else policy.training
+    return variant
+
+
 def consequence_from_legacy(
     policy: GraphPolicy, *, feature_set="hand_recipe"
 ) -> ConsequenceGraphPolicy:
@@ -316,9 +413,20 @@ def consequence_from_legacy(
 
 
 def policy_architecture(policy: GraphPolicy) -> dict:
-    """The two explicit checkpoint identities; legacy metadata stays unchanged."""
+    """Explicit checkpoint identities; legacy metadata stays unchanged."""
     if type(policy) is GraphPolicy:
         return {"hidden_size": policy.hidden_size}
+    if type(policy) in (ContextLinearConsequencePolicy, NonlinearConsequencePolicy):
+        architecture = {
+            "kind": policy.architecture_kind,
+            "hidden_size": policy.hidden_size,
+            "feature_schema": CONSEQUENCE_SCHEMA,
+            "feature_set": policy.feature_set,
+            "context_schema": TRADING_CONTEXT_SCHEMA,
+        }
+        if type(policy) is NonlinearConsequencePolicy:
+            architecture["residual_hidden_size"] = policy.residual_hidden_size
+        return architecture
     if type(policy) is ConsequenceGraphPolicy:
         return {
             "kind": policy.architecture_kind,
@@ -339,6 +447,27 @@ def policy_from_architecture(architecture: dict) -> GraphPolicy:
         raise ValueError("invalid policy architecture")
     if set(architecture) == {"hidden_size"}:
         return GraphPolicy(architecture["hidden_size"])
+    if architecture.get("kind") in (
+        ContextLinearConsequencePolicy.architecture_kind,
+        NonlinearConsequencePolicy.architecture_kind,
+    ):
+        nonlinear = architecture["kind"] == NonlinearConsequencePolicy.architecture_kind
+        keys = {"kind", "hidden_size", "feature_schema", "feature_set", "context_schema"}
+        if nonlinear:
+            keys.add("residual_hidden_size")
+        if (
+            set(architecture) != keys
+            or architecture["feature_schema"] != CONSEQUENCE_SCHEMA
+            or architecture["feature_set"] != "hand_recipe"
+            or architecture["context_schema"] != TRADING_CONTEXT_SCHEMA
+        ):
+            raise ValueError("unsupported trading architecture or feature/context schema")
+        if nonlinear:
+            return NonlinearConsequencePolicy(
+                architecture["hidden_size"],
+                residual_hidden_size=architecture["residual_hidden_size"],
+            )
+        return ContextLinearConsequencePolicy(architecture["hidden_size"])
     if (
         set(architecture) != {"kind", "hidden_size", "feature_schema", "feature_set"}
         or architecture["kind"] != ConsequenceGraphPolicy.architecture_kind
