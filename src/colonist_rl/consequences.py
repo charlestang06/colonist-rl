@@ -6,6 +6,8 @@ The legal tuple establishes exchange feasibility, including an unknown bank.
 
 from __future__ import annotations
 
+from types import MappingProxyType
+
 import torch
 
 from .contracts import Action, Observation
@@ -18,6 +20,10 @@ _RECIPES = (
     (1, 1, 1, 1, 0),  # settlement
     (0, 0, 0, 2, 3),  # city
     (0, 0, 1, 1, 1),  # development (resource sufficiency only)
+)
+
+PUBLIC_BUILD_COSTS = MappingProxyType(
+    dict(zip(("BUILD_ROAD", "BUILD_SETTLEMENT", "BUILD_CITY", "BUY_DEVELOPMENT_CARD"), _RECIPES))
 )
 
 
@@ -42,7 +48,7 @@ def consequence_features(view: Observation, action: Action, *, device="cpu") -> 
     values[0] = 1
     values[1:6] = torch.tensor(hand, device=device) / 10
     sufficient = []
-    for index, recipe in enumerate(_RECIPES):
+    for index, recipe in enumerate(PUBLIC_BUILD_COSTS.values()):
         deficits = [max(0, cost - have) for cost, have in zip(recipe, hand)]
         values[6 + 5 * index : 11 + 5 * index] = torch.tensor(deficits, device=device) / 4
         sufficient.append(not any(deficits))
