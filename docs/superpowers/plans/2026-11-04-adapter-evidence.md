@@ -6,7 +6,7 @@
 
 **Architecture:** Two independent leaf modules consume existing shared contracts or normalized log evidence. No execution, policy, simulator, or ledger behavior changes. Each task has a fresh implementer and independent task review; the complete branch receives a final review.
 
-**Tech Stack:** Python 3.12+, dataclasses, pytest, Ruff, existing contracts and normalized log rows.
+**Tech Stack:** Python 3.11+, dataclasses, pytest, Ruff, existing contracts and normalized log rows.
 
 **Spec:** `docs/superpowers/specs/2026-11-04-adapter-evidence-design.md`
 
@@ -25,7 +25,9 @@
 
 **Ownership:** Create only `src/colonist_rl/adapters/colonist/ui.py`, `tests/test_colonist_ui.py`, `tests/fixtures/colonist-ui-stages.json`, `docs/colonist-ui.md`. Do not edit existing source/test files. Read the spec's UI evidence contracts and Global Constraints plus `docs/colonist-controls.md`, contracts, and current execution for context. No worker subagents.
 
-**Interfaces:** Consume `Action`, `Observation`, `TradeOffer`, `ResourceVector` and `PerceptionError`. Produce frozen `UIControl`, `UITradeResponse`, `UITradeRow`, `UIState`, `UIExecutionResult`; pure `validate_confirmation(state, action, *, expected_revision)`, `validate_trade_response(state, action, offer, *, row_id, expected_revision, player_id)`, `validate_trade_finalization(state, action, *, row_id, expected_revision, player_id)`, `validate_acknowledgement(before_ui, after_ui, before_observation, after_observation, action)`. Return exact validated control/row from the binding validators and a pending UIExecutionResult from acknowledgement. Spell out constructor field names/types in module/docstrings. No runtime dependency on execution.py or browser.py is needed.
+**Interfaces:** Consume `Action`, `Observation`, `TradeOffer`, `ResourceVector` and `PerceptionError`. Produce frozen `UIControl`, `UITradeResponse`, `UITradeRow`, `UIState`, `UIExecutionResult`; pure `validate_confirmation(state, action, *, expected_revision)`, `validate_trade_response(state, action, offer, *, row_id, expected_revision, player_id)`, `validate_trade_finalization(state, action, *, row_id, expected_revision, player_id)`, `validate_acknowledgement(before_ui, after_ui, before_observation, after_observation, action)`. Return the exact validated UIControl from the three binding validators and a pending UIExecutionResult from acknowledgement. Spell out constructor field names/types in module/docstrings. No runtime dependency on execution.py or browser.py is needed.
+
+**Finalization convention:** `Action('FINALIZE_TRADE', partner=chosen_partner, give=row.give, receive=row.receive, offer_id=row.offer_id)` is a browser UI evidence descriptor only, with proposer-perspective terms. Do not add it to policy kinds, Observation.legal_actions, simulator, codecs, or shared schemas. Incoming ACCEPT_TRADE/REJECT_TRADE stay canonical offer-ID-only Actions; supplied TradeOffer binds terms/proposer and UIControl.partner equals recipient.
 
 - [ ] Write failing tests using independent before/after fixtures for exact target confirmation; stale revision; changed action resource/target; current row with another offer ID; same offer ID with changed terms/proposer; wrong finalization partner; duplicate row identities; duplicate partner markers; accepted marker with unchanged hand; identical/lower UI revision; changed Observation/version rejection; and detached immutable sequence fields. Use complete Action equality, not kind-only comparisons.
 
