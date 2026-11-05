@@ -187,7 +187,8 @@ def test_all_forced_has_no_supervision_and_no_update():
     assert torch.equal(before, policy.weight)
 
 
-def test_recurrent_chunks_replay_current_weight_prefixes_and_reset_episodes():
+@pytest.mark.parametrize("phase_weight", [None, 0.25])
+def test_recurrent_chunks_replay_current_weight_prefixes_and_reset_episodes(phase_weight):
     imitation = _imitation()
     data = _sequence_dataset(imitation)
     second = deepcopy(data["episodes"][0])
@@ -209,7 +210,19 @@ def test_recurrent_chunks_replay_current_weight_prefixes_and_reset_episodes():
         for k, v in data["coverage"].items()
     }
     policy = StateSensitivePolicy()
-    result = imitation.fit_imitation(policy, data, epochs=2, sequence_length=2, learning_rate=0.02)
+    weights = (
+        None
+        if phase_weight is None
+        else {
+            s["observation"].context.kind: phase_weight
+            for e in data["episodes"]
+            for s in e["samples"]
+            if len(s["observation"].legal_actions) > 1
+        }
+    )
+    result = imitation.fit_imitation(
+        policy, data, epochs=2, sequence_length=2, learning_rate=0.02, phase_weights=weights
+    )
     assert result["updates"] == 8
     assert result["supervised_decisions"] == 4
     assert result["supervised_presentations"] == 8
@@ -477,3 +490,64 @@ def test_installed_layout_does_not_claim_an_ancestor_repository_revision(monkeyp
     )
     monkeypatch.setattr(imitation, "__file__", str(installed / "imitation.py"))
     assert imitation._source() == {"revision": None, "dirty": None}
+
+
+def test_phase_weights_change_single_phase_chunk_gradients_without_normalizing_away():
+    imitation = _imitation()
+    data = _sequence_dataset(imitation)
+    phase = data["episodes"][0]["samples"][1]["observation"].context.kind
+    # Capture pre-clipping gradients: Adam's first update is scale invariant.
+    gradients = []
+    losses = []
+    for weight in (1.0, 0.25):
+        policy = StateSensitivePolicy()
+        policy.weight.register_hook(lambda grad: gradients.append(grad.item()))
+        result = imitation.fit_imitation(
+            policy, data, epochs=1, sequence_length=4, phase_weights={phase: weight}
+        )
+        losses.append(result["loss"])
+        assert [call[0] for call in policy.calls] == [0, 1, 2, 3]
+        assert result["supervised_presentations"] == 2
+    assert gradients[1] == pytest.approx(gradients[0] * 0.25)
+    assert losses[1] == pytest.approx(losses[0] * 0.25)
+
+
+@pytest.mark.parametrize("weight", [0, -1, float("nan"), float("inf"), True, "1"])
+def test_invalid_phase_weights_fail_before_policy_forward(weight):
+    imitation = _imitation()
+    data = _sequence_dataset(imitation)
+    phase = data["episodes"][0]["samples"][1]["observation"].context.kind
+    policy = StateSensitivePolicy()
+    with pytest.raises(ValueError, match="phase_weights"):
+        imitation.fit_imitation(policy, data, phase_weights={phase: weight})
+    assert policy.calls == []
+
+
+def test_missing_phase_weights_fail_instead_of_dropping_supervision():
+    imitation = _imitation()
+    data = _sequence_dataset(imitation)
+    policy = StateSensitivePolicy()
+    with pytest.raises(ValueError, match="phase_weights"):
+        imitation.fit_imitation(policy, data, phase_weights={})
+    assert policy.calls == []
+    # No phase requires a weight when the dataset has no non-forced choices.
+    forced = _sequence_dataset(imitation, forced=True)
+    result = imitation.fit_imitation(policy, forced, phase_weights={})
+    assert result["updates"] == 0 and policy.calls == []
+
+
+def test_default_none_and_unit_phase_weights_preserve_uniform_training_exactly():
+    imitation = _imitation()
+    data = _sequence_dataset(imitation)
+    phase = data["episodes"][0]["samples"][1]["observation"].context.kind
+    policies = [StateSensitivePolicy() for _ in range(3)]
+    results = [
+        imitation.fit_imitation(policies[0], data, epochs=2, sequence_length=2),
+        imitation.fit_imitation(policies[1], data, epochs=2, sequence_length=2, phase_weights=None),
+        imitation.fit_imitation(
+            policies[2], data, epochs=2, sequence_length=2, phase_weights={phase: 1.0}
+        ),
+    ]
+    assert results[0] == results[1] == results[2]
+    assert all(torch.equal(policies[0].weight, p.weight) for p in policies[1:])
+    assert policies[0].calls == policies[1].calls == policies[2].calls

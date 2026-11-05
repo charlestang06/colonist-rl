@@ -14,6 +14,7 @@ import random
 import subprocess
 import time
 from collections import Counter
+from collections.abc import Mapping
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -469,13 +470,45 @@ def imitation_metrics(policy, dataset) -> dict:
 
 
 def fit_imitation(
-    policy, dataset, *, epochs=2, sequence_length=16, learning_rate=3e-4, deadline=None
+    policy,
+    dataset,
+    *,
+    epochs=2,
+    sequence_length=16,
+    learning_rate=3e-4,
+    deadline=None,
+    phase_weights=None,
 ) -> dict:
-    """Ordered truncated BPTT with fresh no-grad prefix replay before every update."""
+    """Ordered truncated BPTT with fresh no-grad prefix replay before every update.
+
+    Optional weights must cover every non-forced training phase. Weighted CE
+    sums are divided by choice count, never by the sum of chunk weights.
+    """
     _validate(dataset)
     _positive(epochs, "epochs")
     _positive(sequence_length, "sequence_length")
     _deadline(deadline)
+    if phase_weights is not None:
+        required = {
+            s["observation"].context.kind
+            for e in dataset["episodes"]
+            for s in e["samples"]
+            if len(s["observation"].legal_actions) > 1
+        }
+        if (
+            not isinstance(phase_weights, Mapping)
+            or not required.issubset(phase_weights)
+            or any(
+                not isinstance(k, str)
+                or type(v) not in (int, float)
+                or not math.isfinite(v)
+                or v <= 0
+                for k, v in phase_weights.items()
+            )
+        ):
+            raise ValueError(
+                "phase_weights must provide finite positive weights for every choice phase"
+            )
     if (
         type(learning_rate) not in (float, int)
         or not math.isfinite(learning_rate)
@@ -523,6 +556,11 @@ def fit_imitation(
                                 F.cross_entropy(
                                     output.logits.unsqueeze(0),
                                     output.logits.new_tensor([target], dtype=torch.long),
+                                )
+                                * (
+                                    1.0
+                                    if phase_weights is None
+                                    else phase_weights[view.context.kind]
                                 )
                             )
                     if expired or _expired(deadline):
