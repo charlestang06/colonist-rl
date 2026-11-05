@@ -10,9 +10,12 @@ import json
 import math
 import random
 import time
+from collections.abc import Mapping
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
+from types import MappingProxyType
+from uuid import uuid4
 
 import numpy as np
 import torch
@@ -54,10 +57,248 @@ class Transition:
     truncated: bool
     memory: torch.Tensor | None
     episode: int
+    episode_key: str | None = None
+    observation_index: int | None = None
+    step_start: int | None = None
+    step_end: int | None = None
 
     @property
     def old_logp(self):
         return self.log_probability
+
+
+# Identity of the unchanged simulator reward, not an actor feature or target recipe.
+_REWARD_IDENTITY = "terminal-win+0.2-vp-potential-v1"
+
+
+@dataclass(frozen=True)
+class EpisodeTrace:
+    """Immutable in-memory own-history snapshot; no engine or hidden opponent state.
+
+    Transitions share their immutable observations but omit stored memory tensors.
+    A final dropped action may have an observation without a committed interval.
+    Initial rewards precede the first learner decision and are never suffix targets.
+    Explicit run IDs are caller-owned unique collector namespaces.
+    """
+
+    episode_key: str
+    run_id: str
+    episode_index: int
+    board_seed: int
+    learner_seat: int
+    backend_version: str
+    reward_identity: str
+    began_at_reset: bool
+    history_complete: bool
+    observations: tuple[Observation, ...] = ()
+    transitions: tuple[Transition, ...] = ()
+    initial_reward: float = 0.0
+    initial_step_start: int = 0
+    initial_step_end: int = 0
+    final_version: int = 0
+    terminated: bool = False
+    truncated: bool = False
+    winner: int | None = None
+    finalized: bool = False
+    incomplete_reason: str | None = None
+    dropped_intervals: int = 0
+
+
+def _episode_key(run_id, index):
+    # Length-prefix the namespace so punctuation in caller IDs is unambiguous.
+    return f"{len(run_id)}:{run_id}:{index}"
+
+
+def _valid_run_id(run_id):
+    return (
+        isinstance(run_id, str)
+        and 0 < len(run_id) <= 256
+        and run_id == run_id.strip()
+        and all(c.isprintable() for c in run_id)
+    )
+
+
+def _finite_scalar(value):
+    return type(value) in (int, float) and math.isfinite(value)
+
+
+def _validate_trace(trace):
+    """Validate actor history and all committed reward intervals without forwarding."""
+    if (
+        not isinstance(trace, EpisodeTrace)
+        or not _valid_run_id(trace.run_id)
+        or type(trace.episode_index) is not int
+        or trace.episode_index < 0
+        or trace.episode_key != _episode_key(trace.run_id, trace.episode_index)
+        or type(trace.board_seed) is not int
+        or type(trace.learner_seat) is not int
+        or trace.learner_seat not in range(4)
+        or trace.backend_version != BACKEND_VERSION
+        or trace.reward_identity != _REWARD_IDENTITY
+        or trace.began_at_reset is not True
+        or trace.history_complete is not True
+        or not isinstance(trace.observations, tuple)
+        or not isinstance(trace.transitions, tuple)
+        or type(trace.dropped_intervals) is not int
+        or trace.dropped_intervals not in (0, 1)
+        or len(trace.observations) != len(trace.transitions) + trace.dropped_intervals
+        or type(trace.initial_step_start) is not int
+        or trace.initial_step_start != 0
+        or type(trace.initial_step_end) is not int
+        or trace.initial_step_end < 0
+        or type(trace.final_version) is not int
+        or trace.final_version < trace.initial_step_end
+        or not _finite_scalar(trace.initial_reward)
+        or any(type(v) is not bool for v in (trace.terminated, trace.truncated, trace.finalized))
+        or (trace.terminated and trace.truncated)
+        or (
+            trace.winner is not None
+            and (
+                type(trace.winner) is not int
+                or trace.winner not in range(4)
+                or not trace.terminated
+            )
+        )
+        or (
+            (trace.terminated or trace.truncated or trace.dropped_intervals) and not trace.finalized
+        )
+    ):
+        raise ValueError("invalid or incomplete episode trace provenance")
+    previous = -1
+    for observation in trace.observations:
+        if (
+            not isinstance(observation, Observation)
+            or observation.schema_version != 1
+            or observation.player_id != trace.learner_seat
+            or observation.context.actor != trace.learner_seat
+            or observation.board != trace.observations[0].board
+            or observation.rules != trace.observations[0].rules
+            or type(observation.context.version) is not int
+            or observation.context.version <= previous
+            or not isinstance(observation.legal_actions, tuple)
+            or not observation.legal_actions
+            or any(a.kind not in KINDS for a in observation.legal_actions)
+        ):
+            raise ValueError("invalid own public actor observation in episode prefix")
+        previous = observation.context.version
+    end = trace.initial_step_end
+    for ordinal, record in enumerate(trace.transitions):
+        if (
+            not isinstance(record, Transition)
+            or record.memory is not None
+            or record.episode_key != trace.episode_key
+            or record.episode != trace.episode_index
+            or type(record.observation_index) is not int
+            or record.observation_index != ordinal
+            or record.observation != trace.observations[ordinal]
+            or type(record.step_start) is not int
+            or record.step_start != end
+            or record.step_start != record.observation.context.version
+            or type(record.step_end) is not int
+            or record.step_end <= record.step_start
+            or type(record.action_index) is not int
+            or not 0 <= record.action_index < len(record.observation.legal_actions)
+            or any(
+                type(v) is not bool for v in (record.boundary, record.terminated, record.truncated)
+            )
+            or record.boundary != (record.terminated or record.truncated)
+            or (record.terminated and record.truncated)
+            or any(
+                not _finite_scalar(v)
+                for v in (record.reward, record.value, record.next_value, record.log_probability)
+            )
+            or (record.terminated and record.next_value != 0.0)
+            or (record.boundary and ordinal != len(trace.transitions) - 1)
+        ):
+            raise ValueError("crossed, gapped or invalid episode transition binding")
+        end = record.step_end
+    if trace.dropped_intervals:
+        if trace.observations[-1].context.version != end or trace.final_version <= end:
+            raise ValueError("invalid dropped interval coverage")
+    elif end != trace.final_version:
+        raise ValueError("noncontiguous episode interval coverage")
+    if trace.transitions:
+        last = trace.transitions[-1]
+        if not trace.dropped_intervals and (
+            last.terminated != trace.terminated or last.truncated != trace.truncated
+        ):
+            raise ValueError("episode outcome does not match its final transition")
+    return trace
+
+
+def resolved_returns(trace):
+    """Actual gamma=1 reward suffixes for a genuine complete terminal episode.
+
+    This sums observed interval rewards, excludes the separately retained initial
+    reward, and never infers rewards from winner/VP. Pending, censored, truncated,
+    unknown-outcome and incomplete traces remain available but are ineligible.
+    """
+    _validate_trace(trace)
+    if (
+        not trace.finalized
+        or not trace.terminated
+        or trace.truncated
+        or trace.winner is None
+        or trace.dropped_intervals
+        or trace.incomplete_reason is not None
+    ):
+        raise ValueError("resolved returns require a complete genuine terminal outcome")
+    suffixes = []
+    total = 0.0
+    for record in reversed(trace.transitions):
+        total += record.reward
+        suffixes.append(total)
+    return tuple(reversed(suffixes))
+
+
+def _validate_current_records(records, traces):
+    if not isinstance(traces, Mapping):
+        raise ValueError("required current history needs episode_traces")  # noqa: TRY004
+    validated, seen = {}, set()
+    previous_key, previous_ordinal = None, None
+    for record in records:
+        if not isinstance(record, Transition):
+            raise ValueError("invalid PPO transition")  # noqa: TRY004
+        key = record.episode_key
+        if not isinstance(key, str) or key not in traces:
+            raise ValueError("missing episode trace/prefix for PPO record")
+        if key not in validated:
+            trace = _validate_trace(traces[key])
+            if trace.episode_key != key:
+                raise ValueError("crossed episode trace mapping key")
+            validated[key] = trace
+        trace = validated[key]
+        ordinal = record.observation_index
+        if type(ordinal) is not int or not 0 <= ordinal < len(trace.transitions):
+            raise ValueError("missing or invalid PPO observation ordinal")
+        # Memory is a legacy approximation and deliberately not a provenance field.
+        if replace(record, memory=None) != trace.transitions[ordinal]:
+            raise ValueError("PPO record does not match its episode trace binding")
+        if key == previous_key:
+            if ordinal != previous_ordinal + 1:
+                raise ValueError("gapped or duplicate PPO episode ordinals")
+        elif key in seen:
+            raise ValueError("crossed PPO episode order")
+        seen.add(key)
+        previous_key, previous_ordinal = key, ordinal
+    return validated
+
+
+def _replay_prefix(policy, observations, deadline):
+    """Return detached current-weight memory, or False if replay hit the deadline."""
+    memory = None
+    step = getattr(policy, "recurrent_step", None)
+    with torch.no_grad():
+        for observation in observations:
+            if _expired(deadline):
+                return False, None
+            memory = (
+                step(observation, memory) if callable(step) else policy(observation, memory).memory
+            )
+            if _expired(deadline):
+                return False, None
+            memory = memory.detach()
+    return True, memory
 
 
 def advantages(rewards, values, next_values, boundaries, lam=0.95):
@@ -293,8 +534,18 @@ class RolloutCollector:
         opponent_lineup=None,
         board_seeds=None,
         deadline=None,
+        audited_history=False,
+        run_id=None,
     ):
         _validate_deadline(deadline)
+        if type(audited_history) is not bool:
+            raise ValueError("audited_history must be a boolean")
+        if run_id is not None and (not audited_history or not _valid_run_id(run_id)):
+            raise ValueError("run_id requires audited history and a nonempty printable namespace")
+        self.audited_history = audited_history
+        self.run_id = (run_id if run_id is not None else uuid4().hex) if audited_history else None
+        self._episode_traces = {}
+        self._trace = None
         if board_seeds is not None:
             from .evaluation import _seed_list
 
@@ -315,6 +566,40 @@ class RolloutCollector:
         self.memory = None
         self.env = self.driver = None
         self._new_episode(deadline=deadline)
+
+    @property
+    def episode_traces(self):
+        """Read-only snapshots, retained across calls and resets (not crash durable)."""
+        return MappingProxyType(dict(self._episode_traces))
+
+    def _update_trace(self, **changes):
+        if self.audited_history and self._trace is not None:
+            self._trace = replace(self._trace, **changes)
+            self._episode_traces[self._trace.episode_key] = self._trace
+
+    def _initial_progress(self, reward=0.0):
+        if self.audited_history and self._trace is not None and not self._trace.observations:
+            self._update_trace(
+                initial_reward=self._trace.initial_reward + reward,
+                initial_step_end=self.env.version,
+                final_version=self.env.version,
+            )
+
+    def _drop_interval(self, view):
+        self.dropped_partial_intervals += 1
+        self._interrupted = True
+        self.stop_reason = "deadline"
+        if self.audited_history:
+            self._update_trace(
+                observations=(*self._trace.observations, view),
+                final_version=self.env.version,
+                terminated=bool(self.env._terminated),
+                truncated=bool(self.env._truncated),
+                winner=self.env.winner,
+                finalized=True,
+                incomplete_reason="deadline_dropped_interval",
+                dropped_intervals=self._trace.dropped_intervals + 1,
+            )
 
     @property
     def opponent_lineup(self):
@@ -354,7 +639,24 @@ class RolloutCollector:
                 opponent_lineup=self.opponent_lineup,
             )
             self.memory = None
-            if self._advance_opponents(deadline=deadline) is None:
+            if self.audited_history:
+                self._trace = EpisodeTrace(
+                    _episode_key(self.run_id, index),
+                    self.run_id,
+                    index,
+                    board,
+                    self.learner,
+                    BACKEND_VERSION,
+                    _REWARD_IDENTITY,
+                    True,
+                    True,
+                    initial_step_start=self.env.version,
+                    initial_step_end=self.env.version,
+                    final_version=self.env.version,
+                )
+                self._episode_traces[self._trace.episode_key] = self._trace
+            if self._advance_opponents(deadline=deadline, initial=True) is None:
+                self._update_trace(incomplete_reason="deadline")
                 return False
             if not (self.env._terminated or self.env._truncated):
                 return True
@@ -369,18 +671,28 @@ class RolloutCollector:
         self.historical = tuple(deepcopy(p).eval().requires_grad_(False) for p in policies)
 
     def _finish_episode(self):
+        self._update_trace(
+            final_version=self.env.version,
+            terminated=bool(self.env._terminated),
+            truncated=bool(self.env._truncated),
+            winner=self.env.winner,
+            finalized=True,
+            incomplete_reason="truncation" if self.env._truncated else None,
+        )
         self.episodes += 1
         self.truncated += int(self.env._truncated)
         self.wins += int(self.env.winner == self.learner)
         self.total_offers += self.driver.offers
 
-    def _advance_opponents(self, *, deadline=None):
+    def _advance_opponents(self, *, deadline=None, initial=False):
         reward = 0.0
         while not (self.env._terminated or self.env._truncated):
             if _expired(deadline):
                 self.stop_reason = "deadline"
                 return None
             self.driver.maybe_offer(deadline=deadline)
+            if initial:
+                self._initial_progress()
             if _expired(deadline):
                 self.stop_reason = "deadline"
                 return None
@@ -392,6 +704,8 @@ class RolloutCollector:
                 return None
             result = self.driver.step(action)
             reward += result.rewards[self.learner]
+            if initial:
+                self._initial_progress(result.rewards[self.learner])
         return reward
 
     def collect(self, count, *, deadline=None):
@@ -402,6 +716,13 @@ class RolloutCollector:
             self.stop_reason = "deadline"
             return []
         self.stop_reason = None
+        if self.audited_history and self._trace is not None and not self._trace.finalized:
+            ready, memory = _replay_prefix(self.policy, self._trace.observations, deadline)
+            if not ready:
+                self.stop_reason = "deadline"
+                self._update_trace(incomplete_reason="deadline")
+                return []
+            self.memory = memory
         records = []
         for _ in range(count):
             if _expired(deadline):
@@ -416,7 +737,13 @@ class RolloutCollector:
                 if not self._new_episode(deadline=deadline):
                     break
             elif self.env.current_player != self.learner:
-                if self._advance_opponents(deadline=deadline) is None:
+                if (
+                    self._advance_opponents(
+                        deadline=deadline,
+                        initial=self.audited_history and not self._trace.observations,
+                    )
+                    is None
+                ):
                     break
                 if self.env._terminated or self.env._truncated:
                     self._finish_episode()
@@ -446,9 +773,7 @@ class RolloutCollector:
             intervening = self._advance_opponents(deadline=deadline)
             terminated, truncated = self.env._terminated, self.env._truncated
             if intervening is None or (not terminated and _expired(deadline)):
-                self.dropped_partial_intervals += 1
-                self._interrupted = True
-                self.stop_reason = "deadline"
+                self._drop_interval(view)
                 break
             reward = result.rewards[self.learner] + intervening
             if terminated:
@@ -456,9 +781,7 @@ class RolloutCollector:
             else:
                 next_view = self.env.observe(self.learner)
                 if _expired(deadline):
-                    self.dropped_partial_intervals += 1
-                    self._interrupted = True
-                    self.stop_reason = "deadline"
+                    self._drop_interval(view)
                     break
                 with torch.no_grad():
                     next_value = self.policy(next_view, self.memory).value.item()
@@ -475,24 +798,41 @@ class RolloutCollector:
                     truncated,
                     initial_memory,
                     self.episode_index,
+                    self._trace.episode_key if self.audited_history else None,
+                    len(self._trace.observations) if self.audited_history else None,
+                    view.context.version if self.audited_history else None,
+                    self.env.version if self.audited_history else None,
                 )
             )
+            if self.audited_history:
+                self._update_trace(
+                    observations=(*self._trace.observations, view),
+                    transitions=(*self._trace.transitions, replace(records[-1], memory=None)),
+                    final_version=self.env.version,
+                    incomplete_reason=None,
+                )
             if terminated or truncated:
                 self._finish_episode()
             if _expired(deadline):
                 self.stop_reason = "deadline"
                 break
+        if self.audited_history and self._trace is not None and not self._trace.finalized:
+            self._update_trace(incomplete_reason=self.stop_reason or "count_cutoff")
         return records
 
 
-def _sequences(records, length):
+def _sequences(records, length, *, stable_keys=False):
     chunks = []
     current = []
     for index, record in enumerate(records):
         if current and (
             len(current) >= length
             or records[current[-1]].boundary
-            or records[current[-1]].episode != record.episode
+            or (
+                records[current[-1]].episode_key != record.episode_key
+                if stable_keys
+                else records[current[-1]].episode != record.episode
+            )
         ):
             chunks.append(current)
             current = []
@@ -502,23 +842,50 @@ def _sequences(records, length):
     return chunks
 
 
-def ppo_update(policy, optimizer, records, config=None, *, deadline=None):
+def ppo_update(
+    policy,
+    optimizer,
+    records,
+    config=None,
+    *,
+    deadline=None,
+    episode_traces=None,
+    require_current_history=False,
+):
+    """PPO with legacy stored-state approximation or required current full history.
+
+    Opt-in validation precedes all optimizer mutation. Each gradient chunk replays
+    only its own complete earlier prefix under the current weights with no_grad.
+    Behavior log probabilities/values and nonterminal bootstraps keep their roles.
+    """
     _validate_deadline(deadline)
+    if type(require_current_history) is not bool:
+        raise ValueError("require_current_history must be a boolean")
     config = config or PPOConfig()
     if not records:
         raise ValueError("PPO update requires on-policy records")
     if config.sequence_length < 1 or config.epochs < 1:
         raise ValueError("sequence length and epochs must be positive")
+    traces = _validate_current_records(records, episode_traces) if require_current_history else None
+    boundaries = [
+        r.boundary
+        or (
+            require_current_history
+            and i + 1 < len(records)
+            and r.episode_key != records[i + 1].episode_key
+        )
+        for i, r in enumerate(records)
+    ]
     adv, returns = advantages(
         [r.reward for r in records],
         [r.value for r in records],
         [r.next_value for r in records],
-        [r.boundary for r in records],
+        boundaries,
         lam=config.lam,
     )
     if len(adv) > 1 and adv.std() > 1e-8:
         adv = (adv - adv.mean()) / (adv.std() + 1e-8)
-    chunks = _sequences(records, config.sequence_length)
+    chunks = _sequences(records, config.sequence_length, stable_keys=require_current_history)
     totals = {
         "loss": 0.0,
         "policy_loss": 0.0,
@@ -541,8 +908,18 @@ def ppo_update(policy, optimizer, records, config=None, *, deadline=None):
                 if _expired(deadline):
                     break
                 indices = chunks[chunk_id]
-                initial = records[indices[0]].memory
-                memory = initial.to(policy.device).detach() if initial is not None else None
+                first = records[indices[0]]
+                if require_current_history:
+                    ready, memory = _replay_prefix(
+                        policy,
+                        traces[first.episode_key].observations[: first.observation_index],
+                        deadline,
+                    )
+                    if not ready:
+                        break
+                else:
+                    initial = first.memory
+                    memory = initial.to(policy.device).detach() if initial is not None else None
                 losses = []
                 statistics = []
                 for i in indices:
