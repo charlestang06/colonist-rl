@@ -95,8 +95,7 @@ with PlaywrightSession(url="https://colonist.io/") as session:
     # refreshed = adapter.execute(current_observation, legal_action)
 ```
 
-No live browser was opened by this implementation worker. Unit tests use an
-injected fake Page to verify the real API call boundary, host/connection checks,
+Unit tests use an injected fake Page to verify the real API call boundary, host/connection checks,
 capture output, isolated/headed defaults, explicit profiles, and failure cleanup.
 A separate opt-in smoke test starts a loopback HTML fixture and actual Chromium:
 
@@ -106,3 +105,29 @@ COLONIST_RL_BROWSER_SMOKE=1 python -m pytest -q tests/test_browser.py -k optiona
 
 It skips when the package or Chromium executable is unavailable. The default
 test run skips this browser test, and the fixture test does not contact Colonist.
+
+## Verified Chromium execution
+
+On November 4, 2026, the real Chromium fixture test was enabled and executed:
+
+- Playwright 1.64.1; Chromium 156.0.8078.4.
+- Browser module: **19 passed**, no skips.
+- Full suite with Chromium enabled: **167 passed**, no skips.
+- Coordinate clicking, visible-text changes, PNG capture, and different
+  before/after screenshot hashes were verified on a loopback page.
+
+The installed Chromium runtime for this run is at
+`/private/tmp/colonist-rl-browsers`. The following command reproduces it in this
+local setup after installing the `browser` extra:
+
+```sh
+COLONIST_RL_BROWSER_SMOKE=1 PLAYWRIGHT_BROWSERS_PATH=/private/tmp/colonist-rl-browsers \
+  uv run --extra dev --extra browser pytest -q
+```
+
+For a durable standard installation, run `uv run --extra browser playwright
+install chromium` and omit `PLAYWRIGHT_BROWSERS_PATH`. Generated evidence is in
+`runs/browser-tests/`: before/after PNGs, visible-text sidecars, and
+`chromium-evidence.json`. This confirms the transport works with real Chromium;
+it does not establish a completed Colonist walkthrough. See
+[live walkthrough status](browser-walkthrough-status.md).

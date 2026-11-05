@@ -6,6 +6,9 @@ Verified on macOS with Python 3.13 and pinned Catanatron 3.2.1.
   explicitly opt-in real-Chromium fixture test; ordinary browser-boundary tests
   use injected pages. The core simulator/training tests run real Catan games.
 - `ruff check src tests`: passed.
+- Chromium-enabled run on November 4, 2026: **167 passed, no skips**, using
+  Playwright 1.64.1 and Chromium 156.0.8078.4 against a real loopback page.
+  Evidence is saved under `runs/browser-tests/`.
 - `ruff format --check src tests`: passed.
 - `uv build --offline`: source distribution and wheel built successfully.
 - CLI warm start, PPO parameter updates, checkpoint creation and resume verified.
