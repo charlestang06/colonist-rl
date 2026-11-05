@@ -19,7 +19,9 @@ def test_native_negotiation_phases_fail_at_the_observation_boundary(phase):
             operation()
 
 
-@pytest.mark.parametrize("kind", ["OFFER_TRADE", "ACCEPT_TRADE", "REJECT_TRADE", "CONFIRM_TRADE", "CANCEL_TRADE"])
+@pytest.mark.parametrize(
+    "kind", ["OFFER_TRADE", "ACCEPT_TRADE", "REJECT_TRADE", "CONFIRM_TRADE", "CANCEL_TRADE"]
+)
 def test_native_trade_payloads_are_never_collapsed_into_wrapper_actions(kind):
     env = FourPlayerGame()
     env.reset(seed=4)

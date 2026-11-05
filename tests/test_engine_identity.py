@@ -28,7 +28,9 @@ def test_real_installation_has_exact_identity_and_isolated_import_origin():
 
     from colonist_rl.simulator import BACKEND_VERSION
 
-    direct_url = json.loads(importlib.metadata.distribution("catanatron").read_text("direct_url.json"))
+    direct_url = json.loads(
+        importlib.metadata.distribution("catanatron").read_text("direct_url.json")
+    )
     provenance = engine.verify_engine_installation()
     assert provenance == {
         "distribution": "catanatron",
