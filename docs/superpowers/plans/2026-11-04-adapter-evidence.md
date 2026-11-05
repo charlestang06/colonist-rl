@@ -110,3 +110,28 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colon
 ```
 
 - [ ] Self-review the diff, commit only owned files, write full assigned report with tests/commands/results/commits/concerns and return the short status contract.
+
+### Task 3: Clarify documentation findings without changing runtime behavior
+
+**Ownership:** Modify only `docs/colonist-ui.md` and `docs/colonist-log-semantics.md`. No runtime, tests, fixtures, schema, policy or simulator edits. Root requested this small cleanup after both task reviews passed. No worker subagents.
+
+**Inputs:** `task-1-review.md` and `task-2-review.md` in this plan's SDD directory. Task 1 notes generic supplied-control equality could be overread as verified own-card sequence support. Task 2 notes a five-versus-four record count typo.
+
+- [ ] In `docs/colonist-ui.md`, replace the sentence `unsupported, incomplete, or stale confirmation bindings raise PerceptionError` in its surrounding paragraph with wording that says missing required descriptor fields or stale/mismatched bindings raise the error. Avoid suggesting the validator proves complete game-action legality.
+- [ ] Add the following explicit scope paragraph directly after the confirmation description, adjusting only prose wrapping:
+
+```text
+Confirmation validation checks exact equality of the caller-supplied descriptor
+and its control, plus the module's minimum field requirements. It does not prove
+that the descriptor represents a complete legal game action or that a live
+interaction sequence is supported. In particular, PLAY_YEAR_OF_PLENTY requires
+resource but does not require second_resource, and PLAY_ROAD_BUILDING has no
+required road targets in this check. These accepted evidence shapes do not
+certify either card's unverified own-card controls. A future executor must
+establish the complete legal action and verified card-specific sequence before
+issuing gestures.
+```
+
+- [ ] In `docs/colonist-log-semantics.md`, change `All five new record types are frozen:` to `All four new record types are frozen:`.
+- [ ] Verify the prose against the unchanged `_confirmation_action` implementation and four semantic record declarations. Run `git diff --check` and inspect the diff to prove only these two docs changed. No test suite is required for this documentation-only cleanup.
+- [ ] Commit only the two docs and write a concise report with exact edits, check command/result, commit and concerns to the assigned report path. The upcoming independent broad review verifies both resolutions. Return status/commit/checks/concerns only.
