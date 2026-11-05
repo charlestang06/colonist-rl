@@ -414,63 +414,19 @@ def ppo_update(policy, optimizer, records, config=None):
 
 
 def imitation_warmstart(policy, decisions=256, seed=0, epochs=2, learning_rate=3e-4):
-    """Fit observation-only heuristic choices before PPO; never PPO-label them."""
-    if decisions < 1 or epochs < 1:
-        raise ValueError("warm-start decisions and epochs must be positive")
-    examples = []
-    episode = 0
-    while len(examples) < decisions:
-        learner = episode % 4
-        env = FourPlayerGame()
-        env.reset(seed=seed + episode)
-        driver = _MatchDriver(env, learner, seed + episode)
-        teacher = HeuristicPolicy(seed=seed + episode + 100)
-        memory = None
-        while len(examples) < decisions and not (env._terminated or env._truncated):
-            driver.maybe_offer()
-            if env.current_player != learner:
-                driver.step(driver.opponent_action())
-                continue
-            view = driver.view
-            target = teacher.act(view)
-            initial = memory.detach().clone() if memory is not None else None
-            with torch.no_grad():
-                memory = policy(view, memory).memory.detach()
-            examples.append((view, view.legal_actions.index(target), initial, episode))
-            driver.step(target)
-        episode += 1
-    optimizer = torch.optim.Adam(policy.parameters(), lr=learning_rate)
-    loss_total = 0.0
-    updates = 0
-    prior_mode = policy.training
-    policy.train()
-    for _ in range(epochs):
-        start = 0
-        while start < len(examples):
-            stop = min(start + 16, len(examples))
-            while stop > start + 1 and examples[stop - 1][3] != examples[start][3]:
-                stop -= 1
-            memory = examples[start][2]
-            memory = memory.to(policy.device).detach() if memory is not None else None
-            losses = []
-            for view, target, _, _episode in examples[start:stop]:
-                output = policy(view, memory)
-                memory = output.memory
-                losses.append(
-                    torch.nn.functional.cross_entropy(
-                        output.logits.unsqueeze(0), torch.tensor([target], device=policy.device)
-                    )
-                )
-            loss = torch.stack(losses).mean()
-            optimizer.zero_grad(set_to_none=True)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(policy.parameters(), 0.5, error_if_nonfinite=True)
-            optimizer.step()
-            loss_total += loss.item()
-            updates += 1
-            start = stop
-    policy.train(prior_mode)
-    return {"loss": loss_total / updates, "decisions": len(examples), "epochs": epochs}
+    """Fit persisted-style observation-only labels with current-weight replay."""
+    from itertools import count
+
+    from .imitation import collect_demonstrations, fit_imitation
+
+    dataset = collect_demonstrations(board_seeds=count(seed), max_decisions=decisions)
+    result = fit_imitation(policy, dataset, epochs=epochs, learning_rate=learning_rate)
+    # The legacy callable promises a finite numeric loss, including forced-only
+    # tiny caps. Diagnostics explicitly distinguish zero supervised examples.
+    result["loss"] = result["loss"] if result["loss"] is not None else 0.0
+    result["coverage"] = dataset["coverage"]
+    result["collection"] = dataset["collection"]
+    return result
 
 
 def _wilson(wins, games):

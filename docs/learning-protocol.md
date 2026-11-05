@@ -139,3 +139,102 @@ aggregate and must not be used as strict benchmark estimates; raw `won` remains
 `null` for unresolved rows and resolved/unresolved counts remain explicit. Both
 public evaluators use one authoritative match loop, preserving CLI, checkpoint,
 and import signatures.
+
+## Persisted observation demonstrations and imitation
+
+Use `colonist_rl.imitation.collect_demonstrations` to collect teacher sequences,
+`save_demonstrations` / `load_demonstrations` for gzip JSON, `fit_imitation` to
+train, and `imitation_metrics` for validation. Collection accepts an ordered
+iterable of unique integer `board_seeds`, including a lazy iterator. Board index
+`i` uses learner seat `i % 4`; this collects one seat per board, unlike the
+four-seat evaluation protocol. The simulator receives `board_seed` (and the
+backend uses `board_seed + 1`), the observation-only `HeuristicPolicy` teacher
+uses `board_seed + 100`, and `_MatchDriver` uses `board_seed`. Default opponents
+are `mixed`; `heuristic` and `random` are also accepted.
+
+```python
+from colonist_rl.imitation import (
+    collect_demonstrations, save_demonstrations, load_demonstrations,
+    fit_imitation, imitation_metrics,
+)
+
+training_data = collect_demonstrations(
+    board_seeds=training_seeds, max_decisions=256, max_game_steps=20000,
+)
+sha256 = save_demonstrations("training-demonstrations.json.gz", training_data)
+training_data = load_demonstrations("training-demonstrations.json.gz")
+fit = fit_imitation(policy, training_data, epochs=2, sequence_length=16,
+                    learning_rate=3e-4)
+# Collect validation_data separately from disjoint validation_seeds.
+validation = imitation_metrics(policy, validation_data)
+```
+
+The version-1 dataset has the following exact top-level fields:
+
+| Field | Contents |
+| --- | --- |
+| `format`, `version` | `"colonist-rl.demonstrations"`, `1`. |
+| `backend_version`, `action_kinds` | The simulator backend version and complete ordered policy action vocabulary; incompatible values are rejected. |
+| `teacher` | `name="HeuristicPolicy"`, `seed_rule="board_seed + 100"`, `input="immutable Observation"`, `labels="legal action index"`. |
+| `source` | Actual collection checkout `revision` and boolean `dirty`, read from Git. Collection refuses a changed revision/dirty status at the end. Do not commit or edit the source during collection. A dirty flag does not preserve a source snapshot. |
+| `collection` | `baseline`, `max_decisions`, `max_game_steps`, `deadline`, `actual_board_seeds` in consumed order, `stop_reason`, `started_unix_seconds`, `elapsed_seconds`. `stop_reason` is `seeds_exhausted`, `decision_cap`, or `deadline`. |
+| `coverage` | `decisions`, `non_forced_decisions`, `phase_counts`, `action_kind_counts`; counts describe actual retained learner observations and chosen teacher kinds. |
+| `episodes` | Ordered episode records, including any empty episode whose step cap precedes its learner's first decision. |
+
+Each episode contains `board_seed`, `backend_seed`, `seat`, `teacher_seed`,
+`complete`, `terminated`, `truncated`, `incomplete_reason`, `steps`, and ordered
+`samples`. Each sample contains exactly `observation` and `action_index`; in
+memory observations are immutable `Observation` values, while persisted values
+use the existing versioned observation codec. There are no engine objects,
+recurrent tensors, rewards, private diagnostics, or return labels. Validation
+rejects extra sample fields, incompatible schemas, nonfinite JSON, inconsistent
+coverage/provenance, and indices outside the observation's legal action tuple.
+The saver writes atomically and returns SHA-256 of the exact compressed bytes;
+gzip headers are deterministic for an unchanged dataset.
+
+Collection keeps full ordered episodes until a cap intervenes. The global
+learner-decision cap is exact. The per-game version cap includes opponent moves
+and trade offers, and is checked after an offer before any additional action.
+A naturally terminated episode alone has `complete=true`, `terminated=true`,
+and no incomplete reason. Step-limited episodes have `truncated=true` and
+`incomplete_reason="step_cap"`; decision/deadline cutoffs use their corresponding
+reasons and remain incomplete. Such sequences may train imitation but cannot
+supply terminal-return evidence. A dataset with exhausted seeds may contain
+step-limited episodes; collection exhaustion does not assert terminal games.
+The optional finite absolute monotonic `deadline` is checked between actor
+calls, including opponent decisions; running calls are not preempted. Python,
+NumPy, and CPU Torch RNG states are restored after collection.
+
+`fit_imitation` trains only observations with more than one legal action.
+Forced observations still advance recurrent memory inside a supervised chunk
+and in every replayed prefix. Forced-only chunks produce no optimizer update.
+For every supervised chunk, the entire earlier episode prefix is recomputed
+under the **current parameters**, with no gradient, starting at `None`; that
+memory is detached before ordered chunk backpropagation. Memory resets at each
+episode boundary, and no hidden state is cached in the data. Prefix replay costs
+increase with episode length. Adam uses the requested learning rate; gradient
+norm is clipped to `0.5`. An expired deadline discards the unfinished chunk.
+Original module modes are restored after training.
+
+The fit result keeps `loss`, `decisions`, and `epochs` and adds
+`requested_epochs`, `updates`, `supervised_decisions`,
+`supervised_presentations`, `status`, and `incomplete_reason`. `epochs` counts
+fully completed passes; `loss` averages CE over non-forced presentations across
+successful updates and is `null` when there were none. The legacy
+`training.imitation_warmstart(policy, decisions=256, seed=0, epochs=2,
+learning_rate=3e-4)` lazily generates consecutive board seeds and uses the same
+collector and trainer. For compatibility its empty-supervision loss is `0.0`;
+its diagnostic `supervised_decisions=0` and `updates=0` identify that case.
+
+`imitation_metrics` replays whole ordered sequences from fresh episode memory
+in evaluation mode and without gradients. It restores every module's prior mode
+and Python, NumPy, and CPU Torch RNG states, and never updates parameters. The
+`all` and `non_forced` summaries each contain `count`, `correct`, `accuracy`, and
+`cross_entropy`; `by_phase` and `by_action_kind` provide the same two summaries
+per observed context kind / chosen teacher action kind. It also returns
+`coverage` and a descriptive `note`. Empty groups have zero count/correct and
+`null` accuracy/CE. In particular, an all-forced dataset has
+`non_forced.count=0`, `non_forced.accuracy=null`, and no supervised competence
+estimate. All outputs are finite or JSON `null`. Teacher agreement and tiny
+non-forced overfit checks measure supervised optimization only; playing
+competence requires the separate strict, uncensored match evaluation protocol.
