@@ -161,3 +161,18 @@ development-card/robber/discard sequences, bank and outgoing finalization,
 incoming rejection/editing, later acceptance
 completion/cancellation monitoring, automatic UI reading, stable live row IDs,
 arbitrary photographs, and ledger/history integration remain unsupported.
+
+## Recorded transport verification
+
+A separate actual Chromium smoke check used a synthetic localhost HTML fixture
+and the integrated Playwright transport at revision
+`0f865be7a81c62b8c4b6538fb2fb70b3dc94db74`. Its visible result was
+`completed=1 down=1 up=1 moves=10` after one ten-step drag. Root's verification
+archive under `runs/swarm-2026-11-04/verification/` contains
+`real_drag_smoke.py`, `real-drag-smoke.json`, and `real-drag-smoke.png`. The final
+independent adapter reviewer inspected these artifacts. This verifies the public
+transport against that local fixture; it does not verify a live Colonist game,
+automatic screenshot recognition, or an end-to-end staged reader/executor.
+
+Runtime checks used Python 3.13. Python 3.11 compatibility was checked at the
+syntax level; actual Python 3.11 execution is not claimed.
