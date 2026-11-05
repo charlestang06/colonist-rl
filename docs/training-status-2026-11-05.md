@@ -131,3 +131,56 @@ Raw evidence: [feature report](../runs/swarm-2026-11-04/feature-study/artifacts/
 [exact30 reference](../runs/swarm-2026-11-04/legacy-30-evaluation/results.json),
 [public strategy audit](../runs/swarm-2026-11-04/public-trade-audit/report.md), and
 [resource-prior research](resource-valuation-priors-2026-11-05.md).
+
+
+## Strict plain-greedy benchmark
+
+The frozen plain policy maximizes raw production in setup, buys legal cities then
+settlements then roads then development cards, uses fixed legal mandatory/card
+rules, rejects offers and never trades. No heuristic delegation or search.
+See [exact rules](greedy-no-trade.md).
+
+| Opponents,64 games per candidate | Plain greedy | Learned11 | Learned29 |
+|---|---|---|---|
+| Three fixed heuristics |2 wins /3.71875 VP|7 /5.453125|3 /4.8125|
+| Three plain greedy |16 /5.890625|42 /8.34375|32 /7.484375|
+
+Both learned FULL15 hand-recipe models outperform this plain reference in direct
+games. Paired board-bootstrap95% win differences are+40.625 points[28.125,53.125]
+and+25.0[9.375,40.625]; VP differences+2.453125[1.546875,3.34375] and
++1.59375[0.71875,2.515625]. Shared-heuristic win intervals touch/cross zero;
+VP differences are positive. This compares whole policies, not trading in isolation.
+
+All384 outcomes resolved:256new games plus128 exact verified reused outcomes,
+counted once. Sixteen boards are resampling units;10,000 bootstrap draws use
+seed20261105. Rules and checkpoints were fixed before outcomes. Greedy made zero
+bank trades,accepts or proposals across19,906 decisions with3,010 bank menus.
+Opponent-role adapter changes only return interface;all1,024 saved-view actions
+matched exactly. Runtime660.519/900s,peak227MiB. See
+[report](../runs/swarm-2026-11-04/greedy-benchmark/report.md).
+
+## First student-state attempt: incomplete acquisition
+
+Student collections missed4,000queries under120s caps:1,740 and1,240 versus4,000
+teacher queries each. Timings128.584/124.450s include bounded-operation overruns,
+not extended deadlines. Full raw histories and1130/758-choice prefixes remain.
+All four extra five-epoch fits and320 games finished, but planned equal-query
+study is PARTIAL and all pairs are suppressed. Raw teacher/student wins3/3 for
+seed11,2/1 for29 per64games. No DAgger benefit established. Byte-identical
+persistence optimization reduces conversions3→1/sample;128-sample save probe
+0.313→0.177s is not a full-collection speed claim.
+[Partial-run report](../runs/swarm-2026-11-04/dagger-study/report.md).
+
+## Current implementation and next gates
+
+Engine pinned3.3.0 at82aae93ab1f7c267218be0566df573ce477ec3d8. Exact provenance,
+ActionRecord/native mechanics and explicit legacy weights-only bridge reviewed.
+Old artifacts retain3.2.1 identity; new official-spiral games form a separate
+cohort. Verified isolated legacy runtime preserves ongoing old-engine work;
+main runtime transition has its own verification record.
+
+Actual100k training is held while state-conditioned nonlinear trading residuals
+are tested against matched linear heads on audited difficult TRAINING prefixes.
+No held-out gradients. Tied-best/pre-jitter targets are a separate ablation;
+teacher scores are imitation signals, not strategy truth. Greedy rules stay
+frozen. PPO and reward shaping remain separate.
