@@ -1,0 +1,31 @@
+{
+  "provenance": "synthetic",
+  "basis": "docs/colonist-controls.md",
+  "note": "Independent modeled snapshots, not recorded transitions or image recognition. All scenarios are executed by the test catalog.",
+  "scenarios": [
+    {"name":"setup-target-confirm-commit","frames":[{}, {"revision":11,"confirmation":true}, {"revision":12,"version":13,"placed":true}],"gestures":[["click",97,95],["click",150,160]],"status":"committed","captures":3},
+    {"name":"ordinary-direct-settlement","phase":"TURN","frames":[{}, {"revision":11,"version":13,"placed":true}],"gestures":[["click",97,95]],"status":"committed","captures":2},
+    {"name":"ordinary-direct-road","kind":"BUILD_ROAD","phase":"TURN","frames":[{}, {"revision":11,"version":13,"placed":true}],"gestures":[["click",97,94]],"status":"committed","captures":2},
+    {"name":"ordinary-direct-city","kind":"BUILD_CITY","phase":"TURN","frames":[{}, {"revision":11,"version":13,"placed":true}],"gestures":[["click",97,95]],"status":"committed","captures":2},
+    {"name":"existing-confirmation","frames":[{"confirmation":true}, {"revision":11,"version":13,"placed":true}],"gestures":[["click",150,160]],"status":"committed","captures":2},
+    {"name":"delayed-and-unstable","frames":[{}, {}, {"stable":false}, {"revision":11,"confirmation":true,"stable":false}, {"revision":11,"confirmation":true}, {"revision":12,"version":13,"placed":true}],"gestures":[["click",97,95],["click",150,160]],"status":"committed","captures":6,"waits":3},
+    {"name":"unchanged-timeout","max_captures":3,"frames":[{}, {}, {}],"gestures":[["click",97,95]],"status":"ambiguous","captures":3,"waits":1},
+    {"name":"no-capture-reserve","max_captures":1,"frames":[{}],"gestures":[],"status":"blocked","captures":1},
+    {"name":"no-confirmation-capture-reserve","max_captures":2,"frames":[{}, {"revision":11,"confirmation":true}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"wrong-target-confirmation","frames":[{}, {"revision":11,"confirmation":true,"target":5}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"same-version-board-change","frames":[{}, {"revision":11,"placed":true}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"revision-semantic-rewrite","frames":[{}, {"confirmation":true}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"backwards-ui","frames":[{}, {"revision":9}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"game-version-only","frames":[{}, {"revision":11,"version":13}],"gestures":[["click",97,95]],"status":"ambiguous","captures":2},
+    {"name":"vanished-confirmation","frames":[{"confirmation":true}, {"revision":11}],"gestures":[["click",150,160]],"status":"ambiguous","captures":2},
+    {"name":"incoming-willingness","incoming":true,"frames":[{}, {"revision":11,"marker":"willing"}],"gestures":[["click",200,210]],"status":"pending","captures":2},
+    {"name":"incoming-already-willing","incoming":true,"frames":[{"marker":"willing"}],"gestures":[],"status":"blocked","captures":1},
+    {"name":"incoming-already-rejected","incoming":true,"frames":[{"marker":"rejected"}],"gestures":[],"status":"blocked","captures":1},
+    {"name":"incoming-row-disappeared","incoming":true,"frames":[{}, {"revision":11,"no_row":true}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
+    {"name":"incoming-other-partner","incoming":true,"frames":[{}, {"revision":11,"marker":"willing","marker_player":2}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
+    {"name":"incoming-changed-hand","incoming":true,"frames":[{}, {"revision":11,"marker":"willing","hand":[2,2,2,2,2]}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
+    {"name":"incoming-simultaneous-exact-row","incoming":true,"frames":[{"other_row":true}, {"revision":11,"marker":"willing","other_row":true}],"gestures":[["click",200,210]],"status":"pending","captures":2},
+    {"name":"incoming-changed-terms","incoming":true,"frames":[{}, {"revision":11,"marker":"willing","row_give":[0,1,0,0,0]}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
+    {"name":"incoming-expired","incoming":true,"frames":[{}, {"revision":11,"phase":"TURN","no_offer":true}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2}
+  ]
+}

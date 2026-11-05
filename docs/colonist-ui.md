@@ -116,12 +116,13 @@ identifies stage contents illustrated by its referenced saved image. Those
 images are snapshots, not captured transitions. The catalog does not provide
 screenshot recognition, captured DOM row identities, or a live replay trace.
 
-A6/A7 capture/execution wiring remains unsupported: these records are not
-connected to the capture reader, browser transport, bounded waiting, gesture
-sequencing, or event history reconciliation. Control IDs and UI revisions must
-be supplied by a future evidence reader. Unsupported Year of Plenty/Road Building
-interaction sequences, incoming-offer edits, and unobserved forced decisions are
-not certified by these records.
+The separate [bounded staged executor](colonist-staged-execution.md) connects
+caller-supplied complete captures and located UI controls to limited placement
+and incoming-willingness paths, with bounded polling and review lockout. Control
+IDs and UI revisions still require an injected evidence reader. Automatic UI
+recognition, event history reconciliation, unsupported Year of Plenty/Road
+Building interaction sequences, incoming-offer edits, and unobserved forced
+decisions are not certified by these records.
 
 `BrowserAdapter.execute` in
 `src/colonist_rl/adapters/colonist/execution.py` remains the unchanged one-click
