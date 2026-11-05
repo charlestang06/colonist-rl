@@ -33,6 +33,18 @@ _SUPPORTED = (
 )
 
 
+def _storages_overlap(left, right):
+    # Independent NumPy/frombuffer wrappers can overlap with different bases.
+    left_storage, right_storage = left.untyped_storage(), right.untyped_storage()
+    return (
+        left.device == right.device
+        and left_storage.nbytes() > 0
+        and right_storage.nbytes() > 0
+        and left_storage.data_ptr() < right_storage.data_ptr() + right_storage.nbytes()
+        and right_storage.data_ptr() < left_storage.data_ptr() + left_storage.nbytes()
+    )
+
+
 def _validate_policy(policy):
     if type(policy) not in _SUPPORTED or type(policy.value) is not nn.Linear:
         raise ValueError(
@@ -46,14 +58,13 @@ def _validate_policy(policy):
         or policy.value.bias is None
     ):
         raise ValueError("warmup requires an independent scalar value head")
-    storage = {(p.device, p.untyped_storage().data_ptr()) for p in value}
     actor_tensors = [
         tensor
         for name, tensor in policy.named_parameters(remove_duplicate=False)
         if not name.startswith("value.")
     ] + list(policy.buffers())
-    if len(storage) != 2 or any(
-        (tensor.device, tensor.untyped_storage().data_ptr()) in storage for tensor in actor_tensors
+    if _storages_overlap(*value) or any(
+        _storages_overlap(parameter, tensor) for parameter in value for tensor in actor_tensors
     ):
         raise ValueError("value head must not share parameters or storage with actor/trunk/buffers")
     if torch.is_inference_mode_enabled():

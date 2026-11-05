@@ -662,3 +662,120 @@ def test_parameter_storage_alias_is_rejected_even_with_distinct_parameter_object
     assert policy.value.weight is not policy.action_in.bias
     with pytest.raises(ValueError, match="share"):
         api().warm_value_head(policy, mapping(trace()), epochs=1)
+
+
+def test_offset_numpy_value_weight_overlapping_actor_is_rejected_before_fitting():
+    policy = GraphPolicy(hidden_size=4)
+    backing = policy.node_in.weight.detach().numpy().reshape(-1)
+    policy.value.weight = torch.nn.Parameter(torch.from_numpy(backing[1:5]).reshape(1, 4))
+    before = snapshot(policy)
+    with pytest.raises(ValueError, match="share"):
+        api().warm_value_head(policy, mapping(trace()), epochs=1)
+    assert all(torch.equal(value, policy.state_dict()[name]) for name, value in before.items())
+
+
+@pytest.mark.parametrize("wrapper", ["numpy", "buffer"])
+@pytest.mark.parametrize("offset", [0, 1])
+@pytest.mark.parametrize("owner", ["actor", "buffer", "value"])
+def test_independent_wrappers_overlap_rejected_before_any_mutation(
+    monkeypatch, wrapper, offset, owner
+):
+    policy = GraphPolicy(hidden_size=4)
+    count = policy.node_in.weight.numel() if owner == "actor" else 4
+    if wrapper == "numpy":
+        backing = np.linspace(0.1, 0.2, count + offset, dtype=np.float32)
+        first = torch.from_numpy(backing[:count])
+        second = torch.from_numpy(backing[offset : offset + (4 if owner == "actor" else 1)])
+    else:
+        backing = bytearray((count + offset) * 4)
+        first = torch.frombuffer(backing, dtype=torch.float32, count=count)
+        second = torch.frombuffer(
+            backing, dtype=torch.float32, count=4 if owner == "actor" else 1, offset=offset * 4
+        )
+        first.fill_(0.1)
+    assert first.untyped_storage()._cdata != second.untyped_storage()._cdata
+    assert second.data_ptr() - first.data_ptr() == offset * 4
+    if owner == "actor":
+        policy.node_in.weight = torch.nn.Parameter(first.reshape_as(policy.node_in.weight))
+        policy.value.weight = torch.nn.Parameter(second.reshape(1, 4))
+    else:
+        policy.value.weight = torch.nn.Parameter(first.reshape(1, 4))
+        if owner == "buffer":
+            policy.register_buffer("audit", second)
+        else:
+            policy.value.bias = torch.nn.Parameter(second)
+    policy.gru.eval()
+    policy.value.eval()
+    policy.node_in.weight.requires_grad_(False)
+    for parameter in policy.parameters():
+        parameter.grad = torch.ones_like(parameter)
+    tensors = tuple(policy.parameters()) + tuple(policy.buffers())
+    versions = [tensor._version for tensor in tensors]
+    gradients = [(p.grad, p.grad.clone(), p.grad._version) for p in policy.parameters()]
+    flags = [p.requires_grad for p in policy.parameters()]
+    modes = [m.training for m in policy.modules()]
+    before, rng = snapshot(policy), rng_state()
+    monkeypatch.setattr(
+        torch.optim, "Adam", lambda *args, **kwargs: pytest.fail("preflight must precede Adam")
+    )
+    with pytest.raises(ValueError, match="share"):
+        api().warm_value_head(policy, mapping(trace()), epochs=1)
+    assert all(torch.equal(value, policy.state_dict()[name]) for name, value in before.items())
+    assert [tensor._version for tensor in tensors] == versions
+    assert [p.requires_grad for p in policy.parameters()] == flags
+    assert [m.training for m in policy.modules()] == modes
+    for parameter, (gradient, original, version) in zip(policy.parameters(), gradients):
+        assert parameter.grad is gradient
+        assert torch.equal(gradient, original)
+        assert gradient._version == version
+    assert_rng_equal(rng)
+
+
+@pytest.mark.parametrize("wrapper", ["numpy", "buffer"])
+def test_adjacent_disjoint_wrappers_and_empty_buffers_allow_value_fitting(wrapper):
+    policy = GraphPolicy(hidden_size=4)
+    count = policy.node_in.weight.numel()
+    if wrapper == "numpy":
+        backing = np.linspace(0.1, 0.2, count + 7, dtype=np.float32)
+
+        def wrap(start, length):
+            return torch.from_numpy(backing[start : start + length])
+
+    else:
+        backing = bytearray((count + 7) * 4)
+
+        def wrap(start, length):
+            return torch.frombuffer(backing, dtype=torch.float32, count=length, offset=start * 4)
+
+        wrap(0, count + 7).fill_(0.1)
+
+    policy.node_in.weight = torch.nn.Parameter(wrap(0, count).reshape_as(policy.node_in.weight))
+    policy.value.weight = torch.nn.Parameter(wrap(count, 4).reshape(1, 4))
+    policy.value.bias = torch.nn.Parameter(wrap(count + 4, 1))
+    policy.register_buffer("audit", wrap(count + 5, 2))
+    policy.register_buffer("empty", torch.empty(0))
+    before = snapshot(policy)
+    metrics, _ = api().warm_value_head(policy, mapping(trace()), epochs=1)
+    assert metrics["optimizer_steps"] == 1
+    assert not torch.equal(before["value.bias"], policy.value.bias)
+    assert all(
+        torch.equal(value, policy.state_dict()[name])
+        for name, value in before.items()
+        if not name.startswith("value.")
+    )
+
+
+@pytest.mark.parametrize("device", ["cpu", "cuda", "mps"])
+def test_value_fitting_and_storage_alias_preflight_on_supported_devices(device):
+    if device == "cuda" and not torch.cuda.is_available():
+        pytest.skip("CUDA unavailable")
+    if device == "mps" and not torch.backends.mps.is_available():
+        pytest.skip("MPS unavailable")
+    policy = GraphPolicy(hidden_size=4).to(device)
+    metrics, _ = api().warm_value_head(policy, mapping(trace()), epochs=1)
+    assert metrics["optimizer_steps"] == 1
+    policy.value.weight = torch.nn.Parameter(policy.action_in.bias[None, :])
+    before = snapshot(policy)
+    with pytest.raises(ValueError, match="share"):
+        api().warm_value_head(policy, mapping(trace()), epochs=1)
+    assert all(torch.equal(value, policy.state_dict()[name]) for name, value in before.items())
