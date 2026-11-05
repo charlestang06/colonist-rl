@@ -11,6 +11,7 @@ from copy import deepcopy
 import numpy as np
 import torch
 
+from .greedy_no_trade import GreedyNoTrade
 from .opponents import HeuristicPolicy, RandomPolicy
 from .simulator import FourPlayerGame
 from .training import _lineup, _MatchDriver, _wilson
@@ -89,11 +90,19 @@ def _evaluate_matches(
     historical_policies=(),
 ):
     """The authoritative evaluation match loop, also used by training.evaluate."""
-    if candidate not in ("heuristic", "random", "graph") or (
+    if candidate not in ("heuristic", "random", "graph", "greedy_no_trade") or (
         candidate == "graph" and policy is None
     ):
-        raise ValueError("candidate must be heuristic, random, or a supplied graph policy")
-    if baseline not in ("heuristic", "random", "mixed"):
+        raise ValueError(
+            "candidate must be heuristic, random, greedy_no_trade, or a supplied graph policy"
+        )
+    if (
+        candidate == "greedy_no_trade"
+        and policy is not None
+        and not isinstance(policy, GreedyNoTrade)
+    ):
+        raise ValueError("greedy_no_trade candidate requires no policy or a GreedyNoTrade actor")
+    if baseline not in ("heuristic", "random", "mixed", "greedy_no_trade"):
         raise ValueError("a known opponent baseline is required")
     if type(max_game_steps) is not int or max_game_steps < 1:
         raise ValueError("max_game_steps must be a positive integer")
@@ -111,9 +120,18 @@ def _evaluate_matches(
     historical = tuple(deepcopy(p).eval().requires_grad_(False) for p in historical_policies)
     if opponent_lineup is not None and "historical" in opponent_lineup and not historical:
         raise ValueError("historical lineup requires a frozen policy pool")
-    identity = "graph" if policy is not None else candidate
+    if baseline == "greedy_no_trade" and historical and opponent_lineup is None:
+        raise ValueError(
+            "greedy_no_trade with historical policies requires an explicit opponent_lineup"
+        )
+    greedy_candidate = isinstance(policy, GreedyNoTrade) or candidate == "greedy_no_trade"
+    identity = (
+        "greedy_no_trade" if greedy_candidate else "graph" if policy is not None else candidate
+    )
     action_mode = (
-        ("deterministic" if deterministic else "stochastic")
+        "deterministic_greedy_no_trade"
+        if greedy_candidate
+        else ("deterministic" if deterministic else "stochastic")
         if policy is not None
         else ("seeded_" + candidate)
     )
@@ -146,7 +164,9 @@ def _evaluate_matches(
             )
             actor = (
                 (
-                    HeuristicPolicy(board_seed + 31 + seat)
+                    GreedyNoTrade()
+                    if candidate == "greedy_no_trade"
+                    else HeuristicPolicy(board_seed + 31 + seat)
                     if candidate == "heuristic"
                     else RandomPolicy(board_seed + 31 + seat)
                 )
@@ -176,7 +196,11 @@ def _evaluate_matches(
                     break
                 if view.player_id == seat:
                     start = time.perf_counter()
-                    if reject_trades and view.context.kind == "TRADE_RESPONSE":
+                    if (
+                        reject_trades
+                        and not greedy_candidate
+                        and view.context.kind == "TRADE_RESPONSE"
+                    ):
                         action = next(a for a in view.legal_actions if a.kind == "REJECT_TRADE")
                         if policy is not None:
                             with torch.no_grad():
@@ -193,7 +217,7 @@ def _evaluate_matches(
                         if deadline is not None and time.monotonic() >= deadline:
                             expired = True
                             break
-                        action = actor.act(view)
+                        action = actor.select_action(view) if greedy_candidate else actor.act(view)
                     latency.append(time.perf_counter() - start)
                     decisions += 1
                     non_forced += int(len(view.legal_actions) > 1)
@@ -314,6 +338,22 @@ def _evaluate_matches(
         **_latency_summary(selected_latency),
         "candidate": identity,
         "action_mode": action_mode,
+        **({"candidate_identity": GreedyNoTrade().identity} if greedy_candidate else {}),
+        **(
+            {"baseline_identity": GreedyNoTrade().identity}
+            if baseline == "greedy_no_trade" and opponent_lineup is None
+            else {}
+        ),
+        **(
+            {
+                "opponent_lineup_identities": [
+                    GreedyNoTrade().identity if name == "greedy_no_trade" else None
+                    for name in opponent_lineup
+                ]
+            }
+            if opponent_lineup is not None and "greedy_no_trade" in opponent_lineup
+            else {}
+        ),
         "deterministic": deterministic,
         "baseline": baseline,
         "opponent_lineup": list(opponent_lineup) if opponent_lineup is not None else None,

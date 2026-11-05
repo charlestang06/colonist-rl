@@ -19,6 +19,7 @@ import torch
 from torch.distributions import Categorical
 
 from .contracts import Observation
+from .greedy_no_trade import GreedyNoTrade
 from .opponents import HeuristicPolicy, RandomPolicy
 from .policy import KINDS, GraphPolicy, policy_architecture, policy_from_architecture
 from .simulator import BACKEND_VERSION, FourPlayerGame
@@ -149,8 +150,12 @@ def _lineup(value):
     if value is None:
         return None
     value = tuple(value)
-    if len(value) != 3 or any(p not in ("random", "heuristic", "historical") for p in value):
-        raise ValueError("opponent_lineup requires three random/heuristic/historical entries")
+    if len(value) != 3 or any(
+        p not in ("random", "heuristic", "historical", "greedy_no_trade") for p in value
+    ):
+        raise ValueError(
+            "opponent_lineup requires three random/heuristic/historical/greedy_no_trade entries"
+        )
     return value
 
 
@@ -179,12 +184,18 @@ class _MatchDriver:
         lineup = _lineup(opponent_lineup)
         if lineup is not None and "historical" in lineup and not historical:
             raise ValueError("historical lineup requires a frozen policy pool")
+        if baseline == "greedy_no_trade" and historical and lineup is None:
+            raise ValueError(
+                "greedy_no_trade with historical policies requires an explicit opponent_lineup"
+            )
         for p in range(4):
             if p == learner:
                 continue
             kind = (
                 lineup[(p - learner - 1) % 4]
                 if lineup is not None
+                else "greedy_no_trade"
+                if baseline == "greedy_no_trade"
                 else "random"
                 if baseline == "random" or (baseline == "mixed" and p == (learner + 2) % 4)
                 else "heuristic"
@@ -192,6 +203,8 @@ class _MatchDriver:
             self.policies[p] = (
                 historical[seed % len(historical)]
                 if kind == "historical"
+                else GreedyNoTrade()
+                if kind == "greedy_no_trade"
                 else RandomPolicy(seed + p)
                 if kind == "random"
                 else HeuristicPolicy(seed + p)
@@ -241,6 +254,9 @@ class _MatchDriver:
         policy = self.policies[actor]
         if _expired(deadline):
             return None
+        if isinstance(policy, GreedyNoTrade):
+            action = policy.select_action(view)
+            return None if _expired(deadline) else action
         if isinstance(policy, GraphPolicy):
             action, memory = policy.act(view, self.memories.get(actor))
             if _expired(deadline):

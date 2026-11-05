@@ -44,7 +44,7 @@ profitable trades. These rules and ties must not be tuned after seeing results.
 A trading-disabled heuristic would be a separate diagnostic, with a different
 identity.
 
-## Existing evaluator integration
+## Opt-in evaluator integration
 
 `GreedyNoTrade` is a `torch.nn.Module` solely for the existing actor adapter.
 `select_action(view)` returns an `Action`; `act(view, memory=None, *,
@@ -52,36 +52,73 @@ deterministic=False)` always returns `(Action, None)`. Incoming memory and the
 sampling flag do not influence selection. The evaluator owns the game loop,
 resets memory per game, and restores module modes and external RNG state.
 
-After independent review, a bounded invocation can use the existing evaluator:
+The standard evaluation routes accept `candidate="greedy_no_trade"` and
+`baseline="greedy_no_trade"`. An explicit three-entry `opponent_lineup` may also
+contain `"greedy_no_trade"`, alongside `"random"`, `"heuristic"`, or `"historical"`.
+Entries map to the next, opposite, and previous seats relative to the candidate;
+an explicit lineup overrides the baseline panel. Historical entries still
+require a supplied frozen policy pool. The driver calls `select_action` for
+greedy opponents, so it passes an `Action` to the simulator, never an actor tuple.
+Pairing `baseline="greedy_no_trade"` with a historical pool requires an explicit
+lineup; otherwise evaluation rejects it before creating a game. A greedy baseline
+therefore cannot silently replace one of its three opponents with a historical
+actor. Legacy random/heuristic panels retain their historical-pool behavior.
+
+The default candidate and opponent panel remain heuristic. Choosing a greedy
+candidate does not change its opponents. For a bounded protocol smoke:
 
 ```python
 import time
 import torch
 
 from colonist_rl.evaluation import evaluate_blocks
-from colonist_rl.greedy_no_trade import GreedyNoTrade
 
 torch.set_num_threads(1)
-policy = GreedyNoTrade()
 result = evaluate_blocks(
-    policy,
     board_seeds=[72010000],  # Explicit panel; all four candidate seats per board.
-    candidate="graph",
+    candidate="greedy_no_trade",
     baseline="heuristic",  # Three fixed heuristic opponents.
     deterministic=True,
-    max_game_steps=20000,
+    max_game_steps=256,
     deadline=time.monotonic() + 30,
 )
-# Qualify the generic evaluator actor tag in the persisted run manifest.
-manifest = {"policy_identity": policy.identity, "result": result}
 ```
 
-Use the verified legacy Catanatron 3.2.1 runtime and record source/rule hashes,
-actual caps, per-game rows, and candidate action counts. Do not use the
-`reject_trades` compatibility route, which assumes a model forward. The baseline
-itself enforces the no-trade restriction. Opponents may still trade with each
-other and propose offers; candidate counts for `ACCEPT_TRADE` and
-`MARITIME_TRADE` must remain zero.
+A supplied `GreedyNoTrade()` still uses `act(view, memory, deterministic=...)`
+through the existing module interface. Both supplied and named greedy candidates
+report `candidate="greedy_no_trade"`,
+`action_mode="deterministic_greedy_no_trade"`, and
+`candidate_identity="plain-greedy-no-trade-v1"`, even when `deterministic=False`
+is requested. That flag remains recorded as requested. A conflicting supplied
+actor with `candidate="greedy_no_trade"` is rejected before creating a game.
+
+A greedy baseline panel adds `baseline_identity="plain-greedy-no-trade-v1"`.
+Explicit lineups containing greedy add `opponent_lineup_identities`, parallel to
+`opponent_lineup`, with the frozen identity for greedy entries and `None` for
+other entries. With an explicit lineup, that field describes the actual panel
+and `baseline_identity` is omitted. These extra fields are absent on existing
+routes that do not use greedy. The legacy `training.evaluate` game-count route
+also accepts the named candidate and baseline. Graph candidates retain their
+existing stochastic/deterministic interfaces and metadata.
+
+Both CLI commands accept the opt-in opponent baseline while retaining a
+heuristic candidate when no checkpoint is supplied:
+
+```sh
+colonist-rl simulate --baseline greedy_no_trade --games 1 --max-game-steps 32
+colonist-rl evaluate --baseline greedy_no_trade --games 1 --max-game-steps 32
+```
+
+The baseline itself enforces the no-trade restriction, including when the legacy
+`reject_trades` flag is set; greedy never needs a model forward. Opponents may
+still trade with each other and propose offers; candidate counts for
+`ACCEPT_TRADE` and `MARITIME_TRADE` must remain zero. Default curriculum stages,
+gates, rewards, teachers, and opponent panels are unchanged.
+
+The completed legacy Catanatron 3.2.1 benchmark and its artifacts remain frozen.
+New evaluation manifests must record their actual runtime, source/rule hashes,
+caps, per-game rows, and candidate action counts. Runtime changes do not
+reinterpret the historical result or make it comparable to a new run by default.
 
 The same opponent panel compares candidates against fixed heuristic opponents;
 it does not produce head-to-head games against this greedy agent. Keep

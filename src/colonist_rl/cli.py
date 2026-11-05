@@ -52,7 +52,9 @@ def parser():
         command = commands.add_parser(name, help="run seat-rotated held-out games")
         command.add_argument("--games", type=_positive, default=16)
         command.add_argument("--seed", type=int, default=100000)
-        command.add_argument("--baseline", choices=("random", "heuristic"), default="heuristic")
+        command.add_argument(
+            "--baseline", choices=("random", "heuristic", "greedy_no_trade"), default="heuristic"
+        )
         command.add_argument("--max-game-steps", type=_positive, default=20000)
         command.add_argument("--output", type=Path)
         if name == "evaluate":
