@@ -428,14 +428,17 @@ def _candidates(view: Observation, state: ProjectedTurn, shape: _Shape):
         if stock:
             for target in targets:
                 yield PlannedStep(kind, target)
-    for i in range(5):
-        for j in range(5):
-            if i != j:
-                yield PlannedStep(
-                    "MARITIME_TRADE",
-                    give=tuple(_ratio(view, state, i) if k == i else 0 for k in range(5)),
-                    receive=tuple(int(k == j) for k in range(5)),
-                )
+    maritime = [
+        PlannedStep(
+            "MARITIME_TRADE",
+            give=tuple(_ratio(view, state, i) if k == i else 0 for k in range(5)),
+            receive=tuple(int(k == j) for k in range(5)),
+        )
+        for i in range(5)
+        for j in range(5)
+        if i != j
+    ]
+    yield from sorted(maritime, key=_step_key)
 
 
 def _context_supported(view: Observation) -> bool:

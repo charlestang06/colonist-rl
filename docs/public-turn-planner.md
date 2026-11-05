@@ -81,8 +81,9 @@ exists. There is no policy wall-clock cutoff.
 Every supported root attempt (including rejected metadata and actual END), and
 every generated future attempt (including rejected/duplicate children) consumes
 one node. Root enumeration is city, settlement, road, maritime, END, canonical
-within each group. Future enumeration uses that build order then stable resource
-pairs. Every feasible prefix can stop without creating an END action. Children
+within each group. Future enumeration uses that build order, then maritime
+exchanges in the same canonical `_step_key` order used for roots and path ties.
+Every feasible prefix can stop without creating an END action. Children
 are deduplicated by complete projected state plus original root index. The best
 24 endpoints form the next beam; no widening or appealing-chain completion occurs
 past a budget.
@@ -178,6 +179,6 @@ under its external 15-second cap. No sample exceeded the predeclared external
 on all real states: the rich fixture already exhausts conservative geometry
 coverage. Later trials exceeding an external deadline must be runtime failures
 or censored games; never substitute a timed fallback or ordinary loss label.
-No coefficient/budget tuning followed these timings. A later test-driven fix
-made root END enumerate after trades under tiny node budgets; the measured
-complete-root/default-budget fixtures retain the same decisions and counters.
+No coefficient/budget tuning followed these timings. The table records the
+pre-review implementation. The later canonical future maritime ordering fix was
+not retimed, so this table is not a runtime check of the corrected candidate.

@@ -712,3 +712,67 @@ def test_poisoned_environment_properties_are_never_queried():
     observation = view()
     poisoned = PublicOnlyObservation(**vars(observation))
     assert p.plan_turn(poisoned) == p.plan_turn(observation)
+
+
+def test_future_maritime_group_uses_canonical_keys_after_prescribed_build_groups():
+    p = planner()
+    observation = replace(chain_view(), roads=(Road(0, 10), Road(1, 10)))
+    state, geometry = projection(observation)
+    candidates = list(p._candidates(observation, state, geometry.describe(state)))
+    assert [(step.kind, step.target) for step in candidates[:4]] == [
+        ("BUILD_CITY", 0),
+        ("BUILD_SETTLEMENT", 2),
+        ("BUILD_ROAD", 2),
+        ("BUILD_ROAD", 5),
+    ]
+    maritime = candidates[4:]
+    assert all(step.kind == "MARITIME_TRADE" for step in maritime)
+    pairs = [
+        (
+            next(i for i, count in enumerate(step.give) if count),
+            next(i for i, count in enumerate(step.receive) if count),
+        )
+        for step in maritime
+    ]
+    # Canonical tuple order: a later nonzero resource sorts before an earlier one.
+    assert pairs == [
+        (4, 3),
+        (4, 2),
+        (4, 1),
+        (4, 0),
+        (3, 4),
+        (3, 2),
+        (3, 1),
+        (3, 0),
+        (2, 4),
+        (2, 3),
+        (2, 1),
+        (2, 0),
+        (1, 4),
+        (1, 3),
+        (1, 2),
+        (1, 0),
+        (0, 4),
+        (0, 3),
+        (0, 2),
+        (0, 1),
+    ]
+
+
+def test_small_node_cap_scores_canonical_maritime_prefix_instead_of_resource_order():
+    p = planner()
+    observation = replace(
+        view(hand=(0, 4, 0, 2, 7), bank=(19, 15, 19, 17, 12)),
+        legal_actions=(Action("BUILD_CITY", 0), Action("END_TURN")),
+    )
+    # Two root attempts, two unaffordable road attempts, then four exchanges.
+    # Canonical ORE gives reach ORE->WOOD; ascending WOOD gives are all rejected.
+    plan = p.plan_turn(observation, p.TurnPlannerConfig(max_nodes=8))
+    assert plan.nodes == 8 and plan.search_stop == "node_limit"
+    assert plan.reason == "planned"
+    assert plan.first_action is observation.legal_actions[0]
+    assert plan.steps == (
+        p.PlannedStep("BUILD_CITY", 0),
+        p.PlannedStep("MARITIME_TRADE", give=(0, 0, 0, 0, 4), receive=(1, 0, 0, 0, 0)),
+    )
+    assert plan.score_after_micro > plan.score_before_micro + 250_000
