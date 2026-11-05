@@ -184,3 +184,28 @@ are tested against matched linear heads on audited difficult TRAINING prefixes.
 No held-out gradients. Tied-best/pre-jitter targets are a separate ablation;
 teacher scores are imitation signals, not strategy truth. Greedy rules stay
 frozen. PPO and reward shaping remain separate.
+
+
+## Reviewed integration checkpoint
+
+The source now pins Catanatron3.3.0 at commit
+`82aae93ab1f7c267218be0566df573ce477ec3d8`. Its backend identity includes
+the full Git revision. Legacy3.2.1 experiments keep their original identity and
+run in a preserved isolated runtime. New initial policies use an explicit
+weights-only bridge with zero updates and fresh optimizer/RNG state; default
+cross-engine checkpoint loading rejects the old identity. No new-engine
+playing-strength result is claimed.
+
+The integrated engine, persistence optimization, frozen GreedyNoTrade baseline,
+reserved final-board fix and component scaling infrastructure passed1,123tests
+with one optional browser test skipped. An installed wheel loaded both new
+untrained initializations, rejected implicit legacy loads, imported the scaling
+driver and produced32legal greedy decisions. Actual100k collection and PPO
+remain on hold while the smaller trading diagnostic is reviewed and run.
+
+That diagnostic uses512non-forced choices with311forced history observations
+from11real training episode prefixes. All selected prefixes belong to seed11,
+which that parent has already seen; seed29has not. Architecture comparisons
+must be within each initialization. Held-out observations contribute no
+gradients, and pre-jitter teacher scores remain imitation diagnostics rather
+than an independent statement of strategic quality.
