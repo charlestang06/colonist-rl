@@ -41,8 +41,10 @@ states with dataset aggregation; and progressively harder PPO opponents afterwar
 The current PPO reward is terminal winning plus victory-point potential shaping.
 Behavioral cloning does not use that reward. Reward changes require their own
 measured comparison. Curriculum code is implemented and task reviewed; no sustained PPO curriculum
-has run. The latest priority is controlled student-state labels, then scaling
-toward100,000 non-forced decisions; PPO waits for consistently useful imitation.
+has run. Earlier roadmapping prioritized student-state labels and100,000 non-forced
+decisions. The current priority is stronger public planning and controlled
+outcome-based PPO; near-perfect heuristic imitation is not a prerequisite.
+Further100k collection from the same teacher remains on hold.
 
 The [experiment archive](../runs/swarm-2026-11-04/README.md) links raw outcomes,
 checkpoints, datasets, traces, diagnostics, manifests and review records.
@@ -229,6 +231,44 @@ parents on the same512difficult training choices and311forced history steps.
 Exact scalar/batched initial outputs matched on all1,847training/held-out
 observations per initialization. Inherited Graph/value/recurrence are frozen;
 no held-out gradients or label changes occur. Common complete work is selected
-before comparative validation. The trial is running; no outcome or promotion
-claim is available at this checkpoint. Concurrent integration verification
+before comparative validation. The trial completed every primary100-epoch target. Its failed promotion gate
+and limitations are recorded below; no playing-strength claim follows. Concurrent integration verification
 overlapped its first arm, so observed wall times do not isolate architecture speed.
+
+
+## Completed trading diagnostic and revised strength priority
+
+All six arms completed100epochs:5,700updates and51,200choice presentations
+each. The common FULL100 checkpoint was selected before comparative validation.
+Training/scoring finished in715.79seconds, with final read-only auditing and
+sealing inside the original1,200-second cap. All protected source, runtime,
+input, optimizer-ownership and frozen-parameter checks passed. This entire
+experiment uses legacy3.2.1 and the previously used diagnostic held-out panel.
+
+| Initialization | Best linear held-out bank/END direction | Nonlinear direction | Best linear exact hard labels | Nonlinear exact hard labels |
+|---|---:|---:|---:|---:|
+|11|135/182|124/182|55/106|48/106|
+|29|132/182|124/182|50/106|46/106|
+
+Nonlinear training bank/END cross entropy (82choices) improved15.51%/13.38%,
+and held-out teacher-score regret decreased, while held-out cross entropy and
+directional agreement worsened. The predeclared conjunction failed in both
+initializations. No larger fit or game result was substituted for that gate.
+The unchanged, independently frozen11-case rubric judged all six arms identically:
+nine defensible choices, two ambiguous choices and no clearly bad selections,
+with no direct-road passes in four opportunity cases. These are selected training
+cases, not representative strategic or generalization evidence.
+
+[Full results](../runs/swarm-2026-11-04/trading-smallfit/report.md) preserve every
+milestone, Adam state, gradient/feature audit, score and source binding.
+[Independent public-case audit](../runs/swarm-2026-11-04/trading-smallfit-case-audit/comparative-report.md)
+retains its rubric from before any arm outputs.
+
+The [updated strength roadmap](strength-roadmap-2026-11-05.md) prioritizes bounded
+public turn planning and controlled PPO from unchanged FULL15 BC parents.
+A read-only PPO audit found two current-history gaps: collector memory survives
+actor updates, and PPO chunks start from stored behavior-weight memory.
+An opt-in path with exact current-weight prefixes and complete episode/outcome
+records is now being implemented before critic warmup and controlled PPO.
+No sustained PPO experiment has started. Rewards remain unchanged; trading or
+road frequency will not be rewarded directly.
