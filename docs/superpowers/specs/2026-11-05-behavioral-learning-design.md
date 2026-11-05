@@ -236,3 +236,20 @@ Root declares a fresh explicit time/decision/presentation budget and integration
 reserve before actual computation. This design does not extend any prior horizon.
 Per-arm equal-work targets and equal wall ceilings are both recorded; interrupted
 unequal arms remain incomplete rather than supporting a controlled comparison.
+
+
+## Accepted execution narrowing after code gates
+
+Root relayed explicit user priority for actual BC/DAgger comparisons over general
+infrastructure and approved the learning lead's narrowing. Task 4 now supplies
+one student-state versus teacher-state acquisition driver and pure full-history
+prefix selector. Existing root-owned expanded BC and hand-recipe controls are
+consumed by digest, not retrained. Multi-stage convenience modes are deferred;
+all privacy/provenance/disjointness/strict-evidence requirements remain binding.
+The hand-recipe run separately declared 1,200 seconds per seed versus historical
+control840: equal optimization work does not mean equal compute ceilings. Its
+completion-only endpoint30 then25/20/15/10/5 was declared before feature fitting.
+The next acquisition uses4,000 queries per arm/seed and frozen completed legacy
+epoch30 starts. Root declares new fit/time caps before actual work. Match retained
+new non-forced labels by deterministic complete-history prefixes; disclose unequal
+chunk/update/forced-prefix costs. No old horizon or run budget is reset.

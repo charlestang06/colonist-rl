@@ -287,11 +287,20 @@ assert saved_behavior_index != saved_teacher_index
   Validate a tiny actual two-episode smoke and all focused privacy/RNG/legacy
   tests. Ruff, commit, independent review.
 
-### Task 4: Controlled cloning/feature/DAgger runner and curriculum handoff
+### Task 4: Minimal audited student-state acquisition comparison
+
+**Scope ruling:** Root relayed user priority for actual BC/DAgger over general
+infrastructure. Expanded BC and hand-recipe controls are already root-owned;
+consume exact artifacts, never rerun their fitting. This narrowed task supersedes
+the former general multi-stage runner, preserving its provenance, independent
+state, deadline, exact-matrix and strict evaluation requirements. Read accepted
+`docs/behavioral-execution-protocol.md`; its current-rulings header overrides
+historical recommendations. No new empirical study during implementation.
 
 **Files:** Create `src/colonist_rl/behavioral_study.py`,
-`tests/test_behavioral_study.py`, `docs/behavioral-study.md`. No new CLI is needed;
-use documented Python API. Do not change curriculum gates or rewards.
+`tests/test_behavioral_study.py`, `docs/behavioral-study.md`. Consume accepted
+teacher/student collection, corpus, fitter, checkpoint and evaluator APIs.
+Do not change those modules, simulator, CLI, rewards, gates or roadmap.
 
 **Interfaces:**
 
@@ -299,57 +308,81 @@ use documented Python API. Do not change curriculum gates or rewards.
 def run_behavioral_study(output_dir, *, initial_checkpoints: dict[int, str],
                          training_components: dict[int, tuple[str, ...]],
                          protocol: dict) -> dict: ...
+def select_choice_prefix(episodes: tuple[EpisodeSequence, ...], *, choices: int
+                        ) -> tuple[tuple[EpisodeSequence, ...], dict]: ...
 ```
 
-`protocol` is an exact validated JSON object with `version=1`, `stage` in
-`baseline_bc|consequence|student_labels`, explicit partition lists, source and
-teacher identities, seeds, per-arm epochs/presentations/wall ceilings, sequence
-length, batch size, learning rate, weighting recipe, feature_set, label-query budget, student
-behavior mode and absolute deadline. Unknown fields/stages and mismatched seed
-keys fail before compute. No run silently chooses a different stage or budget.
-Results preserve requested/actual work, source/input checks, metrics, per-game
-journals, checkpoints, comparison eligibility and failures. Save optimizer state
-through shared checkpoint helpers when the caller owns the fitter optimizer.
+The pure selector accepts positive exact-integer `choices`, rejects insufficient
+choices/illegal targets, and retains complete earlier episode histories plus the
+final episode prefix through the requested non-forced choice. Forced observations
+before cutoff remain. Its manifest records ordered retained endpoints, all/forced/
+choice counts, actual boards and unused suffix counts/locations. The driver adds
+component digest/source and derivation identity. Never modify raw flags or bytes,
+splice isolated choices, or forge a merged v1 collection.
 
-- [ ] RED fail-closed protocol tests for absent arms/seeds, unequal starts, split
-  leakage, final-panel consumption, source drift, partial fits, mismatched legal
-  architecture and missing evaluation variants. Do not let a fake subset of the
-  expected evidence matrix satisfy completion, as in the earlier Task 3 defect.
-- [ ] Implement stages by consuming existing APIs. `baseline_bc` expands fitting
-  of the unchanged architecture with the accepted recipe; `consequence` starts
-  legacy and additive variants from identical base weights on identical data;
-  declare `feature_set` explicitly and first isolate `hand_recipe`. A later
-  connectivity comparison keeps base/recipe weights identical and zeroes only
-  the four newly enabled coefficients. It is a separately budgeted stage.
-  `student_labels` freezes one architecture and compares equal-query teacher-state
-  versus student-state acquisition while retaining the same original components
-  and fitting budgets. Both seeds get independent optimizer/RNG state. Do not
-  combine feature and DAgger changes in the same causal comparison.
-- [ ] Make every real stage require a clean fixed source and manifest before
-  compute; retain all inputs by digest. Validate unweighted held-out label metrics
-  without gradients. Evaluate 16 fixed boards × four seats per main arm/seed with
-  existing authoritative `evaluate_blocks` and per-game persistence, plus the
-  heuristic reference. Reject censored/mismatched comparisons with existing
-  `paired_block_summary`. Keep partial artifacts rather than restart automatically.
-- [ ] Produce a checkpoint handoff manifest for existing `run_curriculum`:
+The exact JSON protocol keys are: `version` (1), `stage` (`student_labels` only),
+`seeds` (unique integer list), `source_revision` (expected clean Git HEAD),
+`partitions` (Task 3 exact five-key disjoint lists), `acquisition_boards`
+(string seed -> exact `teacher_state`/`student_state` ordered integer lists),
+`input_digests` (absolute input path -> SHA-256), `consumed_evidence` (ordered
+artifact paths), `validation_labels_path`, `query_budget`, `max_game_steps`,
+`baseline` (`heuristic`), `deterministic` (bool student behavior), `epochs`,
+`segment_epochs`, `sequence_length`, `batch_size`, `learning_rate`, `weighting`
+(`original_phase_balanced`), `collection_seconds`, `fit_seconds`,
+`evaluation_seconds`, and `deadline` (finite absolute monotonic time).
+Reject extra/missing keys, bool-as-number and mismatched seed/arm keys before
+compute; budgets/counts and learning rate are positive finite values as appropriate.
+No implicit budget/stage changes or retries. Actual planned acquisition uses
+seeds 11/29, 4,000 all-decision queries per arm/seed, the same completed legacy
+30-epoch starting checkpoint in each pair, sequence length 16, batch size 1,
+and the fixed 16-board validation panel. Root separately declares fit/time caps.
+Tests may use tiny fixtures and smaller declared counts.
 
-```python
-config = CurriculumConfig(validation_board_seeds=tuple(protocol["validation_games"]),
-                          deadline=declared_deadline,
-                          compute_seconds=declared_compute_seconds,
-                          wall_seconds=declared_wall_seconds)
-# A later empirical task invokes the reviewed API; no duplicated PPO loop here.
-run_curriculum(output_dir, initial_checkpoints=selected_paths, config=config)
-```
-
-  Record the chosen BC checkpoint/digest and frozen reference beside it. The old
-  four-board curriculum experiment is historical; its scores do not become
-  evidence on the new 16-board panel. Gate/selection behavior stays owned by the
-  existing curriculum implementation.
-- [ ] GREEN runner tests using bounded injected operations plus one minimal
-  integration smoke; assert no default final-test execution, independent arm state,
-  exact input preservation and installed package imports. Run combined suite,
-  Ruff/format, wheel contents/import checks, commit and independent broad review.
+- [ ] RED prefix tests: forced history, cutoff inside episode, exact counts,
+  unused suffixes, insufficient choices, legal labels, independent episodes and
+  unchanged raw component bytes/provenance/flags.
+- [ ] Fail closed on missing/extra seed/arm evidence, non-legacy or mismatched
+  starts, changed/missing/digest-unlisted inputs, dirty/drifting source,
+  acquisition-board reuse, nontraining boards, held-out/final leakage, zero
+  supervision and uncovered phase weights. No subset completion salvage.
+- [ ] Persist source/input/config manifest before collection. Load one verified
+  starting legacy checkpoint per seed for both arms; independent models and fresh
+  Adam optimizers receive identical starting weights. Original components/order
+  remain identical. Derive one balanced phase-weight mapping from only original
+  non-forced training counts per seed and freeze it for both arms.
+- [ ] Collect teacher_state with collect_demonstrations and student_state with
+  collect_student_labels using disjoint declared boards, equal all-decision query
+  caps and equal collection ceilings. Use accepted checkpoint identity
+  `{path, sha256, architecture}`. Record queries, paired labels, executed choices
+  and unmatched teacher calls. Save raw components and student per-episode
+  progress through accepted progress_path; retain all interrupted histories.
+  Do not duplicate driver/rules/proposals or invent a legacy teacher callback.
+- [ ] Before any fitting, set Q_s to min(new non-forced counts) per seed and
+  select deterministic full-history prefixes through Q_s in both arms. Missing
+  query caps make the planned comparison partial, not complete. Fit identical
+  original corpora plus each selected new prefix via fit_sequences/current-weight
+  recurrence. Keep one independent caller Adam across segments per arm; save
+  weights/optimizer/work after every segment, including an honest partial last
+  segment. Score unweighted held-out metrics without gradients.
+- [ ] Precompute presentations and non-forced-containing chunk updates for the
+  selected histories/schedule, then record actual epochs, updates, presentations,
+  prefix forwards and seconds. Equal queries/new choices do not imply equal
+  update counts, weighted loss mass, forced-prefix work or runtime. State this
+  limitation; no equal-compute or pure state-distribution causal claim.
+- [ ] Evaluate exact teacher_state/student_state × seed matrix plus one heuristic
+  reference on the full declared board/seat panel through evaluate_blocks and
+  its authoritative per-game callback; persist every returned game atomically.
+  Use paired_block_summary; missing/censored/unequal panels suppress comparisons.
+  Preserve partial/failure artifacts, verify final source/input hashes, never
+  execute final boards by default. Emit checkpoint/digest and frozen starting
+  reference handoff data for existing curriculum only; no PPO invocation or new
+  selection/reward/gates. Imported baseline/feature controls are never fitted.
+- [ ] Meaningful RED/GREEN injected-operation tests cover counters, independent
+  optimizer state, expiry/exception recovery and missing evidence. One tiny real
+  integration smoke is capped at 30 seconds with honest partial status. Full
+  suite once; Ruff/format, installed-package import smoke, local commit/report
+  and independent task review. No generic study DSL, registry, scheduler,
+  auto-resume, feature retraining or sustained empirical run.
 
 ### Task 5: Actual training, complete-game benchmarks and decision audit
 
