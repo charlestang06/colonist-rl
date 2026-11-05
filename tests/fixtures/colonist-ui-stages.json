@@ -1,0 +1,170 @@
+{
+  "provenance": "synthetic",
+  "note": "Replay descriptions modeled from controls notes or image contents; images are snapshots, not captured transitions. No screenshot recognition.",
+  "scenarios": [
+    {
+      "name": "setup-preview-has-no-confirmation",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/01-setup-complete.jpg"],
+      "action": {"kind": "BUILD_SETTLEMENT", "target": 4},
+      "before": {"revision": 7, "phase": "SETUP_SETTLEMENT", "selected_action": null},
+      "after": {"revision": 8, "phase": "SETUP_SETTLEMENT", "selected_action": {"kind": "BUILD_SETTLEMENT", "target": 4}},
+      "binding": "confirmation",
+      "valid": false
+    },
+    {
+      "name": "setup-confirmation-exact-target",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/01-setup-complete.jpg"],
+      "action": {"kind": "BUILD_SETTLEMENT", "target": 4},
+      "before": {"revision": 7, "phase": "SETUP_SETTLEMENT", "selected_action": null},
+      "after": {"revision": 8, "phase": "SETUP_SETTLEMENT", "selected_action": {"kind": "BUILD_SETTLEMENT", "target": 4}, "confirmation": {"control_id": "floating-house", "revision": 8, "action": {"kind": "BUILD_SETTLEMENT", "target": 4}, "gesture": "click"}},
+      "binding": "confirmation",
+      "valid": true
+    },
+    {
+      "name": "tooltip-focus-is-not-build-confirmation",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/08-settlement-vp.jpg"],
+      "action": {"kind": "BUILD_SETTLEMENT", "target": 4},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": null, "focused_control": "settlement-tool", "dialog_stage": "tooltip"},
+      "binding": "confirmation",
+      "valid": false
+    },
+    {
+      "name": "failed-unfocused-knight-drag",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/06-knight-confirmation.jpg"],
+      "action": {"kind": "PLAY_KNIGHT_CARD"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "after": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "binding": "acknowledgement",
+      "valid": false
+    },
+    {
+      "name": "knight-card-confirmation",
+      "basis": "observed_image",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/06-knight-confirmation.jpg"],
+      "action": {"kind": "PLAY_KNIGHT_CARD"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null, "focused_control": "knight-card"},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": {"kind": "PLAY_KNIGHT_CARD"}, "dialog_stage": "card_confirmation", "confirmation": {"control_id": "knight-check", "revision": 8, "action": {"kind": "PLAY_KNIGHT_CARD"}, "gesture": "click"}},
+      "binding": "confirmation",
+      "valid": true
+    },
+    {
+      "name": "robber-target-confirmation",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/07-robber-victim-selection.jpg"],
+      "action": {"kind": "MOVE_ROBBER", "target": 3},
+      "before": {"revision": 7, "phase": "ROBBER", "selected_action": null, "active_tool": "MOVE_ROBBER"},
+      "after": {"revision": 8, "phase": "ROBBER", "selected_action": {"kind": "MOVE_ROBBER", "target": 3}, "dialog_stage": "target_confirmation", "confirmation": {"control_id": "floating-robber", "revision": 8, "action": {"kind": "MOVE_ROBBER", "target": 3}, "gesture": "click"}},
+      "binding": "confirmation",
+      "valid": true
+    },
+    {
+      "name": "robber-victim-confirmation",
+      "basis": "observed_image",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/07-robber-victim-selection.jpg"],
+      "action": {"kind": "MOVE_ROBBER", "target": 3, "partner": 1},
+      "before": {"revision": 7, "phase": "ROBBER", "selected_action": {"kind": "MOVE_ROBBER", "target": 3}, "dialog_stage": "select_victim"},
+      "after": {"revision": 8, "phase": "ROBBER", "selected_action": {"kind": "MOVE_ROBBER", "target": 3, "partner": 1}, "dialog_stage": "victim_confirmation", "confirmation": {"control_id": "victim-check", "revision": 8, "action": {"kind": "MOVE_ROBBER", "target": 3, "partner": 1}, "gesture": "click", "partner": 1}},
+      "binding": "confirmation",
+      "valid": true
+    },
+    {
+      "name": "monopoly-resource-choice",
+      "basis": "observed_image",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/15-monopoly-resource-selection.jpg"],
+      "action": {"kind": "PLAY_MONOPOLY", "resource": "ORE"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null, "dialog_stage": "select_resource"},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": {"kind": "PLAY_MONOPOLY", "resource": "ORE"}, "dialog_stage": "resource_confirmation", "confirmation": {"control_id": "resource-check", "revision": 8, "action": {"kind": "PLAY_MONOPOLY", "resource": "ORE"}, "gesture": "click"}},
+      "binding": "confirmation",
+      "valid": true
+    },
+    {
+      "name": "monopoly-other-resource-rejected",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/15-monopoly-resource-selection.jpg"],
+      "action": {"kind": "PLAY_MONOPOLY", "resource": "SHEEP"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": {"kind": "PLAY_MONOPOLY", "resource": "ORE"}, "dialog_stage": "resource_confirmation", "confirmation": {"control_id": "resource-check", "revision": 8, "action": {"kind": "PLAY_MONOPOLY", "resource": "ORE"}, "gesture": "click"}},
+      "binding": "confirmation",
+      "valid": false
+    },
+    {
+      "name": "incoming-willingness-is-pending",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/02-incoming-trade.jpg"],
+      "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"},
+      "before": {"revision": 7, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 7, "controls": [{"control_id": "incoming-check", "revision": 7, "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "gesture": "click", "row_id": "incoming-row", "partner": 0}]}]},
+      "after": {"revision": 8, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "dialog_stage": "willing", "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 8, "responses": [{"player_id": 0, "status": "willing"}]}]},
+      "binding": "acknowledgement",
+      "valid": true
+    },
+    {
+      "name": "simultaneous-rows-exact-finalization",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/04-trade-completed.jpg"],
+      "action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"}, "trade_rows": [{"row_id": "older-row", "offer_id": "older-offer", "proposer": 0, "give": [2, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 8}, {"row_id": "row-a", "offer_id": "offer-a", "proposer": 0, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 8, "responses": [{"player_id": 1, "status": "willing"}], "controls": [{"control_id": "newer-partner-check", "revision": 8, "action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"}, "gesture": "click", "row_id": "row-a", "partner": 1}]}]},
+      "binding": "finalization",
+      "valid": true,
+      "row_id": "row-a",
+      "player_id": 0
+    },
+    {
+      "name": "simultaneous-rows-older-row-rejected",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/04-trade-completed.jpg"],
+      "action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"},
+      "before": {"revision": 7, "phase": "TURN", "selected_action": null},
+      "after": {"revision": 8, "phase": "TURN", "selected_action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"}, "trade_rows": [{"row_id": "older-row", "offer_id": "older-offer", "proposer": 0, "give": [2, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 8}, {"row_id": "row-a", "offer_id": "offer-a", "proposer": 0, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 8, "responses": [{"player_id": 1, "status": "willing"}], "controls": [{"control_id": "newer-partner-check", "revision": 8, "action": {"kind": "FINALIZE_TRADE", "partner": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "offer_id": "offer-a"}, "gesture": "click", "row_id": "row-a", "partner": 1}]}]},
+      "binding": "finalization",
+      "valid": false,
+      "row_id": "older-row",
+      "player_id": 0
+    },
+    {
+      "name": "incoming-response-exact-offer",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/02-incoming-trade.jpg"],
+      "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"},
+      "before": {"revision": 7, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 7, "controls": [{"control_id": "incoming-check", "revision": 7, "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "gesture": "click", "row_id": "incoming-row", "partner": 0}]}]},
+      "after": {"revision": 7, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 7, "controls": [{"control_id": "incoming-check", "revision": 7, "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "gesture": "click", "row_id": "incoming-row", "partner": 0}]}]},
+      "binding": "response",
+      "valid": true,
+      "row_id": "incoming-row",
+      "player_id": 0,
+      "offer": {"offer_id": "offer-a", "proposer": 1, "recipient": 0, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0]}
+    },
+    {
+      "name": "incoming-response-changed-terms-rejected",
+      "basis": "controls_notes",
+      "controls": "docs/colonist-controls.md",
+      "screenshots": ["docs/assets/colonist-walkthrough-2026-11-04/02-incoming-trade.jpg"],
+      "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"},
+      "before": {"revision": 7, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 7, "controls": [{"control_id": "incoming-check", "revision": 7, "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "gesture": "click", "row_id": "incoming-row", "partner": 0}]}]},
+      "after": {"revision": 7, "phase": "TRADE_RESPONSE", "selected_action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "trade_rows": [{"row_id": "incoming-row", "offer_id": "offer-a", "proposer": 1, "give": [1, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0], "revision": 7, "controls": [{"control_id": "incoming-check", "revision": 7, "action": {"kind": "ACCEPT_TRADE", "offer_id": "offer-a"}, "gesture": "click", "row_id": "incoming-row", "partner": 0}]}]},
+      "binding": "response",
+      "valid": false,
+      "row_id": "incoming-row",
+      "player_id": 0,
+      "offer": {"offer_id": "offer-a", "proposer": 1, "recipient": 0, "give": [2, 0, 0, 0, 0], "receive": [0, 0, 0, 1, 0]}
+    }
+  ]
+}
