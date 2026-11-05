@@ -12,6 +12,7 @@ import torch
 from torch import nn
 from torch.distributions import Categorical
 
+from .consequences import CONSEQUENCE_DIM, CONSEQUENCE_SCHEMA, consequence_features
 from .contracts import RESOURCES, Observation
 from .graph_inputs import NODE_DIM, graph_features
 
@@ -261,3 +262,89 @@ class GraphPolicy(nn.Module):
         distribution = Categorical(logits=output.logits)
         index = output.logits.argmax() if deterministic else distribution.sample()
         return view.legal_actions[index.item()], output.memory.detach()
+
+
+class ConsequenceGraphPolicy(GraphPolicy):
+    """Explicit opt-in candidate scorer; recurrence and value remain inherited."""
+
+    architecture_kind = "graph_consequence_v1"
+
+    def __init__(self, hidden_size=64, *, feature_set="hand_recipe"):
+        if feature_set not in ("hand_recipe", "hand_recipe_and_connectivity"):
+            raise ValueError("unsupported consequence feature set")
+        super().__init__(hidden_size)
+        self._feature_set = feature_set
+        self.consequence = nn.Linear(CONSEQUENCE_DIM, 1, bias=False)
+        nn.init.zeros_(self.consequence.weight)
+
+    @property
+    def feature_set(self):
+        return self._feature_set
+
+    def _output(self, view, nodes, offsets, hidden):
+        base = super()._output(view, nodes, offsets, hidden)
+        if not view.legal_actions:
+            return base
+        features = torch.stack(
+            [
+                consequence_features(view, action, device=self.device)
+                for action in view.legal_actions
+            ]
+        ).to(dtype=self.consequence.weight.dtype)
+        if self.feature_set == "hand_recipe":
+            features[:, 30:34] = 0
+        logits = base.logits + self.consequence(features).squeeze(1)
+        return PolicyOutput(logits, base.value, base.memory)
+
+
+def consequence_from_legacy(
+    policy: GraphPolicy, *, feature_set="hand_recipe"
+) -> ConsequenceGraphPolicy:
+    """Copy a legacy policy exactly without advancing the caller's Torch RNG."""
+    if type(policy) is not GraphPolicy:
+        raise ValueError("consequence upgrade requires an unmodified legacy GraphPolicy")
+    with torch.random.fork_rng(devices=[]):
+        variant = ConsequenceGraphPolicy(policy.hidden_size, feature_set=feature_set)
+    parameter = next(policy.parameters())
+    variant.to(device=parameter.device, dtype=parameter.dtype)
+    variant.load_state_dict(
+        {**policy.state_dict(), "consequence.weight": variant.consequence.weight.detach()},
+        strict=True,
+    )
+    variant.train(policy.training)
+    return variant
+
+
+def policy_architecture(policy: GraphPolicy) -> dict:
+    """The two explicit checkpoint identities; legacy metadata stays unchanged."""
+    if type(policy) is GraphPolicy:
+        return {"hidden_size": policy.hidden_size}
+    if type(policy) is ConsequenceGraphPolicy:
+        return {
+            "kind": policy.architecture_kind,
+            "hidden_size": policy.hidden_size,
+            "feature_schema": CONSEQUENCE_SCHEMA,
+            "feature_set": policy.feature_set,
+        }
+    raise ValueError("unsupported policy architecture")
+
+
+def policy_from_architecture(architecture: dict) -> GraphPolicy:
+    """Reject ambiguous metadata rather than silently dropping policy branches."""
+    if (
+        not isinstance(architecture, dict)
+        or type(architecture.get("hidden_size")) is not int
+        or architecture["hidden_size"] < 1
+    ):
+        raise ValueError("invalid policy architecture")
+    if set(architecture) == {"hidden_size"}:
+        return GraphPolicy(architecture["hidden_size"])
+    if (
+        set(architecture) != {"kind", "hidden_size", "feature_schema", "feature_set"}
+        or architecture["kind"] != ConsequenceGraphPolicy.architecture_kind
+        or architecture["feature_schema"] != CONSEQUENCE_SCHEMA
+    ):
+        raise ValueError("unsupported policy architecture or feature schema")
+    return ConsequenceGraphPolicy(
+        architecture["hidden_size"], feature_set=architecture["feature_set"]
+    )

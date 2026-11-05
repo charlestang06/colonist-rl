@@ -20,7 +20,7 @@ from torch.distributions import Categorical
 
 from .contracts import Observation
 from .opponents import HeuristicPolicy, RandomPolicy
-from .policy import KINDS, GraphPolicy
+from .policy import KINDS, GraphPolicy, policy_architecture, policy_from_architecture
 from .simulator import BACKEND_VERSION, FourPlayerGame
 
 
@@ -87,7 +87,7 @@ def save_checkpoint(path, policy, optimizer=None, steps=0, metadata=None):
         "schema_version": 1,
         "backend_version": BACKEND_VERSION,
         "action_kinds": list(KINDS),
-        "architecture": {"hidden_size": policy.hidden_size},
+        "architecture": policy_architecture(policy),
         "policy_state": {k: v.detach().cpu() for k, v in policy.state_dict().items()},
         "optimizer_state": optimizer.state_dict() if optimizer is not None else None,
         "steps": int(steps),
@@ -117,14 +117,7 @@ def load_checkpoint(path):
         raise ValueError("unsupported checkpoint schema")
     if state.get("backend_version") != BACKEND_VERSION or state.get("action_kinds") != list(KINDS):
         raise ValueError("checkpoint engine/action schema is incompatible")
-    architecture = state.get("architecture", {})
-    if (
-        set(architecture) != {"hidden_size"}
-        or type(architecture["hidden_size"]) is not int
-        or architecture["hidden_size"] < 1
-    ):
-        raise ValueError("invalid policy architecture")
-    policy = GraphPolicy(**architecture)
+    policy = policy_from_architecture(state.get("architecture", {}))
     policy.load_state_dict(state["policy_state"], strict=True)
     rng = state.get("rng")
     if rng:
