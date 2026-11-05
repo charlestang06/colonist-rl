@@ -1,0 +1,6269 @@
+{
+  "artifacts": {
+    "11/dataset": {
+      "bytes": 578570,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-demonstrations.json.gz",
+      "sha256": "8f3ebe0369a0c3239869dd944a93cdb1cfcf0924ad30d07868b0403a0e014c3d"
+    },
+    "11/imitated": {
+      "bytes": 117478,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-imitated.pt",
+      "sha256": "d6935f03bd381a2fc6aa7381e8fbc6780d845de2f0b5f29ae050521db316063c"
+    },
+    "11/initial_student": {
+      "bytes": 117573,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-initial_student.pt",
+      "sha256": "8a54d76a9d35ef02240836a866b5fba04996c013a9bad15f87a783ff6f5db579"
+    },
+    "11/untrained": {
+      "bytes": 117199,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-untrained.pt",
+      "sha256": "4995801695720e57403ff6f8ddaf3dae22919d0fbb697a466d5e6d74841b355c"
+    },
+    "29/dataset": {
+      "bytes": 572103,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-demonstrations.json.gz",
+      "sha256": "bae0ff39f48d59b5787b51023bf29b4180f3eaee6b4084a6b8695c080460e570"
+    },
+    "29/imitated": {
+      "bytes": 117414,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-imitated.pt",
+      "sha256": "dcb5afac26dd66d92817337441a2886f666963d2a4fd8e82487092458d6815fa"
+    },
+    "29/initial_student": {
+      "bytes": 117509,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-initial_student.pt",
+      "sha256": "13b562fa710633589a7b03a25eb326b9b18a84628a74ec7557f73b9e6af35ed7"
+    },
+    "29/untrained": {
+      "bytes": 117199,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-untrained.pt",
+      "sha256": "100278138e89b93a79a5bdb0ee89bc93513c50e1e6aff65bcb2edfb1e4c74543"
+    },
+    "validation_demonstrations": {
+      "bytes": 31755,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/validation-demonstrations.json.gz",
+      "sha256": "de9ae96b22abae7ef83d7dba667a9b7220af7f2e0af87b949dd74a1ea058be85"
+    }
+  },
+  "budget_decision": {
+    "comparison_games": 64,
+    "demo_cost_safety_factor": 16,
+    "demonstration_shortfall_per_seed": 0,
+    "demonstrations_per_seed": 2500,
+    "evaluation_graph_safety_factor": 2,
+    "evaluation_seconds_reserved": 51.90074399858713,
+    "inconclusive": true,
+    "learning_seconds_reserved": 846.4561166672502,
+    "probe_finished_games": 4,
+    "probe_seconds": 1.6218982499558479,
+    "reduced_blocks": false,
+    "seconds_per_game": 0.40547456248896196,
+    "teacher_decisions_per_second": 210.24746774915312,
+    "validation_board_seeds": [
+      90000,
+      90001
+    ]
+  },
+  "elapsed_seconds": 92.30124183418229,
+  "gate": {
+    "eligible": false,
+    "note": "Descriptive eligibility only; no significance claim.",
+    "reasons": [
+      "heuristic/random:eight_complete_board_blocks_required",
+      "random/random:eight_complete_board_blocks_required",
+      "heuristic/heuristic:eight_complete_board_blocks_required",
+      "random/heuristic:eight_complete_board_blocks_required",
+      "graph/11/untrained:eight_complete_board_blocks_required",
+      "graph/11/imitated:eight_complete_board_blocks_required",
+      "graph/29/untrained:eight_complete_board_blocks_required",
+      "graph/29/imitated:eight_complete_board_blocks_required",
+      "11/untrained:eight_complete_board_blocks_required",
+      "11/imitated:eight_complete_board_blocks_required",
+      "29/untrained:eight_complete_board_blocks_required",
+      "29/imitated:eight_complete_board_blocks_required",
+      "11:held_out_non_forced_agreement_required",
+      "11:BUILD_INITIAL_SETTLEMENT:non_forced_agreement_below_threshold",
+      "11:BUILD_INITIAL_ROAD:non_forced_agreement_below_threshold",
+      "11:PLAY_TURN:non_forced_agreement_below_threshold",
+      "11:MOVE_ROBBER:non_forced_agreement_below_threshold",
+      "11:DISCARD:non_forced_agreement_below_threshold",
+      "11:victory_point_tolerance_failed",
+      "11:win_rate_tolerance_failed",
+      "29:held_out_non_forced_agreement_required",
+      "29:BUILD_INITIAL_SETTLEMENT:non_forced_agreement_below_threshold",
+      "29:BUILD_INITIAL_ROAD:non_forced_agreement_below_threshold",
+      "29:PLAY_TURN:non_forced_agreement_below_threshold",
+      "29:MOVE_ROBBER:non_forced_agreement_below_threshold",
+      "29:DISCARD:non_forced_agreement_below_threshold",
+      "29:victory_point_tolerance_failed",
+      "29:win_rate_tolerance_failed"
+    ],
+    "teacher_comparisons": {
+      "11": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": -5.0,
+            "win_rate_difference": -0.5
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": -1.75,
+            "win_rate_difference": -0.25
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": -3.375,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": -0.375
+      },
+      "29": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": -5.25,
+            "win_rate_difference": -0.5
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": -1.75,
+            "win_rate_difference": -0.25
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": -3.5,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": -0.375
+      }
+    }
+  },
+  "manifest_sha256": "7eb7af6cbf3be20e6b5d26c8d747947ee957c338082f6dc0d6ca48a06ad4d01a",
+  "ppo_status": "deferred_insufficient_baseline_evidence",
+  "source_at_end": {
+    "content_identity": "git:1350de2f15499d36a90181e7d25d555de2f4313a",
+    "dirty": false,
+    "revision": "1350de2f15499d36a90181e7d25d555de2f4313a"
+  },
+  "stages": {
+    "collect/11": {
+      "elapsed_seconds": 13.281150500057265,
+      "status": "complete"
+    },
+    "collect/29": {
+      "elapsed_seconds": 12.67178291711025,
+      "status": "complete"
+    },
+    "fit/11": {
+      "elapsed_seconds": 12.075954500120133,
+      "status": "complete"
+    },
+    "fit/29": {
+      "elapsed_seconds": 13.06259633298032,
+      "status": "complete"
+    },
+    "graph/11/imitated": {
+      "elapsed_seconds": 3.5625209158752114,
+      "status": "complete"
+    },
+    "graph/11/untrained": {
+      "elapsed_seconds": 3.6968074592296034,
+      "status": "complete"
+    },
+    "graph/29/imitated": {
+      "elapsed_seconds": 3.6939752080943435,
+      "status": "complete"
+    },
+    "graph/29/untrained": {
+      "elapsed_seconds": 3.089187332894653,
+      "status": "complete"
+    },
+    "heuristic/heuristic": {
+      "elapsed_seconds": 3.4425546671263874,
+      "status": "complete"
+    },
+    "heuristic/random": {
+      "elapsed_seconds": 1.8982218750752509,
+      "status": "complete"
+    },
+    "metrics/11": {
+      "elapsed_seconds": 0.07976962486281991,
+      "status": "complete"
+    },
+    "metrics/29": {
+      "elapsed_seconds": 0.07864504191093147,
+      "status": "complete"
+    },
+    "probe": {
+      "elapsed_seconds": 1.6218982499558479,
+      "status": "complete"
+    },
+    "random/heuristic": {
+      "elapsed_seconds": 3.225159125169739,
+      "status": "complete"
+    },
+    "random/random": {
+      "elapsed_seconds": 11.109399707987905,
+      "status": "complete"
+    },
+    "validation_demonstrations": {
+      "elapsed_seconds": 0.7048065830022097,
+      "status": "complete"
+    }
+  },
+  "status": "complete",
+  "students": [
+    {
+      "actual_board_seeds": [
+        11000,
+        11001,
+        11002,
+        11003,
+        11004,
+        11005,
+        11006,
+        11007,
+        11008,
+        11009,
+        11010,
+        11011,
+        11012,
+        11013,
+        11014,
+        11015,
+        11016,
+        11017,
+        11018,
+        11019,
+        11020,
+        11021,
+        11022,
+        11023,
+        11024,
+        11025,
+        11026,
+        11027,
+        11028,
+        11029,
+        11030,
+        11031
+      ],
+      "coverage": {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 37,
+          "BUILD_CITY": 45,
+          "BUILD_ROAD": 261,
+          "BUILD_SETTLEMENT": 112,
+          "BUY_DEVELOPMENT_CARD": 128,
+          "DISCARD_RESOURCE": 235,
+          "END_TURN": 609,
+          "MARITIME_TRADE": 166,
+          "MOVE_ROBBER": 179,
+          "PLAY_KNIGHT_CARD": 66,
+          "PLAY_MONOPOLY": 6,
+          "PLAY_ROAD_BUILDING": 10,
+          "PLAY_YEAR_OF_PLENTY": 10,
+          "REJECT_TRADE": 20,
+          "ROLL": 616
+        },
+        "decisions": 2500,
+        "non_forced_decisions": 1460,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 64,
+          "BUILD_INITIAL_SETTLEMENT": 64,
+          "DISCARD": 235,
+          "MOVE_ROBBER": 179,
+          "PLAY_TURN": 1901,
+          "TRADE_RESPONSE": 57
+        }
+      },
+      "dataset_episodes": [
+        {
+          "backend_seed": 11001,
+          "board_seed": 11000,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 224,
+          "teacher_seed": 11100,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11002,
+          "board_seed": 11001,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 315,
+          "teacher_seed": 11101,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11003,
+          "board_seed": 11002,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 491,
+          "teacher_seed": 11102,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11004,
+          "board_seed": 11003,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 327,
+          "teacher_seed": 11103,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11005,
+          "board_seed": 11004,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 248,
+          "teacher_seed": 11104,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11006,
+          "board_seed": 11005,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 391,
+          "teacher_seed": 11105,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11007,
+          "board_seed": 11006,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 330,
+          "teacher_seed": 11106,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11008,
+          "board_seed": 11007,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 264,
+          "teacher_seed": 11107,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11009,
+          "board_seed": 11008,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 289,
+          "teacher_seed": 11108,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11010,
+          "board_seed": 11009,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 292,
+          "teacher_seed": 11109,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11011,
+          "board_seed": 11010,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 349,
+          "teacher_seed": 11110,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11012,
+          "board_seed": 11011,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 344,
+          "teacher_seed": 11111,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11013,
+          "board_seed": 11012,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 268,
+          "teacher_seed": 11112,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11014,
+          "board_seed": 11013,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 273,
+          "teacher_seed": 11113,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11015,
+          "board_seed": 11014,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 213,
+          "teacher_seed": 11114,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11016,
+          "board_seed": 11015,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 249,
+          "teacher_seed": 11115,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11017,
+          "board_seed": 11016,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 406,
+          "teacher_seed": 11116,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11018,
+          "board_seed": 11017,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 285,
+          "teacher_seed": 11117,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11019,
+          "board_seed": 11018,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 354,
+          "teacher_seed": 11118,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11020,
+          "board_seed": 11019,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 202,
+          "teacher_seed": 11119,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11021,
+          "board_seed": 11020,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 272,
+          "teacher_seed": 11120,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11022,
+          "board_seed": 11021,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 344,
+          "teacher_seed": 11121,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11023,
+          "board_seed": 11022,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 320,
+          "teacher_seed": 11122,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11024,
+          "board_seed": 11023,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 373,
+          "teacher_seed": 11123,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11025,
+          "board_seed": 11024,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 332,
+          "teacher_seed": 11124,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11026,
+          "board_seed": 11025,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 262,
+          "teacher_seed": 11125,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11027,
+          "board_seed": 11026,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 231,
+          "teacher_seed": 11126,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11028,
+          "board_seed": 11027,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 369,
+          "teacher_seed": 11127,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11029,
+          "board_seed": 11028,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 256,
+          "teacher_seed": 11128,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11030,
+          "board_seed": 11029,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 388,
+          "teacher_seed": 11129,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11031,
+          "board_seed": 11030,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 370,
+          "teacher_seed": 11130,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 11032,
+          "board_seed": 11031,
+          "complete": false,
+          "incomplete_reason": "decision_cap",
+          "seat": 3,
+          "steps": 26,
+          "teacher_seed": 11131,
+          "terminated": false,
+          "truncated": false
+        }
+      ],
+      "fit": {
+        "decisions": 2500,
+        "epochs": 2,
+        "incomplete_reason": null,
+        "loss": 1.667462286598062,
+        "requested_epochs": 2,
+        "status": "complete",
+        "supervised_decisions": 1460,
+        "supervised_presentations": 2920,
+        "updates": 338
+      },
+      "imitated": {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 18,
+          "BUILD_CITY": 7,
+          "BUILD_ROAD": 30,
+          "BUILD_SETTLEMENT": 17,
+          "BUY_DEVELOPMENT_CARD": 8,
+          "DISCARD_RESOURCE": 126,
+          "END_TURN": 132,
+          "MOVE_ROBBER": 21,
+          "PLAY_KNIGHT_CARD": 4,
+          "PLAY_ROAD_BUILDING": 1,
+          "REJECT_TRADE": 5,
+          "ROLL": 132
+        },
+        "action_mode": "deterministic",
+        "aggregation_scope": "complete_blocks",
+        "baseline": "heuristic",
+        "candidate": "graph",
+        "completed_board_seeds": [
+          90000,
+          90001
+        ],
+        "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+        "decision_latency_ms_mean": 0.6033964510895535,
+        "decision_latency_ms_p95": 0.9455420076847076,
+        "deterministic": true,
+        "finished_games": 8,
+        "games": 8,
+        "incomplete_reason": null,
+        "interrupted_game": null,
+        "learner_decisions": 501,
+        "max_game_steps": 20000,
+        "mean_victory_points": 3.375,
+        "non_forced_decisions": 285,
+        "offers": 63,
+        "outcomes": [
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_ROAD": 6,
+              "BUILD_SETTLEMENT": 2,
+              "DISCARD_RESOURCE": 36,
+              "END_TURN": 26,
+              "MOVE_ROBBER": 5,
+              "REJECT_TRADE": 2,
+              "ROLL": 26
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.5968838052537578,
+            "decision_latency_ms_p95": 0.8787545142695308,
+            "game": 0,
+            "learner_decisions": 104,
+            "non_forced_decisions": 60,
+            "offers": 10,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 36,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 56,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 0,
+            "steps": 413,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 3,
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 2,
+              "DISCARD_RESOURCE": 9,
+              "END_TURN": 22,
+              "MOVE_ROBBER": 3,
+              "ROLL": 22
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.5960101085348112,
+            "decision_latency_ms_p95": 0.9443337330594659,
+            "game": 1,
+            "learner_decisions": 66,
+            "non_forced_decisions": 26,
+            "offers": 15,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 9,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 47,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 1,
+            "steps": 364,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 4,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 6,
+              "BUILD_ROAD": 5,
+              "BUILD_SETTLEMENT": 2,
+              "DISCARD_RESOURCE": 8,
+              "END_TURN": 15,
+              "MOVE_ROBBER": 2,
+              "REJECT_TRADE": 1,
+              "ROLL": 15
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.5815779807528964,
+            "decision_latency_ms_p95": 0.9400602430105206,
+            "game": 2,
+            "learner_decisions": 54,
+            "non_forced_decisions": 28,
+            "offers": 9,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 8,
+              "MOVE_ROBBER": 2,
+              "PLAY_TURN": 33,
+              "TRADE_RESPONSE": 7
+            },
+            "seat": 2,
+            "steps": 240,
+            "terminated": true,
+            "trade_responses": 7,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_ROAD": 6,
+              "BUILD_SETTLEMENT": 3,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 6,
+              "END_TURN": 20,
+              "MOVE_ROBBER": 4,
+              "PLAY_KNIGHT_CARD": 1,
+              "ROLL": 20
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6236487423025426,
+            "decision_latency_ms_p95": 0.9503617882728577,
+            "game": 3,
+            "learner_decisions": 63,
+            "non_forced_decisions": 30,
+            "offers": 7,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 6,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 47,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 3,
+            "steps": 330,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 0,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 23,
+              "END_TURN": 16,
+              "MOVE_ROBBER": 3,
+              "PLAY_KNIGHT_CARD": 1,
+              "ROLL": 16
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6176611607182113,
+            "decision_latency_ms_p95": 0.9680810733698308,
+            "game": 4,
+            "learner_decisions": 68,
+            "non_forced_decisions": 43,
+            "offers": 7,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 23,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 36,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 0,
+            "steps": 266,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 4,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 4,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 28,
+              "END_TURN": 14,
+              "MOVE_ROBBER": 2,
+              "PLAY_ROAD_BUILDING": 1,
+              "ROLL": 14
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6001778885221748,
+            "decision_latency_ms_p95": 0.8770250249654051,
+            "game": 5,
+            "learner_decisions": 67,
+            "non_forced_decisions": 50,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 28,
+              "MOVE_ROBBER": 2,
+              "PLAY_TURN": 33
+            },
+            "seat": 1,
+            "steps": 222,
+            "terminated": true,
+            "trade_responses": 0,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 2,
+              "DISCARD_RESOURCE": 4,
+              "END_TURN": 10,
+              "MOVE_ROBBER": 2,
+              "PLAY_KNIGHT_CARD": 2,
+              "REJECT_TRADE": 1,
+              "ROLL": 10
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6117435375180764,
+            "decision_latency_ms_p95": 0.977892219088972,
+            "game": 6,
+            "learner_decisions": 39,
+            "non_forced_decisions": 22,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 4,
+              "MOVE_ROBBER": 2,
+              "PLAY_TURN": 26,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 2,
+            "steps": 178,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 4,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 12,
+              "END_TURN": 9,
+              "REJECT_TRADE": 1,
+              "ROLL": 9
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6030770484358072,
+            "decision_latency_ms_p95": 0.7372037740424262,
+            "game": 7,
+            "learner_decisions": 40,
+            "non_forced_decisions": 26,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 12,
+              "PLAY_TURN": 21,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 3,
+            "steps": 167,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 5,
+            "winner": 1,
+            "won": false
+          }
+        ],
+        "partial_outcomes": [],
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 16,
+          "BUILD_INITIAL_SETTLEMENT": 16,
+          "DISCARD": 126,
+          "MOVE_ROBBER": 21,
+          "PLAY_TURN": 299,
+          "TRADE_RESPONSE": 23
+        },
+        "reject_trades": false,
+        "requested_board_seeds": [
+          90000,
+          90001
+        ],
+        "requested_games": 8,
+        "resolved_games": 8,
+        "status": "complete",
+        "terminations": 8,
+        "trade_responses": 23,
+        "truncations": 0,
+        "unresolved_games": 0,
+        "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+        "win_rate": 0.0,
+        "win_rate_ci95_nominal_wilson": [
+          0.0,
+          0.32440756488388023
+        ],
+        "win_rate_denominator": 8,
+        "win_rate_reporting": "strict_all_games_resolved",
+        "wins": 0
+      },
+      "seed": 11,
+      "uncovered_action_kinds": [
+        "DISCARD",
+        "PLAY_YEAR_OF_PLENTY",
+        "REJECT_TRADE"
+      ],
+      "uncovered_phases": [
+        "ROBBER",
+        "SETUP_ROAD",
+        "SETUP_SETTLEMENT",
+        "TRADE_CONFIRM",
+        "TURN"
+      ],
+      "untrained": {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 17,
+          "BUILD_ROAD": 18,
+          "BUILD_SETTLEMENT": 16,
+          "DISCARD_RESOURCE": 4,
+          "END_TURN": 145,
+          "MOVE_ROBBER": 26,
+          "REJECT_TRADE": 3,
+          "ROLL": 145
+        },
+        "action_mode": "deterministic",
+        "aggregation_scope": "complete_blocks",
+        "baseline": "heuristic",
+        "candidate": "graph",
+        "completed_board_seeds": [
+          90000,
+          90001
+        ],
+        "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+        "decision_latency_ms_mean": 0.704510162962989,
+        "decision_latency_ms_p95": 1.1103146011009801,
+        "deterministic": true,
+        "finished_games": 8,
+        "games": 8,
+        "incomplete_reason": null,
+        "interrupted_game": null,
+        "learner_decisions": 374,
+        "max_game_steps": 20000,
+        "mean_victory_points": 2.0,
+        "non_forced_decisions": 137,
+        "offers": 62,
+        "outcomes": [
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "DISCARD_RESOURCE": 4,
+              "END_TURN": 15,
+              "MOVE_ROBBER": 3,
+              "ROLL": 15
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.731619221136667,
+            "decision_latency_ms_p95": 0.9962999727576971,
+            "game": 0,
+            "learner_decisions": 43,
+            "non_forced_decisions": 25,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 4,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 30,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 0,
+            "steps": 229,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 22,
+              "MOVE_ROBBER": 2,
+              "ROLL": 22
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6199550250760064,
+            "decision_latency_ms_p95": 1.0098248720169067,
+            "game": 1,
+            "learner_decisions": 52,
+            "non_forced_decisions": 16,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 2,
+              "PLAY_TURN": 44,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 1,
+            "steps": 341,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 3,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 18,
+              "MOVE_ROBBER": 4,
+              "REJECT_TRADE": 1,
+              "ROLL": 18
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6675269153978055,
+            "decision_latency_ms_p95": 1.179213088471442,
+            "game": 2,
+            "learner_decisions": 48,
+            "non_forced_decisions": 21,
+            "offers": 4,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 36,
+              "TRADE_RESPONSE": 4
+            },
+            "seat": 2,
+            "steps": 274,
+            "terminated": true,
+            "trade_responses": 4,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 5,
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 17,
+              "MOVE_ROBBER": 5,
+              "ROLL": 17
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6705178518076332,
+            "decision_latency_ms_p95": 1.0753666516393423,
+            "game": 3,
+            "learner_decisions": 49,
+            "non_forced_decisions": 30,
+            "offers": 10,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 35,
+              "TRADE_RESPONSE": 5
+            },
+            "seat": 3,
+            "steps": 269,
+            "terminated": true,
+            "trade_responses": 5,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 26,
+              "MOVE_ROBBER": 3,
+              "REJECT_TRADE": 2,
+              "ROLL": 26
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6175249131516584,
+            "decision_latency_ms_p95": 0.9572810144163666,
+            "game": 4,
+            "learner_decisions": 62,
+            "non_forced_decisions": 12,
+            "offers": 14,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 52,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 0,
+            "steps": 408,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 3,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 21,
+              "MOVE_ROBBER": 5,
+              "ROLL": 21
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 1.0570340134479381,
+            "decision_latency_ms_p95": 1.2978459824807933,
+            "game": 5,
+            "learner_decisions": 54,
+            "non_forced_decisions": 19,
+            "offers": 10,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 42,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 1,
+            "steps": 336,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 0,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 12,
+              "MOVE_ROBBER": 1,
+              "ROLL": 12
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.5855475199119798,
+            "decision_latency_ms_p95": 1.0865417774766677,
+            "game": 6,
+            "learner_decisions": 29,
+            "non_forced_decisions": 5,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 1,
+              "PLAY_TURN": 24
+            },
+            "seat": 2,
+            "steps": 187,
+            "terminated": true,
+            "trade_responses": 0,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 14,
+              "MOVE_ROBBER": 3,
+              "ROLL": 14
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6093401902330082,
+            "decision_latency_ms_p95": 0.9732584003359066,
+            "game": 7,
+            "learner_decisions": 37,
+            "non_forced_decisions": 9,
+            "offers": 7,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 29,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 3,
+            "steps": 220,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          }
+        ],
+        "partial_outcomes": [],
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 16,
+          "BUILD_INITIAL_SETTLEMENT": 16,
+          "DISCARD": 4,
+          "MOVE_ROBBER": 26,
+          "PLAY_TURN": 292,
+          "TRADE_RESPONSE": 20
+        },
+        "reject_trades": false,
+        "requested_board_seeds": [
+          90000,
+          90001
+        ],
+        "requested_games": 8,
+        "resolved_games": 8,
+        "status": "complete",
+        "terminations": 8,
+        "trade_responses": 20,
+        "truncations": 0,
+        "unresolved_games": 0,
+        "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+        "win_rate": 0.0,
+        "win_rate_ci95_nominal_wilson": [
+          0.0,
+          0.32440756488388023
+        ],
+        "win_rate_denominator": 8,
+        "win_rate_reporting": "strict_all_games_resolved",
+        "wins": 0
+      },
+      "validation_metrics": {
+        "all": {
+          "accuracy": 0.6015625,
+          "correct": 77,
+          "count": 128,
+          "cross_entropy": 1.0421035810140893
+        },
+        "by_action_kind": {
+          "ACCEPT_TRADE": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.36060941219329834
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.36060941219329834
+            }
+          },
+          "BUILD_CITY": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 1,
+              "count": 1,
+              "cross_entropy": 1.041879653930664
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 1,
+              "count": 1,
+              "cross_entropy": 1.041879653930664
+            }
+          },
+          "BUILD_ROAD": {
+            "all": {
+              "accuracy": 0.25,
+              "correct": 3,
+              "count": 12,
+              "cross_entropy": 1.4978052775065105
+            },
+            "non_forced": {
+              "accuracy": 0.25,
+              "correct": 3,
+              "count": 12,
+              "cross_entropy": 1.4978052775065105
+            }
+          },
+          "BUILD_SETTLEMENT": {
+            "all": {
+              "accuracy": 0.42857142857142855,
+              "correct": 3,
+              "count": 7,
+              "cross_entropy": 2.2866997058902467
+            },
+            "non_forced": {
+              "accuracy": 0.42857142857142855,
+              "correct": 3,
+              "count": 7,
+              "cross_entropy": 2.2866997058902467
+            }
+          },
+          "BUY_DEVELOPMENT_CARD": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 9,
+              "count": 9,
+              "cross_entropy": 0.5014183421929678
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 9,
+              "count": 9,
+              "cross_entropy": 0.5014183421929678
+            }
+          },
+          "DISCARD_RESOURCE": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.5480802456537883
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.5480802456537883
+            }
+          },
+          "END_TURN": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 27,
+              "count": 27,
+              "cross_entropy": 0.07099536171665898
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.9584373831748962
+            }
+          },
+          "MARITIME_TRADE": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 13,
+              "cross_entropy": 2.0724438153780422
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 13,
+              "cross_entropy": 2.0724438153780422
+            }
+          },
+          "MOVE_ROBBER": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 15,
+              "cross_entropy": 2.7985594113667807
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 15,
+              "cross_entropy": 2.7985594113667807
+            }
+          },
+          "PLAY_KNIGHT_CARD": {
+            "all": {
+              "accuracy": 0.6666666666666666,
+              "correct": 4,
+              "count": 6,
+              "cross_entropy": 0.7752101023991903
+            },
+            "non_forced": {
+              "accuracy": 0.6666666666666666,
+              "correct": 4,
+              "count": 6,
+              "cross_entropy": 0.7752101023991903
+            }
+          },
+          "PLAY_MONOPOLY": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 2.4183712005615234
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 2.4183712005615234
+            }
+          },
+          "PLAY_ROAD_BUILDING": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 1.5168695449829102
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 1.5168695449829102
+            }
+          },
+          "ROLL": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 28,
+              "count": 28,
+              "cross_entropy": 0.15788625606468745
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 8,
+              "count": 8,
+              "cross_entropy": 0.5526018962264061
+            }
+          }
+        },
+        "by_phase": {
+          "BUILD_INITIAL_ROAD": {
+            "all": {
+              "accuracy": 0.25,
+              "correct": 1,
+              "count": 4,
+              "cross_entropy": 1.099767953157425
+            },
+            "non_forced": {
+              "accuracy": 0.25,
+              "correct": 1,
+              "count": 4,
+              "cross_entropy": 1.099767953157425
+            }
+          },
+          "BUILD_INITIAL_SETTLEMENT": {
+            "all": {
+              "accuracy": 0.25,
+              "correct": 1,
+              "count": 4,
+              "cross_entropy": 3.6951568722724915
+            },
+            "non_forced": {
+              "accuracy": 0.25,
+              "correct": 1,
+              "count": 4,
+              "cross_entropy": 3.6951568722724915
+            }
+          },
+          "DISCARD": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.5480802456537883
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.5480802456537883
+            }
+          },
+          "MOVE_ROBBER": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 15,
+              "cross_entropy": 2.7985594113667807
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 15,
+              "cross_entropy": 2.7985594113667807
+            }
+          },
+          "PLAY_TURN": {
+            "all": {
+              "accuracy": 0.7525773195876289,
+              "correct": 73,
+              "count": 97,
+              "cross_entropy": 0.6414584288584817
+            },
+            "non_forced": {
+              "accuracy": 0.5384615384615384,
+              "correct": 28,
+              "count": 52,
+              "cross_entropy": 1.1965666846013987
+            }
+          },
+          "TRADE_RESPONSE": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.36060941219329834
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.36060941219329834
+            }
+          }
+        },
+        "coverage": {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 12,
+            "BUILD_SETTLEMENT": 7,
+            "BUY_DEVELOPMENT_CARD": 9,
+            "DISCARD_RESOURCE": 6,
+            "END_TURN": 27,
+            "MARITIME_TRADE": 13,
+            "MOVE_ROBBER": 15,
+            "PLAY_KNIGHT_CARD": 6,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 28
+          },
+          "decisions": 128,
+          "non_forced_decisions": 83,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 4,
+            "BUILD_INITIAL_SETTLEMENT": 4,
+            "DISCARD": 6,
+            "MOVE_ROBBER": 15,
+            "PLAY_TURN": 97,
+            "TRADE_RESPONSE": 2
+          }
+        },
+        "non_forced": {
+          "accuracy": 0.3855421686746988,
+          "correct": 32,
+          "count": 83,
+          "cross_entropy": 1.6070994984313667
+        },
+        "note": "Teacher agreement is supervised fit, not playing competence; forced choices are excluded from non_forced metrics."
+      }
+    },
+    {
+      "actual_board_seeds": [
+        29000,
+        29001,
+        29002,
+        29003,
+        29004,
+        29005,
+        29006,
+        29007,
+        29008,
+        29009,
+        29010,
+        29011,
+        29012,
+        29013,
+        29014,
+        29015,
+        29016,
+        29017,
+        29018,
+        29019,
+        29020,
+        29021,
+        29022,
+        29023,
+        29024,
+        29025,
+        29026,
+        29027
+      ],
+      "coverage": {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 32,
+          "BUILD_CITY": 34,
+          "BUILD_ROAD": 252,
+          "BUILD_SETTLEMENT": 105,
+          "BUY_DEVELOPMENT_CARD": 142,
+          "DISCARD_RESOURCE": 275,
+          "END_TURN": 585,
+          "MARITIME_TRADE": 192,
+          "MOVE_ROBBER": 158,
+          "PLAY_KNIGHT_CARD": 64,
+          "PLAY_MONOPOLY": 11,
+          "PLAY_ROAD_BUILDING": 10,
+          "PLAY_YEAR_OF_PLENTY": 15,
+          "REJECT_TRADE": 31,
+          "ROLL": 594
+        },
+        "decisions": 2500,
+        "non_forced_decisions": 1543,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 56,
+          "BUILD_INITIAL_SETTLEMENT": 56,
+          "DISCARD": 275,
+          "MOVE_ROBBER": 158,
+          "PLAY_TURN": 1892,
+          "TRADE_RESPONSE": 63
+        }
+      },
+      "dataset_episodes": [
+        {
+          "backend_seed": 29001,
+          "board_seed": 29000,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 184,
+          "teacher_seed": 29100,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29002,
+          "board_seed": 29001,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 254,
+          "teacher_seed": 29101,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29003,
+          "board_seed": 29002,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 638,
+          "teacher_seed": 29102,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29004,
+          "board_seed": 29003,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 307,
+          "teacher_seed": 29103,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29005,
+          "board_seed": 29004,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 416,
+          "teacher_seed": 29104,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29006,
+          "board_seed": 29005,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 277,
+          "teacher_seed": 29105,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29007,
+          "board_seed": 29006,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 275,
+          "teacher_seed": 29106,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29008,
+          "board_seed": 29007,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 243,
+          "teacher_seed": 29107,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29009,
+          "board_seed": 29008,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 241,
+          "teacher_seed": 29108,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29010,
+          "board_seed": 29009,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 451,
+          "teacher_seed": 29109,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29011,
+          "board_seed": 29010,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 401,
+          "teacher_seed": 29110,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29012,
+          "board_seed": 29011,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 235,
+          "teacher_seed": 29111,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29013,
+          "board_seed": 29012,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 299,
+          "teacher_seed": 29112,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29014,
+          "board_seed": 29013,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 252,
+          "teacher_seed": 29113,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29015,
+          "board_seed": 29014,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 284,
+          "teacher_seed": 29114,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29016,
+          "board_seed": 29015,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 357,
+          "teacher_seed": 29115,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29017,
+          "board_seed": 29016,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 480,
+          "teacher_seed": 29116,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29018,
+          "board_seed": 29017,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 380,
+          "teacher_seed": 29117,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29019,
+          "board_seed": 29018,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 342,
+          "teacher_seed": 29118,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29020,
+          "board_seed": 29019,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 399,
+          "teacher_seed": 29119,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29021,
+          "board_seed": 29020,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 326,
+          "teacher_seed": 29120,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29022,
+          "board_seed": 29021,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 273,
+          "teacher_seed": 29121,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29023,
+          "board_seed": 29022,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 337,
+          "teacher_seed": 29122,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29024,
+          "board_seed": 29023,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 3,
+          "steps": 410,
+          "teacher_seed": 29123,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29025,
+          "board_seed": 29024,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 0,
+          "steps": 304,
+          "teacher_seed": 29124,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29026,
+          "board_seed": 29025,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 1,
+          "steps": 319,
+          "teacher_seed": 29125,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29027,
+          "board_seed": 29026,
+          "complete": true,
+          "incomplete_reason": null,
+          "seat": 2,
+          "steps": 326,
+          "teacher_seed": 29126,
+          "terminated": true,
+          "truncated": false
+        },
+        {
+          "backend_seed": 29028,
+          "board_seed": 29027,
+          "complete": false,
+          "incomplete_reason": "decision_cap",
+          "seat": 3,
+          "steps": 177,
+          "teacher_seed": 29127,
+          "terminated": false,
+          "truncated": false
+        }
+      ],
+      "fit": {
+        "decisions": 2500,
+        "epochs": 2,
+        "incomplete_reason": null,
+        "loss": 1.6570429786489294,
+        "requested_epochs": 2,
+        "status": "complete",
+        "supervised_decisions": 1543,
+        "supervised_presentations": 3086,
+        "updates": 338
+      },
+      "imitated": {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 11,
+          "BUILD_CITY": 6,
+          "BUILD_ROAD": 34,
+          "BUILD_SETTLEMENT": 17,
+          "BUY_DEVELOPMENT_CARD": 14,
+          "DISCARD_RESOURCE": 58,
+          "END_TURN": 140,
+          "MOVE_ROBBER": 37,
+          "PLAY_KNIGHT_CARD": 7,
+          "PLAY_MONOPOLY": 1,
+          "PLAY_YEAR_OF_PLENTY": 3,
+          "REJECT_TRADE": 5,
+          "ROLL": 140
+        },
+        "action_mode": "deterministic",
+        "aggregation_scope": "complete_blocks",
+        "baseline": "heuristic",
+        "candidate": "graph",
+        "completed_board_seeds": [
+          90000,
+          90001
+        ],
+        "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+        "decision_latency_ms_mean": 0.6250102933393851,
+        "decision_latency_ms_p95": 0.9996836539357897,
+        "deterministic": true,
+        "finished_games": 8,
+        "games": 8,
+        "incomplete_reason": null,
+        "interrupted_game": null,
+        "learner_decisions": 473,
+        "max_game_steps": 20000,
+        "mean_victory_points": 3.25,
+        "non_forced_decisions": 248,
+        "offers": 57,
+        "outcomes": [
+          {
+            "action_kind_counts": {
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 20,
+              "END_TURN": 20,
+              "MOVE_ROBBER": 6,
+              "PLAY_KNIGHT_CARD": 1,
+              "REJECT_TRADE": 1,
+              "ROLL": 20
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6453113290607123,
+            "decision_latency_ms_p95": 0.9093541535548865,
+            "game": 0,
+            "learner_decisions": 74,
+            "non_forced_decisions": 44,
+            "offers": 8,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 20,
+              "MOVE_ROBBER": 6,
+              "PLAY_TURN": 43,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 0,
+            "steps": 311,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_ROAD": 4,
+              "BUILD_SETTLEMENT": 3,
+              "BUY_DEVELOPMENT_CARD": 3,
+              "DISCARD_RESOURCE": 4,
+              "END_TURN": 18,
+              "MOVE_ROBBER": 5,
+              "PLAY_KNIGHT_CARD": 1,
+              "PLAY_YEAR_OF_PLENTY": 1,
+              "ROLL": 18
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6330917920854132,
+            "decision_latency_ms_p95": 1.0161455022171137,
+            "game": 1,
+            "learner_decisions": 59,
+            "non_forced_decisions": 28,
+            "offers": 8,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 4,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 44,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 1,
+            "steps": 287,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 4,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_ROAD": 4,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "DISCARD_RESOURCE": 13,
+              "END_TURN": 19,
+              "MOVE_ROBBER": 6,
+              "PLAY_KNIGHT_CARD": 1,
+              "REJECT_TRADE": 2,
+              "ROLL": 19
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6413804949261248,
+            "decision_latency_ms_p95": 0.9960586205124855,
+            "game": 2,
+            "learner_decisions": 68,
+            "non_forced_decisions": 39,
+            "offers": 8,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 13,
+              "MOVE_ROBBER": 6,
+              "PLAY_TURN": 42,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 2,
+            "steps": 313,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 2,
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 3,
+              "DISCARD_RESOURCE": 13,
+              "END_TURN": 18,
+              "MOVE_ROBBER": 5,
+              "PLAY_KNIGHT_CARD": 2,
+              "PLAY_MONOPOLY": 1,
+              "ROLL": 18
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6082220343567097,
+            "decision_latency_ms_p95": 1.006687455810606,
+            "game": 3,
+            "learner_decisions": 67,
+            "non_forced_decisions": 37,
+            "offers": 9,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 13,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 43,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 3,
+            "steps": 299,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 0,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 7,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "END_TURN": 15,
+              "MOVE_ROBBER": 3,
+              "PLAY_KNIGHT_CARD": 1,
+              "ROLL": 15
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6019318119642582,
+            "decision_latency_ms_p95": 0.9604330640286206,
+            "game": 4,
+            "learner_decisions": 47,
+            "non_forced_decisions": 21,
+            "offers": 3,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 39,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 0,
+            "steps": 224,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 4,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 3,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 4,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 2,
+              "DISCARD_RESOURCE": 4,
+              "END_TURN": 18,
+              "MOVE_ROBBER": 4,
+              "PLAY_YEAR_OF_PLENTY": 1,
+              "REJECT_TRADE": 1,
+              "ROLL": 18
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.5998022625443794,
+            "decision_latency_ms_p95": 0.9644628735259173,
+            "game": 5,
+            "learner_decisions": 59,
+            "non_forced_decisions": 29,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 4,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 43,
+              "TRADE_RESPONSE": 4
+            },
+            "seat": 1,
+            "steps": 285,
+            "terminated": true,
+            "trade_responses": 4,
+            "truncated": false,
+            "victory_points": 5,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_ROAD": 6,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 2,
+              "DISCARD_RESOURCE": 4,
+              "END_TURN": 19,
+              "MOVE_ROBBER": 4,
+              "PLAY_KNIGHT_CARD": 1,
+              "PLAY_YEAR_OF_PLENTY": 1,
+              "REJECT_TRADE": 1,
+              "ROLL": 19
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6101686740294099,
+            "decision_latency_ms_p95": 0.9552060859277844,
+            "game": 6,
+            "learner_decisions": 60,
+            "non_forced_decisions": 34,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "DISCARD": 4,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 46,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 2,
+            "steps": 309,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "ACCEPT_TRADE": 1,
+              "BUILD_CITY": 2,
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "END_TURN": 13,
+              "MOVE_ROBBER": 4,
+              "ROLL": 13
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6633439901260993,
+            "decision_latency_ms_p95": 1.1692289961501958,
+            "game": 7,
+            "learner_decisions": 39,
+            "non_forced_decisions": 16,
+            "offers": 9,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 30,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 3,
+            "steps": 210,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 5,
+            "winner": 1,
+            "won": false
+          }
+        ],
+        "partial_outcomes": [],
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 16,
+          "BUILD_INITIAL_SETTLEMENT": 16,
+          "DISCARD": 58,
+          "MOVE_ROBBER": 37,
+          "PLAY_TURN": 330,
+          "TRADE_RESPONSE": 16
+        },
+        "reject_trades": false,
+        "requested_board_seeds": [
+          90000,
+          90001
+        ],
+        "requested_games": 8,
+        "resolved_games": 8,
+        "status": "complete",
+        "terminations": 8,
+        "trade_responses": 16,
+        "truncations": 0,
+        "unresolved_games": 0,
+        "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+        "win_rate": 0.0,
+        "win_rate_ci95_nominal_wilson": [
+          0.0,
+          0.32440756488388023
+        ],
+        "win_rate_denominator": 8,
+        "win_rate_reporting": "strict_all_games_resolved",
+        "wins": 0
+      },
+      "seed": 29,
+      "uncovered_action_kinds": [
+        "DISCARD",
+        "PLAY_YEAR_OF_PLENTY",
+        "REJECT_TRADE"
+      ],
+      "uncovered_phases": [
+        "ROBBER",
+        "SETUP_ROAD",
+        "SETUP_SETTLEMENT",
+        "TRADE_CONFIRM",
+        "TURN"
+      ],
+      "untrained": {
+        "action_kind_counts": {
+          "BUILD_CITY": 5,
+          "BUILD_ROAD": 17,
+          "BUILD_SETTLEMENT": 16,
+          "BUY_DEVELOPMENT_CARD": 1,
+          "END_TURN": 129,
+          "MARITIME_TRADE": 9,
+          "MOVE_ROBBER": 24,
+          "REJECT_TRADE": 11,
+          "ROLL": 129
+        },
+        "action_mode": "deterministic",
+        "aggregation_scope": "complete_blocks",
+        "baseline": "heuristic",
+        "candidate": "graph",
+        "completed_board_seeds": [
+          90000,
+          90001
+        ],
+        "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+        "decision_latency_ms_mean": 0.6060950626015575,
+        "decision_latency_ms_p95": 1.0767909698188305,
+        "deterministic": true,
+        "finished_games": 8,
+        "games": 8,
+        "incomplete_reason": null,
+        "interrupted_game": null,
+        "learner_decisions": 341,
+        "max_game_steps": 20000,
+        "mean_victory_points": 2.625,
+        "non_forced_decisions": 83,
+        "offers": 46,
+        "outcomes": [
+          {
+            "action_kind_counts": {
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "BUY_DEVELOPMENT_CARD": 1,
+              "END_TURN": 15,
+              "MOVE_ROBBER": 4,
+              "REJECT_TRADE": 1,
+              "ROLL": 15
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6135771225672215,
+            "decision_latency_ms_p95": 0.9720791131258008,
+            "game": 0,
+            "learner_decisions": 40,
+            "non_forced_decisions": 10,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 31,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 0,
+            "steps": 242,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 18,
+              "MOVE_ROBBER": 4,
+              "REJECT_TRADE": 2,
+              "ROLL": 18
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6313447820696425,
+            "decision_latency_ms_p95": 1.1234998004510999,
+            "game": 1,
+            "learner_decisions": 47,
+            "non_forced_decisions": 11,
+            "offers": 4,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 4,
+              "PLAY_TURN": 37,
+              "TRADE_RESPONSE": 2
+            },
+            "seat": 1,
+            "steps": 292,
+            "terminated": true,
+            "trade_responses": 2,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 16,
+              "MOVE_ROBBER": 3,
+              "ROLL": 16
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.6069885392207652,
+            "decision_latency_ms_p95": 1.0194043046794825,
+            "game": 2,
+            "learner_decisions": 40,
+            "non_forced_decisions": 8,
+            "offers": 5,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 33
+            },
+            "seat": 2,
+            "steps": 257,
+            "terminated": true,
+            "trade_responses": 0,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_ROAD": 3,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 22,
+              "MARITIME_TRADE": 1,
+              "MOVE_ROBBER": 3,
+              "REJECT_TRADE": 1,
+              "ROLL": 22
+            },
+            "board_seed": 90000,
+            "decision_latency_ms_mean": 0.5915771686920414,
+            "decision_latency_ms_p95": 0.9873209404759103,
+            "game": 3,
+            "learner_decisions": 54,
+            "non_forced_decisions": 10,
+            "offers": 7,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 3,
+              "PLAY_TURN": 46,
+              "TRADE_RESPONSE": 1
+            },
+            "seat": 3,
+            "steps": 370,
+            "terminated": true,
+            "trade_responses": 1,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 15,
+              "MARITIME_TRADE": 2,
+              "MOVE_ROBBER": 5,
+              "ROLL": 15
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6081459079203861,
+            "decision_latency_ms_p95": 0.9857525583356617,
+            "game": 4,
+            "learner_decisions": 42,
+            "non_forced_decisions": 12,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 33
+            },
+            "seat": 0,
+            "steps": 221,
+            "terminated": true,
+            "trade_responses": 0,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 2,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 15,
+              "MARITIME_TRADE": 1,
+              "MOVE_ROBBER": 5,
+              "ROLL": 15
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6224512429226463,
+            "decision_latency_ms_p95": 0.9600829798728228,
+            "game": 5,
+            "learner_decisions": 41,
+            "non_forced_decisions": 11,
+            "offers": 7,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "MOVE_ROBBER": 5,
+              "PLAY_TURN": 32
+            },
+            "seat": 1,
+            "steps": 231,
+            "terminated": true,
+            "trade_responses": 0,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 3,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_CITY": 1,
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 15,
+              "MARITIME_TRADE": 2,
+              "REJECT_TRADE": 3,
+              "ROLL": 15
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.6011958350427449,
+            "decision_latency_ms_p95": 0.8023647009395051,
+            "game": 6,
+            "learner_decisions": 40,
+            "non_forced_decisions": 10,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "PLAY_TURN": 33,
+              "TRADE_RESPONSE": 3
+            },
+            "seat": 2,
+            "steps": 226,
+            "terminated": true,
+            "trade_responses": 3,
+            "truncated": false,
+            "victory_points": 3,
+            "winner": 1,
+            "won": false
+          },
+          {
+            "action_kind_counts": {
+              "BUILD_ROAD": 2,
+              "BUILD_SETTLEMENT": 2,
+              "END_TURN": 13,
+              "MARITIME_TRADE": 3,
+              "REJECT_TRADE": 4,
+              "ROLL": 13
+            },
+            "board_seed": 90001,
+            "decision_latency_ms_mean": 0.5709987976965872,
+            "decision_latency_ms_p95": 0.7660915143787838,
+            "game": 7,
+            "learner_decisions": 37,
+            "non_forced_decisions": 11,
+            "offers": 6,
+            "phase_counts": {
+              "BUILD_INITIAL_ROAD": 2,
+              "BUILD_INITIAL_SETTLEMENT": 2,
+              "PLAY_TURN": 29,
+              "TRADE_RESPONSE": 4
+            },
+            "seat": 3,
+            "steps": 210,
+            "terminated": true,
+            "trade_responses": 4,
+            "truncated": false,
+            "victory_points": 2,
+            "winner": 1,
+            "won": false
+          }
+        ],
+        "partial_outcomes": [],
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 16,
+          "BUILD_INITIAL_SETTLEMENT": 16,
+          "MOVE_ROBBER": 24,
+          "PLAY_TURN": 274,
+          "TRADE_RESPONSE": 11
+        },
+        "reject_trades": false,
+        "requested_board_seeds": [
+          90000,
+          90001
+        ],
+        "requested_games": 8,
+        "resolved_games": 8,
+        "status": "complete",
+        "terminations": 8,
+        "trade_responses": 11,
+        "truncations": 0,
+        "unresolved_games": 0,
+        "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+        "win_rate": 0.0,
+        "win_rate_ci95_nominal_wilson": [
+          0.0,
+          0.32440756488388023
+        ],
+        "win_rate_denominator": 8,
+        "win_rate_reporting": "strict_all_games_resolved",
+        "wins": 0
+      },
+      "validation_metrics": {
+        "all": {
+          "accuracy": 0.6015625,
+          "correct": 77,
+          "count": 128,
+          "cross_entropy": 1.0426091472618282
+        },
+        "by_action_kind": {
+          "ACCEPT_TRADE": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.6124936938285828
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.6124936938285828
+            }
+          },
+          "BUILD_CITY": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 1,
+              "count": 1,
+              "cross_entropy": 1.0883586406707764
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 1,
+              "count": 1,
+              "cross_entropy": 1.0883586406707764
+            }
+          },
+          "BUILD_ROAD": {
+            "all": {
+              "accuracy": 0.25,
+              "correct": 3,
+              "count": 12,
+              "cross_entropy": 1.528349757194519
+            },
+            "non_forced": {
+              "accuracy": 0.25,
+              "correct": 3,
+              "count": 12,
+              "cross_entropy": 1.528349757194519
+            }
+          },
+          "BUILD_SETTLEMENT": {
+            "all": {
+              "accuracy": 0.2857142857142857,
+              "correct": 2,
+              "count": 7,
+              "cross_entropy": 2.306030258536339
+            },
+            "non_forced": {
+              "accuracy": 0.2857142857142857,
+              "correct": 2,
+              "count": 7,
+              "cross_entropy": 2.306030258536339
+            }
+          },
+          "BUY_DEVELOPMENT_CARD": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 9,
+              "count": 9,
+              "cross_entropy": 0.4101392279068629
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 9,
+              "count": 9,
+              "cross_entropy": 0.4101392279068629
+            }
+          },
+          "DISCARD_RESOURCE": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.4829409718513489
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.4829409718513489
+            }
+          },
+          "END_TURN": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 27,
+              "count": 27,
+              "cross_entropy": 0.07596172226799859
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 1.025483250617981
+            }
+          },
+          "MARITIME_TRADE": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 13,
+              "cross_entropy": 2.0403303458140445
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 13,
+              "cross_entropy": 2.0403303458140445
+            }
+          },
+          "MOVE_ROBBER": {
+            "all": {
+              "accuracy": 0.06666666666666667,
+              "correct": 1,
+              "count": 15,
+              "cross_entropy": 2.859295686086019
+            },
+            "non_forced": {
+              "accuracy": 0.06666666666666667,
+              "correct": 1,
+              "count": 15,
+              "cross_entropy": 2.859295686086019
+            }
+          },
+          "PLAY_KNIGHT_CARD": {
+            "all": {
+              "accuracy": 0.6666666666666666,
+              "correct": 4,
+              "count": 6,
+              "cross_entropy": 0.7567752202351888
+            },
+            "non_forced": {
+              "accuracy": 0.6666666666666666,
+              "correct": 4,
+              "count": 6,
+              "cross_entropy": 0.7567752202351888
+            }
+          },
+          "PLAY_MONOPOLY": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 2.310041904449463
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 2.310041904449463
+            }
+          },
+          "PLAY_ROAD_BUILDING": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 1.4564933776855469
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 1,
+              "cross_entropy": 1.4564933776855469
+            }
+          },
+          "ROLL": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 28,
+              "count": 28,
+              "cross_entropy": 0.1534797911133085
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 8,
+              "count": 8,
+              "cross_entropy": 0.5371792688965797
+            }
+          }
+        },
+        "by_phase": {
+          "BUILD_INITIAL_ROAD": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 4,
+              "cross_entropy": 1.0995726585388184
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 4,
+              "cross_entropy": 1.0995726585388184
+            }
+          },
+          "BUILD_INITIAL_SETTLEMENT": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 4,
+              "cross_entropy": 3.687628209590912
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 4,
+              "cross_entropy": 3.687628209590912
+            }
+          },
+          "DISCARD": {
+            "all": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.4829409718513489
+            },
+            "non_forced": {
+              "accuracy": 0.0,
+              "correct": 0,
+              "count": 6,
+              "cross_entropy": 1.4829409718513489
+            }
+          },
+          "MOVE_ROBBER": {
+            "all": {
+              "accuracy": 0.06666666666666667,
+              "correct": 1,
+              "count": 15,
+              "cross_entropy": 2.859295686086019
+            },
+            "non_forced": {
+              "accuracy": 0.06666666666666667,
+              "correct": 1,
+              "count": 15,
+              "cross_entropy": 2.859295686086019
+            }
+          },
+          "PLAY_TURN": {
+            "all": {
+              "accuracy": 0.7628865979381443,
+              "correct": 74,
+              "count": 97,
+              "cross_entropy": 0.6318876171849438
+            },
+            "non_forced": {
+              "accuracy": 0.5576923076923077,
+              "correct": 29,
+              "count": 52,
+              "cross_entropy": 1.1787134397488375
+            }
+          },
+          "TRADE_RESPONSE": {
+            "all": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.6124936938285828
+            },
+            "non_forced": {
+              "accuracy": 1.0,
+              "correct": 2,
+              "count": 2,
+              "cross_entropy": 0.6124936938285828
+            }
+          }
+        },
+        "coverage": {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 12,
+            "BUILD_SETTLEMENT": 7,
+            "BUY_DEVELOPMENT_CARD": 9,
+            "DISCARD_RESOURCE": 6,
+            "END_TURN": 27,
+            "MARITIME_TRADE": 13,
+            "MOVE_ROBBER": 15,
+            "PLAY_KNIGHT_CARD": 6,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 28
+          },
+          "decisions": 128,
+          "non_forced_decisions": 83,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 4,
+            "BUILD_INITIAL_SETTLEMENT": 4,
+            "DISCARD": 6,
+            "MOVE_ROBBER": 15,
+            "PLAY_TURN": 97,
+            "TRADE_RESPONSE": 2
+          }
+        },
+        "non_forced": {
+          "accuracy": 0.3855421686746988,
+          "correct": 32,
+          "count": 83,
+          "cross_entropy": 1.6078791668616146
+        },
+        "note": "Teacher agreement is supervised fit, not playing competence; forced choices are excluded from non_forced metrics."
+      }
+    }
+  ],
+  "teacher": {
+    "action_kind_counts": {
+      "ACCEPT_TRADE": 17,
+      "BUILD_CITY": 9,
+      "BUILD_ROAD": 48,
+      "BUILD_SETTLEMENT": 28,
+      "BUY_DEVELOPMENT_CARD": 35,
+      "DISCARD_RESOURCE": 59,
+      "END_TURN": 149,
+      "MARITIME_TRADE": 43,
+      "MOVE_ROBBER": 47,
+      "PLAY_KNIGHT_CARD": 17,
+      "PLAY_MONOPOLY": 2,
+      "PLAY_ROAD_BUILDING": 3,
+      "PLAY_YEAR_OF_PLENTY": 2,
+      "REJECT_TRADE": 6,
+      "ROLL": 152
+    },
+    "action_mode": "seeded_heuristic",
+    "aggregation_scope": "complete_blocks",
+    "baseline": "heuristic",
+    "candidate": "heuristic",
+    "completed_board_seeds": [
+      90000,
+      90001
+    ],
+    "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+    "decision_latency_ms_mean": 0.02745937441311161,
+    "decision_latency_ms_p95": 0.1437166705727577,
+    "deterministic": true,
+    "finished_games": 8,
+    "games": 8,
+    "incomplete_reason": null,
+    "interrupted_game": null,
+    "learner_decisions": 617,
+    "max_game_steps": 20000,
+    "mean_victory_points": 6.75,
+    "non_forced_decisions": 368,
+    "offers": 76,
+    "outcomes": [
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 5,
+          "BUILD_CITY": 1,
+          "BUILD_ROAD": 10,
+          "BUILD_SETTLEMENT": 6,
+          "BUY_DEVELOPMENT_CARD": 5,
+          "DISCARD_RESOURCE": 8,
+          "END_TURN": 28,
+          "MARITIME_TRADE": 19,
+          "MOVE_ROBBER": 9,
+          "PLAY_KNIGHT_CARD": 3,
+          "PLAY_ROAD_BUILDING": 1,
+          "ROLL": 29
+        },
+        "board_seed": 90000,
+        "decision_latency_ms_mean": 0.029617980603248845,
+        "decision_latency_ms_p95": 0.1030206331051886,
+        "game": 0,
+        "learner_decisions": 124,
+        "non_forced_decisions": 81,
+        "offers": 13,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 8,
+          "MOVE_ROBBER": 9,
+          "PLAY_TURN": 98,
+          "TRADE_RESPONSE": 5
+        },
+        "seat": 0,
+        "steps": 487,
+        "terminated": true,
+        "trade_responses": 5,
+        "truncated": false,
+        "victory_points": 10,
+        "winner": 0,
+        "won": true
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 3,
+          "BUILD_ROAD": 8,
+          "BUILD_SETTLEMENT": 5,
+          "BUY_DEVELOPMENT_CARD": 7,
+          "DISCARD_RESOURCE": 9,
+          "END_TURN": 24,
+          "MARITIME_TRADE": 4,
+          "MOVE_ROBBER": 9,
+          "PLAY_KNIGHT_CARD": 4,
+          "PLAY_ROAD_BUILDING": 1,
+          "PLAY_YEAR_OF_PLENTY": 1,
+          "REJECT_TRADE": 1,
+          "ROLL": 24
+        },
+        "board_seed": 90000,
+        "decision_latency_ms_mean": 0.03231166861951351,
+        "decision_latency_ms_p95": 0.17484981799498198,
+        "game": 1,
+        "learner_decisions": 100,
+        "non_forced_decisions": 63,
+        "offers": 12,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 9,
+          "MOVE_ROBBER": 9,
+          "PLAY_TURN": 74,
+          "TRADE_RESPONSE": 4
+        },
+        "seat": 1,
+        "steps": 401,
+        "terminated": true,
+        "trade_responses": 4,
+        "truncated": false,
+        "victory_points": 7,
+        "winner": 2,
+        "won": false
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 1,
+          "BUILD_CITY": 3,
+          "BUILD_ROAD": 6,
+          "BUILD_SETTLEMENT": 5,
+          "BUY_DEVELOPMENT_CARD": 8,
+          "DISCARD_RESOURCE": 5,
+          "END_TURN": 21,
+          "MARITIME_TRADE": 5,
+          "MOVE_ROBBER": 9,
+          "PLAY_KNIGHT_CARD": 3,
+          "PLAY_MONOPOLY": 2,
+          "PLAY_YEAR_OF_PLENTY": 1,
+          "REJECT_TRADE": 1,
+          "ROLL": 22
+        },
+        "board_seed": 90000,
+        "decision_latency_ms_mean": 0.033125878595139664,
+        "decision_latency_ms_p95": 0.1761724823154509,
+        "game": 2,
+        "learner_decisions": 92,
+        "non_forced_decisions": 57,
+        "offers": 11,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 5,
+          "MOVE_ROBBER": 9,
+          "PLAY_TURN": 72,
+          "TRADE_RESPONSE": 2
+        },
+        "seat": 2,
+        "steps": 338,
+        "terminated": true,
+        "trade_responses": 2,
+        "truncated": false,
+        "victory_points": 10,
+        "winner": 2,
+        "won": true
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 4,
+          "BUILD_ROAD": 7,
+          "BUILD_SETTLEMENT": 4,
+          "BUY_DEVELOPMENT_CARD": 1,
+          "DISCARD_RESOURCE": 16,
+          "END_TURN": 24,
+          "MARITIME_TRADE": 6,
+          "MOVE_ROBBER": 6,
+          "PLAY_KNIGHT_CARD": 1,
+          "ROLL": 24
+        },
+        "board_seed": 90000,
+        "decision_latency_ms_mean": 0.029108494580272704,
+        "decision_latency_ms_p95": 0.16956720501184458,
+        "game": 3,
+        "learner_decisions": 93,
+        "non_forced_decisions": 53,
+        "offers": 13,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 16,
+          "MOVE_ROBBER": 6,
+          "PLAY_TURN": 63,
+          "TRADE_RESPONSE": 4
+        },
+        "seat": 3,
+        "steps": 410,
+        "terminated": true,
+        "trade_responses": 4,
+        "truncated": false,
+        "victory_points": 4,
+        "winner": 2,
+        "won": false
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 1,
+          "BUILD_CITY": 2,
+          "BUILD_ROAD": 3,
+          "BUILD_SETTLEMENT": 2,
+          "BUY_DEVELOPMENT_CARD": 1,
+          "END_TURN": 14,
+          "MARITIME_TRADE": 3,
+          "MOVE_ROBBER": 2,
+          "REJECT_TRADE": 1,
+          "ROLL": 14
+        },
+        "board_seed": 90001,
+        "decision_latency_ms_mean": 0.01581687328600606,
+        "decision_latency_ms_p95": 0.07141686510294676,
+        "game": 4,
+        "learner_decisions": 43,
+        "non_forced_decisions": 15,
+        "offers": 10,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "MOVE_ROBBER": 2,
+          "PLAY_TURN": 35,
+          "TRADE_RESPONSE": 2
+        },
+        "seat": 0,
+        "steps": 241,
+        "terminated": true,
+        "trade_responses": 2,
+        "truncated": false,
+        "victory_points": 5,
+        "winner": 3,
+        "won": false
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 2,
+          "BUILD_CITY": 2,
+          "BUILD_ROAD": 3,
+          "BUILD_SETTLEMENT": 2,
+          "BUY_DEVELOPMENT_CARD": 3,
+          "DISCARD_RESOURCE": 13,
+          "END_TURN": 13,
+          "MARITIME_TRADE": 5,
+          "MOVE_ROBBER": 4,
+          "PLAY_KNIGHT_CARD": 1,
+          "REJECT_TRADE": 2,
+          "ROLL": 13
+        },
+        "board_seed": 90001,
+        "decision_latency_ms_mean": 0.019275198971468302,
+        "decision_latency_ms_p95": 0.06359177641570568,
+        "game": 5,
+        "learner_decisions": 63,
+        "non_forced_decisions": 38,
+        "offers": 7,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 13,
+          "MOVE_ROBBER": 4,
+          "PLAY_TURN": 38,
+          "TRADE_RESPONSE": 4
+        },
+        "seat": 1,
+        "steps": 220,
+        "terminated": true,
+        "trade_responses": 4,
+        "truncated": false,
+        "victory_points": 5,
+        "winner": 3,
+        "won": false
+      },
+      {
+        "action_kind_counts": {
+          "BUILD_ROAD": 4,
+          "BUILD_SETTLEMENT": 2,
+          "BUY_DEVELOPMENT_CARD": 2,
+          "DISCARD_RESOURCE": 8,
+          "END_TURN": 12,
+          "MOVE_ROBBER": 2,
+          "PLAY_KNIGHT_CARD": 1,
+          "REJECT_TRADE": 1,
+          "ROLL": 12
+        },
+        "board_seed": 90001,
+        "decision_latency_ms_mean": 0.022275701419196346,
+        "decision_latency_ms_p95": 0.1030124491080642,
+        "game": 6,
+        "learner_decisions": 44,
+        "non_forced_decisions": 24,
+        "offers": 5,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "DISCARD": 8,
+          "MOVE_ROBBER": 2,
+          "PLAY_TURN": 29,
+          "TRADE_RESPONSE": 1
+        },
+        "seat": 2,
+        "steps": 200,
+        "terminated": true,
+        "trade_responses": 1,
+        "truncated": false,
+        "victory_points": 3,
+        "winner": 3,
+        "won": false
+      },
+      {
+        "action_kind_counts": {
+          "ACCEPT_TRADE": 1,
+          "BUILD_CITY": 1,
+          "BUILD_ROAD": 7,
+          "BUILD_SETTLEMENT": 2,
+          "BUY_DEVELOPMENT_CARD": 8,
+          "END_TURN": 13,
+          "MARITIME_TRADE": 1,
+          "MOVE_ROBBER": 6,
+          "PLAY_KNIGHT_CARD": 4,
+          "PLAY_ROAD_BUILDING": 1,
+          "ROLL": 14
+        },
+        "board_seed": 90001,
+        "decision_latency_ms_mean": 0.024299530697793798,
+        "decision_latency_ms_p95": 0.14316431479528546,
+        "game": 7,
+        "learner_decisions": 58,
+        "non_forced_decisions": 37,
+        "offers": 5,
+        "phase_counts": {
+          "BUILD_INITIAL_ROAD": 2,
+          "BUILD_INITIAL_SETTLEMENT": 2,
+          "MOVE_ROBBER": 6,
+          "PLAY_TURN": 47,
+          "TRADE_RESPONSE": 1
+        },
+        "seat": 3,
+        "steps": 230,
+        "terminated": true,
+        "trade_responses": 1,
+        "truncated": false,
+        "victory_points": 10,
+        "winner": 3,
+        "won": true
+      }
+    ],
+    "partial_outcomes": [],
+    "phase_counts": {
+      "BUILD_INITIAL_ROAD": 16,
+      "BUILD_INITIAL_SETTLEMENT": 16,
+      "DISCARD": 59,
+      "MOVE_ROBBER": 47,
+      "PLAY_TURN": 456,
+      "TRADE_RESPONSE": 23
+    },
+    "reject_trades": false,
+    "requested_board_seeds": [
+      90000,
+      90001
+    ],
+    "requested_games": 8,
+    "resolved_games": 8,
+    "status": "complete",
+    "terminations": 8,
+    "trade_responses": 23,
+    "truncations": 0,
+    "unresolved_games": 0,
+    "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+    "win_rate": 0.375,
+    "win_rate_ci95_nominal_wilson": [
+      0.13684428582359742,
+      0.6942576053973727
+    ],
+    "win_rate_denominator": 8,
+    "win_rate_reporting": "strict_all_games_resolved",
+    "wins": 3
+  },
+  "validation_actual_board_seeds": [
+    91000,
+    91001
+  ],
+  "validation_coverage": {
+    "action_kind_counts": {
+      "ACCEPT_TRADE": 2,
+      "BUILD_CITY": 1,
+      "BUILD_ROAD": 12,
+      "BUILD_SETTLEMENT": 7,
+      "BUY_DEVELOPMENT_CARD": 9,
+      "DISCARD_RESOURCE": 6,
+      "END_TURN": 27,
+      "MARITIME_TRADE": 13,
+      "MOVE_ROBBER": 15,
+      "PLAY_KNIGHT_CARD": 6,
+      "PLAY_MONOPOLY": 1,
+      "PLAY_ROAD_BUILDING": 1,
+      "ROLL": 28
+    },
+    "decisions": 128,
+    "non_forced_decisions": 83,
+    "phase_counts": {
+      "BUILD_INITIAL_ROAD": 4,
+      "BUILD_INITIAL_SETTLEMENT": 4,
+      "DISCARD": 6,
+      "MOVE_ROBBER": 15,
+      "PLAY_TURN": 97,
+      "TRADE_RESPONSE": 2
+    }
+  },
+  "variants": {
+    "graph/11/imitated": {
+      "action_kind_counts": {
+        "ACCEPT_TRADE": 18,
+        "BUILD_CITY": 7,
+        "BUILD_ROAD": 30,
+        "BUILD_SETTLEMENT": 17,
+        "BUY_DEVELOPMENT_CARD": 8,
+        "DISCARD_RESOURCE": 126,
+        "END_TURN": 132,
+        "MOVE_ROBBER": 21,
+        "PLAY_KNIGHT_CARD": 4,
+        "PLAY_ROAD_BUILDING": 1,
+        "REJECT_TRADE": 5,
+        "ROLL": 132
+      },
+      "action_mode": "deterministic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "graph",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.6033964510895535,
+      "decision_latency_ms_p95": 0.9455420076847076,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 501,
+      "max_game_steps": 20000,
+      "mean_victory_points": 3.375,
+      "non_forced_decisions": 285,
+      "offers": 63,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 6,
+            "BUILD_SETTLEMENT": 2,
+            "DISCARD_RESOURCE": 36,
+            "END_TURN": 26,
+            "MOVE_ROBBER": 5,
+            "REJECT_TRADE": 2,
+            "ROLL": 26
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.5968838052537578,
+          "decision_latency_ms_p95": 0.8787545142695308,
+          "game": 0,
+          "learner_decisions": 104,
+          "non_forced_decisions": 60,
+          "offers": 10,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 36,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 56,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 0,
+          "steps": 413,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 9,
+            "END_TURN": 22,
+            "MOVE_ROBBER": 3,
+            "ROLL": 22
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.5960101085348112,
+          "decision_latency_ms_p95": 0.9443337330594659,
+          "game": 1,
+          "learner_decisions": 66,
+          "non_forced_decisions": 26,
+          "offers": 15,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 9,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 47,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 1,
+          "steps": 364,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 6,
+            "BUILD_ROAD": 5,
+            "BUILD_SETTLEMENT": 2,
+            "DISCARD_RESOURCE": 8,
+            "END_TURN": 15,
+            "MOVE_ROBBER": 2,
+            "REJECT_TRADE": 1,
+            "ROLL": 15
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.5815779807528964,
+          "decision_latency_ms_p95": 0.9400602430105206,
+          "game": 2,
+          "learner_decisions": 54,
+          "non_forced_decisions": 28,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 8,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 33,
+            "TRADE_RESPONSE": 7
+          },
+          "seat": 2,
+          "steps": 240,
+          "terminated": true,
+          "trade_responses": 7,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 6,
+            "BUILD_SETTLEMENT": 3,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 6,
+            "END_TURN": 20,
+            "MOVE_ROBBER": 4,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 20
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6236487423025426,
+          "decision_latency_ms_p95": 0.9503617882728577,
+          "game": 3,
+          "learner_decisions": 63,
+          "non_forced_decisions": 30,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 6,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 47,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 3,
+          "steps": 330,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 0,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 23,
+            "END_TURN": 16,
+            "MOVE_ROBBER": 3,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 16
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6176611607182113,
+          "decision_latency_ms_p95": 0.9680810733698308,
+          "game": 4,
+          "learner_decisions": 68,
+          "non_forced_decisions": 43,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 23,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 36,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 0,
+          "steps": 266,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 28,
+            "END_TURN": 14,
+            "MOVE_ROBBER": 2,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6001778885221748,
+          "decision_latency_ms_p95": 0.8770250249654051,
+          "game": 5,
+          "learner_decisions": 67,
+          "non_forced_decisions": 50,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 28,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 33
+          },
+          "seat": 1,
+          "steps": 222,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 10,
+            "MOVE_ROBBER": 2,
+            "PLAY_KNIGHT_CARD": 2,
+            "REJECT_TRADE": 1,
+            "ROLL": 10
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6117435375180764,
+          "decision_latency_ms_p95": 0.977892219088972,
+          "game": 6,
+          "learner_decisions": 39,
+          "non_forced_decisions": 22,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 26,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 2,
+          "steps": 178,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 12,
+            "END_TURN": 9,
+            "REJECT_TRADE": 1,
+            "ROLL": 9
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6030770484358072,
+          "decision_latency_ms_p95": 0.7372037740424262,
+          "game": 7,
+          "learner_decisions": 40,
+          "non_forced_decisions": 26,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 12,
+            "PLAY_TURN": 21,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 3,
+          "steps": 167,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 5,
+          "winner": 1,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 126,
+        "MOVE_ROBBER": 21,
+        "PLAY_TURN": 299,
+        "TRADE_RESPONSE": 23
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 23,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.0,
+        0.32440756488388023
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 0
+    },
+    "graph/11/untrained": {
+      "action_kind_counts": {
+        "ACCEPT_TRADE": 17,
+        "BUILD_ROAD": 18,
+        "BUILD_SETTLEMENT": 16,
+        "DISCARD_RESOURCE": 4,
+        "END_TURN": 145,
+        "MOVE_ROBBER": 26,
+        "REJECT_TRADE": 3,
+        "ROLL": 145
+      },
+      "action_mode": "deterministic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "graph",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.704510162962989,
+      "decision_latency_ms_p95": 1.1103146011009801,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 374,
+      "max_game_steps": 20000,
+      "mean_victory_points": 2.0,
+      "non_forced_decisions": 137,
+      "offers": 62,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 15,
+            "MOVE_ROBBER": 3,
+            "ROLL": 15
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.731619221136667,
+          "decision_latency_ms_p95": 0.9962999727576971,
+          "game": 0,
+          "learner_decisions": 43,
+          "non_forced_decisions": 25,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 30,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 0,
+          "steps": 229,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 22,
+            "MOVE_ROBBER": 2,
+            "ROLL": 22
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6199550250760064,
+          "decision_latency_ms_p95": 1.0098248720169067,
+          "game": 1,
+          "learner_decisions": 52,
+          "non_forced_decisions": 16,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 44,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 1,
+          "steps": 341,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 18,
+            "MOVE_ROBBER": 4,
+            "REJECT_TRADE": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6675269153978055,
+          "decision_latency_ms_p95": 1.179213088471442,
+          "game": 2,
+          "learner_decisions": 48,
+          "non_forced_decisions": 21,
+          "offers": 4,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 36,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 2,
+          "steps": 274,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 5,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 17,
+            "MOVE_ROBBER": 5,
+            "ROLL": 17
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6705178518076332,
+          "decision_latency_ms_p95": 1.0753666516393423,
+          "game": 3,
+          "learner_decisions": 49,
+          "non_forced_decisions": 30,
+          "offers": 10,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 35,
+            "TRADE_RESPONSE": 5
+          },
+          "seat": 3,
+          "steps": 269,
+          "terminated": true,
+          "trade_responses": 5,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 26,
+            "MOVE_ROBBER": 3,
+            "REJECT_TRADE": 2,
+            "ROLL": 26
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6175249131516584,
+          "decision_latency_ms_p95": 0.9572810144163666,
+          "game": 4,
+          "learner_decisions": 62,
+          "non_forced_decisions": 12,
+          "offers": 14,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 52,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 0,
+          "steps": 408,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 21,
+            "MOVE_ROBBER": 5,
+            "ROLL": 21
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 1.0570340134479381,
+          "decision_latency_ms_p95": 1.2978459824807933,
+          "game": 5,
+          "learner_decisions": 54,
+          "non_forced_decisions": 19,
+          "offers": 10,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 42,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 1,
+          "steps": 336,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 0,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 12,
+            "MOVE_ROBBER": 1,
+            "ROLL": 12
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.5855475199119798,
+          "decision_latency_ms_p95": 1.0865417774766677,
+          "game": 6,
+          "learner_decisions": 29,
+          "non_forced_decisions": 5,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 1,
+            "PLAY_TURN": 24
+          },
+          "seat": 2,
+          "steps": 187,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 14,
+            "MOVE_ROBBER": 3,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6093401902330082,
+          "decision_latency_ms_p95": 0.9732584003359066,
+          "game": 7,
+          "learner_decisions": 37,
+          "non_forced_decisions": 9,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 29,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 3,
+          "steps": 220,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 4,
+        "MOVE_ROBBER": 26,
+        "PLAY_TURN": 292,
+        "TRADE_RESPONSE": 20
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 20,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.0,
+        0.32440756488388023
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 0
+    },
+    "graph/29/imitated": {
+      "action_kind_counts": {
+        "ACCEPT_TRADE": 11,
+        "BUILD_CITY": 6,
+        "BUILD_ROAD": 34,
+        "BUILD_SETTLEMENT": 17,
+        "BUY_DEVELOPMENT_CARD": 14,
+        "DISCARD_RESOURCE": 58,
+        "END_TURN": 140,
+        "MOVE_ROBBER": 37,
+        "PLAY_KNIGHT_CARD": 7,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 3,
+        "REJECT_TRADE": 5,
+        "ROLL": 140
+      },
+      "action_mode": "deterministic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "graph",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.6250102933393851,
+      "decision_latency_ms_p95": 0.9996836539357897,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 473,
+      "max_game_steps": 20000,
+      "mean_victory_points": 3.25,
+      "non_forced_decisions": 248,
+      "offers": 57,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 20,
+            "END_TURN": 20,
+            "MOVE_ROBBER": 6,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 20
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6453113290607123,
+          "decision_latency_ms_p95": 0.9093541535548865,
+          "game": 0,
+          "learner_decisions": 74,
+          "non_forced_decisions": 44,
+          "offers": 8,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 20,
+            "MOVE_ROBBER": 6,
+            "PLAY_TURN": 43,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 0,
+          "steps": 311,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 3,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 18,
+            "MOVE_ROBBER": 5,
+            "PLAY_KNIGHT_CARD": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6330917920854132,
+          "decision_latency_ms_p95": 1.0161455022171137,
+          "game": 1,
+          "learner_decisions": 59,
+          "non_forced_decisions": 28,
+          "offers": 8,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 44,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 1,
+          "steps": 287,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 13,
+            "END_TURN": 19,
+            "MOVE_ROBBER": 6,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 2,
+            "ROLL": 19
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6413804949261248,
+          "decision_latency_ms_p95": 0.9960586205124855,
+          "game": 2,
+          "learner_decisions": 68,
+          "non_forced_decisions": 39,
+          "offers": 8,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 13,
+            "MOVE_ROBBER": 6,
+            "PLAY_TURN": 42,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 2,
+          "steps": 313,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "DISCARD_RESOURCE": 13,
+            "END_TURN": 18,
+            "MOVE_ROBBER": 5,
+            "PLAY_KNIGHT_CARD": 2,
+            "PLAY_MONOPOLY": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6082220343567097,
+          "decision_latency_ms_p95": 1.006687455810606,
+          "game": 3,
+          "learner_decisions": 67,
+          "non_forced_decisions": 37,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 13,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 43,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 3,
+          "steps": 299,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 0,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 7,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "END_TURN": 15,
+            "MOVE_ROBBER": 3,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 15
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6019318119642582,
+          "decision_latency_ms_p95": 0.9604330640286206,
+          "game": 4,
+          "learner_decisions": 47,
+          "non_forced_decisions": 21,
+          "offers": 3,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 39,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 0,
+          "steps": 224,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 18,
+            "MOVE_ROBBER": 4,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.5998022625443794,
+          "decision_latency_ms_p95": 0.9644628735259173,
+          "game": 5,
+          "learner_decisions": 59,
+          "non_forced_decisions": 29,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 43,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 1,
+          "steps": 285,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 5,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 6,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 19,
+            "MOVE_ROBBER": 4,
+            "PLAY_KNIGHT_CARD": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 19
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6101686740294099,
+          "decision_latency_ms_p95": 0.9552060859277844,
+          "game": 6,
+          "learner_decisions": 60,
+          "non_forced_decisions": 34,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 46,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 2,
+          "steps": 309,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "END_TURN": 13,
+            "MOVE_ROBBER": 4,
+            "ROLL": 13
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6633439901260993,
+          "decision_latency_ms_p95": 1.1692289961501958,
+          "game": 7,
+          "learner_decisions": 39,
+          "non_forced_decisions": 16,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 30,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 3,
+          "steps": 210,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 5,
+          "winner": 1,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 58,
+        "MOVE_ROBBER": 37,
+        "PLAY_TURN": 330,
+        "TRADE_RESPONSE": 16
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 16,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.0,
+        0.32440756488388023
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 0
+    },
+    "graph/29/untrained": {
+      "action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 17,
+        "BUILD_SETTLEMENT": 16,
+        "BUY_DEVELOPMENT_CARD": 1,
+        "END_TURN": 129,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 24,
+        "REJECT_TRADE": 11,
+        "ROLL": 129
+      },
+      "action_mode": "deterministic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "graph",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.6060950626015575,
+      "decision_latency_ms_p95": 1.0767909698188305,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 341,
+      "max_game_steps": 20000,
+      "mean_victory_points": 2.625,
+      "non_forced_decisions": 83,
+      "offers": 46,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "END_TURN": 15,
+            "MOVE_ROBBER": 4,
+            "REJECT_TRADE": 1,
+            "ROLL": 15
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6135771225672215,
+          "decision_latency_ms_p95": 0.9720791131258008,
+          "game": 0,
+          "learner_decisions": 40,
+          "non_forced_decisions": 10,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 31,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 0,
+          "steps": 242,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 18,
+            "MOVE_ROBBER": 4,
+            "REJECT_TRADE": 2,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6313447820696425,
+          "decision_latency_ms_p95": 1.1234998004510999,
+          "game": 1,
+          "learner_decisions": 47,
+          "non_forced_decisions": 11,
+          "offers": 4,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 37,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 1,
+          "steps": 292,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 16,
+            "MOVE_ROBBER": 3,
+            "ROLL": 16
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.6069885392207652,
+          "decision_latency_ms_p95": 1.0194043046794825,
+          "game": 2,
+          "learner_decisions": 40,
+          "non_forced_decisions": 8,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 33
+          },
+          "seat": 2,
+          "steps": 257,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 22,
+            "MARITIME_TRADE": 1,
+            "MOVE_ROBBER": 3,
+            "REJECT_TRADE": 1,
+            "ROLL": 22
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.5915771686920414,
+          "decision_latency_ms_p95": 0.9873209404759103,
+          "game": 3,
+          "learner_decisions": 54,
+          "non_forced_decisions": 10,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 46,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 3,
+          "steps": 370,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 15,
+            "MARITIME_TRADE": 2,
+            "MOVE_ROBBER": 5,
+            "ROLL": 15
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6081459079203861,
+          "decision_latency_ms_p95": 0.9857525583356617,
+          "game": 4,
+          "learner_decisions": 42,
+          "non_forced_decisions": 12,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 33
+          },
+          "seat": 0,
+          "steps": 221,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 15,
+            "MARITIME_TRADE": 1,
+            "MOVE_ROBBER": 5,
+            "ROLL": 15
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6224512429226463,
+          "decision_latency_ms_p95": 0.9600829798728228,
+          "game": 5,
+          "learner_decisions": 41,
+          "non_forced_decisions": 11,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 32
+          },
+          "seat": 1,
+          "steps": 231,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 15,
+            "MARITIME_TRADE": 2,
+            "REJECT_TRADE": 3,
+            "ROLL": 15
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.6011958350427449,
+          "decision_latency_ms_p95": 0.8023647009395051,
+          "game": 6,
+          "learner_decisions": 40,
+          "non_forced_decisions": 10,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "PLAY_TURN": 33,
+            "TRADE_RESPONSE": 3
+          },
+          "seat": 2,
+          "steps": 226,
+          "terminated": true,
+          "trade_responses": 3,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 13,
+            "MARITIME_TRADE": 3,
+            "REJECT_TRADE": 4,
+            "ROLL": 13
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.5709987976965872,
+          "decision_latency_ms_p95": 0.7660915143787838,
+          "game": 7,
+          "learner_decisions": 37,
+          "non_forced_decisions": 11,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "PLAY_TURN": 29,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 3,
+          "steps": 210,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "MOVE_ROBBER": 24,
+        "PLAY_TURN": 274,
+        "TRADE_RESPONSE": 11
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 11,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.0,
+        0.32440756488388023
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 0
+    },
+    "heuristic/heuristic": {
+      "action_kind_counts": {
+        "ACCEPT_TRADE": 17,
+        "BUILD_CITY": 9,
+        "BUILD_ROAD": 48,
+        "BUILD_SETTLEMENT": 28,
+        "BUY_DEVELOPMENT_CARD": 35,
+        "DISCARD_RESOURCE": 59,
+        "END_TURN": 149,
+        "MARITIME_TRADE": 43,
+        "MOVE_ROBBER": 47,
+        "PLAY_KNIGHT_CARD": 17,
+        "PLAY_MONOPOLY": 2,
+        "PLAY_ROAD_BUILDING": 3,
+        "PLAY_YEAR_OF_PLENTY": 2,
+        "REJECT_TRADE": 6,
+        "ROLL": 152
+      },
+      "action_mode": "seeded_heuristic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "heuristic",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.02745937441311161,
+      "decision_latency_ms_p95": 0.1437166705727577,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 617,
+      "max_game_steps": 20000,
+      "mean_victory_points": 6.75,
+      "non_forced_decisions": 368,
+      "offers": 76,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 5,
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 10,
+            "BUILD_SETTLEMENT": 6,
+            "BUY_DEVELOPMENT_CARD": 5,
+            "DISCARD_RESOURCE": 8,
+            "END_TURN": 28,
+            "MARITIME_TRADE": 19,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 29
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.029617980603248845,
+          "decision_latency_ms_p95": 0.1030206331051886,
+          "game": 0,
+          "learner_decisions": 124,
+          "non_forced_decisions": 81,
+          "offers": 13,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 8,
+            "MOVE_ROBBER": 9,
+            "PLAY_TURN": 98,
+            "TRADE_RESPONSE": 5
+          },
+          "seat": 0,
+          "steps": 487,
+          "terminated": true,
+          "trade_responses": 5,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 0,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_ROAD": 8,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 9,
+            "END_TURN": 24,
+            "MARITIME_TRADE": 4,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 4,
+            "PLAY_ROAD_BUILDING": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 24
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.03231166861951351,
+          "decision_latency_ms_p95": 0.17484981799498198,
+          "game": 1,
+          "learner_decisions": 100,
+          "non_forced_decisions": 63,
+          "offers": 12,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_TURN": 74,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 1,
+          "steps": 401,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 7,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_CITY": 3,
+            "BUILD_ROAD": 6,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 8,
+            "DISCARD_RESOURCE": 5,
+            "END_TURN": 21,
+            "MARITIME_TRADE": 5,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 2,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 22
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.033125878595139664,
+          "decision_latency_ms_p95": 0.1761724823154509,
+          "game": 2,
+          "learner_decisions": 92,
+          "non_forced_decisions": 57,
+          "offers": 11,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 5,
+            "MOVE_ROBBER": 9,
+            "PLAY_TURN": 72,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 2,
+          "steps": 338,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 2,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 4,
+            "BUILD_ROAD": 7,
+            "BUILD_SETTLEMENT": 4,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 16,
+            "END_TURN": 24,
+            "MARITIME_TRADE": 6,
+            "MOVE_ROBBER": 6,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 24
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.029108494580272704,
+          "decision_latency_ms_p95": 0.16956720501184458,
+          "game": 3,
+          "learner_decisions": 93,
+          "non_forced_decisions": 53,
+          "offers": 13,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 16,
+            "MOVE_ROBBER": 6,
+            "PLAY_TURN": 63,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 3,
+          "steps": 410,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "END_TURN": 14,
+            "MARITIME_TRADE": 3,
+            "MOVE_ROBBER": 2,
+            "REJECT_TRADE": 1,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.01581687328600606,
+          "decision_latency_ms_p95": 0.07141686510294676,
+          "game": 4,
+          "learner_decisions": 43,
+          "non_forced_decisions": 15,
+          "offers": 10,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 35,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 0,
+          "steps": 241,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 5,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "DISCARD_RESOURCE": 13,
+            "END_TURN": 13,
+            "MARITIME_TRADE": 5,
+            "MOVE_ROBBER": 4,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 2,
+            "ROLL": 13
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.019275198971468302,
+          "decision_latency_ms_p95": 0.06359177641570568,
+          "game": 5,
+          "learner_decisions": 63,
+          "non_forced_decisions": 38,
+          "offers": 7,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 13,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 38,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 1,
+          "steps": 220,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 5,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 8,
+            "END_TURN": 12,
+            "MOVE_ROBBER": 2,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 12
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.022275701419196346,
+          "decision_latency_ms_p95": 0.1030124491080642,
+          "game": 6,
+          "learner_decisions": 44,
+          "non_forced_decisions": 24,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 8,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 29,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 2,
+          "steps": 200,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 7,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 8,
+            "END_TURN": 13,
+            "MARITIME_TRADE": 1,
+            "MOVE_ROBBER": 6,
+            "PLAY_KNIGHT_CARD": 4,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.024299530697793798,
+          "decision_latency_ms_p95": 0.14316431479528546,
+          "game": 7,
+          "learner_decisions": 58,
+          "non_forced_decisions": 37,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 6,
+            "PLAY_TURN": 47,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 3,
+          "steps": 230,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 3,
+          "won": true
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 59,
+        "MOVE_ROBBER": 47,
+        "PLAY_TURN": 456,
+        "TRADE_RESPONSE": 23
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 23,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.375,
+      "win_rate_ci95_nominal_wilson": [
+        0.13684428582359742,
+        0.6942576053973727
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 3
+    },
+    "heuristic/random": {
+      "action_kind_counts": {
+        "BUILD_CITY": 15,
+        "BUILD_ROAD": 92,
+        "BUILD_SETTLEMENT": 35,
+        "BUY_DEVELOPMENT_CARD": 35,
+        "DISCARD_RESOURCE": 101,
+        "END_TURN": 128,
+        "MARITIME_TRADE": 44,
+        "MOVE_ROBBER": 35,
+        "PLAY_KNIGHT_CARD": 14,
+        "PLAY_MONOPOLY": 4,
+        "PLAY_ROAD_BUILDING": 4,
+        "PLAY_YEAR_OF_PLENTY": 3,
+        "ROLL": 136
+      },
+      "action_mode": "seeded_heuristic",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "random",
+      "candidate": "heuristic",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.0514094451090592,
+      "decision_latency_ms_p95": 0.2332185977138579,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 646,
+      "max_game_steps": 20000,
+      "mean_victory_points": 10.125,
+      "non_forced_decisions": 431,
+      "offers": 0,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 11,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 6,
+            "DISCARD_RESOURCE": 17,
+            "END_TURN": 17,
+            "MARITIME_TRADE": 1,
+            "MOVE_ROBBER": 11,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.05096378019795968,
+          "decision_latency_ms_p95": 0.1999374944716692,
+          "game": 0,
+          "learner_decisions": 91,
+          "non_forced_decisions": 61,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 17,
+            "MOVE_ROBBER": 11,
+            "PLAY_TURN": 59
+          },
+          "seat": 0,
+          "steps": 236,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 0,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 10,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 17,
+            "END_TURN": 17,
+            "MARITIME_TRADE": 5,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 2,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0377227870845481,
+          "decision_latency_ms_p95": 0.1722207525745034,
+          "game": 1,
+          "learner_decisions": 95,
+          "non_forced_decisions": 67,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 17,
+            "MOVE_ROBBER": 9,
+            "PLAY_TURN": 65
+          },
+          "seat": 1,
+          "steps": 254,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 11,
+          "winner": 1,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 11,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 5,
+            "DISCARD_RESOURCE": 19,
+            "END_TURN": 18,
+            "MARITIME_TRADE": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 19
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.046914846946795784,
+          "decision_latency_ms_p95": 0.21828323369845748,
+          "game": 2,
+          "learner_decisions": 90,
+          "non_forced_decisions": 62,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 19,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 62
+          },
+          "seat": 2,
+          "steps": 262,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 2,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 10,
+            "BUILD_SETTLEMENT": 6,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "DISCARD_RESOURCE": 14,
+            "END_TURN": 17,
+            "MARITIME_TRADE": 6,
+            "MOVE_ROBBER": 1,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.048676520803725566,
+          "decision_latency_ms_p95": 0.21659950725734234,
+          "game": 3,
+          "learner_decisions": 77,
+          "non_forced_decisions": 48,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 14,
+            "MOVE_ROBBER": 1,
+            "PLAY_TURN": 58
+          },
+          "seat": 3,
+          "steps": 234,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 3,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 3,
+            "BUILD_ROAD": 10,
+            "BUILD_SETTLEMENT": 4,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "END_TURN": 11,
+            "MARITIME_TRADE": 8,
+            "MOVE_ROBBER": 3,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 12
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.06193326870826158,
+          "decision_latency_ms_p95": 0.2626919187605381,
+          "game": 4,
+          "learner_decisions": 55,
+          "non_forced_decisions": 36,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 48
+          },
+          "seat": 0,
+          "steps": 146,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 0,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 14,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 6,
+            "DISCARD_RESOURCE": 9,
+            "END_TURN": 17,
+            "MARITIME_TRADE": 6,
+            "MOVE_ROBBER": 3,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.056929518411188956,
+          "decision_latency_ms_p95": 0.3162089269608259,
+          "game": 5,
+          "learner_decisions": 81,
+          "non_forced_decisions": 53,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 9,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 65
+          },
+          "seat": 1,
+          "steps": 228,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 1,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 4,
+            "BUILD_ROAD": 11,
+            "BUILD_SETTLEMENT": 4,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "END_TURN": 13,
+            "MARITIME_TRADE": 7,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.06472918903455138,
+          "decision_latency_ms_p95": 0.28363551246002316,
+          "game": 6,
+          "learner_decisions": 56,
+          "non_forced_decisions": 35,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "PLAY_TURN": 52
+          },
+          "seat": 2,
+          "steps": 180,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 2,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 3,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 4,
+            "BUY_DEVELOPMENT_CARD": 3,
+            "DISCARD_RESOURCE": 25,
+            "END_TURN": 18,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 3,
+            "PLAY_KNIGHT_CARD": 1,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 19
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0532301889714038,
+          "decision_latency_ms_p95": 0.30208309181034565,
+          "game": 7,
+          "learner_decisions": 101,
+          "non_forced_decisions": 69,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 25,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 69
+          },
+          "seat": 3,
+          "steps": 268,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 3,
+          "won": true
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 101,
+        "MOVE_ROBBER": 35,
+        "PLAY_TURN": 478
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 0,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 1.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.6755924351161198,
+        1.0
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 8
+    },
+    "random/heuristic": {
+      "action_kind_counts": {
+        "ACCEPT_TRADE": 11,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 17,
+        "BUY_DEVELOPMENT_CARD": 15,
+        "DISCARD_RESOURCE": 22,
+        "END_TURN": 144,
+        "MARITIME_TRADE": 42,
+        "MOVE_ROBBER": 34,
+        "PLAY_KNIGHT_CARD": 7,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_ROAD_BUILDING": 1,
+        "PLAY_YEAR_OF_PLENTY": 2,
+        "REJECT_TRADE": 14,
+        "ROLL": 144
+      },
+      "action_mode": "seeded_random",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "heuristic",
+      "candidate": "random",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.0007977133098336839,
+      "decision_latency_ms_p95": 0.0012079253792762756,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 485,
+      "max_game_steps": 20000,
+      "mean_victory_points": 2.625,
+      "non_forced_decisions": 221,
+      "offers": 63,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "END_TURN": 20,
+            "MARITIME_TRADE": 3,
+            "MOVE_ROBBER": 7,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 3,
+            "ROLL": 20
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0008994247764348984,
+          "decision_latency_ms_p95": 0.0012498348951339722,
+          "game": 0,
+          "learner_decisions": 63,
+          "non_forced_decisions": 25,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 7,
+            "PLAY_TURN": 47,
+            "TRADE_RESPONSE": 5
+          },
+          "seat": 0,
+          "steps": 313,
+          "terminated": true,
+          "trade_responses": 5,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "END_TURN": 18,
+            "MARITIME_TRADE": 7,
+            "MOVE_ROBBER": 4,
+            "PLAY_KNIGHT_CARD": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007682267511100099,
+          "decision_latency_ms_p95": 0.001041218638420105,
+          "game": 1,
+          "learner_decisions": 57,
+          "non_forced_decisions": 24,
+          "offers": 5,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 4,
+            "PLAY_TURN": 47,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 1,
+          "steps": 292,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 5,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 4,
+            "END_TURN": 22,
+            "MARITIME_TRADE": 6,
+            "MOVE_ROBBER": 5,
+            "PLAY_KNIGHT_CARD": 1,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 4,
+            "ROLL": 22
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0008867732626763549,
+          "decision_latency_ms_p95": 0.0014870776794850822,
+          "game": 2,
+          "learner_decisions": 74,
+          "non_forced_decisions": 35,
+          "offers": 8,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 60,
+            "TRADE_RESPONSE": 5
+          },
+          "seat": 2,
+          "steps": 362,
+          "terminated": true,
+          "trade_responses": 5,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 2,
+            "BUILD_ROAD": 5,
+            "BUILD_SETTLEMENT": 3,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 5,
+            "END_TURN": 18,
+            "MARITIME_TRADE": 2,
+            "MOVE_ROBBER": 5,
+            "REJECT_TRADE": 2,
+            "ROLL": 18
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007949219863922869,
+          "decision_latency_ms_p95": 0.0012081582099199295,
+          "game": 3,
+          "learner_decisions": 61,
+          "non_forced_decisions": 30,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 5,
+            "MOVE_ROBBER": 5,
+            "PLAY_TURN": 43,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 3,
+          "steps": 309,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 4,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 3,
+            "BUILD_SETTLEMENT": 2,
+            "END_TURN": 16,
+            "MARITIME_TRADE": 1,
+            "MOVE_ROBBER": 2,
+            "ROLL": 16
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.000770340060315481,
+          "decision_latency_ms_p95": 0.0010409858077764511,
+          "game": 4,
+          "learner_decisions": 41,
+          "non_forced_decisions": 9,
+          "offers": 6,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 34,
+            "TRADE_RESPONSE": 1
+          },
+          "seat": 0,
+          "steps": 223,
+          "terminated": true,
+          "trade_responses": 1,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 3,
+            "BUILD_ROAD": 4,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 1,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 15,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 3,
+            "REJECT_TRADE": 1,
+            "ROLL": 15
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007250836413157614,
+          "decision_latency_ms_p95": 0.001008203253149986,
+          "game": 5,
+          "learner_decisions": 57,
+          "non_forced_decisions": 29,
+          "offers": 8,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 3,
+            "PLAY_TURN": 42,
+            "TRADE_RESPONSE": 4
+          },
+          "seat": 1,
+          "steps": 236,
+          "terminated": true,
+          "trade_responses": 4,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 2,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "ACCEPT_TRADE": 1,
+            "BUILD_ROAD": 5,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 6,
+            "DISCARD_RESOURCE": 8,
+            "END_TURN": 21,
+            "MARITIME_TRADE": 8,
+            "MOVE_ROBBER": 6,
+            "PLAY_KNIGHT_CARD": 4,
+            "PLAY_ROAD_BUILDING": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "REJECT_TRADE": 1,
+            "ROLL": 21
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007509719580411911,
+          "decision_latency_ms_p95": 0.0010169576853513713,
+          "game": 6,
+          "learner_decisions": 85,
+          "non_forced_decisions": 47,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 8,
+            "MOVE_ROBBER": 6,
+            "PLAY_TURN": 65,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 2,
+          "steps": 335,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 2,
+            "BUILD_SETTLEMENT": 2,
+            "DISCARD_RESOURCE": 5,
+            "END_TURN": 14,
+            "MARITIME_TRADE": 6,
+            "MOVE_ROBBER": 2,
+            "REJECT_TRADE": 2,
+            "ROLL": 14
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007570314993883702,
+          "decision_latency_ms_p95": 0.0009170500561594963,
+          "game": 7,
+          "learner_decisions": 47,
+          "non_forced_decisions": 22,
+          "offers": 9,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 5,
+            "MOVE_ROBBER": 2,
+            "PLAY_TURN": 34,
+            "TRADE_RESPONSE": 2
+          },
+          "seat": 3,
+          "steps": 233,
+          "terminated": true,
+          "trade_responses": 2,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 22,
+        "MOVE_ROBBER": 34,
+        "PLAY_TURN": 372,
+        "TRADE_RESPONSE": 25
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 25,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.0,
+      "win_rate_ci95_nominal_wilson": [
+        0.0,
+        0.32440756488388023
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 0
+    },
+    "random/random": {
+      "action_kind_counts": {
+        "BUILD_CITY": 15,
+        "BUILD_ROAD": 107,
+        "BUILD_SETTLEMENT": 33,
+        "BUY_DEVELOPMENT_CARD": 34,
+        "DISCARD_RESOURCE": 312,
+        "END_TURN": 616,
+        "MARITIME_TRADE": 320,
+        "MOVE_ROBBER": 111,
+        "PLAY_KNIGHT_CARD": 17,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_ROAD_BUILDING": 2,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 620
+      },
+      "action_mode": "seeded_random",
+      "aggregation_scope": "complete_blocks",
+      "baseline": "random",
+      "candidate": "random",
+      "completed_board_seeds": [
+        90000,
+        90001
+      ],
+      "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
+      "decision_latency_ms_mean": 0.0007480110414921829,
+      "decision_latency_ms_p95": 0.001042056828737259,
+      "deterministic": true,
+      "finished_games": 8,
+      "games": 8,
+      "incomplete_reason": null,
+      "interrupted_game": null,
+      "learner_decisions": 2189,
+      "max_game_steps": 20000,
+      "mean_victory_points": 7.5,
+      "non_forced_decisions": 1085,
+      "offers": 0,
+      "outcomes": [
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 2,
+            "DISCARD_RESOURCE": 13,
+            "END_TURN": 77,
+            "MARITIME_TRADE": 12,
+            "MOVE_ROBBER": 12,
+            "ROLL": 77
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007696463189159448,
+          "decision_latency_ms_p95": 0.0011516734957694999,
+          "game": 0,
+          "learner_decisions": 208,
+          "non_forced_decisions": 57,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 13,
+            "MOVE_ROBBER": 12,
+            "PLAY_TURN": 179
+          },
+          "seat": 0,
+          "steps": 942,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 2,
+          "winner": 1,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 6,
+            "BUY_DEVELOPMENT_CARD": 8,
+            "DISCARD_RESOURCE": 30,
+            "END_TURN": 92,
+            "MARITIME_TRADE": 67,
+            "MOVE_ROBBER": 20,
+            "PLAY_KNIGHT_CARD": 5,
+            "ROLL": 92
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007643836960639982,
+          "decision_latency_ms_p95": 0.0010943040251731873,
+          "game": 1,
+          "learner_decisions": 336,
+          "non_forced_decisions": 177,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 30,
+            "MOVE_ROBBER": 20,
+            "PLAY_TURN": 282
+          },
+          "seat": 1,
+          "steps": 1264,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 9,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 1,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 6,
+            "BUY_DEVELOPMENT_CARD": 5,
+            "DISCARD_RESOURCE": 46,
+            "END_TURN": 63,
+            "MARITIME_TRADE": 64,
+            "MOVE_ROBBER": 14,
+            "PLAY_KNIGHT_CARD": 2,
+            "ROLL": 64
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007852737326174974,
+          "decision_latency_ms_p95": 0.0011669588275253773,
+          "game": 2,
+          "learner_decisions": 280,
+          "non_forced_decisions": 179,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 46,
+            "MOVE_ROBBER": 14,
+            "PLAY_TURN": 216
+          },
+          "seat": 2,
+          "steps": 872,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 2,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 4,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 4,
+            "DISCARD_RESOURCE": 52,
+            "END_TURN": 109,
+            "MARITIME_TRADE": 42,
+            "MOVE_ROBBER": 14,
+            "PLAY_KNIGHT_CARD": 3,
+            "ROLL": 110
+          },
+          "board_seed": 90000,
+          "decision_latency_ms_mean": 0.0007246476572069376,
+          "decision_latency_ms_p95": 0.0009580980986356735,
+          "game": 3,
+          "learner_decisions": 358,
+          "non_forced_decisions": 155,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 52,
+            "MOVE_ROBBER": 14,
+            "PLAY_TURN": 288
+          },
+          "seat": 3,
+          "steps": 1358,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 3,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_ROAD": 6,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 17,
+            "END_TURN": 77,
+            "MARITIME_TRADE": 7,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 1,
+            "ROLL": 77
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007289692270334321,
+          "decision_latency_ms_p95": 0.0010480638593435279,
+          "game": 4,
+          "learner_decisions": 198,
+          "non_forced_decisions": 50,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 17,
+            "MOVE_ROBBER": 9,
+            "PLAY_TURN": 168
+          },
+          "seat": 0,
+          "steps": 949,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 3,
+          "winner": 3,
+          "won": false
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 3,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 2,
+            "DISCARD_RESOURCE": 56,
+            "END_TURN": 44,
+            "MARITIME_TRADE": 42,
+            "MOVE_ROBBER": 8,
+            "PLAY_ROAD_BUILDING": 1,
+            "ROLL": 45
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007147647912415984,
+          "decision_latency_ms_p95": 0.0009168870747089386,
+          "game": 5,
+          "learner_decisions": 221,
+          "non_forced_decisions": 143,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 56,
+            "MOVE_ROBBER": 8,
+            "PLAY_TURN": 153
+          },
+          "seat": 1,
+          "steps": 556,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 1,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 4,
+            "BUILD_ROAD": 15,
+            "BUILD_SETTLEMENT": 5,
+            "BUY_DEVELOPMENT_CARD": 5,
+            "DISCARD_RESOURCE": 94,
+            "END_TURN": 64,
+            "MARITIME_TRADE": 59,
+            "MOVE_ROBBER": 17,
+            "PLAY_KNIGHT_CARD": 4,
+            "ROLL": 65
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007451036440051464,
+          "decision_latency_ms_p95": 0.0009164796210825443,
+          "game": 6,
+          "learner_decisions": 332,
+          "non_forced_decisions": 222,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 94,
+            "MOVE_ROBBER": 17,
+            "PLAY_TURN": 217
+          },
+          "seat": 2,
+          "steps": 888,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 10,
+          "winner": 2,
+          "won": true
+        },
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 2,
+            "BUILD_ROAD": 11,
+            "BUILD_SETTLEMENT": 2,
+            "BUY_DEVELOPMENT_CARD": 8,
+            "DISCARD_RESOURCE": 4,
+            "END_TURN": 90,
+            "MARITIME_TRADE": 27,
+            "MOVE_ROBBER": 17,
+            "PLAY_KNIGHT_CARD": 2,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_ROAD_BUILDING": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 90
+          },
+          "board_seed": 90001,
+          "decision_latency_ms_mean": 0.0007480584827135317,
+          "decision_latency_ms_p95": 0.0010410440154373646,
+          "game": 7,
+          "learner_decisions": 256,
+          "non_forced_decisions": 102,
+          "offers": 0,
+          "phase_counts": {
+            "BUILD_INITIAL_ROAD": 2,
+            "BUILD_INITIAL_SETTLEMENT": 2,
+            "DISCARD": 4,
+            "MOVE_ROBBER": 17,
+            "PLAY_TURN": 231
+          },
+          "seat": 3,
+          "steps": 1138,
+          "terminated": true,
+          "trade_responses": 0,
+          "truncated": false,
+          "victory_points": 6,
+          "winner": 2,
+          "won": false
+        }
+      ],
+      "partial_outcomes": [],
+      "phase_counts": {
+        "BUILD_INITIAL_ROAD": 16,
+        "BUILD_INITIAL_SETTLEMENT": 16,
+        "DISCARD": 312,
+        "MOVE_ROBBER": 111,
+        "PLAY_TURN": 1734
+      },
+      "reject_trades": false,
+      "requested_board_seeds": [
+        90000,
+        90001
+      ],
+      "requested_games": 8,
+      "resolved_games": 8,
+      "status": "complete",
+      "terminations": 8,
+      "trade_responses": 0,
+      "truncations": 0,
+      "unresolved_games": 0,
+      "victory_points_note": "Observed endpoint victory points, including truncations; not final-game competence.",
+      "win_rate": 0.5,
+      "win_rate_ci95_nominal_wilson": [
+        0.21521606221387757,
+        0.7847839377861224
+      ],
+      "win_rate_denominator": 8,
+      "win_rate_reporting": "strict_all_games_resolved",
+      "wins": 4
+    }
+  }
+}

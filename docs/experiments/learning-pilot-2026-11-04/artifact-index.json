@@ -1,0 +1,76 @@
+{
+  "large_artifacts": {
+    "11/dataset": {
+      "bytes": 578570,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-demonstrations.json.gz",
+      "sha256": "8f3ebe0369a0c3239869dd944a93cdb1cfcf0924ad30d07868b0403a0e014c3d"
+    },
+    "11/imitated": {
+      "bytes": 117478,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-imitated.pt",
+      "sha256": "d6935f03bd381a2fc6aa7381e8fbc6780d845de2f0b5f29ae050521db316063c"
+    },
+    "11/initial_student": {
+      "bytes": 117573,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-initial_student.pt",
+      "sha256": "8a54d76a9d35ef02240836a866b5fba04996c013a9bad15f87a783ff6f5db579"
+    },
+    "11/untrained": {
+      "bytes": 117199,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-11-untrained.pt",
+      "sha256": "4995801695720e57403ff6f8ddaf3dae22919d0fbb697a466d5e6d74841b355c"
+    },
+    "29/dataset": {
+      "bytes": 572103,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-demonstrations.json.gz",
+      "sha256": "bae0ff39f48d59b5787b51023bf29b4180f3eaee6b4084a6b8695c080460e570"
+    },
+    "29/imitated": {
+      "bytes": 117414,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-imitated.pt",
+      "sha256": "dcb5afac26dd66d92817337441a2886f666963d2a4fd8e82487092458d6815fa"
+    },
+    "29/initial_student": {
+      "bytes": 117509,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-initial_student.pt",
+      "sha256": "13b562fa710633589a7b03a25eb326b9b18a84628a74ec7557f73b9e6af35ed7"
+    },
+    "29/untrained": {
+      "bytes": 117199,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/seed-29-untrained.pt",
+      "sha256": "100278138e89b93a79a5bdb0ee89bc93513c50e1e6aff65bcb2edfb1e4c74543"
+    },
+    "validation_demonstrations": {
+      "bytes": 31755,
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/learning/runs/learning-pilot-2026-11-04/validation-demonstrations.json.gz",
+      "sha256": "de9ae96b22abae7ef83d7dba667a9b7220af7f2e0af87b949dd74a1ea058be85"
+    }
+  },
+  "raw_evidence": {
+    "comparisons.json": {
+      "bytes": 2764,
+      "sha256": "20a421ca16de966047340088c72d98f38bee2440e0bab9adc616f289948efb30"
+    },
+    "manifest.json": {
+      "bytes": 3973,
+      "sha256": "7eb7af6cbf3be20e6b5d26c8d747947ee957c338082f6dc0d6ca48a06ad4d01a"
+    },
+    "probe.json": {
+      "bytes": 5728,
+      "sha256": "3bceb16ce98ae0742bb8b9595d4644e814396daab30df91d0624021f56392df1"
+    },
+    "results.json": {
+      "bytes": 184467,
+      "sha256": "df643321c0e5222a83b9c8eba11054b4028d35be8d772c857444d57f367080d6"
+    }
+  },
+  "source": {
+    "content_identity": "git:1350de2f15499d36a90181e7d25d555de2f4313a",
+    "dirty": false,
+    "revision": "1350de2f15499d36a90181e7d25d555de2f4313a"
+  },
+  "stdout": {
+    "path": "/private/tmp/colonist-learning-pilot-2026-11-04.stdout.json",
+    "sha256": "748677ef0eb47f4f9b39aa9fea078d3ab3452a4d607706a455d89fec69782553"
+  }
+}

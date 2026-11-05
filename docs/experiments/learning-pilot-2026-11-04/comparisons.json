@@ -1,0 +1,90 @@
+{
+  "note": "Post-run descriptive differences using paired_block_summary; no additional games or training.",
+  "source": {
+    "content_identity": "git:1350de2f15499d36a90181e7d25d555de2f4313a",
+    "dirty": false,
+    "revision": "1350de2f15499d36a90181e7d25d555de2f4313a"
+  },
+  "student_comparisons": {
+    "11": {
+      "imitated_minus_teacher": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": -5.0,
+            "win_rate_difference": -0.5
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": -1.75,
+            "win_rate_difference": -0.25
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": -3.375,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": -0.375
+      },
+      "imitated_minus_untrained": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": 0.75,
+            "win_rate_difference": 0.0
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": 2.0,
+            "win_rate_difference": 0.0
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": 1.375,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": 0.0
+      }
+    },
+    "29": {
+      "imitated_minus_teacher": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": -5.25,
+            "win_rate_difference": -0.5
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": -1.75,
+            "win_rate_difference": -0.25
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": -3.5,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": -0.375
+      },
+      "imitated_minus_untrained": {
+        "boards": [
+          {
+            "board_seed": 90000,
+            "mean_victory_points_difference": 0.0,
+            "win_rate_difference": 0.0
+          },
+          {
+            "board_seed": 90001,
+            "mean_victory_points_difference": 1.25,
+            "win_rate_difference": 0.0
+          }
+        ],
+        "comparison_note": "Descriptive board-level differences; no significance claim.",
+        "mean_victory_points_difference": 0.625,
+        "paired_boards": 2,
+        "paired_games": 8,
+        "win_rate_difference": 0.0
+      }
+    }
+  }
+}
