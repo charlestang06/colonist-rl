@@ -171,16 +171,28 @@ def _evaluate_matches(
                 if env.version >= max_game_steps:
                     break
                 view = driver.view
+                if deadline is not None and time.monotonic() >= deadline:
+                    expired = True
+                    break
                 if view.player_id == seat:
                     start = time.perf_counter()
                     if reject_trades and view.context.kind == "TRADE_RESPONSE":
                         action = next(a for a in view.legal_actions if a.kind == "REJECT_TRADE")
                         if policy is not None:
                             with torch.no_grad():
+                                if deadline is not None and time.monotonic() >= deadline:
+                                    expired = True
+                                    break
                                 memory = policy(view, memory).memory.detach()
                     elif policy is not None:
+                        if deadline is not None and time.monotonic() >= deadline:
+                            expired = True
+                            break
                         action, memory = actor.act(view, memory, deterministic=deterministic)
                     else:
+                        if deadline is not None and time.monotonic() >= deadline:
+                            expired = True
+                            break
                         action = actor.act(view)
                     latency.append(time.perf_counter() - start)
                     decisions += 1

@@ -215,6 +215,8 @@ class _MatchDriver:
         if deadline is not None and time.monotonic() >= deadline:
             return
         view = self.view
+        if _expired(deadline):
+            return
         actor = view.context.actor
         if (
             actor == self.learner
@@ -228,7 +230,7 @@ class _MatchDriver:
             return
         self.attempted_turns.add(key)
         policy = self.policies[actor]
-        if hasattr(policy, "propose"):
+        if hasattr(policy, "propose") and not _expired(deadline):
             offer = policy.propose(view)
             if offer is not None and (deadline is None or time.monotonic() < deadline):
                 self.env.offer_trade(offer)
@@ -238,10 +240,14 @@ class _MatchDriver:
         if _expired(deadline):
             return None
         view = self.view
+        if _expired(deadline):
+            return None
         actor = view.player_id
         if actor == self.learner:
             raise ValueError("learner action must come from the learner policy")
         policy = self.policies[actor]
+        if _expired(deadline):
+            return None
         if isinstance(policy, GraphPolicy):
             action, memory = policy.act(view, self.memories.get(actor))
             if _expired(deadline):
@@ -440,6 +446,11 @@ class RolloutCollector:
                 next_value = 0.0
             else:
                 next_view = self.env.observe(self.learner)
+                if _expired(deadline):
+                    self.dropped_partial_intervals += 1
+                    self._interrupted = True
+                    self.stop_reason = "deadline"
+                    break
                 with torch.no_grad():
                     next_value = self.policy(next_view, self.memory).value.item()
             records.append(

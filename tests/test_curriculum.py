@@ -500,3 +500,248 @@ def test_runner_decision_cap_counts_applied_actions_even_when_interval_is_droppe
     assert row["decisions"] == 1
     assert row["completed_intervals"] == 0
     assert row["dropped_partial_intervals"] == 1
+
+
+@pytest.mark.parametrize("role", ["stage", "fixed", "initial"])
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("terminated", "missing"),
+        ("terminated", None),
+        ("terminated", 1),
+        ("truncated", "missing"),
+        ("truncated", None),
+        ("truncated", 0),
+        ("winner", "missing"),
+        ("winner", None),
+        ("winner", True),
+        ("winner", 4),
+    ],
+)
+def test_curriculum_requires_explicit_typed_resolution_for_every_result(role, field, value):
+    m = curriculum()
+    stage, fixed, initial = evidence("random"), evidence(), evidence()
+    result = {"stage": stage, "fixed": fixed, "initial": initial}[role]
+    row = result["outcomes"][0]
+    if value == "missing":
+        row.pop(field)
+    else:
+        row[field] = value
+    assert not m.promotion_gate("random", stage, fixed, initial)["promote"]
+    candidate_fixed = result if role == "stage" else fixed
+    candidate_fixed["baseline"] = "heuristic"
+    selection = m.select_checkpoint(
+        [
+            {
+                "id": "unresolved",
+                "fixed_result": candidate_fixed,
+                "initial_fixed_result": initial,
+            }
+        ]
+    )
+    assert selection["id"] is None
+
+
+def test_curriculum_rejects_winner_and_win_flag_disagreement_without_changing_legacy():
+    from colonist_rl.evaluation import paired_block_summary
+
+    m = curriculum()
+    initial, fixed = evidence(), evidence(vp=9)
+    fixed["outcomes"][0]["winner"] = 1
+    assert (
+        m.select_checkpoint(
+            [{"id": "mismatch", "fixed_result": fixed, "initial_fixed_result": initial}]
+        )["id"]
+        is None
+    )
+    legacy = evidence()
+    for row in legacy["outcomes"]:
+        for field in ("terminated", "truncated", "winner"):
+            row.pop(field)
+    # Older paired-comparison callers retain their existing permissive API.
+    assert paired_block_summary(legacy, deepcopy(legacy))["paired_boards"] == 2
+
+
+@pytest.mark.parametrize("mismatch", ["panel", "initial_vp", "initial_winner"])
+@pytest.mark.parametrize("reverse", [False, True])
+def test_selection_uses_one_common_panel_and_initial_reference(mismatch, reverse):
+    m = curriculum()
+    initial = evidence()
+    earlier = {
+        "id": "fixed-panel",
+        "order": 0,
+        "fixed_result": evidence(),
+        "initial_fixed_result": initial,
+    }
+    later = {
+        "id": "mismatched",
+        "order": 1,
+        "fixed_result": evidence(vp=9),
+        "initial_fixed_result": deepcopy(initial),
+    }
+    if mismatch == "panel":
+        later["fixed_result"] = evidence(vp=9, boards=(62000100, 62000101))
+        later["initial_fixed_result"] = evidence(boards=(62000100, 62000101))
+    elif mismatch == "initial_vp":
+        later["initial_fixed_result"]["outcomes"][0]["victory_points"] = 6
+    else:
+        later["initial_fixed_result"]["outcomes"][0].update(winner=1, won=False)
+    candidates = [earlier, later]
+    if reverse:
+        candidates.reverse()
+    selected = m.select_checkpoint(candidates)
+    assert selected["id"] == "fixed-panel"
+    assert [row["id"] for row in selected["rejected"]] == ["mismatched"]
+    # Row ordering and diagnostic timing do not alter an otherwise shared reference.
+    later["initial_fixed_result"] = deepcopy(initial)
+    later["initial_fixed_result"]["outcomes"].reverse()
+    later["initial_fixed_result"]["decision_latency_ms_mean"] = 123
+    later["fixed_result"] = evidence(vp=9)
+    assert m.select_checkpoint(candidates)["id"] == "mismatched"
+
+
+@pytest.mark.parametrize("graph_opponent", [False, True])
+def test_opponent_observation_expiry_does_not_launch_an_actor(monkeypatch, graph_opponent):
+    from colonist_rl import training
+    from colonist_rl.simulator import FourPlayerGame
+    from colonist_rl.training import _MatchDriver
+
+    clock, starts = [0.0], []
+    monkeypatch.setattr(training.time, "monotonic", lambda: clock[0])
+    env = FourPlayerGame()
+    env.reset(seed=5)
+    driver = _MatchDriver(
+        env,
+        3,
+        5,
+        historical=(GraphPolicy(16),),
+        opponent_lineup=("historical", "random", "random")
+        if graph_opponent
+        else ("heuristic", "random", "random"),
+    )
+    policy = driver.policies[env.current_player]
+    original_act, original_observe = policy.act, env.observe
+
+    def observe_then_expire(*args, **kwargs):
+        view = original_observe(*args, **kwargs)
+        clock[0] = 10.0
+        return view
+
+    def record_actor_start(*args, **kwargs):
+        starts.append(clock[0])
+        return original_act(*args, **kwargs)
+
+    monkeypatch.setattr(env, "observe", observe_then_expire)
+    monkeypatch.setattr(policy, "act", record_actor_start)
+    version = env.version
+    assert driver.opponent_action(deadline=5) is None
+    assert starts == []
+    assert env.version == version and driver.memories == {}
+
+
+def test_proposal_observation_expiry_does_not_launch_proposal(monkeypatch):
+    from colonist_rl import training
+    from colonist_rl.simulator import FourPlayerGame
+    from colonist_rl.training import _MatchDriver
+
+    clock, starts = [0.0], []
+    monkeypatch.setattr(training.time, "monotonic", lambda: clock[0])
+    env = FourPlayerGame()
+    env.reset(seed=5)
+    teacher = HeuristicPolicy(8)
+    for _ in range(1000):
+        view = env.observe()
+        if (
+            view.player_id != 3
+            and view.context.kind == "PLAY_TURN"
+            and view.context.has_rolled
+            and not view.context.free_roads
+        ):
+            break
+        env.step(teacher.act(view))
+    else:
+        pytest.fail("real simulator never reached an opponent proposal opportunity")
+    driver = _MatchDriver(env, 3, 5, baseline="heuristic")
+    policy = driver.policies[env.current_player]
+    original_propose, original_observe = policy.propose, env.observe
+
+    def observe_then_expire(*args, **kwargs):
+        view = original_observe(*args, **kwargs)
+        clock[0] = 10.0
+        return view
+
+    def record_proposal_start(*args, **kwargs):
+        starts.append(clock[0])
+        return original_propose(*args, **kwargs)
+
+    monkeypatch.setattr(env, "observe", observe_then_expire)
+    monkeypatch.setattr(policy, "propose", record_proposal_start)
+    version = env.version
+    driver.maybe_offer(deadline=5)
+    assert starts == []
+    assert env.version == version
+
+
+def test_bootstrap_observation_expiry_drops_and_seals_interval_without_critic(monkeypatch):
+    from colonist_rl import training
+
+    clock, starts = [0.0], []
+    monkeypatch.setattr(training.time, "monotonic", lambda: clock[0])
+    policy = GraphPolicy(16)
+    collector = RolloutCollector(policy, board_seeds=[101])
+    original_observe = collector.env.observe
+
+    def observe_then_expire(*args, **kwargs):
+        view = original_observe(*args, **kwargs)
+        if args and args[0] == collector.learner:
+            clock[0] = 10.0
+        return view
+
+    monkeypatch.setattr(collector.env, "observe", observe_then_expire)
+    handle = policy.register_forward_pre_hook(lambda module, args: starts.append(clock[0]))
+    try:
+        records = collector.collect(1, deadline=5)
+        assert starts == [0.0]
+        assert records == []
+        assert collector.dropped_partial_intervals == 1
+        assert collector.stop_reason == "deadline"
+        version = collector.env.version
+        clock[0] = 0
+        assert collector.collect(1, deadline=5) == []
+        assert starts == [0.0] and collector.env.version == version
+    finally:
+        handle.remove()
+
+
+def test_evaluator_observation_expiry_does_not_launch_learner_actor(monkeypatch):
+    from colonist_rl import evaluation, training
+    from colonist_rl.simulator import FourPlayerGame
+
+    clock, starts = [0.0], []
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: clock[0])
+
+    class SlowObservationGame(FourPlayerGame):
+        def reset(self, *args, **kwargs):
+            self.ready = False
+            value = super().reset(*args, **kwargs)
+            self.ready = True
+            return value
+
+        def observe(self, *args, **kwargs):
+            view = super().observe(*args, **kwargs)
+            if getattr(self, "ready", False):
+                clock[0] = 10.0
+            return view
+
+    monkeypatch.setattr(evaluation, "FourPlayerGame", SlowObservationGame)
+    # At this learner's initial setup decision no opponent offer is possible;
+    # isolate the evaluator's own observation-to-actor boundary.
+    monkeypatch.setattr(training._MatchDriver, "maybe_offer", lambda self, **kwargs: None)
+    policy = GraphPolicy(16)
+    handle = policy.register_forward_pre_hook(lambda module, args: starts.append(clock[0]))
+    try:
+        result = evaluation.evaluate_blocks(policy, board_seeds=[101, 102], deadline=5)
+    finally:
+        handle.remove()
+    assert starts == []
+    assert result["status"] == "incomplete" and result["finished_games"] == 0

@@ -63,6 +63,18 @@ def _resolved(result, *, baseline=None, lineup=None):
     ):
         raise ValueError("complete deterministic graph block evidence required")
     rows = _paired_rows(result)
+    # Curriculum evidence is stricter than the legacy paired-comparison API:
+    # every selected game must positively establish typed terminal resolution.
+    for row in rows.values():
+        winner = row.get("winner")
+        if (
+            row.get("terminated") is not True
+            or row.get("truncated") is not False
+            or type(winner) is not int
+            or winner not in range(4)
+            or row["won"] != (winner == row["seat"])
+        ):
+            raise ValueError("explicit typed and consistent resolved-game evidence required")
     boards = {board for board, _ in rows}
     if len(boards) < 2 or boards & set(FINAL_TEST):
         raise ValueError("two non-final complete board blocks required")
@@ -129,7 +141,14 @@ def select_checkpoint(candidates) -> dict:
     """Maximize fixed heuristic VP, then wins, then earliest eligible checkpoint."""
     eligible = []
     rejected = []
-    for index, candidate in enumerate(candidates):
+    common_initial = None
+
+    def chronological(item):
+        index, candidate = item
+        order = candidate.get("order", index) if isinstance(candidate, dict) else None
+        return (order if type(order) is int and order >= 0 else math.inf, index)
+
+    for index, candidate in sorted(enumerate(candidates), key=chronological):
         try:
             fixed = candidate["fixed_result"]
             metrics = _resolved(fixed, baseline="heuristic")
@@ -140,6 +159,17 @@ def select_checkpoint(candidates) -> dict:
             order = candidate.get("order", index)
             if type(order) is not int or order < 0:
                 raise ValueError("checkpoint order must be a nonnegative integer")
+            initial_outcomes = {
+                key: (row["winner"], row["won"], row["victory_points"])
+                for key, row in _paired_rows(initial).items()
+            }
+            # Earliest eligible evidence establishes one reference for this
+            # selection call, independent of candidate-list and row ordering.
+            # Pairing above already requires fixed and initial panels to match.
+            if common_initial is None:
+                common_initial = initial_outcomes
+            elif initial_outcomes != common_initial:
+                raise ValueError("checkpoint panel or initial-reference outcomes mismatch")
             eligible.append(
                 (
                     metrics["mean_victory_points"],

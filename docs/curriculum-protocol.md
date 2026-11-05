@@ -60,14 +60,21 @@ and against the fixed all-heuristic panel. Gates require at least two complete,
 uncensored blocks; current-lineup win rate at least 0.25; current-lineup mean VP
 at least 4.0; and fixed-panel mean VP no more than 1.0 below the initial supplied
 checkpoint on matching boards/seats. Missing, interrupted, truncated, unresolved,
-duplicate or mismatched evidence fails the gate. Metrics are recomputed from game
+duplicate or mismatched evidence fails the gate. Each curriculum outcome must
+explicitly contain `terminated=True`, `truncated=False`, an integer winner seat
+0..3 and a boolean win flag consistent with that winner. The legacy paired-result
+validator retains its older permissive compatibility. Metrics are recomputed from game
 rows; optimistic summary fields cannot override censored rows. This is an
 operational allocation gate, not a claim of competence or statistical significance.
 
 The initial checkpoint and checkpoints every 4096 learner decisions or allocation
 end are selection candidates. Selection uses only complete fixed all-heuristic
 validation, rejecting more than 1VP regression versus the initial checkpoint. It
-maximizes mean VP, then win rate, then the earliest checkpoint. The last checkpoint
+maximizes mean VP, then win rate, then the earliest checkpoint. The earliest
+eligible checkpoint by declared order establishes the common board/seat panel
+and initial-reference winner/win/VP outcomes for the selection call; candidates
+with a different panel or initial outcomes are rejected. Row order and diagnostic
+latency metadata do not alter that reference. The last checkpoint
 is retained independently even when selection is unavailable. Validation is
 outside the evolving opponent pool. Every completed evaluation game is atomically
 journalled via `evaluate_blocks(on_game_end=...)`; completed raw rows survive a
@@ -84,7 +91,10 @@ new episodes only. `actual_board_seeds`, `stop_reason` and
 `dropped_partial_intervals` expose collection accounting.
 
 `collect(count, deadline=...)` checks before/after actors and proposals and before
-later engine mutations. Expiry before collection starts does not mutate the game.
+later engine mutations. Observation construction is followed by another deadline
+check immediately before proposals, actors and bootstrap calls. Expiry while
+building a bootstrap observation drops and seals the incomplete interval without
+launching the critic. Expiry before collection starts does not mutate the game.
 An interval interrupted after the learner acts is dropped, counted and seals that
 collector; it cannot later resume an interval with unknown reward. It launches no
 critic/bootstrap call after expiry. Completed records retain their genuine next
