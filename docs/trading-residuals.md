@@ -3,7 +3,7 @@
 These opt-in heads test whether nonlinear hand/state interactions improve supervised
 trading agreement. They preserve an existing `ConsequenceGraphPolicy` with
 `feature_set="hand_recipe"`, including its nonzero learned 34D weights. They do not
-change the frozen plain Greedy teacher, labels, hard-label cross entropy, shared
+change the frozen GreedyNoTrade baseline, heuristic teacher, labels, hard-label cross entropy, shared
 sequence fitter, legacy Graph defaults, or checkpoint schema version 1.
 
 ## Public context schema

@@ -1,10 +1,10 @@
 # Training status — November 5, 2026
 
-The learner remains weaker than the fixed heuristic opponents. All completed
+The learner has not demonstrated that it can beat the fixed heuristic opponents. All completed
 experiments and failed hypotheses are preserved; passing tests is not a strength
 claim. This is an intermediate checkpoint while the next learning wave runs.
-Every gameplay result below uses the legacy Catanatron3.2.1 engine. The requested
-upstream migration is isolated; new-engine results will form a separate cohort.
+Every gameplay result below uses the legacy Catanatron3.2.1 engine. The project now pins the reviewed3.3.0 engine; its results form a separate
+cohort. Legacy experiments retain their original source/runtime identities.
 
 | Experiment | Teacher agreement on non-forced choices | Heuristic-opponent outcomes | Interpretation |
 |---|---|---|---|
@@ -209,3 +209,26 @@ which that parent has already seen; seed29has not. Architecture comparisons
 must be within each initialization. Held-out observations contribute no
 gradients, and pre-jitter teacher scores remain imitation diagnostics rather
 than an independent statement of strategic quality.
+
+
+## Standard no-trade benchmark and current diagnostic
+
+The opt-in `greedy_no_trade` name is now available as an evaluation candidate,
+opponent baseline, explicit lineup entry and CLI `--baseline` choice. It reuses
+`plain-greedy-no-trade-v1` exactly. Pure greedy opponent panels cannot silently
+replace a seat with a historical policy. Existing heuristic/random routes and
+curriculum promotion gates retain their previous behavior. Integration passed
+1,189tests with one optional browser skip; the original project environment
+also passed the explicit local browser fixture. Installed-wheel API and CLI
+checks used bounded24-step games and are protocol evidence, not strength results.
+
+The separately reviewed six-arm trading diagnostic started at
+2026-11-05T17:46:58UTC under a1,200-second whole-run cap. It compares old34D,
+context-linear and nonlinear residual scorers within each of two frozen FULL15
+parents on the same512difficult training choices and311forced history steps.
+Exact scalar/batched initial outputs matched on all1,847training/held-out
+observations per initialization. Inherited Graph/value/recurrence are frozen;
+no held-out gradients or label changes occur. Common complete work is selected
+before comparative validation. The trial is running; no outcome or promotion
+claim is available at this checkpoint. Concurrent integration verification
+overlapped its first arm, so observed wall times do not isolate architecture speed.
