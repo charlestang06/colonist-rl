@@ -45,3 +45,27 @@ enabled, no skips; Ruff lint/format and wheel build passed. Both adapter and log
 implementations received independent reviews with no actionable findings.
 
 See validation.md for final verification and measured limitations.
+
+## November 4 learning and adapter continuation
+
+The first learning wave now adds complete four-seat board-block evaluation,
+explicit censoring and paired comparisons, persisted observation-only teacher
+demonstrations, current-weight recurrent imitation, and a bounded experiment
+runner with atomic per-completed-game journals and a fail-closed evidence gate.
+Independent task reviews and scoped corrections passed; the broad learning
+review is pending. The preserved original pilot is documented in
+[the pilot report](learning-pilot-2026-11-04.md). Its students won zero of eight
+heuristic-opponent games each, so useful imitation and PPO improvement remain
+open milestones.
+
+Immutable UI contracts and conservative rendered-log production/bank/dice
+candidates passed broad adapter review. They establish no event identity or
+ledger updates. A separate staged executor is being reviewed against synthetic
+fixtures; live recognition and autonomous Colonist play remain unverified.
+
+An intermediate combined check after the reviewed first-wave task integration
+passed **437 tests, with one optional browser smoke skipped**, in 8.96 seconds.
+Ruff lint passed and all 49 source/test Python files were already formatted.
+These checks precede the pending follow-on work and final review; they do not
+replace final-source verification. Historical verification above remains the
+earlier baseline.

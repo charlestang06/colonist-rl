@@ -1,7 +1,8 @@
 # Product roadmap
 
 Planning snapshot: November 4, 2026, updated after the completed guest game and
-adapter/log-reader implementation. Status distinguishes delivered foundations
+accepted evaluation, imitation, UI-contract and semantic-parser foundations.
+Status distinguishes delivered foundations
 from remaining work. Learning is the primary workstream: establish a competent
 teacher, a competent imitated policy, and measured PPO improvement. Further
 browser work is secondary and does not block simulator training or evaluation.
@@ -11,12 +12,25 @@ used by the Catanatron wrapper, not the engine's privileged full state.
 ## Starting point
 
 - Four-player simulation, graph/GRU PPO, beliefs, incoming trade decisions,
-  checkpoint/resume, and seat-rotated evaluation already exist. Fresh combined
-  verification after the two code workstreams completed: **205 tests passed in
+  checkpoint/resume, and seat-rotated evaluation already exist. Historical combined
+  verification after adapter modularization and the offline log reader: **205 tests passed in
   5.06 seconds, no skips**, with the real loopback Chromium smoke test enabled.
   Ruff lint/format checks passed across 39 files and the wheel built
   successfully. Independent adapter and log-reader reviews found no actionable
   issues. These checks establish integration and packaging, not policy strength.
+- Strict evaluation with explicit board/seed splits, censored-outcome accounting
+  and resolved four-seat paired comparisons is implemented and accepted after
+  re-review. Persisted observation-only demonstrations, current-weight recurrent
+  imitation and deadline guards are also implemented and accepted. See the
+  [learning protocol](learning-protocol.md). The clean-source pilot completed
+  at `1350de2`; its first-wave Task 3 passed scoped re-review and was integrated.
+  Broad learning review remains pending with an installed-wheel legacy warm-start
+  Git-dependency regression awaiting correction and re-review.
+- An **intermediate** combined integration check passed **437 tests, 1 optional
+  browser skip in 8.96 seconds**, with Ruff lint/format clean across 49 source/test files.
+  The final broad adapter review was clean and both documentation minors were
+  resolved. This is not final verification of the pending review fixes or subsequent
+  cleanup/status changes, and does not claim a new wheel or live-browser run.
 - Shared observation JSON, visible-event exports, calibration, and capture
   readers now live in `adapters/`; Colonist browser transport/execution live in
   `adapters/colonist/`; physical input lives in `adapters/physical/`. Legacy
@@ -28,12 +42,18 @@ used by the Catanatron wrapper, not the engine's privileged full state.
   [controls evidence](colonist-controls.md) demonstrates intermediate
   confirmations, focus/drag requirements, several simultaneous offer rows, and
   incoming acceptance that expresses willingness before any transfer.
+  The new [UI contracts](colonist-ui.md) provide immutable records, pure exact
+  bindings and pending/committed result descriptions. They issue no gestures and
+  do not change the shared observation schema or wire staged execution.
 - The offline [log reader](colonist-log-reader.md) now preserves ordered text/
   icon tokens and reports conservative snapshot overlap, ambiguity, and gaps.
   Two real ordered DOM captures are fixtures. Their row IDs are all absent;
   unique content overlap is a hypothesis, not established event identity.
-  Semantic game-event parsing, continuous DOM collection, history recovery, and
-  ledger integration remain pending. `BeliefLedger.reconcile` intentionally
+  [Semantic candidate parsing](colonist-log-semantics.md) now supports production,
+  completed bank exchanges and two-die rolls, preserving unknown evidence and
+  unresolved actors. It establishes no event IDs and performs no ledger updates.
+  Broader grammars, continuous DOM collection, history recovery and ledger
+  integration remain pending. `BeliefLedger.reconcile` intentionally
   rejects unexplained count changes rather than inventing a transfer.
 - The manually controlled guest game against three Easy bots ended in a visible
   **10-point victory, 67 turns, 27:27**, saved in
@@ -45,33 +65,70 @@ used by the Catanatron wrapper, not the engine's privileged full state.
   [controls guide](colonist-controls.md) records verified and missing flows.
   This establishes manual control and termination, not autonomous policy play,
   complete resource-ledger reconstruction, or learned-policy strength.
+- The [completed learning pilot](learning-pilot-2026-11-04.md) took 92.301 seconds:
+  5,000 demonstrations, 64 natural validation terminations and four probe games,
+  with no evaluation truncations. The teacher won 8/8 against random opponents
+  and 3/8 against heuristics; both students won 0/8 against heuristics and matched
+  only 32/83 non-forced held-out choices. The competence gate failed and no PPO
+  ran in that pilot. A separate 20-epoch uniform-imitation diagnostic improved
+  agreement to 43/83 and 40/83, but both still won 0/8; mean VP was 3.875 and 3.125
+  versus 3.375 and 3.250 at two epochs. These tiny reused validation boards show
+  optimization progress without established playing strength or capacity limits.
+- The public-observation strategic audit found 24 reasonable, 11 ambiguous and
+  one clearly bad choice among 36 stratified samples. Across the actual policy
+  decisions it observed zero maritime trades in 143 opportunities and all 29
+  feasible incoming trades accepted, but no end turn skipped a directly legal
+  build or development purchase. Investigate intermediate conversions and offer
+  selectivity rather than treating all passes or teacher disagreements as errors.
+  See [the result-driven plan and evidence](swarm-roadmap.md).
 
 ## Order and parallel work
 
 | Priority | Item | Outcome | Status / dependencies |
 | --- | --- | --- | --- |
-| P0 | L1 | Benchmark the teacher and establish competent imitation | **Next implementation**; existing simulator and policy interfaces |
-| P0 | A9 | Reproducible training and evaluation comparison | Establish the measurement protocol alongside L1 |
+| P0 | L1 | Benchmark the teacher and establish competent imitation | Pilot completed; students weak; test planned balanced imitation and coverage/optimization diagnostics |
+| P0 | A9 | Reproducible training and evaluation comparison | Pilot scoped review complete; broad installed-wheel compatibility fix pending; larger playing evidence needed |
 | P1 | L2 | Critic warm start and measured PPO improvement | After the imitation baseline; fresh learner experience |
 | Done | A1 | Shared, Colonist, and physical adapter boundaries | Implemented, independently reviewed, combined verification passed |
-| P2 | A2 | Small, replayable evidence fixture corpus | Two ordered log fixtures delivered; UI transition fixtures remain |
-| P2 | A3 | Rendered log normalization and semantic projection | Token normalization delivered; semantic events pending |
-| P2 | A4 | Explicit UI state and execution-result contract | Next adapter task when that workstream resumes; A1; A2 examples |
+| P2 | A2 | Small, replayable evidence fixture corpus | Ordered log fixtures and synthetic UI/semantic examples delivered; observed transition traces remain |
+| P2 | A3 | Rendered log normalization and semantic projection | Production/bank/dice candidate parser accepted; broader grammars and event integration pending |
+| Done | A4 | Explicit UI state and execution-result contract | Pure records/validators accepted; no gestures or executor wiring |
 | P2 | A5 | Continuous log history and honest gap handling | Offline overlap/gap reporting delivered; recovery and ledger integration pending; A3 |
-| P2 | A6 | Verified placement and development-card sequences | Pending; A4; A2 |
-| P2 | A7 | Pending trade responses and exact finalization | Pending; A4; A2 |
+| P2 | A6 | Verified placement and development-card sequences | Staged Task 1 fixing post-input terminal evidence/lock findings; unaccepted; drag gated |
+| P2 | A7 | Pending trade responses and exact finalization | Bounded staged support under review; full finalization pending; A4; A2 |
 | P2 | A8 | Verified observation assembly and bounded end-to-end replay | Pending; A5; A6; A7 |
 
-This turn's adapter split and offline log-reader workstreams are complete and
-verified. The next priority is L1 together with A9: measure the teacher, collect
-bounded demonstrations, and evaluate imitation on held-out complete games before
-spending a larger budget on PPO. L2 follows that baseline. L3–L5 remain conditional
-on measured limitations rather than prerequisites.
+Adapter modularization, offline log normalization, bounded semantic candidate
+parsing and pure UI contracts are delivered and reviewed. L1/A9 evaluation and
+imitation infrastructure is accepted. The next priority remains L1 together
+with A9: resolve the installed-package regression, test coverage and optimization
+through the planned balanced-imitation comparison, and run the separately
+authorized bounded fresh-PPO curriculum against measured harder opponents.
+The original pilot's gate remains failed; exploratory PPO does not change that
+record or imply promotion. L3–L5 remain conditional on measured limitations rather
+than prerequisites, with no architecture expansion inferred from the tiny studies.
 
-When adapter work resumes, A4 is its next task: immutable UI records and pure
-transition validators separating acknowledgement from a committed game action.
-A2 replay fixtures and A3 semantic projection can follow independently; A6/A7
-depend on a reviewed A4. Preserve the shared observation/action boundary and audit
+**Current autonomous horizon:** The user authorized three hours without
+questions, **03:54–06:54 UTC on November 5**, to judge actual policy decisions
+conceptually and train extensively against harder opponents. Reserve the final
+approximately 25 minutes, starting **06:29 UTC**, for integration and verification.
+Use completed pilot/audit/diagnostic results to prioritize bounded longer training with
+competent fixed/frozen opponents while preserving fixed validation benchmarks.
+The baseline audit is complete; the follow-on plan covers balanced imitation and
+configurable fresh-PPO curriculum;
+this does not add mandatory adapter or architecture scope. Strength gates govern
+promotion, while correctly instrumented exploratory training can use the
+remaining declared budget. Audit only player-visible observations, distinguish
+dominated choices from reasonable/ambiguous ones, and never equate teacher
+disagreement with error. See the [horizon and audit criteria](swarm-roadmap.md).
+
+When adapter work resumes, A4 provides reviewed immutable UI records and pure
+validators separating acknowledgement from a committed game action. A2 observed
+transition evidence, broader A3 grammars and A5 history/event identity remain;
+A6/A7 staged executor work is correcting post-input evidence and lock findings;
+acceptance and further gesture work remain gated on re-review. No live gameplay
+is claimed, and supporting evidence remains necessary.
+Preserve the shared observation/action boundary and audit
 rule differences before deployment, especially multi-stage trades. Physical-board
 photos still need supplementary hand/history/context information. Neither UI
 gestures nor photo recognition belong in the learning loop.
@@ -108,7 +165,9 @@ with incomplete evidence cannot silently become a complete `Observation`.
 **Status:** Partially delivered. Two ordered real DOM log snapshots are saved in
 `tests/fixtures/colonist-log-001.json` and `colonist-log-002.json`; durable control
 screenshots include the final victory. Full annotated UI transition replay
-fixtures remain to be created.
+fixtures remain to be created. The accepted UI scenario catalog and semantic
+bank-exchange examples are explicitly synthetic; they are not observed
+transition traces or ordered bank DOM captures.
 
 **Goal:** Make later adapter work independently testable without another live
 game or network access.
@@ -140,11 +199,15 @@ tie now have observed evidence; they still need explicit replay assertions.
 
 ### A3 — Project rendered log evidence into explicit semantic records
 
-**Status:** Immutable token/row/snapshot normalization is implemented and
-covered by 23 focused log-reader tests together with the historian. Semantic
-operation parsing and automated rendered DOM collection are not implemented.
-Independent review found no actionable issues; the combined 205-test suite and
-lint/format checks passed.
+**Status:** Immutable token/row/snapshot normalization and conservative history
+reporting are delivered. A pure semantic parser for production, completed bank
+exchanges and complete two-die rolls is now implemented and accepted; final broad
+adapter review found no outstanding issues. It preserves source rows, unknown
+resources, unresolved actors and unsupported wording. Outputs are candidates,
+not established events: no event IDs, `VisibleEvent` creation, history-completeness
+claim or ledger integration is added. Bank ordering is covered by explicitly
+synthetic evidence; live ordered bank DOM capture and automated collection remain
+pending. See [semantic candidates](colonist-log-semantics.md).
 
 **Goal:** Recover resource identities that body `innerText` omits without
 inventing hidden information.
@@ -169,10 +232,13 @@ DOM fields, storage, or private API responses enter the parser.
 
 ### A4 — Model intermediate UI states explicitly
 
-**Status:** Recommended next bounded task; not implemented. Limit the first
-change to immutable records, pure validators, and representative local fixture
-tests. It must issue no gestures, start no browser, and change no shared
-`Observation` schema. Executor wiring is A6/A7.
+**Status:** Delivered and accepted: immutable UI/control/trade/result records,
+pure exact-action/revision/row/partner validators and a synthetic scenario
+catalog. Final broad review found no outstanding issues. The module issues no
+gestures, starts no browser and changes no shared `Observation` schema. It does
+not independently verify caller-supplied commitment evidence. The existing
+one-click executor remains unchanged; staged executor wiring is A6/A7. See
+[UI contracts and limits](colonist-ui.md).
 
 **Goal:** Describe a successful gesture that has not yet committed a game action.
 
@@ -231,8 +297,11 @@ fixture. Failure/recovery does not mutate a previously valid ledger halfway.
 
 ### A6 — Execute verified placement and development-card stages
 
-**Status:** Not implemented. The completed manual game supplied further control
-evidence; the refactor preserved the existing one-click executor.
+**Status:** Follow-on staged Task 1 is implemented but not accepted. Independent
+review found two Important post-input terminal-evidence/review-lock gaps, now
+being corrected, plus a minor nested-argument exception boundary. Drag work is
+gated. The first-wave pure contracts remain accepted; no live staged execution
+or autonomous gameplay is claimed.
 
 **Goal:** Turn a legal action into the observed sequence of gestures and
 confirmations, with bounded progress and a verifiable outcome.
@@ -259,8 +328,10 @@ drag return or vanished dialog. Existing transport origin checks remain intact.
 
 ### A7 — Separate trade willingness from resource commitment
 
-**Status:** Not implemented. Manual evidence confirms willingness, commitment,
-row selection and composer behavior; the policy/adapter does not execute them.
+**Status:** Bounded pending-response support belongs to the unaccepted staged
+Task 1 correction/re-review above. Full outgoing finalization and the broader
+flows remain pending. Manual evidence confirms willingness, commitment, row
+selection and composer behavior; it is not an autonomous execution result.
 
 **Goal:** Execute existing binary trade decisions correctly on Colonist's
 multi-stage UI.
@@ -311,6 +382,19 @@ reported only when the integrated policy/adapter actually performed it.
 
 ### A9 — Measure learning with a reproducible comparison
 
+**Status:** Evaluation infrastructure is implemented and accepted after the
+censoring correction and independent re-review. Explicit disjoint seed lists,
+four-seat schedules, raw/partial/interrupted outcomes and RNG restoration are
+available. Strict win rate is undefined when a selected outcome is unresolved;
+paired comparison rejects incomplete, truncated or unresolved inputs. A finished
+schedule is not evidence of four resolved games. See the
+[learning protocol](learning-protocol.md). The clean-source pilot at `1350de2`
+completed in 92.301 seconds under its 900-second cap, and Task 3 passed scoped
+re-review. The competence gate failed; no PPO ran. Broad review's installed-wheel
+warm-start Git regression still requires correction/re-review. Fresh final-test board seeds 70000017 and
+70000019 remain reserved; the historical 100000 range may have been used in smoke
+evaluation. The [swarm roadmap](swarm-roadmap.md) records current decision gates.
+
 **Goal:** Decide whether the existing policy improves before adding model scope.
 
 **Scope:** Save a fixed experiment manifest containing source revision, engine/
@@ -343,8 +427,10 @@ secondary deployment track; they are not prerequisites for learning progress.
    verification passed. Shared observations remain the only
    policy/trade-plugin input.
 2. **Honest offline adapter:** A3/A5 have token normalization and conservative
-   history reporting. Semantic events, verified intermediate UI states, gesture
-   execution and ledger integration remain before A3–A7 satisfy this milestone.
+   history reporting; A3 adds production/bank/dice candidates and A4 adds reviewed
+   pure UI contracts. Established event identity, observed transition extraction,
+   staged gesture execution and ledger integration remain before A3–A7 satisfy
+   the full milestone.
 3. **Verified integration:** A8 demonstrates the supported vertical slice;
    unsupported flows and history gaps remain explicit. A9 provides a separate
    assessment of policy strength.
@@ -370,6 +456,18 @@ evidence that competent learned play is infeasible. Competitive human trading
 remains a separate, harder objective.
 
 ### L1 — Establish a competent teacher and imitation baseline (first priority)
+
+**Status:** Persisted observation-only demonstration collection/validation and
+current-weight recurrent imitation are implemented and accepted after independent
+re-review, including the shared deadline guard fix. Training supervises
+non-forced choices while forced observations still advance recurrent state;
+held-out metrics report both groups by phase and action kind. The completed pilot
+and separate 20-epoch diagnostic found better teacher agreement with more
+optimization, but both students still won 0/8 on the two known boards. Competent
+imitation is not established. The next planned study tests balanced exposure and
+bounded fresh-PPO curriculum while retaining fixed evaluation and the original
+failed gate. Teacher candidates and the remaining experiment goals below are
+unchanged; these results do not justify a model-capacity claim.
 
 **Goal:** Obtain playable behavior before asking PPO to discover basic strategy.
 
