@@ -1,7 +1,15 @@
 # colonist-rl
 
-Local Catan reinforcement learning with player-visible observations, variable
-hex boards, joint resource beliefs, and independent trade model plug-ins.
+Local Catan agent research with public observations, learned policies, value-guided
+search, resource beliefs and independent trade model plug-ins.
+
+The goal is a general agent outperforming authentic VF/AB players in reproducible
+whole games. The [research roadmap](docs/agent-research-roadmap.md) runs imitation
+diagnostics, planning and learned-value experiments in parallel, with background
+case building. Cloning success does not gate value/search research. PPO is deferred.
+The [current results](docs/training-status-2026-11-05.md) distinguish completed
+development studies from the next native VF/AB game benchmark and fixed-budget
+learned-value planner comparison; no authentic VF/AB superiority is established.
 
 ## Run
 
@@ -16,7 +24,8 @@ uv run colonist-rl evaluate --checkpoint checkpoints/latest.pt --games 16 --comp
 uv run pytest -q
 ```
 
-PPO uses a small graph encoder and GRU with separate normal/forced/setup heads
+The `train` CLI is available experimental PPO infrastructure; sustained PPO is
+deferred in the research roadmap. It uses a small graph encoder and GRU with separate normal/forced/setup heads
 and an incoming accept/reject head. Legal candidates reference graph targets,
 so the network also accepts six-player/30-tile representation fixtures. The
 simulator currently rejects six-player games explicitly; larger-board rules
@@ -24,10 +33,14 @@ and full six-player training are a subsequent milestone.
 
 ## Learning guidance
 
+The examples below describe available experimental PPO infrastructure, not the
+next research experiment. Public planning and outcome-value work proceed in
+parallel; imitation is a limited diagnostic/control.
+
 The optional imitation warm start learns legal moves from a production-aware
 heuristic teacher. Set `--warmstart-decisions 0` to compare training from scratch.
 Teacher moves are supervised examples, never substituted into PPO trajectories.
-PPO then learns from its own sampled decisions against random and heuristic
+The existing optional PPO trainer learns from sampled decisions against random and heuristic
 opponents. `--historical-opponents` adds up to three frozen policy snapshots;
 `--opponent-checkpoint FILE` supplies existing frozen policies.
 
@@ -49,11 +62,19 @@ four seats on each board. Short smoke runs establish functionality, not strength
 
 ## Information and trade boundaries
 
-Only immutable `Observation` records reach policies and trade plug-ins. Exact
+Our policies, teachers, search and trade plug-ins receive only immutable public
+`Observation` records. Exact
 resource updates enter an event ledger; hidden steals/discards maintain joint
 beliefs. Approximate particle agreement never certifies exact knowledge. Exact
 bank quantities default to unknown unless the capture source establishes their
-visibility. Backend objects and hidden development cards stay outside models.
+visibility. Backend objects and hidden development cards stay outside our models.
+
+The separately isolated, evaluation-only native VF/AB gateway is integrated and
+has passed a real-engine engineering seam. Native references use privileged state
+with disclosed discard/trade shims and independent planning RNG; small exposed-board reference profiles are recorded, while broader candidate
+comparisons remain pending. Their state never enters learner or teacher
+inputs. This asymmetric benchmark does not establish equal-information superiority.
+See the [native benchmark milestone](docs/agent-research-roadmap.md#immediate-experiments).
 
 The learner cannot initiate or counter player trades in v1. It can respond to
 incoming offers, and bank/port trades remain ordinary actions. Scripted opponents
@@ -99,7 +120,8 @@ compatible. See [adapter boundaries](docs/adapters.md).
 The [offline Colonist log reader](docs/colonist-log-reader.md) preserves ordered
 text and icon labels and reports ambiguous overlaps and missing history. It does
 not yet infer resource-transfer events or update the belief ledger. The
-[roadmap](docs/roadmap.md) separates these next tasks from training improvements.
+[research roadmap](docs/agent-research-roadmap.md) defines current priorities;
+earlier [roadmap notes](docs/roadmap.md) remain as historical/user notes.
 
 Colonist's [terms](https://colonist.io/terms) require authorization for service
 data AI development/private API use; training here uses simulator-generated data.
