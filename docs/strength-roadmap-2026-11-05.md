@@ -2,7 +2,25 @@
 
 Trusted human direction overrides earlier useful/near-perfect-BC prerequisites for
 STARTING controlled PPO.100k remains HOLD; target-objective implementation is lower
-priority. No code/compute/launch here. PlainGreedy rules and old evidence stay frozen.
+priority. PlainGreedy rules and old evidence stay frozen.
+
+## Latest execution status
+
+The reviewed implementation now includes opt-in current-weight PPO history,
+resolved-return critic warmup, an optional frozen-BC KL anchor, and a conservative
+public current-turn planner. Combined verification:1400 passed,3 optional skips.
+These capabilities have not yet demonstrated improved game strength.
+
+The targeted3.3 attempt collected64 episodes and64 training candidates plus16
+decision cases, then stopped before fitting because the independent judgment
+envelope missed its release deadline. Public packet verification succeeded;
+zero labels were approved. Preserve that incomplete attempt without after-deadline
+salvage or a repeated run under its authorization. Its operational bottleneck was
+auditing and assembling80 cases, not model training. A future separately specified
+experiment should first measure audit throughput on smaller batches and persist
+each judgment promptly. Keep the scientific success criteria fixed and reserve
+fresh decision cases; the confirmation boards remain untouched. No broad PPO,
+reward change, or100k scaling has run.
 
 ## Current diagnostic result, without moving its gate
 

@@ -2,9 +2,23 @@
 
 The learner has not demonstrated that it can beat the fixed heuristic opponents. All completed
 experiments and failed hypotheses are preserved; passing tests is not a strength
-claim. This is an intermediate checkpoint while the next learning wave runs.
+claim. This checkpoint records completed work and bounded incomplete attempts.
 Every gameplay result below uses the legacy Catanatron3.2.1 engine. The project now pins the reviewed3.3.0 engine; its results form a separate
 cohort. Legacy experiments retain their original source/runtime identities.
+
+Latest checkpoint: the strict `plain-greedy-no-trade-v1` baseline is integrated
+and passes42 focused tests on the pinned3.3 runtime. Its completed legacy-engine
+benchmark remains separate: the two frozen learners won42/64 and32/64 against
+three plain Greedy opponents, versus16/64 for Greedy itself. This does not isolate
+the value of trading or establish heuristic-level strength.
+
+The first targeted3.3 trading attempt collected64 learner episodes and prepared
+64 training candidates plus16 separate decision cases. It stopped at the
+independent label-audit deadline before any fit or evaluation. The public facts
+were verified, but the complete independent judgment envelope was not persisted
+in time. No labels were approved, no training updates occurred, and no improvement
+is established. The [attempt record](../runs/swarm-2026-11-04/targeted-trade/attempt-report-v3-001.md)
+preserves the evidence and failure. Broad PPO and100k scaling remain unrun.
 
 | Experiment | Teacher agreement on non-forced choices | Heuristic-opponent outcomes | Interpretation |
 |---|---|---|---|
