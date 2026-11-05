@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import json
 from collections import deque
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, replace
 from hashlib import sha256
+from time import perf_counter_ns
 
 from .board import RulesConfig
 from .consequences import PUBLIC_BUILD_COSTS
@@ -78,6 +80,14 @@ class ProjectedTurn:
     bank_upper: ResourceVector
 
 
+PositionEvaluator = Callable[[Observation, ProjectedTurn, int], int]
+
+
+def _validate_gain_margin(margin: int):
+    if type(margin) is not int or margin < 0:
+        raise ValueError("gain margin must be a nonnegative integer in evaluator score units")
+
+
 @dataclass(frozen=True)
 class PlannedStep:
     kind: str
@@ -97,6 +107,8 @@ class TurnPlan:
     geometry_visits: int
     reason: str
     search_stop: str
+    evaluator_calls: int = 0
+    evaluator_time_ns: int = 0
 
 
 def _seed(view: Observation, seed: int, domain: str) -> int:
@@ -120,11 +132,25 @@ class HeuristicViewPolicy:
 
 
 class PublicTurnPlannerPolicy:
-    def __init__(self, config: TurnPlannerConfig = _DEFAULT_CONFIG):
+    def __init__(
+        self,
+        config: TurnPlannerConfig = _DEFAULT_CONFIG,
+        *,
+        evaluator: PositionEvaluator | None = None,
+        gain_margin_micro: int = _GAIN_MICRO,
+    ):
+        _validate_gain_margin(gain_margin_micro)
         self.config = config
+        self.evaluator = evaluator
+        self.gain_margin_micro = gain_margin_micro
+
+    def plan(self, view: Observation) -> TurnPlan:
+        return plan_turn(
+            view, self.config, evaluator=self.evaluator, gain_margin_micro=self.gain_margin_micro
+        )
 
     def act(self, view: Observation) -> Action:
-        return plan_turn(view, self.config).first_action
+        return self.plan(view).first_action
 
     def propose(self, view: Observation) -> TradeOffer | None:
         return HeuristicViewPolicy(self.config.seed).propose(view)
@@ -455,12 +481,40 @@ def _context_supported(view: Observation) -> bool:
     )
 
 
-def plan_turn(view: Observation, config: TurnPlannerConfig = _DEFAULT_CONFIG) -> TurnPlan:
-    """Pure bounded search; actual execution must reobserve after the first action."""
+def plan_turn(
+    view: Observation,
+    config: TurnPlannerConfig = _DEFAULT_CONFIG,
+    *,
+    evaluator: PositionEvaluator | None = None,
+    gain_margin_micro: int = _GAIN_MICRO,
+) -> TurnPlan:
+    """Pure bounded search; actual execution must reobserve after the first action.
+
+    An optional pure evaluator receives this actual root, a projection and the existing
+    handcraft integer score. Its integer score and gain margin must use the same units.
+    No projected state is promoted to an Observation or a certified future menu.
+    """
+    _validate_gain_margin(gain_margin_micro)
     fallback = HeuristicViewPolicy(config.seed).act(view)
     fallback_index = next(i for i, action in enumerate(view.legal_actions) if action is fallback)
     work = _Work(config)
     before = 0
+    evaluator_calls = evaluator_time_ns = 0
+
+    def evaluate(state, shape):
+        nonlocal evaluator_calls, evaluator_time_ns
+        handcraft = _score(view, state, shape)
+        if evaluator is None:
+            return handcraft
+        evaluator_calls += 1
+        start = perf_counter_ns()
+        try:
+            value = evaluator(view, state, handcraft)
+        finally:
+            evaluator_time_ns += perf_counter_ns() - start
+        if type(value) is not int:
+            raise ValueError("position evaluator must return a finite integer score")
+        return value
 
     def result(reason, stop="not_searched", node=None):
         selected = node.root if node is not None else fallback_index
@@ -474,6 +528,8 @@ def plan_turn(view: Observation, config: TurnPlannerConfig = _DEFAULT_CONFIG) ->
             work.geometry_visits,
             reason,
             stop,
+            evaluator_calls,
+            evaluator_time_ns,
         )
 
     if not _context_supported(view):
@@ -491,7 +547,7 @@ def plan_turn(view: Observation, config: TurnPlannerConfig = _DEFAULT_CONFIG) ->
         state = _initial_projection(view)
         geometry = _Geometry(view, work)
         shape = geometry.describe(state)
-        before = _score(view, state, shape)
+        before = evaluate(state, shape)
         baseline = before
         best = None
         beam = []
@@ -507,7 +563,7 @@ def plan_turn(view: Observation, config: TurnPlannerConfig = _DEFAULT_CONFIG) ->
                 projected_shape,
                 root,
                 (*steps, step),
-                _score(view, projected, projected_shape),
+                evaluate(projected, projected_shape),
                 view.own_victory_points + projected.building_point_gain
                 >= view.rules.victory_points,
             )
@@ -587,7 +643,7 @@ def plan_turn(view: Observation, config: TurnPlannerConfig = _DEFAULT_CONFIG) ->
         if (
             best is not None
             and any(s.kind.startswith("BUILD_") for s in best.steps)
-            and (best.winning or best.score > max(before, baseline) + _GAIN_MICRO)
+            and (best.winning or best.score > max(before, baseline) + gain_margin_micro)
         ):
             return result("planned", stopped, best)
         return result("insufficient_gain", stopped)
