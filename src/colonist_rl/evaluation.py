@@ -13,7 +13,7 @@ import torch
 
 from .opponents import HeuristicPolicy, RandomPolicy
 from .simulator import FourPlayerGame
-from .training import _MatchDriver, _wilson
+from .training import _lineup, _MatchDriver, _wilson
 
 
 def _seed_list(seeds):
@@ -41,6 +41,8 @@ def evaluate_blocks(
     deterministic=True,
     deadline=None,
     on_game_end=None,
+    opponent_lineup=None,
+    historical_policies=(),
 ) -> dict:
     """Evaluate all four seats per board; ``deadline`` is absolute monotonic time.
 
@@ -65,6 +67,8 @@ def evaluate_blocks(
         deadline=deadline,
         strict_blocks=True,
         on_game_end=on_game_end,
+        opponent_lineup=opponent_lineup,
+        historical_policies=historical_policies,
     )
 
 
@@ -81,6 +85,8 @@ def _evaluate_matches(
     strict_blocks,
     reject_trades=False,
     on_game_end=None,
+    opponent_lineup=None,
+    historical_policies=(),
 ):
     """The authoritative evaluation match loop, also used by training.evaluate."""
     if candidate not in ("heuristic", "random", "graph") or (
@@ -101,6 +107,10 @@ def _evaluate_matches(
         raise ValueError("deadline must be a finite absolute monotonic time")
     if on_game_end is not None and not callable(on_game_end):
         raise ValueError("on_game_end must be callable or None")
+    opponent_lineup = _lineup(opponent_lineup)
+    historical = tuple(deepcopy(p).eval().requires_grad_(False) for p in historical_policies)
+    if opponent_lineup is not None and "historical" in opponent_lineup and not historical:
+        raise ValueError("historical lineup requires a frozen policy pool")
     identity = "graph" if policy is not None else candidate
     action_mode = (
         ("deterministic" if deterministic else "stochastic")
@@ -126,7 +136,13 @@ def _evaluate_matches(
             env = FourPlayerGame(max_steps=max_game_steps)
             env.reset(seed=board_seed)
             driver = _MatchDriver(
-                env, seat, board_seed, baseline=baseline, reject_trades=reject_trades
+                env,
+                seat,
+                board_seed,
+                historical,
+                baseline=baseline,
+                reject_trades=reject_trades,
+                opponent_lineup=opponent_lineup,
             )
             actor = (
                 (
@@ -172,7 +188,7 @@ def _evaluate_matches(
                     phases[view.context.kind] += 1
                     kinds[action.kind] += 1
                 else:
-                    action = driver.opponent_action()
+                    action = driver.opponent_action(deadline=deadline)
                 if deadline is not None and time.monotonic() >= deadline:
                     expired = True
                     break
@@ -288,6 +304,7 @@ def _evaluate_matches(
         "action_mode": action_mode,
         "deterministic": deterministic,
         "baseline": baseline,
+        "opponent_lineup": list(opponent_lineup) if opponent_lineup is not None else None,
         "reject_trades": reject_trades,
         "max_game_steps": max_game_steps,
         "outcomes": selected,
