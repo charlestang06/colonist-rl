@@ -97,6 +97,9 @@ index is invented. Teacher replay must include forced calls in the original orde
 Files are deterministic gzip-compressed canonical finite JSON, with
 `format="colonist-rl.student-labels"`, integer `version=1`, the current
 `backend_version` and ordered `action_kinds`. Unknown fields fail validation.
+Atomic writes create an exclusive fresh temporary file in the output directory
+and replace the destination after closing it. Existing staging paths are never
+opened for writing, so their symlinks and hard links cannot change input bytes.
 
 The other top-level fields are:
 
@@ -187,7 +190,9 @@ list, including identities and positions.
 Writing, loading, and projection reject duplicate component digests, missing or
 changed bytes, inconsistent order/source/board metadata, boards outside training,
 split overlap, malformed observations or histories, contradictory endpoint flags,
-and corpora with no non-forced supervision. Projection reloads and verifies the
+and corpora with no non-forced supervision. Component identities are compared as
+canonical typed JSON, so `true`, `1`, and `1.0` cannot substitute for each other,
+even with a recomputed order digest. Projection reloads and verifies the
 original files every time. Keep them available at their recorded paths; the
 manifest does not contain a mutable cached copy. It does not claim to authenticate
 arbitrarily rewritten manifests or prove terminal resolution by replaying games.

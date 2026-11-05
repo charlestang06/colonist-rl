@@ -173,3 +173,96 @@ and tested, and was sent to the coordinator/root for Task 4 integration.
 Corpus digests detect changed bytes relative to the manifest; they do not
 authenticate a wholly rewritten manifest or independently prove a terminal
 outcome by replaying a game. Full-game competence remains outside this task.
+
+## Review fix round 1 — I1 and M1
+
+Fix base: `f3de317658bde2db56e22f54f7fe5647f2beb50b`.
+Read the complete `task-3-review.md` before editing and reproduced both findings
+through the public APIs on disposable pytest fixtures. This round changes only
+the original three owned module/test/documentation files plus this report.
+No changes to policy, training, curriculum, scorers, legacy loaders or datasets;
+no new study, smoke run, fitting experiment, subagent, network or installation.
+Original artifacts, the other frozen training clone and the user's original
+roadmap edit were left untouched.
+
+### I1 — existing staging hard links could overwrite immutable input bytes
+
+Root cause confirmed: `Path.write_bytes()` opened a predictable existing `.tmp`
+path and truncated its inode; resolved path strings cannot identify hard links.
+
+Added two targeted regressions covering corpus and student-label serialization.
+Each creates a staging hard link to a disposable component, calls the public
+writer, then checks exact original bytes, the retained staging link and inode,
+independent output inode/digest, valid load/projection, and temporary cleanup.
+For the student writer the aliased input is a distinct teacher component, so
+the old behavior demonstrably changes its bytes rather than merely re-saving
+the same payload.
+
+Exact RED command:
+
+```text
+env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src \
+  /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/python -m pytest \
+  tests/test_student_labels.py -q -k staging_hardlink --tb=short
+```
+
+Result before production changes: **2 failed, 27 deselected in 1.98s**; both
+failed on the referenced component bytes changing. An earlier draft of the
+student regression reused identical bytes and failed on the staging link being
+consumed; it was corrected to the distinct teacher bytes before this RED run.
+
+Fix: `_atomic()` now uses `tempfile.mkstemp()` to create a fresh exclusive file
+in the output directory, writes through that returned descriptor, closes it,
+then replaces the destination. A `finally` removes unused fresh staging files.
+Existing paths are never opened for writing. The direct-output and resolved
+symlink collision checks in `write_corpus()` remain unchanged.
+
+GREEN command used `-k 'staging_hardlink or corpus_output'`: **4 passed,
+25 deselected in 2.68s**, covering both new hard-link regressions and both
+existing direct/symlink rejection cases.
+
+### M1 — Python equality hid differences in metadata JSON types
+
+Root cause confirmed: dictionary equality equates equal-valued booleans,
+integers and floats. Entry identity checks therefore accepted malformed metadata
+even when the independently recomputed order digest was internally valid.
+
+Added three targeted cases: component `version=true`, `source.dirty` replaced
+by its equal-valued integer, and an actual board seed replaced by its
+equal-valued float. Each independently recomputes the canonical order digest
+and calls public `load_corpus()` and `corpus_sequences()`. The cases also verify
+both original component hashes and source dictionaries remain unchanged.
+
+Exact RED command used the same environment/interpreter and
+`python -m pytest tests/test_student_labels.py -q -k corpus_metadata_types
+--tb=short`: **3 failed, 29 deselected in 2.38s**, all because malformed corpus
+loading did not raise.
+
+Fix: compare the full loaded component identity to its manifest identity with
+canonical typed JSON, as already used for coverage; keep the separately typed
+order check. No collection source is rewritten, and unchanged legacy component
+validation/semantics are preserved. The same command then passed **3 tests,
+29 deselected in 2.63s**. Documentation now describes both fixes.
+
+### Covering verification and self-review for this round
+
+```text
+env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src \
+  /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/python -m pytest \
+  tests/test_student_labels.py tests/test_imitation.py tests/test_supervised_fit.py \
+  -q --tb=short
+```
+
+Result: **71 passed in 17.12s**, including all **32** student-label cases,
+existing legacy demonstration/imitation tests and shared-fitter tests.
+The original full-suite result above remains historical evidence for the
+original implementation; this narrow fix round did not rerun unrelated game,
+policy or curriculum suites and did not repeat the empirical smoke/audit.
+
+`ruff check src/colonist_rl/student_labels.py tests/test_student_labels.py`
+passed; `ruff format --check` reported both files already formatted;
+`git diff --check` passed. Self-review read the complete round diff, verified
+exclusive same-directory staging, closed-descriptor replacement and cleanup,
+preservation of collision guards, typed comparison before board membership,
+unchanged actual component sources/bytes, and the four-file ownership boundary.
+Both review findings are addressed; independent re-review remains with root/lead.

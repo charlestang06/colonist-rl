@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import importlib
 import json
+import os
 import random
 import subprocess
 import time
@@ -456,3 +457,61 @@ def test_missing_component_write_fails_as_invalid_corpus(tmp_path):
             components=(str(tmp_path / "missing.gz"),),
             partitions=partitions(19),
         )
+
+
+@pytest.mark.parametrize("writer", ["corpus", "student"])
+def test_staging_hardlink_never_changes_component_bytes(monkeypatch, checkpoint, tmp_path, writer):
+    module, paths, _, data, _, _ = components(monkeypatch, checkpoint, tmp_path)
+    output = tmp_path / ("linked.json" if writer == "corpus" else "linked.gz")
+    staging = output.with_name(output.name + ".tmp")
+    original = paths[1 if writer == "corpus" else 0]
+    before = original.read_bytes()
+    os.link(original, staging)
+    if writer == "corpus":
+        digest = module.write_corpus(
+            output, components=tuple(map(str, paths)), partitions=partitions(19, 23)
+        )
+    else:
+        digest = module.save_student_labels(output, data)
+    assert original.read_bytes() == before
+    assert staging.read_bytes() == before
+    assert original.samefile(staging)
+    assert not original.samefile(output)
+    assert hashlib.sha256(output.read_bytes()).hexdigest() == digest
+    if writer == "corpus":
+        assert module.corpus_sequences(module.load_corpus(output))[1][1][1] == 0
+    else:
+        assert module.load_student_labels(output) == data
+    assert not list(tmp_path.glob(f".{output.name}.*.tmp"))
+
+
+@pytest.mark.parametrize("changed", ["version_bool", "dirty_integer", "board_float"])
+def test_corpus_metadata_types_must_match_components_despite_valid_digest(
+    monkeypatch, checkpoint, tmp_path, changed
+):
+    module, paths, digests, _, _, _ = components(monkeypatch, checkpoint, tmp_path)
+    manifest = tmp_path / "corpus.json"
+    module.write_corpus(manifest, components=tuple(map(str, paths)), partitions=partitions(19, 23))
+    corpus = json.loads(manifest.read_bytes())
+    original_sources = [json.loads(gzip.decompress(path.read_bytes()))["source"] for path in paths]
+    entry = corpus["components"][0]
+    if changed == "version_bool":
+        entry["version"] = True
+    elif changed == "dirty_integer":
+        entry["source"]["dirty"] = int(entry["source"]["dirty"])
+    else:
+        entry["actual_board_seeds"][0] = float(entry["actual_board_seeds"][0])
+    corpus["component_order_sha256"] = hashlib.sha256(
+        json.dumps(
+            corpus["components"], allow_nan=False, sort_keys=True, separators=(",", ":")
+        ).encode()
+    ).hexdigest()
+    manifest.write_text(json.dumps(corpus))
+    with pytest.raises(ValueError):
+        module.load_corpus(manifest)
+    with pytest.raises(ValueError):
+        module.corpus_sequences(corpus)
+    assert [hashlib.sha256(path.read_bytes()).hexdigest() for path in paths] == list(digests)
+    assert [
+        json.loads(gzip.decompress(path.read_bytes()))["source"] for path in paths
+    ] == original_sources

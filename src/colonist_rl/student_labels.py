@@ -10,8 +10,10 @@ import gzip
 import hashlib
 import json
 import math
+import os
 import random
 import re
+import tempfile
 import time
 from collections import Counter
 from copy import deepcopy
@@ -588,9 +590,14 @@ def _validate(data):
 def _atomic(path, encoded):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_bytes(encoded)
-    temporary.replace(path)
+    descriptor, name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    temporary = Path(name)
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            output.write(encoded)
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -700,7 +707,7 @@ def _corpus_data(corpus):
         if type(entry["order"]) is not int or entry["order"] != order or entry["sha256"] in digests:
             raise ValueError("duplicate components or inconsistent ordering")
         actual, data = _component(entry["path"])
-        if {k: v for k, v in entry.items() if k != "order"} != actual:
+        if _json({k: v for k, v in entry.items() if k != "order"}) != _json(actual):
             raise ValueError("component bytes/provenance changed")
         if not set(actual["actual_board_seeds"]).issubset(corpus["partitions"]["training"]):
             raise ValueError("component boards must be declared training boards")
