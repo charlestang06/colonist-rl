@@ -359,3 +359,13 @@ def test_completed_game_is_durable_before_later_interruption(
         probe = json.loads((tmp_path / "probe.json").read_text())
         assert probe["games"] == 0 and len(probe["partial_outcomes"]) == 1
         assert probe["win_rate"] is None
+
+
+@pytest.mark.parametrize("extra", ["graph/47/untrained", "graph/11/other", "heuristic/unknown"])
+def test_gate_rejects_unexpected_variant_keys_and_suppresses_comparisons(extra):
+    evidence = summary()
+    evidence["variants"][extra] = evaluation(8)
+    gate = experiments.baseline_gate(evidence)
+    assert not gate["eligible"]
+    assert gate["reasons"]
+    assert gate["teacher_comparisons"] == {}

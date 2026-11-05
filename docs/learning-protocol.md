@@ -355,7 +355,9 @@ suppressed for the schedule. Descriptive endpoint VP remains available.
 inferring the plan from surviving stages would hide missing seed evidence.
 `variants` must contain all four names `heuristic/random`, `random/random`,
 `heuristic/heuristic`, and `random/heuristic`, plus `graph/<seed>/untrained` and
-`graph/<seed>/imitated` for every declared seed. `teacher` must equal the
+`graph/<seed>/imitated` for every declared seed. Its key set must equal that
+canonical matrix exactly: undeclared seeds, kinds or baseline names reject
+eligibility and suppress comparisons. `teacher` must equal the
 canonical `heuristic/heuristic` variant and each student's evaluation must equal
 its canonical graph variant. Missing names, missing/duplicate students or
 inconsistent copies reject eligibility and suppress all teacher comparisons.

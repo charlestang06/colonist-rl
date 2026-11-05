@@ -87,6 +87,8 @@ def baseline_gate(summary: dict) -> dict:
     required.update(f"graph/{seed}/{kind}" for seed in seeds for kind in ("untrained", "imitated"))
     missing = required - variant_map.keys()
     reasons.extend(f"{name}:required_variant_missing" for name in sorted(missing))
+    unexpected = variant_map.keys() - required
+    reasons.extend(f"{name}:unexpected_variant" for name in sorted(unexpected, key=str))
     if not teacher:
         reasons.append("missing_teacher_evidence")
     elif teacher != variant_map.get("heuristic/heuristic"):
