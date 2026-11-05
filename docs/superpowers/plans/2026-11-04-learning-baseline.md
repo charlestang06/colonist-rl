@@ -58,7 +58,7 @@ Add a real short-game integration case with `board_seeds=[701, 702]`, `max_game_
 **Files:** Create `src/colonist_rl/imitation.py`, `tests/test_imitation.py`; modify the `imitation_warmstart` function in `src/colonist_rl/training.py`; extend `docs/learning-protocol.md`.
 
 **Interfaces:**
-- Consume existing read-only observation codecs `observation_to_dict` and `observation_from_dict` from `adapters.observation_io`, `_MatchDriver`, `HeuristicPolicy`, `GraphPolicy`, backend/action schema constants.
+- Consume existing read-only observation codecs `observation_to_dict` and `view_from_dict` from `adapters.observation_io`, `_MatchDriver`, `HeuristicPolicy`, `GraphPolicy`, backend/action schema constants.
 - Produce `collect_demonstrations(*, board_seeds, max_decisions, max_game_steps=20000, baseline="mixed", deadline=None) -> dict` where returned primitive metadata plus episode sequences contain immutable observations and legal action indices in memory. For each board index i the learner seat is `i % 4`; seed/seat are explicit in every episode.
 - Produce `save_demonstrations(path, dataset) -> str` (SHA-256 of persisted bytes), `load_demonstrations(path) -> dict`, `fit_imitation(policy, dataset, *, epochs=2, sequence_length=16, learning_rate=3e-4, deadline=None) -> dict`, and `imitation_metrics(policy, dataset) -> dict`.
 - Preserve `imitation_warmstart(policy, decisions=256, seed=0, epochs=2, learning_rate=3e-4)` and return keys `loss`, `decisions`, `epochs`; add diagnostic fields without removing existing ones. Its board-seed range may be generated lazily to collect the requested cap.
