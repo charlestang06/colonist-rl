@@ -6,16 +6,30 @@ import math
 import random
 import time
 from collections import Counter
+from collections.abc import Callable
 from copy import deepcopy
+from dataclasses import dataclass
 
 import numpy as np
 import torch
 
+from .contracts import Action, Observation
 from .greedy_no_trade import GreedyNoTrade
 from .native_opponents import NATIVE_IDS, NativeOpponentRunner
 from .opponents import HeuristicPolicy, RandomPolicy
 from .simulator import FourPlayerGame
 from .training import _lineup, _MatchDriver, _wilson
+
+
+@dataclass(frozen=True)
+class CandidatePublicStep:
+    """Immediate public transition, observed throughout by the candidate seat."""
+
+    before: Observation
+    action: Action
+    after: Observation
+    terminated: bool
+    truncated: bool
 
 
 def _seed_list(seeds):
@@ -43,6 +57,7 @@ def evaluate_blocks(
     deterministic=True,
     deadline=None,
     on_game_end=None,
+    on_candidate_step: Callable[[CandidatePublicStep], None] | None = None,
     opponent_lineup=None,
     historical_policies=(),
 ) -> dict:
@@ -56,6 +71,11 @@ def evaluate_blocks(
     before the next game starts. It includes step-truncated games, excludes
     interrupted games, and does not change block aggregation. Callback errors
     propagate after external RNG state and every policy module mode are restored.
+    ``on_candidate_step`` receives the candidate's public before/action/after
+    transition immediately after each executed candidate action, including its
+    terminal action, before any opponent acts. The after view explicitly observes
+    the candidate seat even when the next actor changes. With no callback, no
+    extra observations are taken. Game diagnostics remain in ``on_game_end``.
     """
     seeds = _seed_list(board_seeds)
     return _evaluate_matches(
@@ -69,6 +89,7 @@ def evaluate_blocks(
         deadline=deadline,
         strict_blocks=True,
         on_game_end=on_game_end,
+        on_candidate_step=on_candidate_step,
         opponent_lineup=opponent_lineup,
         historical_policies=historical_policies,
     )
@@ -87,6 +108,7 @@ def _evaluate_matches(
     strict_blocks,
     reject_trades=False,
     on_game_end=None,
+    on_candidate_step: Callable[[CandidatePublicStep], None] | None = None,
     opponent_lineup=None,
     historical_policies=(),
 ):
@@ -119,6 +141,8 @@ def _evaluate_matches(
         raise ValueError("deadline must be a finite absolute monotonic time")
     if on_game_end is not None and not callable(on_game_end):
         raise ValueError("on_game_end must be callable or None")
+    if on_candidate_step is not None and not callable(on_candidate_step):
+        raise ValueError("on_candidate_step must be callable or None")
     opponent_lineup = _lineup(opponent_lineup, allow_native=True)
     has_native = any(name in NATIVE_IDS for name in (opponent_lineup or (baseline,)))
     if has_native and deadline is None:
@@ -236,6 +260,16 @@ def _evaluate_matches(
                     expired = True
                     break
                 result = driver.step(action)
+                if on_candidate_step is not None and view.player_id == seat:
+                    on_candidate_step(
+                        CandidatePublicStep(
+                            before=view,
+                            action=action,
+                            after=env.observe(seat),
+                            terminated=result.terminated,
+                            truncated=result.truncated,
+                        )
+                    )
             if expired:
                 interrupted = {
                     "board_seed": board_seed,
