@@ -467,3 +467,85 @@ def test_evaluation_offer_reaching_step_cap_has_no_following_action(monkeypatch)
     assert all(outcome["steps"] == exact_cap for outcome in strict["outcomes"])
     assert all(outcome["won"] is None for outcome in strict["outcomes"])
     assert strict["win_rate"] is strict["win_rate_denominator"] is None
+
+
+def test_game_callback_receives_isolated_completed_rows():
+    snapshots, received = [], []
+
+    def observe(row):
+        snapshots.append(deepcopy(row))
+        received.append(row)
+        row["seat"] = 99
+        row["phase_counts"].clear()
+        row["action_kind_counts"]["INJECTED"] = 1
+
+    result = evaluate_blocks(board_seeds=[701], max_game_steps=4, on_game_end=observe)
+    assert [row["game"] for row in snapshots] == [0, 1, 2, 3]
+    assert snapshots == result["outcomes"]
+    received[0]["victory_points"] = -99
+    assert result["outcomes"][0]["victory_points"] >= 0
+    assert all("INJECTED" not in row["action_kind_counts"] for row in result["outcomes"])
+
+
+def test_callback_deadline_keeps_raw_game_out_of_strict_partial_block_statistics(monkeypatch):
+    from colonist_rl import evaluation
+
+    now, rows = [0.0], []
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: now[0])
+
+    def stop_after_first_game(row):
+        rows.append(row)
+        now[0] = 2.0
+
+    result = evaluate_blocks(
+        board_seeds=[701, 702], max_game_steps=4, deadline=1.0, on_game_end=stop_after_first_game
+    )
+    assert len(rows) == 1
+    assert result["status"] == "incomplete"
+    assert result["finished_games"] == 1 and result["games"] == 0
+    assert result["outcomes"] == []
+    assert result["partial_outcomes"] == rows
+    assert result["completed_board_seeds"] == []
+    assert result["learner_decisions"] == 0
+    assert result["phase_counts"] == result["action_kind_counts"] == {}
+    assert result["win_rate"] is result["win_rate_ci95_nominal_wilson"] is None
+    assert result["mean_victory_points"] == 0.0
+    with pytest.raises(ValueError, match="complete"):
+        paired_block_summary(result, result)
+
+
+def test_callback_failure_restores_rng_and_each_module_mode():
+    policy = RecordingPolicy().train()
+    policy.heads.eval()
+    modes = [module.training for module in policy.modules()]
+    python_rng, numpy_rng, torch_rng = (
+        random.getstate(),
+        np.random.get_state(),
+        torch.get_rng_state(),
+    )
+    rows = []
+
+    def fail_after_game(row):
+        rows.append(row)
+        random.random()
+        np.random.random()
+        torch.rand(1)
+        raise RuntimeError("injected completed-game persistence failure")
+
+    with pytest.raises(RuntimeError, match="persistence failure"):
+        evaluate_blocks(policy, board_seeds=[43], max_game_steps=8, on_game_end=fail_after_game)
+    assert len(rows) == 1 and rows[0]["game"] == 0
+    assert random.getstate() == python_rng
+    restored_numpy = np.random.get_state()
+    assert restored_numpy[0] == numpy_rng[0]
+    np.testing.assert_array_equal(restored_numpy[1], numpy_rng[1])
+    assert restored_numpy[2:] == numpy_rng[2:]
+    assert torch.equal(torch.get_rng_state(), torch_rng)
+    assert [module.training for module in policy.modules()] == modes
+
+
+def test_legacy_evaluator_propagates_optional_game_callback():
+    rows = []
+    result = evaluate(games=1, seed=701, max_game_steps=4, on_game_end=rows.append)
+    assert rows == result["outcomes"]
+    assert result["aggregation_scope"] == "finished_games"

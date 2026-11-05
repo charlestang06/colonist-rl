@@ -6,6 +6,7 @@ import math
 import random
 import time
 from collections import Counter
+from copy import deepcopy
 
 import numpy as np
 import torch
@@ -39,6 +40,7 @@ def evaluate_blocks(
     max_game_steps=20000,
     deterministic=True,
     deadline=None,
+    on_game_end=None,
 ) -> dict:
     """Evaluate all four seats per board; ``deadline`` is absolute monotonic time.
 
@@ -46,6 +48,10 @@ def evaluate_blocks(
     from an interrupted block are retained separately in ``partial_outcomes``.
     A step-limited game is a completed protocol game with ``truncated=True``
     and unresolved ``won=None``. Strict win metrics require all games resolved.
+    ``on_game_end`` optionally receives a deep copy of each completed game row,
+    before the next game starts. It includes step-truncated games, excludes
+    interrupted games, and does not change block aggregation. Callback errors
+    propagate after external RNG state and every policy module mode are restored.
     """
     seeds = _seed_list(board_seeds)
     return _evaluate_matches(
@@ -58,6 +64,7 @@ def evaluate_blocks(
         deterministic=deterministic,
         deadline=deadline,
         strict_blocks=True,
+        on_game_end=on_game_end,
     )
 
 
@@ -73,6 +80,7 @@ def _evaluate_matches(
     deadline,
     strict_blocks,
     reject_trades=False,
+    on_game_end=None,
 ):
     """The authoritative evaluation match loop, also used by training.evaluate."""
     if candidate not in ("heuristic", "random", "graph") or (
@@ -91,6 +99,8 @@ def _evaluate_matches(
         or not math.isfinite(deadline)
     ):
         raise ValueError("deadline must be a finite absolute monotonic time")
+    if on_game_end is not None and not callable(on_game_end):
+        raise ValueError("on_game_end must be callable or None")
     identity = "graph" if policy is not None else candidate
     action_mode = (
         ("deterministic" if deterministic else "stochastic")
@@ -207,6 +217,11 @@ def _evaluate_matches(
                 **_latency_summary(latency),
             }
             finished.append((row, latency))
+            if on_game_end is not None:
+                # Observers receive only final diagnostic primitives, detached
+                # from the rows used for strict block statistics. Keep this in
+                # the restoration boundary so persistence errors propagate safely.
+                on_game_end(deepcopy(row))
     finally:
         random.setstate(external_rng[0])
         np.random.set_state(external_rng[1])

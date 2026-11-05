@@ -32,21 +32,37 @@ def evaluation(boards=8):
 
 def summary(boards=8):
     score = {"count": 100, "correct": 60, "accuracy": 0.60, "cross_entropy": 1.0}
+    teacher = evaluation(boards)
+    students = [
+        {
+            "seed": seed,
+            "untrained": evaluation(boards),
+            "imitated": evaluation(boards),
+            "validation_metrics": {
+                "non_forced": score.copy(),
+                "by_phase": {"TURN": {"non_forced": score.copy()}},
+            },
+        }
+        for seed in (11, 29)
+    ]
+    variants = {
+        f"{candidate}/{opponent}": evaluation(boards)
+        for candidate in ("heuristic", "random")
+        for opponent in ("heuristic", "random")
+    }
+    variants["heuristic/heuristic"] = teacher
+    variants.update(
+        {
+            f"graph/{student['seed']}/{kind}": student[kind]
+            for student in students
+            for kind in ("untrained", "imitated")
+        }
+    )
     return {
-        "teacher": evaluation(boards),
-        "variants": {"teacher": evaluation(boards)},
-        "students": [
-            {
-                "seed": seed,
-                "untrained": evaluation(boards),
-                "imitated": evaluation(boards),
-                "validation_metrics": {
-                    "non_forced": score.copy(),
-                    "by_phase": {"TURN": {"non_forced": score.copy()}},
-                },
-            }
-            for seed in (11, 29)
-        ],
+        "training_seeds": [11, 29],
+        "teacher": teacher,
+        "variants": variants,
+        "students": students,
     }
 
 
@@ -227,3 +243,119 @@ def test_missing_stage_results_reject_without_losing_partial_evidence():
     evidence["students"][0]["imitated"] = None
     evidence["variants"]["unknown"] = None
     assert experiments.baseline_gate(evidence)["eligible"] is False
+
+
+@pytest.mark.parametrize(
+    "missing",
+    [
+        "all",
+        "heuristic/random",
+        "random/random",
+        "heuristic/heuristic",
+        "random/heuristic",
+        "graph/11/untrained",
+        "graph/29/imitated",
+    ],
+)
+def test_gate_rejects_absent_required_variants_and_suppresses_comparisons(missing):
+    evidence = summary()
+    if missing == "all":
+        evidence["variants"] = {}
+    else:
+        del evidence["variants"][missing]
+    gate = experiments.baseline_gate(evidence)
+    assert not gate["eligible"]
+    assert gate["teacher_comparisons"] == {}
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    [
+        "absent_student",
+        "duplicate_student",
+        "absent_seed_plan",
+        "undeclared_student",
+        "different_graph_evidence",
+        "different_teacher_evidence",
+    ],
+)
+def test_gate_requires_exact_declared_student_and_variant_evidence(corruption):
+    evidence = summary()
+    if corruption == "absent_student":
+        evidence["students"].pop()
+    elif corruption == "duplicate_student":
+        evidence["students"].append(copy.deepcopy(evidence["students"][0]))
+    elif corruption == "absent_seed_plan":
+        del evidence["training_seeds"]
+    elif corruption == "undeclared_student":
+        evidence["training_seeds"].append(47)
+    elif corruption == "different_graph_evidence":
+        evidence["students"][0]["imitated"] = evaluation(8)
+        evidence["students"][0]["imitated"]["outcomes"][0]["victory_points"] = 7
+    else:
+        evidence["teacher"] = evaluation(8)
+        evidence["teacher"]["outcomes"][0]["victory_points"] = 7
+    gate = experiments.baseline_gate(evidence)
+    assert not gate["eligible"]
+    assert gate["teacher_comparisons"] == {}
+
+
+@pytest.mark.parametrize(
+    "variant,interruption",
+    [("probe", "exception"), ("probe", "deadline"), ("heuristic-random", "exception")],
+)
+def test_completed_game_is_durable_before_later_interruption(
+    tmp_path, monkeypatch, variant, interruption
+):
+    from colonist_rl.simulator import FourPlayerGame
+
+    monkeypatch.setattr(
+        experiments,
+        "source_identity",
+        lambda: {"revision": "abc", "dirty": False, "content_identity": "git:abc"},
+    )
+    progress_path = tmp_path / "progress" / f"{variant}.json"
+    now, target_games = [0.0], [0]
+    if interruption == "deadline":
+        monkeypatch.setattr(experiments.time, "monotonic", lambda: now[0])
+    reset = FourPlayerGame.reset
+
+    def interrupted_reset(self, seed=0):
+        if seed == (92000 if variant == "probe" else 90000):
+            target_games[0] += 1
+            if target_games[0] == 2:
+                # This read happens before the later game starts: the prior
+                # completed row must already be on disk, not held in a closure.
+                saved = json.loads(progress_path.read_text())
+                assert saved["finished_games"] == 1
+                assert saved["completed_outcomes"][0]["seat"] == 0
+                assert saved["status"] == "running"
+                if interruption == "exception":
+                    raise RuntimeError("later game failed")
+                now[0] = 2.0
+        return reset(self, seed)
+
+    monkeypatch.setattr(FourPlayerGame, "reset", interrupted_reset)
+    result = experiments.run_experiment(
+        tmp_path,
+        decisions=1,
+        epochs=1,
+        hidden_size=8,
+        max_game_steps=4,
+        wall_seconds=1 if interruption == "deadline" else 5,
+    )
+    expected = "incomplete" if interruption == "deadline" else "failed"
+    stage_name = variant.replace("-", "/")
+    assert result["stages"][stage_name]["status"] == expected
+    saved = json.loads(progress_path.read_text())
+    assert saved["status"] == expected
+    assert saved["finished_games"] == 1
+    assert saved["aggregation_scope"] == "raw_completed_games"
+    assert saved["completed_outcomes"][0]["board_seed"] == (92000 if variant == "probe" else 90000)
+    assert "win_rate" not in saved
+    assert result["game_progress"][stage_name]["finished_games"] == 1
+    assert Path(result["game_progress"][stage_name]["path"]) == progress_path
+    if interruption == "deadline":
+        probe = json.loads((tmp_path / "probe.json").read_text())
+        assert probe["games"] == 0 and len(probe["partial_outcomes"]) == 1
+        assert probe["win_rate"] is None

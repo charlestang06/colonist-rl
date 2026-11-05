@@ -456,6 +456,7 @@ def evaluate(
     candidate="heuristic",
     deterministic=False,
     deadline=None,
+    on_game_end=None,
 ):
     """Legacy game-count evaluation; explicit board seeds select complete blocks.
 
@@ -485,4 +486,5 @@ def evaluate(
         deadline=deadline,
         strict_blocks=board_seeds is not None,
         reject_trades=reject_trades,
+        on_game_end=on_game_end,
     )

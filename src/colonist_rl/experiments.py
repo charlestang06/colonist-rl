@@ -49,17 +49,55 @@ def baseline_gate(summary: dict) -> dict:
     """Pure conservative gate; never infer competence from censored or forced data."""
     reasons, comparisons = [], {}
     teacher = summary.get("teacher")
-    students = summary.get("students", [])
-    if len({s["seed"] for s in students}) < 2:
-        reasons.append("at_least_two_training_seeds_required")
-    variants = list(summary.get("variants", {}).items())
+    seeds = summary.get("training_seeds")
+    students = summary.get("students")
+    # The seed plan is explicit: inferring it from surviving stages could hide
+    # a missing seed. Reject malformed metadata before publishing comparisons.
+    if (
+        not isinstance(seeds, (list, tuple))
+        or len(seeds) < 2
+        or any(type(seed) is not int for seed in seeds)
+        or len(set(seeds)) != len(seeds)
+    ):
+        reasons.append("at_least_two_declared_unique_training_seeds_required")
+    if not isinstance(students, list) or any(
+        not isinstance(student, dict) or type(student.get("seed")) is not int
+        for student in students
+    ):
+        reasons.append("declared_student_evidence_required")
+    elif not reasons and (
+        len(students) != len(seeds) or {student["seed"] for student in students} != set(seeds)
+    ):
+        reasons.append("exactly_one_student_per_declared_seed_required")
+    if reasons:
+        return {
+            "eligible": False,
+            "reasons": reasons,
+            "teacher_comparisons": {},
+            "note": "Descriptive eligibility only; no significance claim.",
+        }
+    variant_map = summary.get("variants")
+    if not isinstance(variant_map, dict):
+        variant_map = {}
+    required = {
+        f"{candidate}/{opponent}"
+        for candidate in ("heuristic", "random")
+        for opponent in ("heuristic", "random")
+    }
+    required.update(f"graph/{seed}/{kind}" for seed in seeds for kind in ("untrained", "imitated"))
+    missing = required - variant_map.keys()
+    reasons.extend(f"{name}:required_variant_missing" for name in sorted(missing))
+    if not teacher:
+        reasons.append("missing_teacher_evidence")
+    elif teacher != variant_map.get("heuristic/heuristic"):
+        reasons.append("teacher_variant_evidence_mismatch")
     for student in students:
-        variants.extend(
-            (f"{student['seed']}/{kind}", student.get(kind)) for kind in ("untrained", "imitated")
-        )
-    if not teacher or not variants:
-        reasons.append("missing_evaluation_evidence")
-    all_paired = True
+        for kind in ("untrained", "imitated"):
+            name = f"graph/{student['seed']}/{kind}"
+            if student.get(kind) != variant_map.get(name):
+                reasons.append(f"{name}:student_variant_evidence_mismatch")
+    variants = list(variant_map.items())
+    all_paired = not reasons
     for name, result in variants:
         try:
             paired = paired_block_summary(teacher, result)
@@ -236,9 +274,11 @@ def run_experiment(
     result = {
         "status": "running",
         "stages": {},
+        "training_seeds": list(training_seeds),
         "students": [],
         "variants": {},
         "artifacts": {},
+        "game_progress": {},
         "teacher": None,
         "manifest_sha256": _artifact(output / "manifest.json")["sha256"],
         "ppo_status": "deferred_insufficient_baseline_evidence",
@@ -281,33 +321,58 @@ def run_experiment(
         return value
 
     def evaluate(name, policy, boards, baseline, until):
+        path = output / "progress" / (name.replace("/", "-") + ".json")
+        path.parent.mkdir(exist_ok=True)
+        progress = {
+            "status": "running",
+            "variant": name,
+            "manifest_sha256": result["manifest_sha256"],
+            "requested_board_seeds": list(boards),
+            "requested_games": 4 * len(boards),
+            "finished_games": 0,
+            "aggregation_scope": "raw_completed_games",
+            "completed_outcomes": [],
+            "note": "Recovery evidence only; strict statistics require complete matched blocks.",
+        }
+
+        def save_progress(row=None):
+            if row is not None:
+                progress["completed_outcomes"].append(row)
+                progress["finished_games"] = len(progress["completed_outcomes"])
+            # Replace the journal before referencing it from the main results.
+            # A later actor/evaluator exception cannot discard completed rows.
+            _write(path, progress)
+            result["game_progress"][name] = {
+                "path": str(path.resolve()),
+                "finished_games": progress["finished_games"],
+                "status": progress["status"],
+            }
+            persist()
+
+        save_progress()
         value = stage(
             name,
             lambda end: evaluate_blocks(
-                policy,
+                policy=policy,
                 board_seeds=boards,
-                candidate=name.split("/")[0],
+                candidate="heuristic" if name == "probe" else name.split("/")[0],
                 baseline=baseline,
                 max_game_steps=max_game_steps,
                 deterministic=True,
                 deadline=end,
+                on_game_end=save_progress,
             ),
             until=until,
         )
+        progress["status"] = result["stages"][name]["status"]
+        progress["stage"] = result["stages"][name].copy()
+        save_progress()
         if value is not None:
             _write(output / (name.replace("/", "-") + ".json"), value)
         return value
 
     try:
-        probe = stage(
-            "probe",
-            lambda end: evaluate_blocks(
-                board_seeds=probe_seeds, max_game_steps=max_game_steps, deadline=end
-            ),
-            until=min(deadline, started + 60),
-        )
-        if probe is not None:
-            _write(output / "probe.json", probe)
+        probe = evaluate("probe", None, probe_seeds, "heuristic", min(deadline, started + 60))
         if probe is None:
             result["status"] = "failed" if result["status"] == "failed" else "partial"
             return result

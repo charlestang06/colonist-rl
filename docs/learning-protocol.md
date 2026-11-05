@@ -106,6 +106,22 @@ counts, observed VP mean, and latencies are zero placeholders, while strict win
 rate, win denominator, and nominal Wilson interval are `null`. None of these
 empty-result values is a performance estimate.
 
+## Completed-game observation callback
+
+`evaluate_blocks(..., on_game_end=callback)` invokes an optional callable with
+one deep-copied final game row, immediately after each natural termination or
+step truncation and before the next game starts. Callback rows are JSON-safe
+post-game diagnostic data and contain no engine objects. Interrupted games do
+not generate a completed-game callback. Mutating a callback row, including its
+nested count dictionaries, cannot change evaluator rows or strict aggregates.
+A callback does not make a partially completed board eligible for aggregation.
+
+Callback exceptions propagate to the caller; the authoritative match loop still
+restores Python, NumPy and Torch RNG state plus every policy module's prior mode
+in `finally`. The legacy `training.evaluate(..., on_game_end=callback)` accepts
+the same keyword without changing its positional arguments or default behavior.
+The experiment runner uses this hook for atomic per-game recovery journals.
+
 ## Paired comparisons and compatibility
 
 `paired_block_summary(reference, candidate)` requires the exact same unique
@@ -127,8 +143,8 @@ no significance assertion.
 
 `training.evaluate` retains its six existing positional arguments and default
 stochastic graph actions. Its new keyword-only arguments are `board_seeds`,
-`candidate`, `deterministic`, and `deadline`. Explicit `board_seeds` select the
-strict block behavior and determine the schedule. Without them, legacy `games`
+`candidate`, `deterministic`, `deadline`, and `on_game_end`. Explicit
+`board_seeds` select the strict block behavior and determine the schedule. Without them, legacy `games`
 may end with a partial four-seat block and all finished games enter its summary
 (`aggregation_scope="finished_games"`). For compatibility, this mode retains
 numeric `win_rate` (wins divided by all finished games) and its nominal Wilson
@@ -289,7 +305,19 @@ Source identity is checked again before the final result is written. The
 configuration SHA-256 excludes start/deadline timestamps; the results also
 record the digest of the exact manifest bytes. Datasets and checkpoints have
 exact byte digests and local paths. `results.json` is atomically refreshed at
-stage boundaries, and raw evaluation results remain separate JSON files.
+phase and completed-game boundaries, and raw evaluation results remain separate
+JSON files. `game_progress` points to `progress/<variant>.json` journals for the
+probe and every comparison variant. Each completed game atomically replaces its
+journal before the next game starts, then updates the main result's progress
+reference. Journals include the exact manifest digest, requested schedule,
+finished-game count, raw `completed_outcomes`, and execution status/error.
+They explicitly use `aggregation_scope="raw_completed_games"` and carry no
+aggregate win rate: finished games from an incomplete block are recovery
+evidence, not strict benchmark statistics. An exception in a later game preserves
+all previously journaled rows even when the evaluator cannot return a summary.
+An abrupt process death can lose the in-flight game or unfinished journal write;
+the prior atomic journal remains recoverable. The original November 4 pilot
+artifacts retain the earlier implementation/source and were not rerun.
 
 The probe has at most 60 seconds and one four-seat board block, inside the
 single total deadline. Its raw outcomes are separate from validation. Its
@@ -322,10 +350,18 @@ or `win_rate=null` value is converted to zero. If any variant is incomplete,
 unresolved or has different board/seat keys, paired teacher comparisons are
 suppressed for the schedule. Descriptive endpoint VP remains available.
 
-`experiments.baseline_gate(summary)` is pure. It requires at least two distinct
-training seeds, eight complete resolved board blocks in every variant and each
-student stage, no truncations, exact matching teacher/student board-seat keys,
-and at least 100 held-out non-forced decisions with agreement >=0.60 per seed.
+`experiments.baseline_gate(summary)` is pure. Its input must explicitly declare
+`training_seeds` and contain exactly one `students` record per declared seed;
+inferring the plan from surviving stages would hide missing seed evidence.
+`variants` must contain all four names `heuristic/random`, `random/random`,
+`heuristic/heuristic`, and `random/heuristic`, plus `graph/<seed>/untrained` and
+`graph/<seed>/imitated` for every declared seed. `teacher` must equal the
+canonical `heuristic/heuristic` variant and each student's evaluation must equal
+its canonical graph variant. Missing names, missing/duplicate students or
+inconsistent copies reject eligibility and suppress all teacher comparisons.
+The gate requires at least two distinct training seeds, eight complete resolved
+board blocks in every variant and each student stage, no truncations, exact
+matching teacher/student board-seat keys, and at least 100 held-out non-forced decisions with agreement >=0.60 per seed.
 Observed phases with non-forced decisions must also have agreement >=0.60;
 forced-only phase scores cannot supply that evidence. Each imitated seed must
 have paired mean VP difference >=-1.0 and win-rate difference >=-0.10 versus the
