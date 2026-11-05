@@ -9,6 +9,7 @@ from __future__ import annotations
 import torch
 
 from .contracts import Action, Observation
+from .settlement_sites import connected_settlement_site_count
 
 CONSEQUENCE_SCHEMA = "public-consequence-v1"
 CONSEQUENCE_DIM = 34
@@ -47,20 +48,7 @@ def consequence_features(view: Observation, action: Action, *, device="cpu") -> 
         sufficient.append(not any(deficits))
     values[26:30] = torch.tensor(sufficient, device=device)
 
-    occupied = {building.vertex for building in view.buildings}
-    blocked = occupied.copy()
-    for a, b in view.board.edges:
-        if a in occupied:
-            blocked.add(b)
-        if b in occupied:
-            blocked.add(a)
-    connected = {
-        vertex
-        for road in view.roads
-        if road.owner == view.player_id
-        for vertex in view.board.edges[road.edge]
-    }
-    sites = len(connected - blocked)
+    sites = connected_settlement_site_count(view)
     own = next(player for player in view.players if player.player_id == view.player_id)
     context = view.context
     normal_build = (

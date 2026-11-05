@@ -5,6 +5,7 @@ from __future__ import annotations
 import torch
 
 from .contracts import RESOURCES, Observation
+from .settlement_sites import connected_settlement_site_count
 
 TRADING_CONTEXT_SCHEMA = "public-trading-context-v1"
 TRADING_CONTEXT_DIM = 24
@@ -21,19 +22,7 @@ def trading_context_features(view: Observation, *, device="cpu") -> torch.Tensor
     own = next(player for player in view.players if player.player_id == view.player_id)
     buildings = tuple(b for b in view.buildings if b.owner == view.player_id)
     settlements = sum(b.level == 1 for b in buildings)
-    occupied = {b.vertex for b in view.buildings}
-    blocked = occupied.copy()
-    for a, b in view.board.edges:
-        if a in occupied:
-            blocked.add(b)
-        if b in occupied:
-            blocked.add(a)
-    connected = {
-        vertex
-        for road in view.roads
-        if road.owner == view.player_id
-        for vertex in view.board.edges[road.edge]
-    }
+    sites = connected_settlement_site_count(view)
     context = view.context
     goals = (
         bool(own.roads_left),
@@ -59,7 +48,7 @@ def trading_context_features(view: Observation, *, device="cpu") -> torch.Tensor
             own.cities_left / 4,
             settlements / 5,
             own.development_count / 8,
-            min(len(connected - blocked), 8) / 8,
+            min(sites, 8) / 8,
             bool(settlements and own.cities_left > 0),
             context.kind in ("TURN", "PLAY_TURN")
             and context.actor == context.turn_owner == view.player_id

@@ -114,3 +114,38 @@ and gradient checks establish capability and connectivity, not empirical trading
 quality. Independent architecture review and the coordinator's separate matched-fit
 protocol remain required before actual small fitting. No 512-case fit, held-out
 gradient run, gameplay, 100k/PPO or teacher changes were performed.
+
+## Review follow-up: shared settlement-site geometry
+
+The independent review's sole Important finding was duplicated occupied / adjacent
+building exclusion / incident-own-road geometry in the two feature extractors.
+The coordinator explicitly expanded ownership to permit this narrow extraction
+into `src/colonist_rl/settlement_sites.py` and replacement of the old block in
+`consequences.py`. This follow-up changes no policy, checkpoint, teacher or fitter
+code and runs no fits.
+
+- Added pure `connected_settlement_site_count(view) -> int`, returning the existing
+  **unclipped** public count without inspecting phase, stock, hand, bank or engine.
+- Both `consequence_features` and `trading_context_features` call that helper at
+  their previous geometry step. Each retains its existing `min(sites, 8) / 8`
+  normalization. Consequence hand/recipe computation, readiness checks, feature
+  assignment order and inherited policy reduction are unchanged.
+- Added `tests/test_settlement_sites.py`: eight literal geometry boundary cases
+  assert the helper count and **complete** expected 34D and 24D vectors, plus an
+  unclipped 54-site standard-board case demonstrating both callers still clip.
+  Fixtures cover missing/enemy/own roads, occupied vertices, adjacent buildings,
+  shared road endpoints, own city eligibility and input immutability.
+- TDD RED: all **9 cases failed** because the shared helper did not exist.
+  GREEN: the non-fit focused suite passed **65 tests, 2 deselected**. The two
+  `shared_hard_label_fitter` cases were explicitly excluded. No full-suite repeat
+  was made because this follow-up prohibits fits and the full suite contains them.
+- A bounded read-only comparison against both pre-extraction functions from commit
+  `a602a4d79f2477df43fe9df8b80829ae91304845` checked 32 synthetic public views across
+  road ownership, occupied geometry and roll state: **32 context24 and 96
+  consequence34 vectors were bitwise equal**. It used no teacher or optimizer.
+- Copied legacy Python, explicit assigned `PYTHONPATH`, disabled bytecode,
+  OMP/MKL/OpenBLAS threads 1 and explicit Torch threads 1 were retained. Ruff check,
+  format check and diff checks are clean. The original runtime was not accessed.
+- Reviewable diff is the follow-up commit against `a602a4d`; only the shared helper,
+  two caller substitutions, new compatibility tests and this report were changed.
+  Independent re-review remains pending; no dependent fit is authorized here.
