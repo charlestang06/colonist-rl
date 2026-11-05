@@ -75,4 +75,7 @@ real engine conversion correctness or baseline playing strength. Before any game
 benchmark, separately schedule real-engine seam checks and native direct-copy
 parity under identical isolated RNG; cover the real discard and synthetic trade
 phases, all coordinate/resource conversions, immutability, and forced chance
-characterization. No actual VF/AB decision or real game was run during preparation.
+characterization. No actual VF/AB decision was run during preparation. The broader 38-test
+verification command also included a GraphPolicy checkpoint/dataset identity
+smoke test with real collect_demonstrations simulator activity; exact operation
+counts were not instrumented. Those side effects are not native seam evidence.
