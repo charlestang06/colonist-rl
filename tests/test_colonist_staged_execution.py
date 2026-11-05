@@ -759,3 +759,102 @@ def test_invalid_board_or_uncalibratable_legal_target_blocks_before_click(mutati
     result = instance.execute(game, action, expected_revision=10)
     assert result.status == "blocked" and not instance.needs_review
     assert transport.calls == [("screenshot",)]
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"dialog_stage": "unexpected"},
+        {"active_tool": "MOVE_ROBBER"},
+        {"target_mode": "MOVE_ROBBER"},
+        {"active_tool": None},
+        {"target_mode": None},
+        {"dialog_stage": "confirmation"},
+        {"trade_rows": snapshot({"revision": 11}, incoming=True).ui.trade_rows},
+    ],
+)
+def test_exact_placement_effect_cannot_override_incompatible_terminal_ui(changes):
+    after = snapshot({"revision": 11, "version": 13, "placed": True})
+    values = dict(changes)
+    capture_changes = {}
+    if "target_mode" in values:
+        capture_changes["target_mode"] = values.pop("target_mode")
+    after = replace(
+        after, capture=replace(after.capture, **capture_changes), ui=replace(after.ui, **values)
+    )
+    result, instance, transport, waits = run([snapshot(), after])
+    assert result.status == "ambiguous" and result.reason and instance.needs_review
+    assert transport.calls == [("screenshot",), ("click", 97, 95), ("screenshot",)]
+    assert waits == []
+
+
+@pytest.mark.parametrize("existing_confirmation", [False, True])
+def test_exact_placement_effect_allows_completed_ui_with_both_modes_cleared(existing_confirmation):
+    before = snapshot({"confirmation": existing_confirmation})
+    after = snapshot({"revision": 11, "version": 13, "placed": True})
+    after = replace(
+        after,
+        capture=replace(after.capture, target_mode=None),
+        ui=replace(after.ui, active_tool=None),
+    )
+    result, instance, transport, waits = run([before, after])
+    assert result.status == "committed" and result.observation == after.capture.observation
+    assert result.evidence and not instance.needs_review
+    assert transport.calls == [
+        ("screenshot",),
+        ("click", 150, 160) if existing_confirmation else ("click", 97, 95),
+        ("screenshot",),
+    ]
+    assert waits == []
+
+
+def test_unstable_incoming_own_rejection_stops_before_later_willing_snapshot():
+    frames = [
+        snapshot(incoming=True),
+        snapshot({"revision": 11, "marker": "rejected", "stable": False}, incoming=True),
+        snapshot({"revision": 12, "marker": "willing"}, incoming=True),
+    ]
+    result, instance, transport, waits = run(frames, incoming=True)
+    assert result.status == "ambiguous" and result.reason and instance.needs_review
+    assert transport.calls == [("screenshot",), ("click", 200, 210), ("screenshot",)]
+    assert waits == []
+
+
+@pytest.mark.parametrize("change", [{"no_row": True}, {"phase": "TURN", "no_offer": True}])
+def test_unstable_incoming_cancellation_is_immediately_ambiguous(change):
+    frames = [
+        snapshot(incoming=True),
+        snapshot({"revision": 11, "stable": False, **change}, incoming=True),
+        snapshot({"revision": 12, "marker": "willing"}, incoming=True),
+    ]
+    result, instance, transport, waits = run(frames, incoming=True)
+    assert result.status == "ambiguous" and result.reason and instance.needs_review
+    assert transport.calls == [("screenshot",), ("click", 200, 210), ("screenshot",)]
+    assert waits == []
+
+
+def test_benign_unstable_incoming_render_still_polls_without_repeating_response():
+    frames = [
+        snapshot(incoming=True),
+        snapshot({"revision": 11, "stable": False}, incoming=True),
+        snapshot({"revision": 12, "marker": "willing"}, incoming=True),
+    ]
+    result, instance, transport, waits = run(frames, incoming=True)
+    assert result.status == "pending" and result.evidence and not instance.needs_review
+    assert transport.calls == [
+        ("screenshot",),
+        ("click", 200, 210),
+        ("screenshot",),
+        ("screenshot",),
+    ]
+    assert waits == [0.05]
+
+
+@pytest.mark.parametrize("context", [None, "invalid", Action("ROLL"), (), 42])
+def test_malformed_nested_observation_context_raises_type_or_value_error_without_io(context):
+    before = snapshot()
+    instance, transport, _ = adapter([before])
+    malformed = replace(before.capture.observation, context=context)
+    with pytest.raises((TypeError, ValueError)):
+        instance.execute(malformed, Action("BUILD_SETTLEMENT", target=4), expected_revision=10)
+    assert transport.calls == []

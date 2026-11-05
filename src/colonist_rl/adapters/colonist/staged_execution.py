@@ -14,7 +14,7 @@ from math import isfinite
 from numbers import Real
 from typing import Protocol
 
-from ...contracts import Action, Observation
+from ...contracts import Action, DecisionContext, Observation
 from ...trades import validate_trade_offer
 from ..calibration import Point, ScreenCalibration
 from ..capture import CaptureObservation
@@ -172,8 +172,17 @@ class StagedBrowserAdapter:
         return matches[0]
 
     @staticmethod
-    def _placement_stage(frame: StagedCapture, action: Action) -> UIControl | None:
-        if frame.capture.target_mode != action.kind or frame.ui.active_tool != action.kind:
+    def _placement_stage(
+        frame: StagedCapture, action: Action, *, completed: bool = False
+    ) -> UIControl | None:
+        modes = (frame.capture.target_mode, frame.ui.active_tool)
+        cleared = (
+            completed
+            and modes == (None, None)
+            and frame.ui.selected_action is None
+            and frame.ui.confirmation is None
+        )
+        if modes != (action.kind, action.kind) and not cleared:
             raise PerceptionError("placement requires verified active target mode and tool")
         if frame.ui.selected_action not in (None, action) or frame.ui.trade_rows:
             raise PerceptionError("incompatible placement selection or trade dialog")
@@ -196,6 +205,8 @@ class StagedBrowserAdapter:
         # Invalid arguments must not be wrapped into a result containing an invalid Action.
         if type(observation) is not Observation:
             raise TypeError("observation must be an Observation")
+        if type(observation.context) is not DecisionContext:
+            raise TypeError("observation context must be a DecisionContext")
         _immutable(observation)
         _integer(observation.context.version, "observation version")
         _action(action)
@@ -342,14 +353,7 @@ class StagedBrowserAdapter:
                     raise PerceptionError("semantic payload changed under the same UI revision")
                 newer = current.ui.revision > before.ui.revision
                 if placement:
-                    if current.ui.selected_action not in (None, action):
-                        raise PerceptionError("post-input selection identifies a different action")
-                    if current.ui.confirmation is not None:
-                        validate_confirmation(
-                            current.ui,
-                            action,
-                            expected_revision=current.ui.revision,
-                        )
+                    control = self._placement_stage(current, action, completed=game != observation)
 
                 if game != observation:
                     if (
@@ -383,7 +387,6 @@ class StagedBrowserAdapter:
                             "unexpected game change without exact verified placement"
                         )
                 elif placement:
-                    control = self._placement_stage(current, action)
                     if confirmed:
                         if control is None and payload != prior_payload:
                             raise PerceptionError(
@@ -428,6 +431,10 @@ class StagedBrowserAdapter:
                         for marker in after_row.responses
                         if marker.player_id == observation.player_id
                     )
+                    if own and own[0].status == "rejected":
+                        raise PerceptionError(
+                            "acting recipient visibly rejected the incoming offer"
+                        )
                     if own and own[0].status == "willing" and newer and current.capture.stable:
                         result = validate_acknowledgement(
                             before.ui,

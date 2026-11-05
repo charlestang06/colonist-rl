@@ -53,6 +53,10 @@ Canonical `BUILD_SETTLEMENT`, `BUILD_CITY`, and `BUILD_ROAD` actions contain onl
 their kind and exact target. Both the capture's target mode and UI's active tool
 must already equal that kind. An unrelated selection, dialog, or confirmation
 blocks entry. Target selection may initially be absent.
+The executor-local compatible placement dialog labels are None and
+`confirmation`; a labelled confirmation still requires the exact reviewed
+action/control binding. Other labels, including `target_confirmation` used by
+the unsupported robber path, are outside this executor's vocabulary.
 
 The executor clicks the calibrated target once, then reads again. Direct visible
 commitment succeeds with one click. A strictly newer UI revision with the entire
@@ -67,6 +71,13 @@ executor's action-specific visible board effect. The result contains the
 refreshed Observation and evidence naming kind, target, actor, and versions.
 It never predicts a resource deduction. A higher game version, disappearing
 dialog, or another selected target cannot establish commitment.
+Before accepting the board effect, the executor also checks terminal UI
+compatibility: both target mode and active tool must still equal the action
+kind, or both must be cleared to None with selection and confirmation cleared.
+An absent confirmation requires no dialog, and unrelated dialogs or trade rows
+remain incompatible. A matching board effect cannot override contradictory UI
+evidence or clear the review lock. Verified unstable completion captures may be
+polled only while these same compatibility checks hold.
 
 ## Incoming willingness
 
@@ -84,6 +95,11 @@ new revision, and that recipient's visible willing marker. The executor calls
 `validate_acknowledgement` and attaches marker evidence. Pending carries no
 committed Observation and certifies no transfer. A changed hand, disappearing or
 replaced row, other partner's selection, or cancellation is ambiguous.
+A verified own rejected marker or cancelled/disappearing offer is ambiguous
+immediately, even when the frame is unstable; no later willing frame is read to
+reverse that outcome. A benign unstable render can still be polled. The allowed
+post-response dialog labels are None and `willing`, with exact row/marker
+evidence still required.
 
 ## Capture bound and review lock
 
