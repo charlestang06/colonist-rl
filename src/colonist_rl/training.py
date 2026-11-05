@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import math
 import random
-import time
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -492,82 +491,38 @@ def evaluate(
     baseline="heuristic",
     reject_trades=False,
     max_game_steps=20000,
+    *,
+    board_seeds=None,
+    candidate="heuristic",
+    deterministic=False,
+    deadline=None,
 ):
-    """Seat-rotated, paired board blocks; nominal CIs do not model block dependence."""
-    if games < 1 or baseline not in ("heuristic", "random", "mixed"):
-        raise ValueError("positive games and a known opponent baseline are required")
-    outcomes = []
-    latency = []
-    external_torch_rng = torch.get_rng_state()
-    wins = truncations = responses = offers = 0
-    if policy is not None:
-        prior_mode = policy.training
-        policy.eval()
-    for game_index in range(games):
-        learner = game_index % 4
-        board_seed = seed + game_index // 4
-        torch.manual_seed(board_seed * 4 + learner)
-        env = FourPlayerGame(max_steps=max_game_steps)
-        env.reset(seed=board_seed)
-        driver = _MatchDriver(
-            env, learner, board_seed, baseline=baseline, reject_trades=reject_trades
-        )
-        memory = None
-        fallback = HeuristicPolicy(seed=board_seed + 31 + learner)
-        while not (env._terminated or env._truncated):
-            driver.maybe_offer()
-            view = driver.view
-            if env.current_player == learner:
-                start = time.perf_counter()
-                if reject_trades and view.context.kind == "TRADE_RESPONSE":
-                    action = next(a for a in view.legal_actions if a.kind == "REJECT_TRADE")
-                    if policy is not None:
-                        with torch.no_grad():
-                            memory = policy(view, memory).memory.detach()
-                elif policy is not None:
-                    action, memory = policy.act(view, memory)
-                else:
-                    action = fallback.act(view)
-                latency.append(time.perf_counter() - start)
-            else:
-                action = driver.opponent_action()
-            driver.step(action)
-        win = env.winner == learner
-        wins += int(win)
-        truncations += int(env._truncated)
-        responses += driver.trade_responses
-        offers += driver.offers
-        vp = env._actual_vp()[learner]
-        outcomes.append(
-            {
-                "game": game_index,
-                "board_seed": board_seed,
-                "seat": learner,
-                "won": win,
-                "winner": env.winner,
-                "victory_points": vp,
-                "truncated": env._truncated,
-                "steps": env.version,
-                "trade_responses": driver.trade_responses,
-                "offers": driver.offers,
-            }
-        )
-    torch.set_rng_state(external_torch_rng)
-    if policy is not None:
-        policy.train(prior_mode)
-    return {
-        "games": games,
-        "wins": wins,
-        "win_rate": wins / games,
-        "win_rate_ci95_nominal_wilson": _wilson(wins, games),
-        "confidence_interval_note": "Nominal Wilson interval; games sharing a board are dependent.",
-        "mean_victory_points": sum(r["victory_points"] for r in outcomes) / games,
-        "truncations": truncations,
-        "trade_responses": responses,
-        "offers": offers,
-        "decision_latency_ms_mean": 1000 * float(np.mean(latency)) if latency else 0.0,
-        "decision_latency_ms_p95": 1000 * float(np.percentile(latency, 95)) if latency else 0.0,
-        "baseline": baseline,
-        "reject_trades": reject_trades,
-        "outcomes": outcomes,
-    }
+    """Legacy game-count evaluation; explicit board seeds select complete blocks.
+
+    Positional arguments and stochastic graph actions retain their legacy defaults.
+    Use evaluation.evaluate_blocks for the strict deterministic benchmark protocol.
+    """
+    from .evaluation import _evaluate_matches, _seed_list
+
+    if type(games) is not int or games < 1:
+        raise ValueError("positive games are required")
+    if board_seeds is None:
+        if type(seed) is not int:
+            raise ValueError("seed must be an integer")
+        seeds = [seed + index for index in range((games + 3) // 4)]
+        schedule = [(seed + index // 4, index % 4) for index in range(games)]
+    else:
+        seeds = _seed_list(board_seeds)
+        schedule = [(board_seed, seat) for board_seed in seeds for seat in range(4)]
+    return _evaluate_matches(
+        policy,
+        schedule,
+        board_seeds=seeds,
+        candidate=candidate,
+        baseline=baseline,
+        max_game_steps=max_game_steps,
+        deterministic=deterministic,
+        deadline=deadline,
+        strict_blocks=board_seeds is not None,
+        reject_trades=reject_trades,
+    )
