@@ -128,6 +128,13 @@ with honestly step-capped episodes. Atomic progress snapshots after finished
 episodes have `status=stop_reason="collecting"`; such active snapshots cannot
 enter a corpus. The final interrupted prefix is atomically persisted before
 return. Saving performs validation and I/O even after the simulation deadline.
+Validation serializes each observation once per call and strictly decodes that
+detached primitive snapshot before reusing it for the history digest. Saving also
+uses that same validated snapshot for the unchanged version-1 wire encoding.
+Snapshots are local to the call; validation-only callers retain at most one
+episode's serialized samples, rather than an extra export of the whole component.
+The parser leaves its primitive input unchanged, and saving leaves the component
+and its immutable observations unchanged. No validation checks are skipped.
 
 Every episode has exactly `board_seed`, `backend_seed`, `seat`, `teacher_seed`,
 `sampling_seed`, `student_sha256`, `architecture_sha256`, `complete`,

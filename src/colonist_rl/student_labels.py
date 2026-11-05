@@ -403,7 +403,7 @@ def collect_student_labels(
     return data
 
 
-def _validate(data):
+def _validate(data, *, export=False):
     _fields(
         data,
         {
@@ -462,6 +462,7 @@ def _validate(data):
     if not isinstance(data["episodes"], list):
         raise ValueError("episodes must be an ordered list")  # noqa: TRY004
     seeds = []
+    exported_episodes = [] if export else None
     for i, episode in enumerate(data["episodes"]):
         _fields(episode, _EPISODE_KEYS, "episode")
         board = episode["board_seed"]
@@ -509,6 +510,7 @@ def _validate(data):
         ):
             raise ValueError("invalid episode steps/history")
         previous = -1
+        serialized_samples = []
         for j, sample in enumerate(episode["samples"]):
             _fields(sample, _SAMPLE_KEYS, "sample")
             view = sample["observation"]
@@ -541,8 +543,11 @@ def _validate(data):
             ):
                 raise ValueError("only final deadline sample may remain unexecuted")
             previous = view.context.version
-            # Roundtrip validates all observation primitives before any fitting.
-            view_from_dict(observation_to_dict(view))
+            # The parser builds new records without mutating this detached DTO.
+            # Reuse it for the strict roundtrip, history digest and optional save.
+            serialized = _sample_json(sample)
+            view_from_dict(serialized["observation"])
+            serialized_samples.append(serialized)
         calls, samples = episode["teacher_calls"], episode["samples"]
         if len(calls) not in (len(samples), len(samples) + int(boundary == "deadline")):
             raise ValueError("teacher call order does not cover full student history")
@@ -569,8 +574,10 @@ def _validate(data):
             previous_call = call["version"]
         if len(calls) > len(samples) and samples and not samples[-1]["behavior_executed"]:
             raise ValueError("no teacher calls may follow an unexecuted student")
-        if episode["history_sha256"] != _history(samples):
+        if episode["history_sha256"] != _digest(serialized_samples):
             raise ValueError("student history digest does not match ordered samples")
+        if export:
+            exported_episodes.append({**episode, "samples": serialized_samples})
     if seeds != collection["actual_board_seeds"] or any(
         type(v) is not int for v in collection["actual_board_seeds"]
     ):
@@ -585,6 +592,8 @@ def _validate(data):
         raise ValueError("inconsistent coverage/decision cap")
     _primitive({k: v for k, v in data.items() if k != "episodes"})
     _primitive([{k: v for k, v in e.items() if k != "samples"} for e in data["episodes"]])
+    if export:
+        return {**data, "episodes": exported_episodes}
 
 
 def _atomic(path, encoded):
@@ -603,13 +612,7 @@ def _atomic(path, encoded):
 
 def save_student_labels(path, component: dict) -> str:
     """Atomically persist finite versioned gzip JSON; return exact byte digest."""
-    _validate(component)
-    payload = {
-        **component,
-        "episodes": [
-            {**e, "samples": [_sample_json(s) for s in e["samples"]]} for e in component["episodes"]
-        ],
-    }
+    payload = _validate(component, export=True)
     return _atomic(path, gzip.compress(_json(payload), mtime=0))
 
 

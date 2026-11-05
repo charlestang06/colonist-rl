@@ -515,3 +515,170 @@ def test_corpus_metadata_types_must_match_components_despite_valid_digest(
     assert [
         json.loads(gzip.decompress(path.read_bytes()))["source"] for path in paths
     ] == original_sources
+
+
+def persistence_component(monkeypatch, checkpoint, *, tail="complete"):
+    module = labels()
+    policy, identity = checkpoint
+    scripted(monkeypatch, module, forced=tail == "forced")
+    data = module.collect_student_labels(
+        policy, checkpoint_identity=identity, board_seeds=[19], max_decisions=4
+    )
+    if tail in ("unmatched_teacher", "unexecuted_student"):
+        data["collection"].update(deadline=1.0, status="incomplete", stop_reason="deadline")
+        episode = data["episodes"][0]
+        episode.update(complete=False, terminated=False, incomplete_reason="deadline")
+        if tail == "unmatched_teacher":
+            episode["teacher_calls"].append({"ordinal": 3, "version": 3, "action_index": 0})
+        else:
+            episode["samples"][-1]["behavior_executed"] = False
+            episode["steps"] = 2
+            episode["history_sha256"] = module._history(episode["samples"])
+            data["coverage"]["behavior_executed"] = 2
+    return module, data
+
+
+def legacy_component_bytes(data):
+    """Independent v1 wire expectation from dataclass primitives, without save helpers."""
+    from dataclasses import asdict
+
+    payload = deepcopy(data)
+    for episode in payload["episodes"]:
+        for sample in episode["samples"]:
+            sample["observation"] = {
+                "format": "colonist-rl.observation",
+                "version": 1,
+                "observation": asdict(sample["observation"]),
+            }
+    return gzip.compress(
+        json.dumps(payload, allow_nan=False, sort_keys=True, separators=(",", ":")).encode(),
+        mtime=0,
+    )
+
+
+@pytest.mark.parametrize("operation", ["validate", "save"])
+@pytest.mark.parametrize("tail", ["complete", "forced", "unmatched_teacher", "unexecuted_student"])
+def test_persistence_converts_each_sample_once_without_changing_v1_bytes_or_input(
+    monkeypatch, checkpoint, tmp_path, operation, tail
+):
+    module, data = persistence_component(monkeypatch, checkpoint, tail=tail)
+    before = deepcopy(data)
+    expected = legacy_component_bytes(data)
+    conversions = []
+    original = module.observation_to_dict
+
+    def record(view):
+        conversions.append(view)
+        return original(view)
+
+    monkeypatch.setattr(module, "observation_to_dict", record)
+    # Each call owns its snapshot; an earlier validation/save cannot supply a cache.
+    for _ in range(2):
+        conversions.clear()
+        if operation == "validate":
+            assert module._validate(data) is None
+        else:
+            path = tmp_path / "once.gz"
+            digest = module.save_student_labels(path, data)
+            assert path.read_bytes() == expected
+            assert digest == hashlib.sha256(expected).hexdigest()
+        assert conversions == [s["observation"] for e in data["episodes"] for s in e["samples"]]
+        assert data == before
+    if operation == "save":
+        assert module.load_student_labels(path) == before
+
+
+def test_roundtrip_parser_leaves_the_reused_nested_primitive_snapshot_unchanged(
+    monkeypatch, checkpoint, tmp_path
+):
+    module, data = persistence_component(monkeypatch, checkpoint)
+    original = module.view_from_dict
+    snapshots = []
+
+    def check(snapshot):
+        before = deepcopy(snapshot)
+        result = original(snapshot)
+        assert snapshot == before
+        snapshots.append((snapshot, before))
+        return result
+
+    monkeypatch.setattr(module, "view_from_dict", check)
+    path = tmp_path / "snapshot.gz"
+    module.save_student_labels(path, data)
+    assert len(snapshots) == 3
+    assert all(snapshot == before for snapshot, before in snapshots)
+    assert path.read_bytes() == legacy_component_bytes(data)
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    [
+        "schema_bool",
+        "source_integer",
+        "seed_bool",
+        "label_bool",
+        "execution_integer",
+        "tile",
+        "digest",
+    ],
+)
+@pytest.mark.parametrize("operation", ["save", "load"])
+def test_persistence_rejects_typed_metadata_labels_observations_and_history_corruption(
+    monkeypatch, checkpoint, tmp_path, corruption, operation
+):
+    module, data = persistence_component(monkeypatch, checkpoint)
+    original_history = data["episodes"][0]["history_sha256"]
+    sample = data["episodes"][0]["samples"][0]
+    if corruption == "schema_bool":
+        data["version"] = True
+    elif corruption == "source_integer":
+        data["source"]["dirty"] = int(data["source"]["dirty"])
+    elif corruption == "seed_bool":
+        data["collection"]["seed"] = False
+    elif corruption == "label_bool":
+        sample["teacher_action_index"] = False
+    elif corruption == "execution_integer":
+        sample["behavior_executed"] = 1
+    elif corruption == "tile":
+        view = sample["observation"]
+        tiles = (replace(view.board.tiles[0], number=7), *view.board.tiles[1:])
+        sample["observation"] = replace(view, board=replace(view.board, tiles=tiles))
+    else:
+        data["episodes"][0]["history_sha256"] = "0" * 64
+    if corruption != "digest":
+        assert data["episodes"][0]["history_sha256"] == original_history
+    path = tmp_path / "corrupt.gz"
+    original_bytes = b"previous output"
+    path.write_bytes(original_bytes)
+    if operation == "save":
+        with pytest.raises(ValueError):
+            module.save_student_labels(path, data)
+        assert path.read_bytes() == original_bytes
+    else:
+        path.write_bytes(legacy_component_bytes(data))
+        with pytest.raises(ValueError):
+            module.load_student_labels(path)
+
+
+@pytest.mark.parametrize("kind", ["symlink", "hardlink"])
+@pytest.mark.parametrize("location", ["output", "staging"])
+def test_student_atomic_save_preserves_aliased_input_bytes(
+    monkeypatch, checkpoint, tmp_path, kind, location
+):
+    module, data = persistence_component(monkeypatch, checkpoint, tail="unexecuted_student")
+    original = tmp_path / "immutable.gz"
+    original.write_bytes(b"immutable input bytes")
+    output = tmp_path / "output.gz"
+    alias = output if location == "output" else output.with_name(output.name + ".tmp")
+    if kind == "symlink":
+        alias.symlink_to(original)
+    else:
+        os.link(original, alias)
+    digest = module.save_student_labels(output, data)
+    assert original.read_bytes() == b"immutable input bytes"
+    assert output.read_bytes() == legacy_component_bytes(data)
+    assert digest == hashlib.sha256(output.read_bytes()).hexdigest()
+    assert not original.samefile(output)
+    if location == "staging":
+        assert alias.samefile(original)
+    assert not list(tmp_path.glob(f".{output.name}.*.tmp"))
