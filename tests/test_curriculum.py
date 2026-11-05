@@ -120,6 +120,146 @@ def test_selection_rejects_censored_regressed_and_final_seeds_and_prefers_earlie
     assert m.select_checkpoint([])["id"] is None
 
 
+@pytest.mark.parametrize(
+    "seed,validation",
+    [
+        (620, (62000000, 62000001)),
+        (11, (70000017, 62000000)),
+        (11, (70000019, 62000000)),
+        (11, (71001000, 62000000)),
+        (11, (71001007, 62000000)),
+    ],
+)
+def test_runner_rejects_reserved_boards_before_input_output_or_game_work(
+    tmp_path, monkeypatch, seed, validation
+):
+    m = curriculum()
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("reserved split reached input, output, collector, or evaluator work")
+
+    for name in (
+        "source_identity",
+        "_artifact",
+        "load_checkpoint",
+        "_write",
+        "RolloutCollector",
+        "evaluate_blocks",
+    ):
+        monkeypatch.setattr(m, name, unexpected)
+    output = tmp_path / "run"
+    with pytest.raises(ValueError, match="seeds must be disjoint"):
+        m.run_curriculum(
+            output,
+            initial_checkpoints={seed: tmp_path / "unused.pt"},
+            config=m.CurriculumConfig(validation_board_seeds=validation),
+        )
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("seed,validation", [(11, None), (29, (62000100, 62000101))])
+def test_runner_accepts_normal_splits_before_source_preflight(
+    tmp_path, monkeypatch, seed, validation
+):
+    m = curriculum()
+
+    class SourcePreflightReached(Exception):
+        pass
+
+    def stop_before_inputs():
+        raise SourcePreflightReached
+
+    monkeypatch.setattr(m, "source_identity", stop_before_inputs)
+    config = m.CurriculumConfig()
+    if validation is not None:
+        config = m.CurriculumConfig(validation_board_seeds=validation)
+    output = tmp_path / "run"
+    with pytest.raises(SourcePreflightReached):
+        m.run_curriculum(output, initial_checkpoints={seed: tmp_path / "unused.pt"}, config=config)
+    assert not output.exists()
+
+
+def test_manifest_records_all_reserved_finals_and_preserves_current_panel(tmp_path, monkeypatch):
+    m = curriculum()
+    monkeypatch.setattr(
+        m,
+        "source_identity",
+        lambda: {"revision": "abc", "dirty": False, "content_identity": "git:abc"},
+    )
+    monkeypatch.setattr(m, "_artifact", lambda path: {"path": str(path)})
+    policy = torch.nn.Linear(1, 1)
+    monkeypatch.setattr(m, "load_checkpoint", lambda path: (policy, {}))
+    manifests = []
+
+    class ManifestCaptured(Exception):
+        pass
+
+    def capture_manifest(path, value):
+        assert path.name == "manifest.json"
+        manifests.append(value)
+        raise ManifestCaptured
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("manifest preflight started collector or evaluator work")
+
+    monkeypatch.setattr(m, "_write", capture_manifest)
+    monkeypatch.setattr(m, "RolloutCollector", unexpected)
+    monkeypatch.setattr(m, "evaluate_blocks", unexpected)
+    with pytest.raises(ManifestCaptured):
+        m.run_curriculum(tmp_path / "run", initial_checkpoints={11: tmp_path / "unused.pt"})
+    splits = manifests[0]["seed_splits"]
+    assert splits["final_test_reserved"] == list(range(71001000, 71001008))
+    assert splits["all_final_test_reserved"] == [70000017, 70000019, *range(71001000, 71001008)]
+
+
+@pytest.mark.parametrize("reserved", [70000017, 70000019, 71001000, 71001007])
+@pytest.mark.parametrize("role", ["stage", "fixed", "initial"])
+def test_promotion_rejects_reserved_evidence_in_every_role(reserved, role):
+    m = curriculum()
+    stage, fixed, initial = evidence("random"), evidence(), evidence()
+    result = {"stage": stage, "fixed": fixed, "initial": initial}[role]
+    reserved_result = evidence(result["baseline"], boards=(62000000, reserved))
+    result.update(reserved_result)
+    with pytest.raises(ValueError, match="non-final complete board blocks"):
+        m._resolved(result)
+    gate = m.promotion_gate("random", stage, fixed, initial)
+    assert not gate["promote"]
+    assert any("non-final complete board blocks" in reason for reason in gate["reasons"])
+
+
+@pytest.mark.parametrize("reserved", [70000017, 70000019, 71001000, 71001007])
+@pytest.mark.parametrize("role", ["fixed_result", "initial_fixed_result"])
+def test_selection_rejects_reserved_evidence_in_every_role(reserved, role):
+    m = curriculum()
+    candidate = {
+        "id": "reserved",
+        "fixed_result": evidence(),
+        "initial_fixed_result": evidence(),
+    }
+    candidate[role] = evidence(boards=(62000000, reserved))
+    selected = m.select_checkpoint([candidate])
+    assert selected["status"] == "unavailable"
+    assert selected["id"] is None
+    assert "non-final complete board blocks" in selected["rejected"][0]["reason"]
+
+
+@pytest.mark.parametrize(
+    "boards", [(62000000, 70000017), (62000000, 70000019), (70000017, 70000019)]
+)
+def test_complete_matching_reserved_panel_cannot_promote_or_select(boards):
+    m = curriculum()
+    stage, fixed, initial = (
+        evidence("random", boards=boards),
+        evidence(boards=boards),
+        evidence(boards=boards),
+    )
+    gate = m.promotion_gate("random", stage, fixed, initial)
+    selected = m.select_checkpoint(
+        [{"id": "reserved", "fixed_result": fixed, "initial_fixed_result": initial}]
+    )
+    assert (gate["promote"], selected["status"], selected["id"]) == (False, "unavailable", None)
+
+
 def test_explicit_lineup_and_frozen_pool_change_only_at_new_episode():
     policy, frozen = GraphPolicy(16), GraphPolicy(16)
     collector = RolloutCollector(

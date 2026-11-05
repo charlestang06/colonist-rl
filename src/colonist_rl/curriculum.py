@@ -37,6 +37,7 @@ LINEUPS = {
     "historical": ("heuristic", "heuristic", "historical"),
 }
 FINAL_TEST = tuple(range(71001000, 71001008))
+RESERVED_FINAL_TEST = (70000017, 70000019, *FINAL_TEST)
 
 
 @dataclass(frozen=True)
@@ -76,7 +77,7 @@ def _resolved(result, *, baseline=None, lineup=None):
         ):
             raise ValueError("explicit typed and consistent resolved-game evidence required")
     boards = {board for board, _ in rows}
-    if len(boards) < 2 or boards & set(FINAL_TEST):
+    if len(boards) < 2 or boards & set(RESERVED_FINAL_TEST):
         raise ValueError("two non-final complete board blocks required")
     if (
         set(_seed_list(result.get("requested_board_seeds"))) != boards
@@ -240,7 +241,9 @@ def run_curriculum(output_dir, *, initial_checkpoints, config=None) -> dict:
     seeds = sorted(initial_checkpoints)
     boards = {seed: [8000000 + 100000 * seed + i for i in range(4096)] for seed in seeds}
     validate_seed_splits(
-        [b for values in boards.values() for b in values], config.validation_board_seeds, FINAL_TEST
+        [b for values in boards.values() for b in values],
+        config.validation_board_seeds,
+        RESERVED_FINAL_TEST,
     )
     source = source_identity()
     if (
@@ -285,6 +288,7 @@ def run_curriculum(output_dir, *, initial_checkpoints, config=None) -> dict:
             "training_board_candidates": {str(s): boards[s] for s in seeds},
             "fixed_validation": list(config.validation_board_seeds),
             "final_test_reserved": list(FINAL_TEST),
+            "all_final_test_reserved": list(RESERVED_FINAL_TEST),
         },
         "runtime": {"device": "cpu", "torch_threads": 1, "workers": 1},
         "first_profile_counts_inside_compute_budget": True,

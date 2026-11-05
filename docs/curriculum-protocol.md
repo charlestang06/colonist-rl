@@ -51,9 +51,15 @@ updates and dropped intervals retain those limitations.
 For training seed `s`, the unique candidate board schedule is
 `[8000000 + 100000*s + i for i in range(4096)]`. The actual boards consumed are
 recorded separately. Finite schedules stop cleanly and never wrap. The fixed
-validation boards are 62000000 through 62000003. Final seeds 71001000 through
-71001007 remain reserved; the runner never evaluates them and selection rejects
-evidence containing them. All partitions are validated before output creation.
+validation boards default to 62000000 through 62000003. The current final panel
+71001000 through 71001007 and legacy final seeds 70000017 and 70000019 remain
+reserved. Training candidates and configurable validation panels must exclude
+every reserved seed; promotion and selection reject evidence containing any of
+them. For example, initialization seed 620 is rejected because its candidate
+schedule contains both legacy finals. All partitions are validated before input
+loading, output creation or collector/evaluator calls. The manifest retains the
+current panel in `seed_splits.final_test_reserved` and records the full legacy and
+current reservation in `seed_splits.all_final_test_reserved`.
 
 The evaluator runs the same four-seat blocks against the exact current lineup
 and against the fixed all-heuristic panel. Gates require at least two complete,
