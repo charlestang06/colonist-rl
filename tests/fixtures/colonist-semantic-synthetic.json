@@ -1,0 +1,44 @@
+{
+  "evidence_kind": "synthetic_ordered_tokens",
+  "description": "Hand-authored semantic tests, not a captured DOM token sequence. The bank wording follows the controls screenshot log.",
+  "rows": [
+    {
+      "tokens": [
+        {"kind": "text", "text": "Donni#0773 gave bank "},
+        {"kind": "icon", "alt": "Lumber"},
+        {"kind": "icon", "alt": "Lumber"},
+        {"kind": "icon", "alt": "Lumber"},
+        {"kind": "icon", "alt": "Lumber"},
+        {"kind": "text", "text": " and "},
+        {"kind": "text", "text": "took "},
+        {"kind": "icon", "alt": "Grain"}
+      ]
+    },
+    {
+      "tokens": [
+        {"kind": "text", "text": "Donni#0773 got "},
+        {"kind": "icon", "alt": "Lumber"},
+        {"kind": "icon", "alt": "Brick"},
+        {"kind": "icon", "alt": "Wool"},
+        {"kind": "icon", "alt": "Grain"},
+        {"kind": "icon", "alt": "Ore"},
+        {"kind": "icon", "alt": "Ore"}
+      ]
+    },
+    {
+      "tokens": [
+        {"kind": "text", "text": "Donni#0773 got "},
+        {"kind": "icon", "alt": "Ore"},
+        {"kind": "icon", "alt": "CardBack"},
+        {"kind": "icon", "alt": "cardback"}
+      ]
+    },
+    {
+      "tokens": [
+        {"kind": "text", "text": "Donni#0773 got "},
+        {"kind": "icon", "alt": "Ore"},
+        {"kind": "icon", "alt": "MysteryOre"}
+      ]
+    }
+  ]
+}
