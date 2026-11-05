@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "colonist-rl"
+version = "0.1.0"
+description = "Player-visible Catan reinforcement learning with extensible trade models"
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.11"
+dependencies = ["catanatron==3.2.1", "numpy>=2.0,<3", "torch>=2.5,<3", "gymnasium>=1.0,<2", "pillow>=10,<14"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.9"]
+browser = ["playwright>=1.49,<2"]
+
+[project.scripts]
+colonist-rl = "colonist_rl.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/colonist_rl"]
