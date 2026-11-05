@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12+, dataclasses, pytest, Ruff, existing contracts and normalized log rows.
 
-**Spec:** `docs/superpowers/specs/2026-11-05-adapter-evidence-design.md`
+**Spec:** `docs/superpowers/specs/2026-11-04-adapter-evidence-design.md`
 
 ## Global Constraints
 
