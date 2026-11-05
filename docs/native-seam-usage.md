@@ -1,9 +1,14 @@
-# Prepared real-engine seam worker — not executed
+# Real-engine seam worker usage
+
+The guarded engineering run has since passed all 10 cases with eight authentic
+queries. See [current results](training-status-2026-11-05.md) for execution evidence.
+The preparation record and launch instructions below describe the earlier stage.
 
 This worker implements the next-stage checks in `../REVIEW.md`. It is an
 engineering fixture, not playing-strength evidence. Static AST parsing and Ruff
 are the only checks performed on this script during preparation. Runtime behavior
-is unverified. Core gateway/evaluator code is unchanged from reviewed a67576c.
+was unverified at preparation. Core gateway/evaluator code was unchanged from
+reviewed a67576c.
 
 Root must approve and launch it through the existing v4 phase_entry guard and
 registered supervisor, with one CPU worker, one native/Torch thread, 2 GiB RSS and

@@ -47,7 +47,7 @@ The [current status](training-status-2026-11-05.md) links the underlying artifac
   0.68–0.93 ms for H_view. Inspect coverage and changed decisions before more depth.
 - **Native references:** reviewed gateway code is integrated (core `ea36614`, seam
   worker `d1e11bd`; isolated sources `a67576c`/`1fb9d32`). The real-engine seam
-  passed all 11 cases with 8 authentic query returns. This is engineering evidence;
+  passed all 10 cases with 8 authentic query returns. This is engineering evidence;
   the first exposed-board H profiles resolved all eight games: 0/4 versus VF and
   3/4 versus AB2. No superiority result is established.
 - **Outcome value:** v3 passed 14 pure integrity tests, then the guarded smoke

@@ -38,7 +38,7 @@ checkout; native gateway integration does not change that source pin.
 - **Authentic native opponents integrated:** VF base defaults and AB depth=2,
   `prunning=False` preserve native source identity and privileged-state access.
   Root gateway/seam commits are `ea36614`/`d1e11bd` (isolated reviewed sources
-  `a67576c`/`1fb9d32`). The guarded real-engine seam passed 11 cases with 8 authentic
+  `a67576c`/`1fb9d32`). The guarded real-engine seam passed 10 cases with 8 authentic
   query completions and exit 0. Subsequent reference games resolved all eight
   games on exposed board 126100000: H won 0/4 versus VF and 3/4 versus AB2,
   with zero candidate legal-identity failures. Guarded wall times were 8.771/74.881
