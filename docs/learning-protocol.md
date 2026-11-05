@@ -238,3 +238,21 @@ per observed context kind / chosen teacher action kind. It also returns
 estimate. All outputs are finite or JSON `null`. Teacher agreement and tiny
 non-forced overfit checks measure supervised optimization only; playing
 competence requires the separate strict, uncensored match evaluation protocol.
+
+## Deadline mutation boundary
+
+Collection and evaluation pass their optional deadline to the shared
+`_MatchDriver.maybe_offer` hook. It checks before proposal selection and again
+before applying a returned offer. Both callers also check after a proposal or
+action actor returns, before a subsequent simulator action. An actor already
+running at expiration may finish; its returned choice does not authorize another
+engine mutation. Evaluation retains the interrupted game's actual simulator
+version and decision accounting. A learner choice returned during that final
+call remains in its decision/latency counts even when no engine step follows.
+No terminal outcome is invented for a deadline interruption. Calls without a
+deadline retain the existing proposal behavior used by rollouts.
+
+Offers increment simulator version. If an offer consumes the final allowed game
+step, evaluation records that exact endpoint as a truncated, unresolved game and
+performs no following action. Its raw `won` is `null`, and strict win-rate
+summaries remain undefined under the existing unresolved-game rules.

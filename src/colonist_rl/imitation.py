@@ -180,7 +180,7 @@ def collect_demonstrations(
                     break
                 # Offers increment simulator version too. Stop before an ensuing
                 # action would exceed the exact game-step cap.
-                driver.maybe_offer()
+                driver.maybe_offer(deadline=deadline)
                 if env.version >= max_game_steps:
                     episode.update(truncated=True, incomplete_reason="step_cap")
                     break

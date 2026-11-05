@@ -324,3 +324,35 @@ def test_truncated_gzip_is_reported_as_invalid_dataset(tmp_path):
     path.write_bytes(gzip.compress(b"{}")[:-3])
     with pytest.raises(ValueError):
         imitation.load_demonstrations(path)
+
+
+def test_collection_deadline_after_proposal_prevents_offer_mutation(monkeypatch):
+    imitation = _imitation()
+    now = [0.0]
+    expired_proposals, offers_after_deadline = [], []
+    propose = imitation.HeuristicPolicy.propose
+    offer_trade = FourPlayerGame.offer_trade
+
+    def expiring_proposal(self, view):
+        offer = propose(self, view)
+        if offer is not None:
+            expired_proposals.append(view.context.version)
+            now[0] = 2.0
+        return offer
+
+    def observed_offer(self, offer):
+        if now[0] >= 1.0:
+            offers_after_deadline.append(self.version)
+        return offer_trade(self, offer)
+
+    monkeypatch.setattr(imitation.time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(imitation.HeuristicPolicy, "propose", expiring_proposal)
+    monkeypatch.setattr(FourPlayerGame, "offer_trade", observed_offer)
+    data = imitation.collect_demonstrations(
+        board_seeds=[31], max_decisions=128, max_game_steps=500, deadline=1.0
+    )
+    assert expired_proposals
+    assert offers_after_deadline == []
+    assert data["collection"]["stop_reason"] == "deadline"
+    assert data["episodes"][0]["steps"] == expired_proposals[0]
+    assert data["episodes"][0]["incomplete_reason"] == "deadline"

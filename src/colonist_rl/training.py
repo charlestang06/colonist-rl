@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import math
 import random
+import time
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -166,7 +167,10 @@ class _MatchDriver:
     def view(self):
         return self.env.observe()
 
-    def maybe_offer(self):
+    def maybe_offer(self, *, deadline=None):
+        """Optionally stop between proposal selection and its engine mutation."""
+        if deadline is not None and time.monotonic() >= deadline:
+            return
         view = self.view
         actor = view.context.actor
         if (
@@ -183,7 +187,7 @@ class _MatchDriver:
         policy = self.policies[actor]
         if hasattr(policy, "propose"):
             offer = policy.propose(view)
-            if offer is not None:
+            if offer is not None and (deadline is None or time.monotonic() < deadline):
                 self.env.offer_trade(offer)
                 self.offers += 1
 

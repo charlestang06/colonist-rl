@@ -135,18 +135,15 @@ def _evaluate_matches(
             while result is None or not (result.terminated or result.truncated):
                 if deadline is not None and time.monotonic() >= deadline:
                     expired = True
-                    interrupted = {
-                        "board_seed": board_seed,
-                        "seat": seat,
-                        "steps": env.version,
-                        "learner_decisions": decisions,
-                        "non_forced_decisions": non_forced,
-                        "phase_counts": dict(phases),
-                        "action_kind_counts": dict(kinds),
-                        **_latency_summary(latency),
-                    }
                     break
-                driver.maybe_offer()
+                driver.maybe_offer(deadline=deadline)
+                if deadline is not None and time.monotonic() >= deadline:
+                    expired = True
+                    break
+                # Offers consume a simulator version without setting its step
+                # result's truncation flag. Do not apply one extra action.
+                if env.version >= max_game_steps:
+                    break
                 view = driver.view
                 if view.player_id == seat:
                     start = time.perf_counter()
@@ -166,23 +163,40 @@ def _evaluate_matches(
                     kinds[action.kind] += 1
                 else:
                     action = driver.opponent_action()
+                if deadline is not None and time.monotonic() >= deadline:
+                    expired = True
+                    break
                 result = driver.step(action)
             if expired:
+                interrupted = {
+                    "board_seed": board_seed,
+                    "seat": seat,
+                    "steps": env.version,
+                    "learner_decisions": decisions,
+                    "non_forced_decisions": non_forced,
+                    "phase_counts": dict(phases),
+                    "action_kind_counts": dict(kinds),
+                    **_latency_summary(latency),
+                }
                 break
+            # A final offer can reach the cap before another StepResult exists.
+            terminated = bool(result is not None and result.terminated)
+            truncated = bool(result is not None and result.truncated) or (
+                env.version >= max_game_steps and not terminated
+            )
+            winner = result.winner if result is not None else None
             # Private simulator diagnostics are read only after the game has ended.
             row = {
                 "game": game_index,
                 "board_seed": board_seed,
                 "seat": seat,
                 "won": (
-                    result.winner == seat
-                    if result.terminated and not result.truncated and result.winner is not None
-                    else None
+                    winner == seat if terminated and not truncated and winner is not None else None
                 ),
-                "winner": result.winner,
+                "winner": winner,
                 "victory_points": env._actual_vp()[seat],
-                "terminated": result.terminated,
-                "truncated": result.truncated,
+                "terminated": terminated,
+                "truncated": truncated,
                 "steps": env.version,
                 "trade_responses": driver.trade_responses,
                 "offers": driver.offers,

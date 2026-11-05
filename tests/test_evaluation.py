@@ -208,17 +208,22 @@ def test_expired_deadline_has_no_complete_blocks():
 
 
 def test_deadline_mid_block_retains_partial_accounting(monkeypatch):
-    # Only the deadline clock is controlled; simulator and actor decisions are real.
+    # Expire after actual engine progress, independent of deadline-check frequency.
     from colonist_rl import evaluation
+    from colonist_rl.simulator import FourPlayerGame
 
-    calls = 0
+    now, completed_steps = [0.0], [0]
+    step = FourPlayerGame.step
 
-    def clock():
-        nonlocal calls
-        calls += 1
-        return 0.0 if calls <= 12 else 2.0
+    def expiring_step(self, action):
+        result = step(self, action)
+        completed_steps[0] += 1
+        if completed_steps[0] == 6:  # One finished game, then a partial game.
+            now[0] = 2.0
+        return result
 
-    monkeypatch.setattr(evaluation.time, "monotonic", clock)
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(FourPlayerGame, "step", expiring_step)
     result = evaluate_blocks(board_seeds=[701, 702], max_game_steps=4, deadline=1.0)
     assert result["status"] == "incomplete"
     assert result["games"] == 0
@@ -256,15 +261,20 @@ def test_real_termination_is_distinct_from_a_step_limit(monkeypatch):
 
 def test_deadline_retains_completed_blocks_and_separates_partial_games(monkeypatch):
     from colonist_rl import evaluation
+    from colonist_rl.simulator import FourPlayerGame
 
-    calls = 0
+    now, completed_steps = [0.0], [0]
+    step = FourPlayerGame.step
 
-    def clock():
-        nonlocal calls
-        calls += 1
-        return 0.0 if calls <= 27 else 2.0
+    def expiring_step(self, action):
+        result = step(self, action)
+        completed_steps[0] += 1
+        if completed_steps[0] == 22:  # Five finished games, then a partial game.
+            now[0] = 2.0
+        return result
 
-    monkeypatch.setattr(evaluation.time, "monotonic", clock)
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(FourPlayerGame, "step", expiring_step)
     result = evaluate_blocks(board_seeds=[701, 702], max_game_steps=4, deadline=1.0)
     assert result["status"] == "incomplete"
     assert result["completed_board_seeds"] == [701]
@@ -358,3 +368,102 @@ def test_legacy_numeric_report_is_labeled_and_keeps_raw_uncertainty():
     assert result["unresolved_games"] == 4
     assert all(row["won"] is None for row in result["outcomes"])
     json.dumps(result, allow_nan=False)
+
+
+def test_evaluation_deadline_after_proposal_prevents_offer_mutation(monkeypatch):
+    from colonist_rl import evaluation
+    from colonist_rl.opponents import HeuristicPolicy
+    from colonist_rl.simulator import FourPlayerGame
+
+    now = [0.0]
+    expired_proposals, offers_after_deadline = [], []
+    propose, offer_trade = HeuristicPolicy.propose, FourPlayerGame.offer_trade
+
+    def expiring_proposal(self, view):
+        assert isinstance(view, Observation)
+        offer = propose(self, view)
+        if offer is not None:
+            expired_proposals.append(view.context.version)
+            now[0] = 2.0
+        return offer
+
+    def observed_offer(self, offer):
+        if now[0] >= 1.0:
+            offers_after_deadline.append(self.version)
+        return offer_trade(self, offer)
+
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(HeuristicPolicy, "propose", expiring_proposal)
+    monkeypatch.setattr(FourPlayerGame, "offer_trade", observed_offer)
+    result = evaluate_blocks(board_seeds=[31], max_game_steps=500, deadline=1.0)
+    assert expired_proposals
+    assert offers_after_deadline == []
+    assert result["status"] == "incomplete" and result["incomplete_reason"] == "deadline"
+    assert result["interrupted_game"]["steps"] == expired_proposals[0]
+    assert result["games"] == result["finished_games"] == 0
+    assert result["outcomes"] == result["partial_outcomes"] == []
+    assert result["win_rate"] is result["win_rate_denominator"] is None
+
+
+@pytest.mark.parametrize(
+    "expiring_actor, expected_steps, learner_decisions", [(0, 0, 1), (1, 2, 2)]
+)
+def test_evaluation_actor_deadline_prevents_later_step(
+    monkeypatch, expiring_actor, expected_steps, learner_decisions
+):
+    from colonist_rl import evaluation
+    from colonist_rl.opponents import HeuristicPolicy
+    from colonist_rl.simulator import FourPlayerGame
+
+    now = [0.0]
+    steps_after_deadline = []
+    act, step = HeuristicPolicy.act, FourPlayerGame.step
+
+    def expiring_action(self, view):
+        assert isinstance(view, Observation)
+        action = act(self, view)
+        if view.player_id == expiring_actor:
+            now[0] = 2.0
+        return action
+
+    def observed_step(self, action):
+        if now[0] >= 1.0:
+            steps_after_deadline.append(self.version)
+        return step(self, action)
+
+    monkeypatch.setattr(evaluation.time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(HeuristicPolicy, "act", expiring_action)
+    monkeypatch.setattr(FourPlayerGame, "step", observed_step)
+    result = evaluate_blocks(board_seeds=[31], max_game_steps=500, deadline=1.0)
+    assert steps_after_deadline == []
+    assert result["status"] == "incomplete"
+    assert result["interrupted_game"]["steps"] == expected_steps
+    assert result["interrupted_game"]["learner_decisions"] == learner_decisions
+    assert sum(result["interrupted_game"]["phase_counts"].values()) == learner_decisions
+    assert result["games"] == result["finished_games"] == 0
+    assert result["win_rate"] is None
+
+
+def test_evaluation_offer_reaching_step_cap_has_no_following_action(monkeypatch):
+    from colonist_rl.simulator import FourPlayerGame
+
+    offer_versions = []
+    offer_trade = FourPlayerGame.offer_trade
+
+    def observed_offer(self, offer):
+        offer_versions.append(self.version)
+        return offer_trade(self, offer)
+
+    monkeypatch.setattr(FourPlayerGame, "offer_trade", observed_offer)
+    initial = evaluate(games=1, seed=31, baseline="heuristic", max_game_steps=500)
+    assert offer_versions and initial["outcomes"][0]["offers"] > 0
+    exact_cap = offer_versions[0] + 1
+    capped = evaluate(games=1, seed=31, baseline="heuristic", max_game_steps=exact_cap)
+    row = capped["outcomes"][0]
+    assert row["steps"] == exact_cap
+    assert row["offers"] == 1 and row["truncated"] and not row["terminated"]
+    assert row["won"] is None and capped["unresolved_games"] == 1
+    strict = evaluate_blocks(board_seeds=[31], max_game_steps=exact_cap)
+    assert all(outcome["steps"] == exact_cap for outcome in strict["outcomes"])
+    assert all(outcome["won"] is None for outcome in strict["outcomes"])
+    assert strict["win_rate"] is strict["win_rate_denominator"] is None
