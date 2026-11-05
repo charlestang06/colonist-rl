@@ -3,6 +3,8 @@
 The learner remains weaker than the fixed heuristic opponents. All completed
 experiments and failed hypotheses are preserved; passing tests is not a strength
 claim. This is an intermediate checkpoint while the next learning wave runs.
+Every gameplay result below uses the legacy Catanatron3.2.1 engine. The requested
+upstream migration is isolated; new-engine results will form a separate cohort.
 
 | Experiment | Teacher agreement on non-forced choices | Heuristic-opponent outcomes | Interpretation |
 |---|---|---|---|
@@ -38,8 +40,9 @@ a separate public consequence-feature model; audited teacher labels on student
 states with dataset aggregation; and progressively harder PPO opponents afterward.
 The current PPO reward is terminal winning plus victory-point potential shaping.
 Behavioral cloning does not use that reward. Reward changes require their own
-measured comparison. Curriculum code is implemented and under independent review;
-no sustained PPO curriculum has run at this checkpoint.
+measured comparison. Curriculum code is implemented and task reviewed; no sustained PPO curriculum
+has run. The latest priority is controlled student-state labels, then scaling
+toward100,000 non-forced decisions; PPO waits for consistently useful imitation.
 
 The [experiment archive](../runs/swarm-2026-11-04/README.md) links raw outcomes,
 checkpoints, datasets, traces, diagnostics, manifests and review records.
@@ -47,3 +50,84 @@ checkpoints, datasets, traces, diagnostics, manifests and review records.
 scratch paths to preserved bytes. The original internal work horizon elapsed
 during a long tool/approval wait; catch-up work and the later explicit user
 request are recorded separately rather than relabeling elapsed time as training.
+
+
+## Expanded supervision and public hand consequences
+
+Two expanded teacher collections contain10,000 observations each, including
+5,862 and6,041 non-forced choices. All20,000 stored labels replay exactly.
+Forced observations remain in every recurrent history. These counts are smaller
+than the next proposed100,000 **non-forced** decision target.
+
+The legacy control attempted40epochs under840seconds per seed. Both missed that
+target; the greatest common completed checkpoint was30epochs. The separately
+run hand-recipe model attempted30epochs under1,200seconds per seed and also
+missed its primary target. Its predeclared completion-only fallback selected
+**15 full epochs** across all four control/feature arms, before any game results.
+Partial-last16-epoch feature weights were retained and excluded from this match.
+
+| Checkpoint cohort, seeds11 /29 | Wins per64 games | Mean VP | Held-out non-forced matches |
+|---|---|---|---|
+| Expanded legacy operational partial-last |5 /0|5.078125 /4.828125|Different work; not the matched endpoint|
+| Exact full30 legacy reference |5 /2|5.1875 /4.65625|357 /343 of593|
+| Matched full15 legacy control |4 /0|5.09375 /4.21875|347 /330 of593|
+| Matched full15 hand-recipe features |7 /3|5.453125 /4.8125|357 /343 of593|
+| Fixed heuristic reference |10|6.375|Teacher reference|
+
+All320 games in the matched feature experiment completed without truncation.
+The exact30 reference adds128 completed games. They use the same16-board,
+four-seat validation panel,72010000..72010015, against three fixed heuristics.
+The heuristic reference reproduced identical outcome rows. These are dependent,
+board-shared descriptive samples; neither feature seed surpassed the heuristic.
+Different checkpoint cohorts must not be conflated.
+
+The feature comparison uses identical training data, original base weights,
+phase weights, learning rate, sequence length, batch size, completed updates and
+supervised presentations within each initialization. The added34 coefficients
+start at zero; all1,024 initial held-out logits/value/memory outputs match exactly.
+Only hand/recipe features are active; connectivity/piece features remain a
+separate experiment. Runtime ceilings differ, so this is not equal compute.
+Historical timing comparisons also cannot isolate feature-branch overhead.
+
+On the same68 held-out maritime targets, control→feature exact agreement is
+6→15 for seed11 and5→19 for seed29. END_TURN agreement is35→36 and36→34 of38.
+Game bank selections increased103/1157→181/1145 and95/1122→175/1001 legal-menu
+decisions. Resource-sufficient recipe transitions increased36→132 and16→129.
+These are public hand arithmetic counts, not proof of connected legal builds,
+useful trades or strategic quality. No graph arm passed over a directly legal
+purchase in those games.
+
+The separate24-state conceptual audit found student11:17reasonable,3ambiguous,
+4clearly bad; student29:11reasonable,11ambiguous,2clearly bad. Teacher choices
+were22reasonable and2ambiguous. The deterministic earliest-case selection spans
+four teacher-state boards and is not representative of student-game distributions.
+Concrete mistakes include buying redundant brick with settlement brick already
+covered and no road pieces, while wheat would permit a public city upgrade.
+Other teacher disagreements support reasonable alternative plans; labels are not
+strategic ground truth. Passing can be sensible despite a legal bank menu.
+
+Base4:1 trading requires no port. A saved-state audit found1,169 legal4:1
+observations without an owned port. Ports improve the rate to3:1 or the relevant
+2:1; executable menus also depend on phase, own hand and engine legality.
+
+## Next controlled work
+
+The reviewed acquisition driver compares frozen-student states with equal-query
+additional teacher trajectories, using the same legacy full30 start per pair.
+The planned real launch has4,000 teacher queries per arm/seed, identical original
+components, full forced histories, deterministic prefix selection through equal
+new choice counts, and five training epochs. Queries/choice presentations match;
+updates, weighted loss mass and prefix costs can differ and are recorded.
+No result from that study is claimed here before completion.
+
+Then build a shared, diverse corpus toward100,000 non-forced choices, with complete
+games across boards/seats and separate learning curves. Stream immutable components:
+materializing the full corpus would consume excessive memory. Keep resource priors,
+connectivity and teacher changes separate. The requested exact upstream upgrade
+must retain old engine identities; new seeded evaluations do not reproduce legacy
+boards. PPO remains conditional on useful imitation, with its reward unchanged.
+
+Raw evidence: [feature report](../runs/swarm-2026-11-04/feature-study/artifacts/report.md),
+[exact30 reference](../runs/swarm-2026-11-04/legacy-30-evaluation/results.json),
+[public strategy audit](../runs/swarm-2026-11-04/public-trade-audit/report.md), and
+[resource-prior research](resource-valuation-priors-2026-11-05.md).
