@@ -101,6 +101,59 @@ class PlaywrightTransport:
         self.page.mouse.click(float(x), float(y))
         self._check()
 
+    def drag(
+        self,
+        start_x: float,
+        start_y: float,
+        end_x: float,
+        end_y: float,
+        *,
+        steps: int = 10,
+    ) -> None:
+        """Drag using public Mouse APIs while remaining on the starting origin."""
+        if any(
+            isinstance(value, bool)
+            or not isinstance(value, Real)
+            or not isfinite(value)
+            or value < 0
+            for value in (start_x, start_y, end_x, end_y)
+        ):
+            raise ValueError("drag coordinates must be finite nonnegative numbers")
+        if type(steps) is not int or steps <= 0:
+            raise ValueError("drag steps must be a positive integer")
+        origin = self._check()
+
+        def check_origin() -> None:
+            if self._check() != origin:
+                raise BrowserConnectionError("page origin changed while dragging")
+
+        pressed = False
+        try:
+            check_origin()
+            self.page.mouse.move(float(start_x), float(start_y))
+            check_origin()
+            check_origin()
+            # A failing down call may already have pressed the public mouse.
+            pressed = True
+            self.page.mouse.down()
+            check_origin()
+            check_origin()
+            self.page.mouse.move(float(end_x), float(end_y), steps=steps)
+            check_origin()
+            check_origin()
+            self.page.mouse.up()
+            pressed = False
+            check_origin()
+        except BaseException:
+            # Cleanup must never replace the original exception or release on
+            # another origin/disconnected page, including after interruption.
+            if pressed:
+                with suppress(BaseException):
+                    check_origin()
+                    self.page.mouse.up()
+                    check_origin()
+            raise
+
     def read_visible_text(self) -> str:
         before_origin = self._check()
         # DOM innerText represents rendered body text; hidden DOM data is not read.

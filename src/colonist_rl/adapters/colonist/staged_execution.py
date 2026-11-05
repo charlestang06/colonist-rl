@@ -91,6 +91,18 @@ class StagedCaptureReader(Protocol):
     def read(self, screenshot: bytes) -> StagedCapture: ...
 
 
+class DragBrowserTransport(BrowserTransport, Protocol):
+    def drag(
+        self,
+        start_x: float,
+        start_y: float,
+        end_x: float,
+        end_y: float,
+        *,
+        steps: int = 10,
+    ) -> None: ...
+
+
 class StagedBrowserAdapter:
     """Explicit placement and one incoming response, with a global capture budget."""
 
@@ -194,6 +206,21 @@ class StagedBrowserAdapter:
             raise PerceptionError("unexpected placement dialog")
         return None
 
+    @staticmethod
+    def _activation_stage(frame: StagedCapture, action: Action) -> bool:
+        """Validate only the inactive/active states of this focused build drag."""
+        if (
+            frame.ui.selected_action != action
+            or frame.ui.confirmation is not None
+            or frame.ui.dialog_stage is not None
+            or frame.ui.trade_rows
+        ):
+            raise PerceptionError("drag activation changed the exact selection or dialog")
+        modes = (frame.capture.target_mode, frame.ui.active_tool)
+        if modes not in ((None, None), (action.kind, action.kind)):
+            raise PerceptionError("drag activation has incompatible target mode or tool")
+        return modes == (action.kind, action.kind)
+
     def execute(
         self,
         observation: Observation,
@@ -269,6 +296,29 @@ class StagedBrowserAdapter:
             self.needs_review = True
             self.transport.click(*point)
 
+        def progress(previous: StagedCapture, current: StagedCapture) -> tuple:
+            game = current.capture.observation
+            if (
+                game.player_id != observation.player_id
+                or game.board != observation.board
+                or game.rules != observation.rules
+                or game.context.version < previous.capture.observation.context.version
+                or current.ui.revision < previous.ui.revision
+            ):
+                raise PerceptionError(
+                    "post-input identity, board, rules, or revision changed unexpectedly"
+                )
+            payload = (game, current.ui, current.capture.target_mode, current.controls)
+            prior_payload = (
+                previous.capture.observation,
+                previous.ui,
+                previous.capture.target_mode,
+                previous.controls,
+            )
+            if current.ui.revision == previous.ui.revision and payload != prior_payload:
+                raise PerceptionError("semantic payload changed under the same UI revision")
+            return payload, prior_payload
+
         try:
             before = read()
             if not before.capture.stable:
@@ -286,6 +336,60 @@ class StagedBrowserAdapter:
                 raise PerceptionError("calibration confidence is too low")
 
             if placement:
+                if (before.capture.target_mode, before.ui.active_tool) != (
+                    action.kind,
+                    action.kind,
+                ):
+                    if action.kind not in ("BUILD_SETTLEMENT", "BUILD_CITY"):
+                        raise PerceptionError("focused drag supports settlement and city only")
+                    self._activation_stage(before, action)
+                    controls = tuple(
+                        item
+                        for item in before.controls
+                        if item.control.action == action and item.control.gesture == "drag"
+                    )
+                    if len(controls) != 1:
+                        raise PerceptionError("activation requires one exact located drag control")
+                    control = controls[0].control
+                    if (
+                        control.control_id != before.ui.focused_control
+                        or control.row_id is not None
+                        or control.partner is not None
+                    ):
+                        raise PerceptionError(
+                            "activation requires the exact already-focused control"
+                        )
+                    drag = getattr(self.transport, "drag", None)
+                    if not callable(drag):
+                        raise PerceptionError("transport does not support focused drag")
+                    target = _point(
+                        self.calibration.action_point(
+                            observation.board, action, min_confidence=self.min_confidence
+                        )
+                    )
+                    if captures >= self.max_captures:
+                        raise PerceptionError("no capture remaining to verify another gesture")
+                    self.needs_review = True
+                    drag(*controls[0].point, *target)
+                    previous = before
+                    while captures < self.max_captures:
+                        current = read()
+                        progress(previous, current)
+                        if current.capture.observation != observation:
+                            raise PerceptionError("game changed during drag activation")
+                        active = self._activation_stage(current, action)
+                        if (
+                            active
+                            and current.capture.stable
+                            and current.ui.revision > before.ui.revision
+                        ):
+                            before = current
+                            break
+                        previous = current
+                        if captures < self.max_captures:
+                            self.wait(self.poll_interval)
+                    else:
+                        return failure("capture budget exhausted without verified activation")
                 confirmation = self._placement_stage(before, action)
                 point = (
                     self._control_point(before, confirmation)
@@ -332,25 +436,7 @@ class StagedBrowserAdapter:
             while captures < self.max_captures:
                 current = read()
                 game = current.capture.observation
-                if (
-                    game.player_id != observation.player_id
-                    or game.board != observation.board
-                    or game.rules != observation.rules
-                    or game.context.version < previous.capture.observation.context.version
-                    or current.ui.revision < previous.ui.revision
-                ):
-                    raise PerceptionError(
-                        "post-input identity, board, rules, or revision changed unexpectedly"
-                    )
-                payload = (game, current.ui, current.capture.target_mode, current.controls)
-                prior_payload = (
-                    previous.capture.observation,
-                    previous.ui,
-                    previous.capture.target_mode,
-                    previous.controls,
-                )
-                if current.ui.revision == previous.ui.revision and payload != prior_payload:
-                    raise PerceptionError("semantic payload changed under the same UI revision")
+                payload, prior_payload = progress(previous, current)
                 newer = current.ui.revision > before.ui.revision
                 if placement:
                     control = self._placement_stage(current, action, completed=game != observation)

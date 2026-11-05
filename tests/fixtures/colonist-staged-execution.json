@@ -26,6 +26,15 @@
     {"name":"incoming-changed-hand","incoming":true,"frames":[{}, {"revision":11,"marker":"willing","hand":[2,2,2,2,2]}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
     {"name":"incoming-simultaneous-exact-row","incoming":true,"frames":[{"other_row":true}, {"revision":11,"marker":"willing","other_row":true}],"gestures":[["click",200,210]],"status":"pending","captures":2},
     {"name":"incoming-changed-terms","incoming":true,"frames":[{}, {"revision":11,"marker":"willing","row_give":[0,1,0,0,0]}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
-    {"name":"incoming-expired","incoming":true,"frames":[{}, {"revision":11,"phase":"TURN","no_offer":true}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2}
+    {"name":"incoming-expired","incoming":true,"frames":[{}, {"revision":11,"phase":"TURN","no_offer":true}],"gestures":[["click",200,210]],"status":"ambiguous","captures":2},
+    {"name":"focused-drag-confirm-commit","drag_transport":true,"frames":[{"drag":true},{"revision":11,"selected":true},{"revision":12,"confirmation":true},{"revision":13,"version":13,"placed":true}],"gestures":[["drag",50,60,97,95],["click",97,95],["click",150,160]],"status":"committed","captures":4},
+    {"name":"focused-city-drag-direct","kind":"BUILD_CITY","phase":"TURN","drag_transport":true,"frames":[{"drag":true},{"revision":11,"selected":true},{"revision":12,"version":13,"placed":true}],"gestures":[["drag",50,60,97,95],["click",97,95]],"status":"committed","captures":3},
+    {"name":"focused-drag-delayed-activation","drag_transport":true,"frames":[{"drag":true},{"drag":true},{"revision":11,"drag":true,"stable":false},{"revision":12,"selected":true,"stable":false},{"revision":12,"selected":true},{"revision":13,"version":13,"placed":true}],"gestures":[["drag",50,60,97,95],["click",97,95]],"status":"committed","captures":6,"waits":3},
+    {"name":"focused-drag-no-effect-timeout","drag_transport":true,"max_captures":3,"frames":[{"drag":true},{"drag":true},{"drag":true}],"gestures":[["drag",50,60,97,95]],"status":"ambiguous","captures":3,"waits":1},
+    {"name":"focused-drag-no-capture-reserve","drag_transport":true,"max_captures":1,"frames":[{"drag":true}],"gestures":[],"status":"blocked","captures":1},
+    {"name":"focused-drag-shared-budget-before-target","drag_transport":true,"max_captures":2,"frames":[{"drag":true},{"revision":11,"selected":true}],"gestures":[["drag",50,60,97,95]],"status":"ambiguous","captures":2},
+    {"name":"focused-drag-shared-budget-before-confirm","drag_transport":true,"max_captures":3,"frames":[{"drag":true},{"revision":11,"selected":true},{"revision":12,"confirmation":true}],"gestures":[["drag",50,60,97,95],["click",97,95]],"status":"ambiguous","captures":3},
+    {"name":"focused-drag-tooltip-without-mode","drag_transport":true,"frames":[{"drag":true},{"revision":11,"drag":true,"dialog":"tooltip"}],"gestures":[["drag",50,60,97,95]],"status":"ambiguous","captures":2},
+    {"name":"unfocused-drag-blocked","drag_transport":true,"frames":[{"drag":true,"focus":null}],"gestures":[],"status":"blocked","captures":1}
   ]
 }

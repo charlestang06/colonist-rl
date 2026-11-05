@@ -115,13 +115,20 @@ def snapshot(data=None, *, incoming=False, kind="BUILD_SETTLEMENT", phase="SETUP
             ),
         )
         controls.insert(0, LocatedUIControl(control, (250, 260)))
+    if data.get("drag"):
+        control = UIControl("build-piece", revision, action, "drag")
+        controls.append(LocatedUIControl(control, (50, 60)))
+    inactive = data.get("inactive", data.get("drag", False))
     ui = UIState(
         revision,
         version,
         phase,
-        active_tool=None if incoming else kind,
-        selected_action=action if incoming or confirm else None,
-        dialog_stage="confirmation" if confirm else None,
+        focused_control=data.get("focus", "build-piece" if data.get("drag") else None),
+        active_tool=None if incoming or inactive else kind,
+        selected_action=action
+        if incoming or confirm or data.get("drag") or data.get("selected")
+        else None,
+        dialog_stage=data.get("dialog", "confirmation" if confirm else None),
         confirmation=confirm,
         trade_rows=tuple(rows),
     )
@@ -131,7 +138,7 @@ def snapshot(data=None, *, incoming=False, kind="BUILD_SETTLEMENT", phase="SETUP
             data.get("confidence", 1.0),
             data.get("stable", True),
             data.get("verified", True),
-            None if incoming else kind,
+            None if incoming or inactive else kind,
         ),
         ui,
         controls,
@@ -164,6 +171,20 @@ class Transport:
             raise self.click_error[1]
 
 
+class DragTransport(Transport):
+    def __init__(self, frames, *, drag_error=None, **kwargs):
+        super().__init__(frames, **kwargs)
+        self.drag_error = drag_error
+
+    def drag(self, start_x, start_y, end_x, end_y, *, steps=10):
+        assert self.adapter.needs_review, "lock must be set before drag"
+        call = ("drag", start_x, start_y, end_x, end_y)
+        self.calls.append(call)
+        self.gestures.append(call)
+        if self.drag_error is not None:
+            raise self.drag_error
+
+
 class Reader:
     def __init__(self, frames):
         self.frames = {f"frame-{i}".encode(): frame for i, frame in enumerate(frames)}
@@ -175,8 +196,11 @@ class Reader:
 
 
 def adapter(frames, **kwargs):
-    transport = Transport(
+    factory = DragTransport if kwargs.pop("drag", False) else Transport
+    extra = {"drag_error": kwargs.pop("drag_error")} if "drag_error" in kwargs else {}
+    transport = factory(
         frames,
+        **extra,
         click_error=kwargs.pop("click_error", None),
         read_error_at=kwargs.pop("read_error_at", None),
     )
@@ -228,6 +252,7 @@ def test_catalog_executes_every_synthetic_stage_with_exact_inputs(scenario):
         frames,
         incoming=scenario.get("incoming", False),
         max_captures=scenario.get("max_captures", 8),
+        drag=scenario.get("drag_transport", False),
     )
     assert result.status == scenario["status"]
     assert transport.gestures == [tuple(item) for item in scenario["gestures"]]
@@ -858,3 +883,234 @@ def test_malformed_nested_observation_context_raises_type_or_value_error_without
     with pytest.raises((TypeError, ValueError)):
         instance.execute(malformed, Action("BUILD_SETTLEMENT", target=4), expected_revision=10)
     assert transport.calls == []
+
+
+@pytest.mark.parametrize("kind", ["BUILD_SETTLEMENT", "BUILD_CITY"])
+@pytest.mark.parametrize("confirmation", [False, True])
+def test_focused_drag_requires_fresh_mode_before_target_and_reuses_placement(kind, confirmation):
+    frames = [
+        snapshot({"drag": True}, kind=kind),
+        snapshot({"revision": 11, "selected": True}, kind=kind),
+    ]
+    if confirmation:
+        frames.append(snapshot({"revision": 12, "confirmation": True}, kind=kind))
+    frames.append(snapshot({"revision": 13, "version": 13, "placed": True}, kind=kind))
+    result, instance, transport, waits = run(frames, drag=True)
+    assert result.status == "committed" and not instance.needs_review
+    calls = [
+        ("screenshot",),
+        ("drag", 50, 60, 97, 95),
+        ("screenshot",),
+        ("click", 97, 95),
+        ("screenshot",),
+    ]
+    if confirmation:
+        calls += [("click", 150, 160), ("screenshot",)]
+    assert transport.calls == calls
+    assert waits == []
+    assert result.observation == frames[-1].capture.observation
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "unfocused",
+        "wrong_focus",
+        "wrong_action",
+        "noncanonical",
+        "click",
+        "row",
+        "partner",
+        "multiple",
+        "selection",
+        "no_selection",
+        "no_control",
+        "dialog",
+        "confirmation",
+        "tool",
+        "mode",
+        "road",
+        "missing_method",
+    ],
+)
+def test_focused_drag_entry_rejects_inexact_or_unsupported_evidence_without_input(mutation):
+    frame = snapshot(
+        {"drag": True}, kind="BUILD_ROAD" if mutation == "road" else "BUILD_SETTLEMENT"
+    )
+    ui, capture, controls = frame.ui, frame.capture, frame.controls
+    located = controls[0]
+    if mutation == "unfocused":
+        ui = replace(ui, focused_control=None)
+    elif mutation == "wrong_focus":
+        ui = replace(ui, focused_control="another-piece")
+    elif mutation in ("wrong_action", "noncanonical", "click", "row", "partner"):
+        values = {
+            "wrong_action": {"action": Action("BUILD_SETTLEMENT", target=5)},
+            "noncanonical": {"action": Action("BUILD_SETTLEMENT", target=4, offer_id="unrelated")},
+            "click": {"gesture": "click"},
+            "row": {"row_id": "row-a"},
+            "partner": {"partner": 1},
+        }
+        controls = (replace(located, control=replace(located.control, **values[mutation])),)
+    elif mutation == "multiple":
+        controls += (
+            replace(located, control=replace(located.control, control_id="duplicate-piece")),
+        )
+    elif mutation == "selection":
+        ui = replace(ui, selected_action=Action("BUILD_SETTLEMENT", target=5))
+    elif mutation == "no_selection":
+        ui = replace(ui, selected_action=None)
+    elif mutation == "no_control":
+        controls = ()
+    elif mutation == "dialog":
+        ui = replace(ui, dialog_stage="tooltip")
+    elif mutation == "confirmation":
+        ui = replace(ui, confirmation=UIControl("confirm", 10, located.control.action, "click"))
+    elif mutation == "tool":
+        ui = replace(ui, active_tool="BUILD_ROAD")
+    elif mutation == "mode":
+        capture = replace(capture, target_mode="BUILD_ROAD")
+    frame = StagedCapture(capture, ui, controls)
+    result, instance, transport, waits = run([frame], drag=mutation != "missing_method")
+    assert result.status == "blocked" and not instance.needs_review
+    assert transport.calls == [("screenshot",)] and waits == []
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "selection",
+        "dialog",
+        "confirmation",
+        "tool",
+        "mode",
+        "game",
+        "semantic_rewrite",
+        "backwards",
+        "unverified",
+        "low_confidence",
+    ],
+)
+@pytest.mark.parametrize("stable", [False, True])
+def test_postdrag_contradiction_never_targets_or_reads_later_success(mutation, stable):
+    before = snapshot({"drag": True})
+    current = snapshot({"revision": 11, "selected": True, "stable": stable})
+    ui, capture = current.ui, current.capture
+    if mutation == "selection":
+        ui = replace(ui, selected_action=Action("BUILD_SETTLEMENT", target=5))
+    elif mutation == "dialog":
+        ui = replace(ui, dialog_stage="tooltip")
+    elif mutation == "confirmation":
+        current = snapshot({"revision": 11, "confirmation": True, "stable": stable})
+        ui, capture = current.ui, current.capture
+    elif mutation == "tool":
+        ui = replace(ui, active_tool="BUILD_ROAD")
+    elif mutation == "mode":
+        capture = replace(capture, target_mode="BUILD_ROAD")
+    elif mutation == "game":
+        current = snapshot(
+            {"revision": 11, "version": 13, "placed": True, "selected": True, "stable": stable}
+        )
+        ui, capture = current.ui, current.capture
+    elif mutation == "semantic_rewrite":
+        ui = replace(ui, revision=10)
+    elif mutation == "backwards":
+        ui = replace(ui, revision=9)
+    elif mutation == "unverified":
+        capture = replace(capture, verified=False)
+    elif mutation == "low_confidence":
+        capture = replace(capture, confidence=0.5)
+    current = StagedCapture(capture, ui)
+    later = snapshot({"revision": 12, "version": 13, "placed": True})
+    result, instance, transport, waits = run([before, current, later], drag=True)
+    assert result.status == "ambiguous" and instance.needs_review
+    assert transport.calls == [("screenshot",), ("drag", 50, 60, 97, 95), ("screenshot",)]
+    assert waits == []
+
+
+@pytest.mark.parametrize("error", [RuntimeError("drag failed"), KeyboardInterrupt()])
+def test_drag_exception_or_interruption_preserves_lock_and_never_targets(error):
+    frames = [snapshot({"drag": True})]
+    instance, transport, _ = adapter(frames, drag=True, drag_error=error)
+    execute = lambda: instance.execute(
+        frames[0].capture.observation, Action("BUILD_SETTLEMENT", target=4), expected_revision=10
+    )
+    if isinstance(error, KeyboardInterrupt):
+        with pytest.raises(KeyboardInterrupt):
+            execute()
+    else:
+        assert execute().status == "ambiguous"
+    assert instance.needs_review
+    assert transport.calls == [("screenshot",), ("drag", 50, 60, 97, 95)]
+    assert execute().status == "blocked"
+    assert transport.calls == [("screenshot",), ("drag", 50, 60, 97, 95)]
+
+
+def test_postdrag_read_failure_retains_lock_without_target():
+    frames = [snapshot({"drag": True}), snapshot({"revision": 11, "selected": True})]
+    result, instance, transport, waits = run(frames, drag=True, read_error_at=2)
+    assert result.status == "ambiguous" and instance.needs_review
+    assert transport.calls == [("screenshot",), ("drag", 50, 60, 97, 95), ("screenshot",)]
+    assert waits == []
+
+
+@pytest.mark.parametrize("gesture", [1, 2])
+@pytest.mark.parametrize("error", [RuntimeError("click failed"), KeyboardInterrupt()])
+def test_after_drag_each_placement_input_failure_preserves_lock(gesture, error):
+    frames = [
+        snapshot({"drag": True}),
+        snapshot({"revision": 11, "selected": True}),
+        snapshot({"revision": 12, "confirmation": True}),
+        snapshot({"revision": 13, "version": 13, "placed": True}),
+    ]
+    instance, transport, _ = adapter(frames, drag=True, click_error=(gesture, error))
+    execute = lambda: instance.execute(
+        frames[0].capture.observation, Action("BUILD_SETTLEMENT", target=4), expected_revision=10
+    )
+    if isinstance(error, KeyboardInterrupt):
+        with pytest.raises(KeyboardInterrupt):
+            execute()
+    else:
+        assert execute().status == "ambiguous"
+    assert instance.needs_review
+    assert (
+        transport.gestures
+        == [("drag", 50, 60, 97, 95), ("click", 97, 95), ("click", 150, 160)][: gesture + 1]
+    )
+    calls = list(transport.calls)
+    assert execute().status == "blocked" and transport.calls == calls
+
+
+@pytest.mark.parametrize("read_number", [2, 3, 4])
+@pytest.mark.parametrize("error", [RuntimeError("read failed"), KeyboardInterrupt()])
+def test_after_drag_read_failure_or_interruption_after_every_input_keeps_lock(read_number, error):
+    frames = [
+        snapshot({"drag": True}),
+        snapshot({"revision": 11, "selected": True}),
+        snapshot({"revision": 12, "confirmation": True}),
+        snapshot({"revision": 13, "version": 13, "placed": True}),
+    ]
+    instance, transport, _ = adapter(frames, drag=True)
+    original_read = instance.reader.read
+
+    def fail_read(screenshot):
+        if screenshot == f"frame-{read_number - 1}".encode():
+            raise error
+        return original_read(screenshot)
+
+    instance.reader.read = fail_read
+    execute = lambda: instance.execute(
+        frames[0].capture.observation, Action("BUILD_SETTLEMENT", target=4), expected_revision=10
+    )
+    if isinstance(error, KeyboardInterrupt):
+        with pytest.raises(KeyboardInterrupt):
+            execute()
+    else:
+        assert execute().status == "ambiguous"
+    assert instance.needs_review
+    assert (
+        transport.gestures
+        == [("drag", 50, 60, 97, 95), ("click", 97, 95), ("click", 150, 160)][: read_number - 1]
+    )
+    calls = list(transport.calls)
+    assert execute().status == "blocked" and transport.calls == calls

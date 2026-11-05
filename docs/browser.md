@@ -40,6 +40,19 @@ visible_text = transport.read_visible_text()
 ```
 
 `PlaywrightTransport` implements the existing `BrowserTransport` protocol.
+It also provides additive
+`drag(start_x, start_y, end_x, end_y, *, steps=10) -> None`, described by the
+opt-in staged executor's `DragBrowserTransport` protocol. The original
+BrowserTransport does not require drag. Coordinates must be finite nonnegative
+real numbers, excluding booleans; steps must be a positive nonboolean integer.
+Drag uses public `Mouse.move`, `down`, `move(..., steps=steps)`, and `up` calls.
+It captures the current allowed origin and checks connection and that exact
+origin before and after every mouse operation. A partial failure attempts
+release only on the original connected allowed origin, preserves the original
+exception even if cleanup fails, and issues no further move/drop on a changed
+origin. Public mouse calls do not have individual timeout arguments; drag has
+the same synchronous-call wall-clock limitation as click.
+
 Screenshots use PNG bytes for the current viewport. Text uses only the rendered
 body's `inner_text`; cookies, storage, hidden game state, and session tokens are
 not inspected. `capture(output_path, metadata_path=None)` writes the screenshot
@@ -81,6 +94,12 @@ authorization, legal-action and offer/version checks, and a verified refreshed
 state after every action. Unknown screenshot states remain blocked by the
 annotated-capture reader. A game should not be described as played or completed
 based on opening the page or capturing an image.
+
+The existing BrowserAdapter keeps its one-click behavior. The separate
+[opt-in staged executor](colonist-staged-execution.md) supports bounded placement,
+incoming willingness, and already-focused exact settlement/city drag activation.
+It requires injected complete verified UI evidence; focus acquisition, road
+drag, card/robber workflows, and general sequences remain unsupported.
 
 ```python
 from colonist_rl.adapters.colonist.execution import BrowserAdapter
@@ -138,4 +157,5 @@ it does not establish a completed Colonist walkthrough. See
 A subsequent manual CUA walkthrough completed a 10-point guest-bot victory in
 67 turns. Its [control reference](colonist-controls.md) records the observed
 multi-stage gestures, private VP display, automatic awards, and remaining checks.
-The existing executor has not been wired to those stages or to a trained policy.
+The legacy executor has not been wired to those stages or to a trained policy;
+the opt-in staged executor above covers only its documented bounded subset.
