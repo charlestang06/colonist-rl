@@ -58,11 +58,29 @@ def parser():
         if name == "evaluate":
             command.add_argument("--checkpoint", type=Path)
             command.add_argument("--compare-rejection", action="store_true")
+    experiment = commands.add_parser("experiment", help="run a bounded reproducible learning pilot")
+    experiment.add_argument("--output", type=Path, required=True)
+    experiment.add_argument("--decisions", type=_positive, default=2500)
+    experiment.add_argument("--epochs", type=_positive, default=2)
+    experiment.add_argument("--hidden-size", type=_positive, default=32)
+    experiment.add_argument("--wall-seconds", type=float, default=900)
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.command == "experiment":
+        from .experiments import run_experiment
+
+        result = run_experiment(
+            args.output,
+            decisions=args.decisions,
+            epochs=args.epochs,
+            hidden_size=args.hidden_size,
+            wall_seconds=args.wall_seconds,
+        )
+        print(json.dumps(result, indent=2, allow_nan=False))
+        return 0
     if args.command in ("capture", "export"):
         from .perception import observation_to_dict, read_capture
 

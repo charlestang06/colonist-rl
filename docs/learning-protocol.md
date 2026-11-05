@@ -256,3 +256,90 @@ Offers increment simulator version. If an offer consumes the final allowed game
 step, evaluation records that exact endpoint as a truncated, unresolved game and
 performs no following action. Its raw `won` is `null`, and strict win-rate
 summaries remain undefined under the existing unresolved-game rules.
+
+## Bounded experiment runner
+
+Run a single reproducible pilot from a **clean committed checkout**:
+
+```sh
+PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 python -m colonist_rl experiment \
+  --output runs/learning-pilot-2026-11-04 --decisions 2500 --epochs 2 \
+  --hidden-size 32 --wall-seconds 900
+```
+
+The Python entry point is `experiments.run_experiment(output_dir, *,
+training_seeds=(11,29), decisions=2500, epochs=2, hidden_size=32,
+sequence_length=16, validation_board_seeds=(90000,90001),
+validation_demo_seeds=(91000,91001), final_test_board_seeds=(70000017,70000019),
+max_game_steps=20000, wall_seconds=900)`. A directory with an existing manifest
+is refused; deadline or failure preserves its first attempt instead of restarting.
+CLI output reports experiment execution status; inspect `status`, `stages`, and
+`gate`, since a zero CLI exit is not a claim of competence.
+
+Before simulation, the runner checks all partitions and writes `manifest.json`.
+Each training seed `s` has exactly 64 board candidates `[1000*s+i for i in
+range(64)]`. Candidate lists and **actual consumed** boards are kept separately.
+Validation demonstration boards are diagnostic only and receive no gradients.
+The final-test namespace is reserved and never consumed by this pilot. Probe
+board 92000 is separate from every learning/evaluation partition. The manifest
+records dependency versions, backend/action schema, model/fit configuration,
+initialization and actor seed rules, CPU/one-thread/one-worker limits, source
+revision and `git:<revision>` content identity. Dirty execution is refused.
+Source identity is checked again before the final result is written. The
+configuration SHA-256 excludes start/deadline timestamps; the results also
+record the digest of the exact manifest bytes. Datasets and checkpoints have
+exact byte digests and local paths. `results.json` is atomically refreshed at
+stage boundaries, and raw evaluation results remain separate JSON files.
+
+The probe has at most 60 seconds and one four-seat board block, inside the
+single total deadline. Its raw outcomes are separate from validation. Its
+observed finished-game time and teacher decisions per second determine equal
+per-seed demonstration caps **before training**. The budget reserves up to 55%
+for comparisons, assumes a twofold graph-game slowdown, and conservatively
+budgets sixteen teacher-decision time units per demonstration (minimum 50 ms)
+for collection, recurrent prefix replay, fitting and diagnostics. Forty percent
+of the learning allocation is diagnostic/reserve time. These are scheduling
+estimates, not measured training speed. If two validation blocks do not fit
+the estimate, every variant requests the same first block and the result is
+explicitly inconclusive. Reductions, requested/actual coverage and shortfalls
+are retained. Each seed receives an equal share of remaining learning time;
+collection, fitting and diagnostics also receive subdeadlines. Every collection,
+evaluation and fit uses the absolute deadline supported by those interfaces.
+Diagnostics install a temporary forward guard that stops before each policy
+call; unknown metrics are left absent rather than fabricated.
+
+Each training seed initializes fresh Python/NumPy/Torch RNG state and a fresh
+model, and its untrained and imitation candidates copy identical initial
+weights. `fit_imitation` creates its own optimizer per seed. All seeds are
+reported separately. Comparisons cover heuristic and random candidates against
+both random and heuristic opponents, plus untrained and imitated candidates for
+each training seed against heuristic opponents. All graph actions use argmax.
+Evaluation variants receive equal shares of the remaining wall time. Deadline
+or exceptions yield partial/failed stage records and retain raw finished games,
+truncations, partial blocks and interrupted-game counts. A running bounded actor
+or filesystem write may finish just after the deadline. No unresolved `won=null`
+or `win_rate=null` value is converted to zero. If any variant is incomplete,
+unresolved or has different board/seat keys, paired teacher comparisons are
+suppressed for the schedule. Descriptive endpoint VP remains available.
+
+`experiments.baseline_gate(summary)` is pure. It requires at least two distinct
+training seeds, eight complete resolved board blocks in every variant and each
+student stage, no truncations, exact matching teacher/student board-seat keys,
+and at least 100 held-out non-forced decisions with agreement >=0.60 per seed.
+Observed phases with non-forced decisions must also have agreement >=0.60;
+forced-only phase scores cannot supply that evidence. Each imitated seed must
+have paired mean VP difference >=-1.0 and win-rate difference >=-0.10 versus the
+heuristic teacher. Missing, malformed or nonfinite scores reject eligibility.
+The tiny pilot cannot satisfy the eight-block sample gate and records
+`ppo_status="deferred_insufficient_baseline_evidence"`. Finite imitation loss is
+not permission to train PPO. Missing phase/action coverage remains a limitation.
+
+After a larger, uncensored baseline passes every gate, a subsequent explicitly
+bounded continuation can load each imitated checkpoint and collect **fresh**
+1024-decision rollouts per seed with the existing `RolloutCollector`, then run
+`ppo_update` for two epochs with a fresh optimizer. It must set a new wall
+budget, check that deadline at rollout/decision and update boundaries, preserve
+all seeds, and rerun held-out evaluation. The existing PPO APIs do not expose a
+per-decision deadline, so that continuation needs a bounded collector interface
+before it can enforce the same deadline contract. This wave does not launch
+PPO, pretrain a critic, or add an imitation anchor.
