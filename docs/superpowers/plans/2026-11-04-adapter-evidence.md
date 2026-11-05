@@ -1,6 +1,6 @@
 # Colonist Adapter Evidence Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Provide reviewable pure UI safety contracts and conservative visible-log semantic candidates.
 
@@ -29,7 +29,7 @@
 
 **Finalization convention:** `Action('FINALIZE_TRADE', partner=chosen_partner, give=row.give, receive=row.receive, offer_id=row.offer_id)` is a browser UI evidence descriptor only, with proposer-perspective terms. Do not add it to policy kinds, Observation.legal_actions, simulator, codecs, or shared schemas. Incoming ACCEPT_TRADE/REJECT_TRADE stay canonical offer-ID-only Actions; supplied TradeOffer binds terms/proposer and UIControl.partner equals recipient.
 
-- [ ] Write failing tests using independent before/after fixtures for exact target confirmation; stale revision; changed action resource/target; current row with another offer ID; same offer ID with changed terms/proposer; wrong finalization partner; duplicate row identities; duplicate partner markers; accepted marker with unchanged hand; identical/lower UI revision; changed Observation/version rejection; and detached immutable sequence fields. Use complete Action equality, not kind-only comparisons.
+- [x] Write failing tests using independent before/after fixtures for exact target confirmation; stale revision; changed action resource/target; current row with another offer ID; same offer ID with changed terms/proposer; wrong finalization partner; duplicate row identities; duplicate partner markers; accepted marker with unchanged hand; identical/lower UI revision; changed Observation/version rejection; and detached immutable sequence fields. Use complete Action equality, not kind-only comparisons.
 
 ```python
 from dataclasses import replace
@@ -45,7 +45,7 @@ def test_confirmation_rejects_same_kind_other_target(confirmed_state):
                               expected_revision=state.revision)
 ```
 
-- [ ] Run the new test file to establish failing import/behavior, then implement records with constructor validation and pure functions. `UITradeRow` terms are proposer-perspective vectors with a row identity distinct from offer identity; responses and controls are immutable sequences. Matching responses must use the exact shared offer's proposer/terms and acting recipient. Finalization requires the current player to be proposer and the chosen partner to have a willing marker and exact row-bound control. A row's prior terms must not authorize new terms. A control's action and its own row/partner fields must agree. Unsupported or incomplete bindings fail closed.
+- [x] Run the new test file to establish failing import/behavior, then implement records with constructor validation and pure functions. `UITradeRow` terms are proposer-perspective vectors with a row identity distinct from offer identity; responses and controls are immutable sequences. Matching responses must use the exact shared offer's proposer/terms and acting recipient. Finalization requires the current player to be proposer and the chosen partner to have a willing marker and exact row-bound control. A row's prior terms must not authorize new terms. A control's action and its own row/partner fields must agree. Unsupported or incomplete bindings fail closed.
 
 ```python
 # Required invariant pattern inside a confirmation validator:
@@ -55,10 +55,10 @@ if state.selected_action != action or control.action != action:
     raise PerceptionError('confirmation does not match the complete action')
 ```
 
-- [ ] Include result construction tests for all four statuses. `committed` requires a nonempty evidence tuple and an Observation whose version is greater than the recorded starting game version; `pending` cannot carry committed Observation; blocked/ambiguous retain reason. Acknowledgement returns pending only on strictly newer UI revision and exactly unchanged full Observation, with before/after observation versions matching it and after selected_action equal to action. This validates evidence; it does not issue a gesture or infer completion.
-- [ ] Add a compact JSON scenario catalog with `provenance: synthetic`, named stage records and references to the controls/screenshot evidence. Load it in tests and assert fixture-driven valid/rejected bindings for setup preview/confirmation, tooltip/focus, failed drag, Knight card, robber target/victim, Monopoly choice, incoming willingness, simultaneous rows. Explicitly distinguish scenarios modeled from notes from observed images. No screenshot recognition is claimed.
-- [ ] Document public records and examples, invariants, unsupported A6/A7 wiring, and `BrowserAdapter.execute` as the unchanged one-click atomic compatibility path.
-- [ ] Verify new tests plus existing compatibility suites and lint/format on owned files. Commands:
+- [x] Include result construction tests for all four statuses. `committed` requires a nonempty evidence tuple and an Observation whose version is greater than the recorded starting game version; `pending` cannot carry committed Observation; blocked/ambiguous retain reason. Acknowledgement returns pending only on strictly newer UI revision and exactly unchanged full Observation, with before/after observation versions matching it and after selected_action equal to action. This validates evidence; it does not issue a gesture or infer completion.
+- [x] Add a compact JSON scenario catalog with `provenance: synthetic`, named stage records and references to the controls/screenshot evidence. Load it in tests and assert fixture-driven valid/rejected bindings for setup preview/confirmation, tooltip/focus, failed drag, Knight card, robber target/victim, Monopoly choice, incoming willingness, simultaneous rows. Explicitly distinguish scenarios modeled from notes from observed images. No screenshot recognition is claimed.
+- [x] Document public records and examples, invariants, unsupported A6/A7 wiring, and `BrowserAdapter.execute` as the unchanged one-click atomic compatibility path.
+- [x] Verify new tests plus existing compatibility suites and lint/format on owned files. Commands:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/python -m pytest tests/test_colonist_ui.py tests/test_adapters.py tests/test_perception.py -q
@@ -66,7 +66,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colon
 /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/ruff format --check src/colonist_rl/adapters/colonist/ui.py tests/test_colonist_ui.py
 ```
 
-- [ ] Self-review the diff, commit only owned files, and write full report to the assigned task report path including commands, results, commit hashes, concerns. Return status/commits/one-line tests/concerns only.
+- [x] Self-review the diff, commit only owned files, and write full report to the assigned task report path including commands, results, commit hashes, concerns. Return status/commits/one-line tests/concerns only.
 
 ### Task 2: Conservative visible resource and roll projection
 
@@ -74,7 +74,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colon
 
 **Interfaces:** Consume `LogRow`, `LogSnapshot`, `ResourceVector`. Produce frozen `VisiblePlayerName(name: str, player_id: int)`, `ResourceEvidence(known: ResourceVector, unknown_count: int)`, `SemanticCandidate(kind, actor_name, actor, give, receive, dice)`, `RowProjection(source: LogRow, candidate: SemanticCandidate | None, issues: tuple[str,...])`, and `project_row(row: LogRow, players: Sequence[VisiblePlayerName]) -> RowProjection` plus `project_snapshot(snapshot: LogSnapshot, players: Sequence[VisiblePlayerName]) -> tuple[RowProjection,...]`. Candidate kinds `production`, `bank_trade`, `roll`; actor ID may be None; dice is an immutable pair or empty tuple. Candidate contents are evidence, never ledger-ready events.
 
-- [ ] Write failing tests for all five resource icons and repeated icons; whitespace/split text; missing and duplicate visible names; cardback/unknown resource slots; extra text or icons; incomplete/three dice; duplicate identical rows; real fixture production/roll projection; actual offer row yielding no candidate; synthetic completed bank transfer; player trade/acceptance/build/unsupported evidence retained without transfers. No guessed opponent IDs.
+- [x] Write failing tests for all five resource icons and repeated icons; whitespace/split text; missing and duplicate visible names; cardback/unknown resource slots; extra text or icons; incomplete/three dice; duplicate identical rows; real fixture production/roll projection; actual offer row yielding no candidate; synthetic completed bank transfer; player trade/acceptance/build/unsupported evidence retained without transfers. No guessed opponent IDs.
 
 ```python
 def test_real_offer_is_not_a_transfer():
@@ -88,7 +88,7 @@ def test_real_offer_is_not_a_transfer():
     assert rows[-1].source.tokens == normalize_snapshot(**raw).rows[-1].tokens
 ```
 
-- [ ] Run the new tests to establish failure, then implement exact full-row token grammars. Adjacent text fragments can be joined for grammar matching but source tokens remain untouched. Do not coerce a resource word in body text into an icon. Entire grammar must be consumed; unknown tails remain unparsed. Name parsing must not silently assign missing mappings or arbitrarily select among duplicate name bindings. Resource slots preserve known vectors and unknown card-back counts; unsupported icons produce issues and no false complete amount. Validate frozen record invariants and detach sequence inputs.
+- [x] Run the new tests to establish failure, then implement exact full-row token grammars. Adjacent text fragments can be joined for grammar matching but source tokens remain untouched. Do not coerce a resource word in body text into an icon. Entire grammar must be consumed; unknown tails remain unparsed. Name parsing must not silently assign missing mappings or arbitrarily select among duplicate name bindings. Resource slots preserve known vectors and unknown card-back counts; unsupported icons produce issues and no false complete amount. Validate frozen record invariants and detach sequence inputs.
 
 ```python
 # Grammar evidence, where each bracket is one supplied icon token:
@@ -99,9 +99,9 @@ def test_real_offer_is_not_a_transfer():
 # Eilis wants to give [Ore] for [Wool] -> no candidate
 ```
 
-- [ ] Add explicitly synthetic resource/bank/unknown cases as ordered tokens. Preserve real DOM fixtures byte-for-byte and do not label the bank grammar's synthetic token fixture as a captured DOM sequence. Test both complete dice faces from actual fixtures. Confirm parser imports no browser, simulator, policy or ledger modules in a fresh subprocess.
-- [ ] Document the grammar, API examples, unresolved actor/unknown resource issue codes, exact source retention, duplicate rows, and difference between semantic candidate, established event identity, and ledger application. Future historian and live collector integration remain outstanding.
-- [ ] Verify owned tests and existing log tests, lint/format:
+- [x] Add explicitly synthetic resource/bank/unknown cases as ordered tokens. Preserve real DOM fixtures byte-for-byte and do not label the bank grammar's synthetic token fixture as a captured DOM sequence. Test both complete dice faces from actual fixtures. Confirm parser imports no browser, simulator, policy or ledger modules in a fresh subprocess.
+- [x] Document the grammar, API examples, unresolved actor/unknown resource issue codes, exact source retention, duplicate rows, and difference between semantic candidate, established event identity, and ledger application. Future historian and live collector integration remain outstanding.
+- [x] Verify owned tests and existing log tests, lint/format:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/python -m pytest tests/test_colonist_semantics.py tests/test_colonist_logs.py -q
@@ -109,7 +109,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colon
 /Users/charlestang06/Documents/cs/colonist-rl/.venv/bin/ruff format --check src/colonist_rl/adapters/colonist/semantics.py tests/test_colonist_semantics.py
 ```
 
-- [ ] Self-review the diff, commit only owned files, write full assigned report with tests/commands/results/commits/concerns and return the short status contract.
+- [x] Self-review the diff, commit only owned files, write full assigned report with tests/commands/results/commits/concerns and return the short status contract.
 
 ### Task 3: Clarify documentation findings without changing runtime behavior
 
@@ -117,8 +117,8 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /Users/charlestang06/Documents/cs/colon
 
 **Inputs:** `task-1-review.md` and `task-2-review.md` in this plan's SDD directory. Task 1 notes generic supplied-control equality could be overread as verified own-card sequence support. Task 2 notes a five-versus-four record count typo.
 
-- [ ] In `docs/colonist-ui.md`, replace the sentence `unsupported, incomplete, or stale confirmation bindings raise PerceptionError` in its surrounding paragraph with wording that says missing required descriptor fields or stale/mismatched bindings raise the error. Avoid suggesting the validator proves complete game-action legality.
-- [ ] Add the following explicit scope paragraph directly after the confirmation description, adjusting only prose wrapping:
+- [x] In `docs/colonist-ui.md`, replace the sentence `unsupported, incomplete, or stale confirmation bindings raise PerceptionError` in its surrounding paragraph with wording that says missing required descriptor fields or stale/mismatched bindings raise the error. Avoid suggesting the validator proves complete game-action legality.
+- [x] Add the following explicit scope paragraph directly after the confirmation description, adjusting only prose wrapping:
 
 ```text
 Confirmation validation checks exact equality of the caller-supplied descriptor
@@ -132,6 +132,14 @@ establish the complete legal action and verified card-specific sequence before
 issuing gestures.
 ```
 
-- [ ] In `docs/colonist-log-semantics.md`, change `All five new record types are frozen:` to `All four new record types are frozen:`.
-- [ ] Verify the prose against the unchanged `_confirmation_action` implementation and four semantic record declarations. Run `git diff --check` and inspect the diff to prove only these two docs changed. No test suite is required for this documentation-only cleanup.
-- [ ] Commit only the two docs and write a concise report with exact edits, check command/result, commit and concerns to the assigned report path. The upcoming independent broad review verifies both resolutions. Return status/commit/checks/concerns only.
+- [x] In `docs/colonist-log-semantics.md`, change `All five new record types are frozen:` to `All four new record types are frozen:`.
+- [x] Verify the prose against the unchanged `_confirmation_action` implementation and four semantic record declarations. Run `git diff --check` and inspect the diff to prove only these two docs changed. No test suite is required for this documentation-only cleanup.
+- [x] Commit only the two docs and write a concise report with exact edits, check command/result, commit and concerns to the assigned report path. The upcoming independent broad review verifies both resolutions. Return status/commit/checks/concerns only.
+
+## Completion status
+
+All three tasks are complete. Task 1 and Task 2 passed independent spec-and-quality review. The final broad review approved 182cc01..85abef7 with no outstanding findings and verified both Task 3 documentation resolutions. The subsequent status commit changes only this plan.
+
+Final isolated-branch verification: 341 passed, 1 optional local browser smoke test skipped; Ruff lint/format passed for both new modules and test files, and full-range diff whitespace check passed. Test execution used Python 3.13; Python 3.11 grammar validation is recorded separately and is not a 3.11 runtime claim.
+
+The root coordinator owns authorized integration. The isolated checkout and all ignored SDD briefs, reports, review packages, and ledger are preserved for its final archive. Live capture/execution, arbitrary screenshot recognition, stable event identity/history recovery, and ledger application remain outside this completed offline evidence wave.
