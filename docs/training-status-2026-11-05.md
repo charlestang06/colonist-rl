@@ -283,7 +283,7 @@ public turn planning and controlled PPO from unchanged FULL15 BC parents.
 A read-only PPO audit found two current-history gaps: collector memory survives
 actor updates, and PPO chunks start from stored behavior-weight memory.
 An opt-in path with exact current-weight prefixes and complete episode/outcome
-records is now being implemented before critic warmup and controlled PPO.
+records is now implemented and reviewed, alongside critic warmup support.
 No sustained PPO experiment has started. Rewards remain unchanged; trading or
 road frequency will not be rewarded directly.
 
@@ -303,5 +303,7 @@ audited local targets on identical histories, with actual sequential-legality
 checks and fresh decision/game panels. Generic100k and reward changes remain held.
 This tiny audited-label trial is an explicit exception to the earlier global
 planner-teacher proof gate; broader label scaling still needs strength evidence.
-The targeted harness is being corrected after static review and has not launched.
+The corrected v3 harness launched once and ended incomplete at the independent
+audit release cutoff, before any primary fit or evaluation. Its evidence is
+preserved; no after-deadline approval or retry occurred.
 Broad PPO preparation is preserved on hold, with no empirical PPO run.
