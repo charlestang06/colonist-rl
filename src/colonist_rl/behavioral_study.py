@@ -559,7 +559,13 @@ def run_behavioral_study(
                 }
                 if arm == "teacher_state":
                     data = collect_demonstrations(**kwargs)
-                    save_demonstrations(raw_path, data)
+                    # Isolate the legacy saver's predictable staging filename.
+                    with tempfile.TemporaryDirectory(
+                        dir=output, prefix=f".{raw_path.name}."
+                    ) as staging:
+                        staged = Path(staging) / "component.gz"
+                        save_demonstrations(staged, data)
+                        staged.replace(raw_path)
                 else:
                     data = collect_student_labels(
                         policy,

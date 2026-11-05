@@ -81,6 +81,10 @@ Teacher-state acquisition calls `collect_demonstrations`; student-state acquisit
 calls `collect_student_labels` with its accepted `progress_path`. Both use the
 existing match driver, heuristic teacher and opponents. There is no second game
 loop. Raw components retain their original source, observations, flags and bytes.
+The legacy teacher and checkpoint savers run inside exclusive same-directory
+staging folders before atomic publication, so their predictable temporary names
+cannot truncate existing input files. JSON/student writers use the accepted
+exclusive-file atomic writer.
 The legacy teacher collector has no per-episode progress callback: only a returned
 teacher component can be saved. Student progress is retained through the accepted
 collector even if a later operation raises. The driver does not invent a teacher

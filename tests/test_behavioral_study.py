@@ -553,3 +553,30 @@ def test_partial_last_segment_cannot_reuse_earlier_checkpoint_score(setup, monke
     assert record["validation_scores"][0]["checkpoint"] == record["checkpoints"][0]
     assert record["actual_work"]["weighted_loss_mass"] == 16
     assert result["status"] == "partial" and not result["comparisons"]
+
+
+def test_teacher_save_cannot_truncate_an_input_through_legacy_staging_hardlink(setup, monkeypatch):
+    import os
+
+    module = study()
+    source_stub(monkeypatch, module, setup)
+    fake_evaluator(monkeypatch, module)
+    real_teacher = module.collect_demonstrations
+    original = Path(setup["training_components"][11][0])
+    before, inode = original.read_bytes(), original.stat().st_ino
+    alias = setup["output_dir"] / "teacher_state-11-labels.gz.tmp"
+
+    def linked_stage(**kwargs):
+        data = real_teacher(**kwargs)
+        os.link(original, alias)
+        return data
+
+    monkeypatch.setattr(module, "collect_demonstrations", linked_stage)
+    result = None
+    try:
+        result = module.run_behavioral_study(**setup)
+    except ValueError:
+        pass  # The old saver corrupts the input, then the study detects drift.
+    assert original.read_bytes() == before
+    assert original.stat().st_ino == alias.stat().st_ino == inode
+    assert result["status"] == "complete"
