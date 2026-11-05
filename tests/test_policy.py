@@ -125,3 +125,51 @@ def test_value_only_foreign_trade_offer_uses_no_own_trade_vectors():
     result = GraphPolicy(hidden_size=32)(observation)
     assert result.logits.shape == (0,)
     assert torch.isfinite(result.value)
+
+
+def test_forward_many_isolates_mixed_graph_sizes_memories_and_variable_legal_menus():
+    torch.set_num_threads(1)
+    policy = GraphPolicy(8)
+    small, large = view(), view(6)
+    trade = replace(
+        small,
+        context=replace(small.context, kind="TRADE_RESPONSE"),
+        legal_actions=(Action("REJECT_TRADE"), Action("ACCEPT_TRADE")),
+    )
+    robber = replace(
+        large,
+        context=replace(large.context, kind="ROBBER"),
+        legal_actions=(Action("MOVE_ROBBER", target=2, partner=1),),
+    )
+    off_turn = replace(small, legal_actions=())
+    views = (small, robber, trade, off_turn)
+    memories = (None, torch.linspace(-0.2, 0.2, 8), None, torch.ones(8))
+    batched = policy.forward_many(views, memories)
+    for observation, memory, got in zip(views, memories, batched):
+        want = policy(observation, memory)
+        for field in ("logits", "value", "memory"):
+            torch.testing.assert_close(getattr(got, field), getattr(want, field))
+    assert [len(output.logits) for output in batched] == [2, 1, 2, 0]
+    assert policy.forward_many((), ()) == ()
+    import pytest
+
+    with pytest.raises(ValueError, match="length"):
+        policy.forward_many(views, (None,))
+
+
+def test_recurrent_only_routes_never_invoke_unused_actor_or_value_heads():
+    policy = GraphPolicy(8)
+    calls = []
+    handles = [
+        module.register_forward_hook(lambda *args: calls.append(1))
+        for module in (policy.action_in, policy.heads, policy.trade_response, policy.value)
+    ]
+    try:
+        policy.recurrent_step(view())
+        policy.recurrent_many((view(), view(6)), (None, torch.zeros(8)))
+        assert calls == []
+        policy(view())
+        assert calls
+    finally:
+        for handle in handles:
+            handle.remove()

@@ -13,6 +13,7 @@ from torch import nn
 from torch.distributions import Categorical
 
 from .contracts import RESOURCES, Observation
+from .graph_inputs import NODE_DIM, graph_features
 
 KINDS = (
     "ROLL",
@@ -45,7 +46,6 @@ PHASES = (
     "PLAY_TURN",
     "MOVE_ROBBER",
 )
-NODE_DIM = 40
 CONTEXT_DIM = 48
 ACTION_DIM = len(KINDS) + 20
 
@@ -55,86 +55,6 @@ class PolicyOutput:
     logits: torch.Tensor
     value: torch.Tensor
     memory: torch.Tensor
-
-
-def graph_features(view: Observation, device):
-    board = view.board
-    nt, nv, ne = len(board.tiles), len(board.vertices), len(board.edges)
-    vertex_offset, edge_offset, player_offset = nt, nt + nv, nt + nv + ne
-    player_nodes = {p.player_id: player_offset + i for i, p in enumerate(view.players)}
-    player_seats = {p.player_id: i for i, p in enumerate(view.players)}
-    own_seat = player_seats[view.player_id]
-    features = torch.zeros(player_offset + len(view.players), NODE_DIM, device=device)
-    links = []
-
-    def link(a, b):
-        links.extend(((a, b), (b, a)))
-
-    for tile in board.tiles:
-        f = features[tile.id]
-        f[0] = 1
-        f[5 + RESOURCES.index(tile.resource) if tile.resource in RESOURCES else 10] = 1
-        f[11] = tile.number / 12
-        f[12] = (6 - abs(7 - tile.number)) / 36 if tile.number else 0
-        f[13] = float(tile.id == view.robber_tile)
-        for vertex in board.tile_vertices[tile.id]:
-            link(tile.id, vertex_offset + vertex)
-    features[vertex_offset:edge_offset, 1] = 1
-    features[edge_offset:player_offset, 2] = 1
-    for index, (a, b) in enumerate(board.edges):
-        link(edge_offset + index, vertex_offset + a)
-        link(edge_offset + index, vertex_offset + b)
-    for building in view.buildings:
-        node = vertex_offset + building.vertex
-        features[node, 14] = building.level / 2
-        features[node, 15] = float(building.owner == view.player_id)
-        link(node, player_nodes[building.owner])
-    for road in view.roads:
-        node = edge_offset + road.edge
-        features[node, 14] = 1
-        features[node, 15] = float(road.owner == view.player_id)
-        link(node, player_nodes[road.owner])
-    for port in board.ports:
-        for vertex in port.vertices:
-            features[vertex_offset + vertex, 16] = port.ratio / 4
-            if port.resource in RESOURCES:
-                features[vertex_offset + vertex, 5 + RESOURCES.index(port.resource)] = 1
-    beliefs = {b.player_id: b for b in view.beliefs}
-    for player in view.players:
-        f = features[player_nodes[player.player_id]]
-        f[3] = 1
-        f[14] = player.victory_points / view.rules.victory_points
-        f[15] = float(player.player_id == view.player_id)
-        f[16:25] = torch.tensor(
-            [
-                player.resource_count / 20,
-                player.development_count / 10,
-                player.roads_left / 15,
-                player.settlements_left / 5,
-                player.cities_left / 4,
-                player.longest_road / 15,
-                player.played_knights / 3,
-                float(player.has_longest_road),
-                float(player.has_largest_army),
-            ],
-            device=device,
-        )
-        if player.player_id == view.player_id:
-            f[25:30] = torch.tensor(view.hand, device=device) / 10
-        elif player.player_id in beliefs:
-            belief = beliefs[player.player_id]
-            f[25:30] = torch.tensor(belief.expected, device=device) / 10
-            f[30:35] = torch.tensor(belief.variance, device=device) / 100
-            f[35] = float(not belief.exact)
-        else:
-            f[35] = 1
-        # Relative turn position preserves seat order without a fixed player vocabulary.
-        f[36] = ((player_seats[player.player_id] - own_seat) % len(view.players)) / len(
-            view.players
-        )
-        f[37] = float(player.player_id == view.context.turn_owner)
-    indices = torch.tensor(links, dtype=torch.long, device=device).T
-    return features, indices, (vertex_offset, edge_offset, player_nodes)
 
 
 def context_features(view, device):
@@ -203,7 +123,7 @@ class GraphPolicy(nn.Module):
     def device(self):
         return next(self.parameters()).device
 
-    def forward(self, view: Observation, memory=None):
+    def _recurrent(self, view: Observation, memory=None):
         features, links, offsets = graph_features(view, self.device)
         nodes = torch.tanh(self.node_in(features))
         source, target = links
@@ -211,7 +131,7 @@ class GraphPolicy(nn.Module):
         for own, neighbors in zip(self.self_layers, self.neighbor_layers):
             messages = torch.zeros_like(nodes).index_add(0, target, nodes[source]) / degree
             nodes = torch.tanh(own(nodes) + neighbors(messages))
-        vertex_offset, edge_offset, player_nodes = offsets
+        _, _, player_nodes = offsets
         state = torch.cat(
             (
                 nodes.mean(0),
@@ -221,6 +141,70 @@ class GraphPolicy(nn.Module):
         )
         previous = torch.zeros(self.hidden_size, device=self.device) if memory is None else memory
         hidden = self.gru(torch.tanh(self.state_in(state)), previous)
+        return nodes, offsets, hidden
+
+    def forward(self, view: Observation, memory=None):
+        nodes, offsets, hidden = self._recurrent(view, memory)
+        return self._output(view, nodes, offsets, hidden)
+
+    def recurrent_step(self, view: Observation, memory=None) -> torch.Tensor:
+        """The identical recurrent path, without computing unused actor/value heads."""
+        return self._recurrent(view, memory)[2]
+
+    def _recurrent_many(self, views, memories):
+        if len(views) != len(memories):
+            raise ValueError("views and memories must have equal lengths")
+        if not views:
+            return ()
+        if len(views) == 1:
+            return (self._recurrent(views[0], memories[0]),)
+        graphs = [graph_features(view, self.device) for view in views]
+        features, links, offsets = zip(*graphs)
+        sizes = [len(f) for f in features]
+        shifted, start = [], 0
+        for indices, size in zip(links, sizes):
+            shifted.append(indices + start)
+            start += size
+        nodes = torch.tanh(self.node_in(torch.cat(features)))
+        source, target = torch.cat(shifted, dim=1)
+        # Ownership edges are observation-dependent; degrees are never cached.
+        degree = torch.bincount(target, minlength=len(nodes)).clamp(min=1).unsqueeze(1)
+        for own, neighbors in zip(self.self_layers, self.neighbor_layers):
+            messages = torch.zeros_like(nodes).index_add(0, target, nodes[source]) / degree
+            nodes = torch.tanh(own(nodes) + neighbors(messages))
+        separated = nodes.split(sizes)
+        states = torch.stack(
+            [
+                torch.cat(
+                    (
+                        graph.mean(0),
+                        graph[off[2][view.player_id]],
+                        context_features(view, self.device),
+                    )
+                )
+                for view, graph, off in zip(views, separated, offsets)
+            ]
+        )
+        previous = torch.stack(
+            [nodes.new_zeros(self.hidden_size) if memory is None else memory for memory in memories]
+        )
+        hidden = self.gru(torch.tanh(self.state_in(states)), previous)
+        return tuple(zip(separated, offsets, hidden.unbind(0)))
+
+    def forward_many(
+        self, views: tuple[Observation, ...], memories: tuple[torch.Tensor | None, ...]
+    ) -> tuple[PolicyOutput, ...]:
+        """Disconnected graphs, per-graph pooling and independent ordered GRU rows."""
+        encoded = self._recurrent_many(views, memories)
+        return tuple(self._output(view, *values) for view, values in zip(views, encoded))
+
+    def recurrent_many(
+        self, views: tuple[Observation, ...], memories: tuple[torch.Tensor | None, ...]
+    ) -> tuple[torch.Tensor, ...]:
+        return tuple(values[2] for values in self._recurrent_many(views, memories))
+
+    def _output(self, view, nodes, offsets, hidden):
+        vertex_offset, edge_offset, player_nodes = offsets
         if not view.legal_actions:
             return PolicyOutput(hidden.new_empty((0,)), self.value(hidden).squeeze(), hidden)
         if view.context.kind == "TRADE_RESPONSE":

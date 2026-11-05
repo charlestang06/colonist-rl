@@ -14,19 +14,18 @@ import random
 import subprocess
 import time
 from collections import Counter
-from collections.abc import Mapping
 from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 
 from .adapters.observation_io import observation_to_dict, view_from_dict
 from .contracts import Observation
 from .opponents import HeuristicPolicy
 from .policy import KINDS
 from .simulator import BACKEND_VERSION, FourPlayerGame
+from .supervised_fit import fit_sequences, score_sequences
 from .training import _MatchDriver
 
 _FORMAT = "colonist-rl.demonstrations"
@@ -407,66 +406,17 @@ def load_demonstrations(path) -> dict:
         raise ValueError("invalid or incompatible demonstration dataset") from error
 
 
-def _empty_score():
-    return {"count": 0, "correct": 0, "accuracy": None, "cross_entropy": None}
+def _sequences(dataset):
+    return tuple(
+        tuple((sample["observation"], sample["action_index"]) for sample in episode["samples"])
+        for episode in dataset["episodes"]
+    )
 
 
 def imitation_metrics(policy, dataset) -> dict:
-    """Replay complete ordered sequences without updating mode, weights or RNG."""
+    """Validate v1 provenance, then score the unchanged ordered observations."""
     _validate(dataset)
-    modes = [(module, module.training) for module in policy.modules()]
-    totals = {"all": [], "non_forced": []}
-    phases, kinds = {}, {}
-    try:
-        with _preserve_rng(), torch.no_grad():
-            policy.eval()
-            for episode in dataset["episodes"]:
-                memory = None
-                for sample in episode["samples"]:
-                    view, target = sample["observation"], sample["action_index"]
-                    output = policy(view, memory)
-                    memory = output.memory.detach()
-                    ce = F.cross_entropy(
-                        output.logits.unsqueeze(0),
-                        output.logits.new_tensor([target], dtype=torch.long),
-                    ).item()
-                    if not math.isfinite(ce):
-                        raise FloatingPointError("imitation validation CE is not finite")
-                    score = (int(output.logits.argmax().item() == target), ce)
-                    totals["all"].append(score)
-                    phase, kind = view.context.kind, view.legal_actions[target].kind
-                    phases.setdefault(phase, {"all": [], "non_forced": []})["all"].append(score)
-                    kinds.setdefault(kind, {"all": [], "non_forced": []})["all"].append(score)
-                    if len(view.legal_actions) > 1:
-                        totals["non_forced"].append(score)
-                        phases[phase]["non_forced"].append(score)
-                        kinds[kind]["non_forced"].append(score)
-    finally:
-        for module, training in modes:
-            module.training = training
-
-    def summarize(rows):
-        if not rows:
-            return _empty_score()
-        correct = sum(r[0] for r in rows)
-        return {
-            "count": len(rows),
-            "correct": correct,
-            "accuracy": correct / len(rows),
-            "cross_entropy": sum(r[1] for r in rows) / len(rows),
-        }
-
-    return {
-        **{name: summarize(rows) for name, rows in totals.items()},
-        "by_phase": {
-            key: {n: summarize(r) for n, r in value.items()} for key, value in phases.items()
-        },
-        "by_action_kind": {
-            key: {n: summarize(r) for n, r in value.items()} for key, value in kinds.items()
-        },
-        "coverage": dataset["coverage"],
-        "note": "Teacher agreement is supervised fit, not playing competence; forced choices are excluded from non_forced metrics.",
-    }
+    return score_sequences(policy, _sequences(dataset))
 
 
 def fit_imitation(
@@ -478,126 +428,19 @@ def fit_imitation(
     learning_rate=3e-4,
     deadline=None,
     phase_weights=None,
+    batch_size=1,
+    profile=False,
 ) -> dict:
-    """Ordered truncated BPTT with fresh no-grad prefix replay before every update.
-
-    Optional weights must cover every non-forced training phase. Weighted CE
-    sums are divided by choice count, never by the sum of chunk weights.
-    """
+    """Validated v1 wrapper for current-weight ordered supervised fitting."""
     _validate(dataset)
-    _positive(epochs, "epochs")
-    _positive(sequence_length, "sequence_length")
-    _deadline(deadline)
-    if phase_weights is not None:
-        required = {
-            s["observation"].context.kind
-            for e in dataset["episodes"]
-            for s in e["samples"]
-            if len(s["observation"].legal_actions) > 1
-        }
-        if (
-            not isinstance(phase_weights, Mapping)
-            or not required.issubset(phase_weights)
-            or any(
-                not isinstance(k, str)
-                or type(v) not in (int, float)
-                or not math.isfinite(v)
-                or v <= 0
-                for k, v in phase_weights.items()
-            )
-        ):
-            raise ValueError(
-                "phase_weights must provide finite positive weights for every choice phase"
-            )
-    if (
-        type(learning_rate) not in (float, int)
-        or not math.isfinite(learning_rate)
-        or learning_rate <= 0
-    ):
-        raise ValueError("learning_rate must be finite and positive")
-    modes = [(module, module.training) for module in policy.modules()]
-    optimizer = torch.optim.Adam(policy.parameters(), lr=learning_rate)
-    updates = presentations = completed_epochs = 0
-    total = 0.0
-    expired = False
-    try:
-        policy.train()
-        for _ in range(epochs):
-            for episode in dataset["episodes"]:
-                samples = episode["samples"]
-                for start in range(0, len(samples), sequence_length):
-                    if _expired(deadline):
-                        expired = True
-                        break
-                    chunk = samples[start : start + sequence_length]
-                    if not any(len(s["observation"].legal_actions) > 1 for s in chunk):
-                        continue
-                    # Never reuse hidden states produced before an optimizer step.
-                    memory = None
-                    with torch.no_grad():
-                        for sample in samples[:start]:
-                            if _expired(deadline):
-                                expired = True
-                                break
-                            memory = policy(sample["observation"], memory).memory.detach()
-                    if expired:
-                        break
-                    memory = memory.detach() if memory is not None else None
-                    losses = []
-                    for sample in chunk:
-                        if _expired(deadline):
-                            expired = True
-                            break
-                        view, target = sample["observation"], sample["action_index"]
-                        output = policy(view, memory)
-                        memory = output.memory
-                        if len(view.legal_actions) > 1:
-                            losses.append(
-                                F.cross_entropy(
-                                    output.logits.unsqueeze(0),
-                                    output.logits.new_tensor([target], dtype=torch.long),
-                                )
-                                * (
-                                    1.0
-                                    if phase_weights is None
-                                    else phase_weights[view.context.kind]
-                                )
-                            )
-                    if expired or _expired(deadline):
-                        expired = True
-                        break  # A partial chunk never updates parameters.
-                    loss = torch.stack(losses).mean()
-                    if not torch.isfinite(loss):
-                        raise FloatingPointError("imitation training loss is not finite")
-                    optimizer.zero_grad(set_to_none=True)
-                    loss.backward()
-                    torch.nn.utils.clip_grad_norm_(
-                        policy.parameters(), 0.5, error_if_nonfinite=True
-                    )
-                    if _expired(deadline):
-                        expired = True
-                        optimizer.zero_grad(set_to_none=True)
-                        break
-                    optimizer.step()
-                    total += loss.item() * len(losses)
-                    presentations += len(losses)
-                    updates += 1
-                if expired:
-                    break
-            if expired:
-                break
-            completed_epochs += 1
-    finally:
-        for module, training in modes:
-            module.training = training
-    return {
-        "loss": total / presentations if presentations else None,
-        "decisions": dataset["coverage"]["decisions"],
-        "epochs": completed_epochs,
-        "requested_epochs": epochs,
-        "updates": updates,
-        "supervised_decisions": dataset["coverage"]["non_forced_decisions"],
-        "supervised_presentations": presentations,
-        "status": "incomplete" if expired else "complete",
-        "incomplete_reason": "deadline" if expired else None,
-    }
+    return fit_sequences(
+        policy,
+        _sequences(dataset),
+        epochs=epochs,
+        sequence_length=sequence_length,
+        learning_rate=learning_rate,
+        deadline=deadline,
+        phase_weights=phase_weights,
+        batch_size=batch_size,
+        profile=profile,
+    )
