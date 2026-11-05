@@ -4,6 +4,7 @@
 launch. The approved experiment is hand_recipe hidden32, nested 10k/100k distinct
 non-forced learner observations, initializations 11/29, and five global epochs.
 A process holds one four-game component, one policy and one persistent Adam.
+Production 100k execution is on hold; this document does not authorize a launch.
 The original teacher, simulator, observation contracts and fitter remain unchanged.
 No whole-corpus adapter, learned embedding cache or hidden-state cache is used.
 
@@ -137,9 +138,42 @@ loss numerator, prefix/chunk forwards, batches and fitter timing scopes. Validat
 scores stream component CE sums, count/correct totals and phase/action-kind
 counts; they do not average component accuracies. Scores are taken at initialization
 and completed epochs1/3/5. `load_replay_seconds`, fitter scope/wall seconds,
-`score_seconds` and `checkpoint_seconds` are separate. Startup full-corpus
-validation is deliberately additional work before any updates; it is bounded by
-the same stage/global deadline, though the arm timing totals start at fitting.
+`score_seconds` and `checkpoint_seconds` are separate cumulative committed-boundary
+measurements. They remain separate from per-invocation attempt accounting below.
+
+Every fit/evaluation invocation publishes `protocol.json` and an immutable
+`attempt-start.json` before the first budget guard or full-corpus scan. Cheap
+strict schema/path/hash preflight can still reject malformed inputs before output.
+A valid but expired invocation is recorded. A startup exception or interruption
+publishes `attempt.json` with `status="failed_startup"`, preserves the original
+exception, and re-raises it; it creates no training cursor or completed-work result.
+An uncatchable process kill can leave the running start record and protocol, but
+cannot create a final failure record. Filesystem failure may also prevent evidence
+publication; existing exclusive evidence remains unchanged.
+
+Both normal results and partial fit results include `attempt`, a path/SHA reference
+to the immutable final `attempt.json`. Its exact version-one fields are:
+
+| Field | Meaning |
+|---|---|
+| `format`, `version` | `"colonist-rl.scaling-attempt"`, integer `1` |
+| `stage`, `protocol` | Canonical arm identifier or `"evaluation"`, and the persisted launch protocol reference |
+| `status` | Start record: `"running"`; final record: `"complete"`, `"partial"`, `"failed_startup"` or `"failed"` |
+| `startup_status` | `"running"`, `"complete"` or `"failed"` |
+| `error` | Exception type/message for an exception escaping the invocation, otherwise null; partial-training details remain in the arm result |
+| `startup_validation_seconds` | This invocation's guard/full-corpus scan and checkpoint validation/restore/setup wall time, including unsuccessful startup work |
+| `fit_seconds` | This invocation's raw fitter-call wall time, including uncommitted attempts and calls that throw; zero for evaluation |
+| `total_elapsed_seconds` | Wall time from before cheap preflight through all attempted startup, fitting, scoring, checkpoint and evaluation work to final accounting publication; includes failed work |
+
+These are per-invocation costs, not resumed optimizer/counter state. The total is
+sampled immediately before publishing final accounting/result metadata, so it
+excludes only those final metadata writes and caller-state restoration. Every
+startup scan is included. Resume produces its own record for its repeated scan
+and subsequent attempted work; it neither carries prior attempt time into the new
+record nor drops the old immutable record. Add the distinct attempt records to
+measure total study cost. Committed cursor counters/timings remain cumulative and
+must not be added again to per-attempt totals. Every invocation uses the original
+absolute stage/global deadlines; recording or resuming never renews them.
 
 ## Durable boundaries, memory and limits
 

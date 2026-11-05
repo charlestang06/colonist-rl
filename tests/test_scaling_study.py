@@ -707,7 +707,10 @@ def test_required_phase_and_input_bytes_fail_before_fitting(launch, tmp_path):
     Path(artifact["path"]).write_bytes(original + b"changed")
     with pytest.raises(ValueError, match="digest"):
         fit_arm(module, protocol, tmp_path / "bad-bytes")
-    assert not (tmp_path / "bad-bytes").exists()
+    failed = json.loads((tmp_path / "bad-bytes" / "attempt.json").read_bytes())
+    assert failed["status"] == "failed_startup"
+    assert failed["fit_seconds"] == 0.0
+    assert (tmp_path / "bad-bytes" / "protocol.json").exists()
 
 
 def test_two_complete_components_use_shared_nested_prefix_and_global_weights(
@@ -764,3 +767,200 @@ def test_loader_rejects_hidden_observation_envelope_fields(launch, tmp_path):
     path.write_bytes(gzip.compress(json.dumps(raw).encode()))
     with pytest.raises(ValueError, match="observation"):
         module._load_component(module._ref(path), [100, 101, 102, 103], protocol)
+
+
+def startup_protocol(launch, tmp_path, monkeypatch, stage):
+    module, protocol, _, _ = launch
+    monkeypatch.setattr(module, "ENDPOINTS", (8, 16))
+    monkeypatch.setattr(module, "MILESTONES", (8, 16))
+    protocol["collection"]["milestones"] = [8, 16]
+    corpus = module.collect_scaling_corpus(tmp_path / "startup-corpus", protocol=protocol)
+    assert corpus["status"] == "complete"
+    protocol = deepcopy(protocol)
+    protocol["inputs"]["corpus"] = corpus["manifest"]
+    if stage == "evaluation":
+        # Startup scan fails before result loading. References remain real and
+        # hash-bound, so strict cheap preflight still runs without four fits.
+        placeholder = module._publish_json(tmp_path / "unused-result.json", {})
+        protocol["inputs"]["results"] = {arm: placeholder for arm in module.ARMS}
+    return module, protocol, corpus
+
+
+def invoke_startup(module, protocol, output, stage, resume=None):
+    if stage == "fit":
+        return module.fit_scaling_arm(
+            output,
+            corpus_manifest=protocol["inputs"]["corpus"]["path"],
+            initial_checkpoint=protocol["inputs"]["starts"]["11"]["checkpoint"]["path"],
+            endpoint=16,
+            seed=11,
+            protocol=protocol,
+            resume_cursor=resume,
+        )
+    return module.evaluate_scaling_study(
+        output,
+        arm_results={k: v["path"] for k, v in protocol["inputs"]["results"].items()},
+        corpus_manifest=protocol["inputs"]["corpus"]["path"],
+        protocol=protocol,
+    )
+
+
+@pytest.mark.parametrize("stage", ["fit", "evaluation"])
+@pytest.mark.parametrize("error_type", [TimeoutError, ValueError, KeyboardInterrupt])
+def test_startup_scan_failure_persists_protocol_and_measured_failed_attempt(
+    launch, tmp_path, monkeypatch, stage, error_type
+):
+    module, protocol, _ = startup_protocol(launch, tmp_path, monkeypatch, stage)
+    output = tmp_path / "failed-startup"
+    clock = [1000.0]
+    original = module._load_component
+    seen = []
+
+    def load(*args, **kwargs):
+        seen.append((output / "protocol.json").exists())
+        clock[0] += 3.5
+        if len(seen) == 2:
+            raise error_type("second component startup stopped")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(module.time, "perf_counter", lambda: clock[0])
+    monkeypatch.setattr(module, "_load_component", load)
+    with pytest.raises(error_type, match="second component"):
+        invoke_startup(module, protocol, output, stage)
+    assert seen == [True, True]
+    assert json.loads((output / "protocol.json").read_bytes()) == protocol
+    assert json.loads((output / "attempt-start.json").read_bytes())["status"] == "running"
+    failed = json.loads((output / "attempt.json").read_bytes())
+    assert failed["status"] == "failed_startup"
+    assert failed["startup_status"] == "failed"
+    assert failed["startup_validation_seconds"] == 7.0
+    assert failed["fit_seconds"] == 0.0
+    assert failed["total_elapsed_seconds"] >= 7.0
+    assert error_type.__name__ in failed["error"]
+    assert not (output / "result.json").exists()
+    assert not (output / "evaluation.json").exists()
+    assert not list(output.glob("*.pt"))
+    assert not list(output.glob("cursor-*.json"))
+
+
+@pytest.mark.parametrize("stage", ["fit", "evaluation"])
+def test_startup_expired_guard_records_attempt_without_loading_or_renewing_deadline(
+    launch, tmp_path, monkeypatch, stage
+):
+    module, protocol, _ = startup_protocol(launch, tmp_path, monkeypatch, stage)
+    deadline = time.monotonic() - 1
+    protocol["limits"]["global_deadline"] = deadline
+    output = tmp_path / "already-expired"
+    monkeypatch.setattr(module, "_scan_corpus", lambda *args: pytest.fail("expired scan started"))
+    with pytest.raises(TimeoutError, match="deadline"):
+        invoke_startup(module, protocol, output, stage)
+    failed = json.loads((output / "attempt.json").read_bytes())
+    assert failed["status"] == "failed_startup"
+    assert failed["fit_seconds"] == 0.0
+    assert failed["total_elapsed_seconds"] >= failed["startup_validation_seconds"] >= 0.0
+    assert (
+        json.loads((output / "protocol.json").read_bytes())["limits"]["global_deadline"] == deadline
+    )
+
+
+def test_startup_time_is_per_attempt_and_resume_keeps_committed_fit_counters(
+    launch, tmp_path, monkeypatch
+):
+    module, protocol, _ = startup_protocol(launch, tmp_path, monkeypatch, "fit")
+    original_scan, original_fit = module._scan_corpus, module._fit_component
+    original_protocol = module._protocol
+    clock = [1000.0]
+    calls = [0]
+    interrupt = [True]
+
+    def preflight(*args):
+        try:
+            return original_protocol(*args)
+        finally:
+            clock[0] += 1.0
+
+    def scan(*args):
+        try:
+            return original_scan(*args)
+        finally:
+            clock[0] += 5.0
+
+    def fit(*args):
+        calls[0] += 1
+        try:
+            result = original_fit(*args)
+            if interrupt[0] and calls[0] == 2:
+                raise ArithmeticError("uncommitted second component")
+            return result
+        finally:
+            clock[0] += 2.0
+
+    monkeypatch.setattr(module.time, "perf_counter", lambda: clock[0])
+    monkeypatch.setattr(module, "_protocol", preflight)
+    monkeypatch.setattr(module, "_scan_corpus", scan)
+    monkeypatch.setattr(module, "_fit_component", fit)
+    partial = invoke_startup(module, protocol, tmp_path / "first-attempt", "fit")
+    assert partial["completed_epochs"] == 0 and partial["next_component"] == 1
+    first = module._read(partial["attempt"])
+    assert first["startup_validation_seconds"] == 5.0
+    assert first["fit_seconds"] == 4.0
+    assert first["total_elapsed_seconds"] == 10.0
+    assert first["status"] == "partial"
+    assert partial["stats"]["updates"] == 4
+    interrupt[0] = False
+    original_deadlines = deepcopy(protocol["limits"])
+    protocol["inputs"]["resume"] = partial["cursor"]
+    resumed = invoke_startup(
+        module, protocol, tmp_path / "second-attempt", "fit", partial["cursor"]["path"]
+    )
+    second = module._read(resumed["attempt"])
+    assert second["startup_validation_seconds"] == 5.0
+    assert second["fit_seconds"] == 18.0
+    assert second["total_elapsed_seconds"] == 24.0
+    assert second["status"] == "complete"
+    assert resumed["stats"]["updates"] == 40
+    assert resumed["stats"]["supervised_presentations"] == 80
+    assert protocol["limits"] == original_deadlines
+    assert module._read(partial["attempt"]) == first
+    protocol["inputs"]["resume"] = None
+    full = invoke_startup(module, protocol, tmp_path / "uninterrupted", "fit")
+    full_attempt = module._read(full["attempt"])
+    assert full_attempt["startup_validation_seconds"] == 5.0
+    assert full_attempt["fit_seconds"] == 20.0
+    assert full_attempt["total_elapsed_seconds"] == 26.0
+    left = torch.load(resumed["milestones"]["5"]["checkpoint"]["path"], weights_only=True)
+    right = torch.load(full["milestones"]["5"]["checkpoint"]["path"], weights_only=True)
+    equal_tree(left["policy_state"], right["policy_state"])
+    equal_tree(left["optimizer_state"], right["optimizer_state"])
+
+
+def test_evaluation_accounts_successful_startup_even_without_common_milestone(
+    launch, tmp_path, monkeypatch
+):
+    module, protocol, _ = startup_protocol(launch, tmp_path, monkeypatch, "evaluation")
+    clock = [1000.0]
+    scan = module._scan_corpus
+
+    def measured_scan(*args):
+        try:
+            return scan(*args)
+        finally:
+            clock[0] += 6.0
+
+    monkeypatch.setattr(module.time, "perf_counter", lambda: clock[0])
+    monkeypatch.setattr(module, "_scan_corpus", measured_scan)
+    monkeypatch.setattr(
+        module, "_load_arms", lambda *args: {k: {"milestones": {}} for k in module.ARMS}
+    )
+    monkeypatch.setattr(
+        module, "evaluate_blocks", lambda **kwargs: pytest.fail("no common milestone")
+    )
+    output = tmp_path / "no-common-epoch"
+    result = invoke_startup(module, protocol, output, "evaluation")
+    attempt = module._read(result["attempt"])
+    assert attempt["startup_status"] == "complete"
+    assert attempt["startup_validation_seconds"] == 6.0
+    assert attempt["fit_seconds"] == 0.0
+    assert attempt["total_elapsed_seconds"] >= 6.0
+    assert result["selection"]["epoch"] is None
+    assert result["comparisons"] == {}

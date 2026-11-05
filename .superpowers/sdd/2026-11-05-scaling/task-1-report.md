@@ -228,3 +228,119 @@ are untouched. Equal epochs remain a data-plus-training confound;10k uses100k
 training phase weights. No cross-engine score-equivalence or playing-competence
 claim is supported by the smoke. No blocker requiring an existing-interface edit
 was found. Independent review has not been dispatched by this implementer.
+
+## Scoped review fixes — startup persistence and honest attempt accounting
+
+Review input: `.superpowers/sdd/2026-11-05-scaling/task-1-review.md`, two Important
+findings against HEAD `3d499b70c94cb93b4d947b73c3e7a0f2200e5bee`. Verified both
+against the original ordering: fitting and evaluation performed the full replay
+before output publication, and the cost was missing from reported timing totals.
+The earlier report's candid statement that startup was outside arm timing totals
+is superseded by this fix. Used receiving-code-review, TDD and verification skills.
+No new smoke, full-suite rerun, sustained collection or real panel was launched.
+The user's expensive100k HOLD remains in effect; strict GreedyNoTrade benchmark and
+stronger trading diagnostics belong to root's other work, not this driver fix.
+
+Changes remain in the four owned files. The two public fit/evaluation entry points
+now do cheap strict preflight, publish the exact protocol and immutable running
+`attempt-start.json`, then begin the guarded corpus replay/checkpoint startup.
+Well-formed already-expired invocations are recorded. Startup expiry, later
+component validation failure and interruption publish an immutable failed-startup
+`attempt.json` before re-raising the original exception. They do not create a
+training cursor, partial checkpoint or completed-work result. Cheap malformed
+schema/path/hash inputs can still be rejected before creating output. A hard kill
+or filesystem failure can only preserve the already published evidence; final
+failure publication cannot be guaranteed in those cases.
+
+Normal and partial fit/evaluation results now contain an `attempt` path/SHA
+reference to the final per-invocation record. That version-one record binds the
+persisted protocol, stage, status/startup status/error and three wall-time fields:
+
+- `startup_validation_seconds`: guard, full training/validation replay and initial
+  checkpoint validation/restore/setup, measured on success and failure.
+- `fit_seconds`: raw fitter calls made by this invocation, including uncommitted
+  work and calls that raise; zero for evaluation.
+- `total_elapsed_seconds`: starts before cheap preflight and includes attempted
+  startup, fitting, loading/scoring and checkpoint/evaluation work. It is sampled
+  before final accounting/result metadata writes; those final self-publication
+  writes and caller-state restoration are explicitly the measurement cutoff.
+
+The new fields are outside durable optimizer/counter state. Existing cursor
+positions, accumulated committed counters, committed timings, boundary/checkpoint
+publication order, partial-last snapshots and original absolute deadlines are
+unchanged. Every resumed invocation records its repeated scan and subsequent
+attempted fit work separately; it does not copy prior attempt elapsed time into a
+new record or remove the previous immutable record. Distinct attempt totals can
+be summed; committed timing/counter state must not be added to those totals again.
+Evaluation verifies the new result attempt reference alongside its other inputs.
+Documentation now specifies all attempt fields, failure behavior and this cutoff.
+
+Meaningful RED/GREEN evidence, using the same exact upgraded interpreter and final
+thread/bytecode environment shown earlier:
+
+```
+PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 PYTHONPATH=src /var/folders/0l/p7x7d7755vq4wc8qty73kcy40000gn/T/colonist-master-upgrade-trvuh2kq/repo/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_scaling_study.py -k 'startup_'
+```
+
+- RED:10 failed,33 deselected in8.69s. Both fit/evaluation component-load callbacks
+  observed no protocol; expired invocations had no attempt record; success/resume
+  results had no accounting reference. These were the intended missing behaviors.
+- A text-edit script asserted before writing production changes; the subsequently
+  issued unchanged RED command ran again:10 failed,33 deselected in8.09s. No source
+  mutation occurred on that failed edit. The indentation match was corrected.
+- GREEN:10 passed,33 deselected in8.34s after implementing the startup boundary and
+  per-attempt measurements.
+- Covering module command without `-k`:43 passed in25.03s. The final rerun after
+  strengthening the preflight-inclusive total assertion is recorded below.
+
+The six failure cases interrupt after one real fixture component has been loaded
+and replay-validated, before the second component completes: TimeoutError,
+ValueError and KeyboardInterrupt for each entry point. They prove the protocol is
+already present at both loads, preserve7.0s of injected startup work and0.0s fitter
+work, retain the original exception, and leave no checkpoint/cursor/result claim.
+Two additional tests use an already expired original global deadline and prove
+no scan starts or deadline renewal occurs while recording the attempt.
+
+A deterministic clock drives a two-component real-fitter/resume case. One second
+of cheap preflight, five seconds of startup and two seconds per fitter call are
+accounted separately. The first invocation commits only component0 and then fails
+after updates in component1: completed_epochs0, next_component1,4 committed
+updates,4.0s attempted raw fitting,5.0s startup and10.0s total. Explicit resume
+performs its own5.0s scan and18.0s of remaining fitting,24.0s total including its
+own preflight, reaching40 updates/80 presentations. An uninterrupted control has
+5.0s startup,20.0s fitting and26.0s total. Resumed model/Adam trees match bitwise;
+prior attempt evidence and all original limits remain unchanged. This also covers
+the review's Minor request for a nonzero component cursor without any extra
+production behavior change. A successful evaluation-startup test records6.0s even
+when no common milestone permits gameplay; evaluate_blocks is forbidden there.
+The earlier input-byte failure test now expects persisted failed-startup evidence,
+while retaining its original ValueError behavior and zero fitter work.
+
+Self-review inspected the whitespace-insensitive production diff to confirm the
+large textual move only extracts the existing fit/evaluation bodies behind the
+new invocation boundary. Optimization calls, boundary/cursor metadata, scoring,
+partial work, completed counters and evaluation selection/journal behavior are
+otherwise unchanged. The original covering parity and failure tests remain in
+the focused module. No concrete new concern justified another full-suite run;
+the prior972 passed/1 skipped combined evidence remains applicable to unchanged
+consumers. No outside production file or runtime was modified.
+
+Final scoped verification after all fixes and assertions:
+
+```
+PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 PYTHONPATH=src /var/folders/0l/p7x7d7755vq4wc8qty73kcy40000gn/T/colonist-master-upgrade-trvuh2kq/repo/.venv/bin/python -m pytest -q -p no:cacheprovider tests/test_scaling_study.py
+```
+
+Result:43 passed in26.63s. This includes the preflight-inclusive exact10/24/26s
+accounting assertions and the bitwise nonzero-component resume control.
+
+```
+/var/folders/0l/p7x7d7755vq4wc8qty73kcy40000gn/T/colonist-master-upgrade-trvuh2kq/repo/.venv/bin/ruff check src tests
+/var/folders/0l/p7x7d7755vq4wc8qty73kcy40000gn/T/colonist-master-upgrade-trvuh2kq/repo/.venv/bin/ruff format --check src/colonist_rl/scaling_study.py tests/test_scaling_study.py
+git diff --check
+git diff --cached --check
+```
+
+Results: all Ruff checks passed; two owned Python files already formatted; both
+diff checks passed. Full suite and smoke intentionally not repeated. Ready for
+root's scoped rereview of the two Important findings and covering tests.

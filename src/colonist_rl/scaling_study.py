@@ -1000,6 +1000,44 @@ def _resume(ref, identity, rows):
     return policy, optimizer, cursor
 
 
+def _new_attempt(output, stage, started):
+    attempt = {
+        "format": "colonist-rl.scaling-attempt",
+        "version": 1,
+        "stage": stage,
+        "protocol": _ref(output / "protocol.json"),
+        "status": "running",
+        "startup_status": "running",
+        "error": None,
+        "startup_validation_seconds": 0.0,
+        "fit_seconds": 0.0,
+        "total_elapsed_seconds": time.perf_counter() - started,
+    }
+    _publish_json(output / "attempt-start.json", attempt)
+    return attempt
+
+
+@contextmanager
+def _startup_time(attempt):
+    begin = time.perf_counter()
+    try:
+        yield
+    except BaseException:
+        attempt["startup_status"] = "failed"
+        raise
+    else:
+        attempt["startup_status"] = "complete"
+    finally:
+        attempt["startup_validation_seconds"] = time.perf_counter() - begin
+
+
+def _finish_attempt(output, attempt, started, status, error=None):
+    attempt["status"] = status
+    attempt["error"] = None if error is None else f"{type(error).__name__}: {error}"
+    attempt["total_elapsed_seconds"] = time.perf_counter() - started
+    return _publish_json(output / "attempt.json", attempt)
+
+
 def fit_scaling_arm(
     output_dir,
     *,
@@ -1012,6 +1050,7 @@ def fit_scaling_arm(
 ) -> dict:
     """Fit canonical components using one persistent Adam and immutable cursors."""
     with _execution():
+        started = time.perf_counter()
         _protocol(protocol, "fit")
         arm = _arm(endpoint, seed)
         start = protocol["inputs"]["starts"][str(seed)]
@@ -1025,7 +1064,25 @@ def fit_scaling_arm(
             resume_ref is not None and resume_cursor != resume_ref["path"]
         ):
             raise ValueError("resume path/SHA expectation differs")
-        deadline = _deadline(protocol, arm)
+        output = _output(output_dir, protocol)
+        attempt = _new_attempt(output, arm, started)
+        try:
+            result = _run_scaling_arm(output, endpoint, seed, protocol, attempt)
+        except BaseException as error:
+            status = "failed_startup" if attempt["startup_status"] != "complete" else "failed"
+            _finish_attempt(output, attempt, started, status, error)
+            raise
+        result["attempt"] = _finish_attempt(output, attempt, started, result["status"])
+        result["result"] = _publish_json(output / "result.json", result)
+        return result
+
+
+def _run_scaling_arm(output, endpoint, seed, protocol, attempt):
+    arm = _arm(endpoint, seed)
+    start = protocol["inputs"]["starts"][str(seed)]
+    resume_ref = protocol["inputs"]["resume"]
+    deadline = _deadline(protocol, arm)
+    with _startup_time(attempt):
         _guard(protocol, deadline)
         corpus = _scan_corpus(protocol, deadline)
         rows = corpus["training"][: corpus["endpoints"][str(endpoint)]]
@@ -1058,27 +1115,104 @@ def fit_scaling_arm(
                 },
             }
             cursor_ref = None
-        output = _output(output_dir, protocol)
-        attempted, partial_last, failure = None, None, None
-        try:
-            if cursor_ref is None:
-                cursor_ref, boundary = _boundary(
-                    output,
-                    policy,
-                    optimizer,
-                    identity,
-                    0,
-                    0,
-                    boundary["stats"],
-                    {},
-                    {},
-                    boundary["timings"],
-                )
-            pending_score = str(boundary["epoch"])
-            if boundary["epoch"] in (0, 1, 3, 5) and pending_score not in boundary["scores"]:
+    attempted, partial_last, failure = None, None, None
+    try:
+        if cursor_ref is None:
+            cursor_ref, boundary = _boundary(
+                output,
+                policy,
+                optimizer,
+                identity,
+                0,
+                0,
+                boundary["stats"],
+                {},
+                {},
+                boundary["timings"],
+            )
+        pending_score = str(boundary["epoch"])
+        if boundary["epoch"] in (0, 1, 3, 5) and pending_score not in boundary["scores"]:
+            begin = time.perf_counter()
+            score = _score(policy, corpus["validation"], protocol, deadline)
+            scores = {**boundary["scores"], pending_score: score}
+            timings = {
+                **boundary["timings"],
+                "score_seconds": boundary["timings"]["score_seconds"] + time.perf_counter() - begin,
+            }
+            cursor_ref, boundary = _boundary(
+                output,
+                policy,
+                optimizer,
+                identity,
+                boundary["epoch"],
+                boundary["next_component"],
+                boundary["stats"],
+                boundary["milestones"],
+                scores,
+                timings,
+            )
+        while boundary["epoch"] < 5:
+            _guard(protocol, deadline)
+            index, epoch = boundary["next_component"], boundary["epoch"]
+            row = rows[index]
+            begin = time.perf_counter()
+            data = _load_component(row["artifact"], row["boards"], protocol, deadline)
+            try:
+                episodes = _sequences(data)
+                before_steps = _adam_steps(optimizer)
+                attempted = {
+                    "epoch": epoch,
+                    "component": index,
+                    "updates_observed_adam": 0,
+                    "reported": None,
+                }
+                fit_started = time.perf_counter()
+                try:
+                    fitted = _fit_component(
+                        policy, episodes, optimizer, corpus["phase_weights"], deadline
+                    )
+                finally:
+                    attempt["fit_seconds"] += time.perf_counter() - fit_started
+                attempted["reported"] = fitted
+                attempted["updates_observed_adam"] = _adam_steps(optimizer) - before_steps
+                if fitted["status"] != "complete" or fitted["epochs"] != 1:
+                    raise TimeoutError("interrupted component; previous cursor retained")
+                stats = json.loads(_json(boundary["stats"]))
+                _add_fit(stats, fitted, corpus["phase_weights"], episodes)
+            finally:
+                if "episodes" in locals():
+                    del episodes
+                del data
+            timings = {
+                **boundary["timings"],
+                "load_replay_seconds": boundary["timings"]["load_replay_seconds"]
+                + time.perf_counter()
+                - begin
+                - fitted["profile"]["wall_seconds"],
+            }
+            index += 1
+            if index == len(rows):
+                epoch, index = epoch + 1, 0
+            _guard(protocol, deadline)
+            # The checkpoint then cursor is the only commit point. Work on
+            # the next component starts after both publications succeed.
+            cursor_ref, boundary = _boundary(
+                output,
+                policy,
+                optimizer,
+                identity,
+                epoch,
+                index,
+                stats,
+                boundary["milestones"],
+                boundary["scores"],
+                timings,
+            )
+            attempted = None
+            if index == 0 and epoch in (1, 3, 5):
                 begin = time.perf_counter()
                 score = _score(policy, corpus["validation"], protocol, deadline)
-                scores = {**boundary["scores"], pending_score: score}
+                scores = {**boundary["scores"], str(epoch): score}
                 timings = {
                     **boundary["timings"],
                     "score_seconds": boundary["timings"]["score_seconds"]
@@ -1090,143 +1224,66 @@ def fit_scaling_arm(
                     policy,
                     optimizer,
                     identity,
-                    boundary["epoch"],
-                    boundary["next_component"],
-                    boundary["stats"],
+                    epoch,
+                    0,
+                    stats,
                     boundary["milestones"],
                     scores,
                     timings,
                 )
-            while boundary["epoch"] < 5:
-                _guard(protocol, deadline)
-                index, epoch = boundary["next_component"], boundary["epoch"]
-                row = rows[index]
-                begin = time.perf_counter()
-                data = _load_component(row["artifact"], row["boards"], protocol, deadline)
-                try:
-                    episodes = _sequences(data)
-                    before_steps = _adam_steps(optimizer)
-                    attempted = {
-                        "epoch": epoch,
-                        "component": index,
-                        "updates_observed_adam": 0,
-                        "reported": None,
-                    }
-                    fitted = _fit_component(
-                        policy, episodes, optimizer, corpus["phase_weights"], deadline
-                    )
-                    attempted["reported"] = fitted
-                    attempted["updates_observed_adam"] = _adam_steps(optimizer) - before_steps
-                    if fitted["status"] != "complete" or fitted["epochs"] != 1:
-                        raise TimeoutError("interrupted component; previous cursor retained")
-                    stats = json.loads(_json(boundary["stats"]))
-                    _add_fit(stats, fitted, corpus["phase_weights"], episodes)
-                finally:
-                    if "episodes" in locals():
-                        del episodes
-                    del data
-                timings = {
-                    **boundary["timings"],
-                    "load_replay_seconds": boundary["timings"]["load_replay_seconds"]
-                    + time.perf_counter()
-                    - begin
-                    - fitted["profile"]["wall_seconds"],
-                }
-                index += 1
-                if index == len(rows):
-                    epoch, index = epoch + 1, 0
-                _guard(protocol, deadline)
-                # The checkpoint then cursor is the only commit point. Work on
-                # the next component starts after both publications succeed.
-                cursor_ref, boundary = _boundary(
-                    output,
+        _guard(protocol, deadline)
+    except Exception as error:  # noqa: BLE001 -- preserve failed attempts, never retry
+        failure = f"{type(error).__name__}: {error}"
+        if attempted is not None:
+            attempted["updates_observed_adam"] = (
+                _adam_steps(optimizer) - boundary["stats"]["updates"]
+            )
+        try:
+            partial_last = _publish(
+                output / f"partial-last-{uuid.uuid4().hex}.pt",
+                lambda p: save_checkpoint(
+                    p,
                     policy,
                     optimizer,
-                    identity,
-                    epoch,
-                    index,
-                    stats,
-                    boundary["milestones"],
-                    boundary["scores"],
-                    timings,
-                )
-                attempted = None
-                if index == 0 and epoch in (1, 3, 5):
-                    begin = time.perf_counter()
-                    score = _score(policy, corpus["validation"], protocol, deadline)
-                    scores = {**boundary["scores"], str(epoch): score}
-                    timings = {
-                        **boundary["timings"],
-                        "score_seconds": boundary["timings"]["score_seconds"]
-                        + time.perf_counter()
-                        - begin,
-                    }
-                    cursor_ref, boundary = _boundary(
-                        output,
-                        policy,
-                        optimizer,
-                        identity,
-                        epoch,
-                        0,
-                        stats,
-                        boundary["milestones"],
-                        scores,
-                        timings,
-                    )
-            _guard(protocol, deadline)
-        except Exception as error:  # noqa: BLE001 -- preserve failed attempts, never retry
-            failure = f"{type(error).__name__}: {error}"
-            if attempted is not None:
-                attempted["updates_observed_adam"] = (
-                    _adam_steps(optimizer) - boundary["stats"]["updates"]
-                )
-            try:
-                partial_last = _publish(
-                    output / f"partial-last-{uuid.uuid4().hex}.pt",
-                    lambda p: save_checkpoint(
-                        p,
-                        policy,
-                        optimizer,
-                        steps=_adam_steps(optimizer),
-                        metadata={
-                            "scaling_partial": {
-                                "identity": identity,
-                                "last_cursor": cursor_ref,
-                                "attempted": attempted,
-                                "failure": failure,
-                            }
-                        },
-                    ),
-                )
-            except Exception as save_error:  # noqa: BLE001 -- original boundary survives publication failure
-                failure += f"; partial snapshot failed: {type(save_error).__name__}: {save_error}"
-        result = {
-            "format": "colonist-rl.scaling-arm",
-            "version": 1,
-            "identity": identity,
-            "arm": arm,
-            "status": "complete" if failure is None and boundary["epoch"] == 5 else "partial",
-            "completed_epochs": boundary["epoch"],
-            "next_component": boundary["next_component"],
-            "stats": boundary["stats"],
-            "milestones": boundary["milestones"],
-            "scores": boundary["scores"],
-            "timings": boundary["timings"],
-            "cursor": cursor_ref,
-            "resume_from": resume_ref,
-            "attempted": attempted,
-            "partial_last": partial_last,
-            "failure": failure,
-            "peak_rss_bytes": _rss(),
-            "loss": boundary["stats"]["loss_sum"] / boundary["stats"]["supervised_presentations"]
-            if boundary["stats"]["supervised_presentations"]
-            else None,
-        }
-        _check_ref(protocol["inputs"]["corpus"])
-        for ref in (start["checkpoint"], start["parent"], start["bridge"]):
-            _check_ref(ref)
-        result["result"] = _publish_json(output / "result.json", result)
-        return result
+                    steps=_adam_steps(optimizer),
+                    metadata={
+                        "scaling_partial": {
+                            "identity": identity,
+                            "last_cursor": cursor_ref,
+                            "attempted": attempted,
+                            "failure": failure,
+                        }
+                    },
+                ),
+            )
+        except Exception as save_error:  # noqa: BLE001 -- original boundary survives publication failure
+            failure += f"; partial snapshot failed: {type(save_error).__name__}: {save_error}"
+    result = {
+        "format": "colonist-rl.scaling-arm",
+        "version": 1,
+        "identity": identity,
+        "arm": arm,
+        "status": "complete" if failure is None and boundary["epoch"] == 5 else "partial",
+        "completed_epochs": boundary["epoch"],
+        "next_component": boundary["next_component"],
+        "stats": boundary["stats"],
+        "milestones": boundary["milestones"],
+        "scores": boundary["scores"],
+        "timings": boundary["timings"],
+        "cursor": cursor_ref,
+        "resume_from": resume_ref,
+        "attempted": attempted,
+        "partial_last": partial_last,
+        "failure": failure,
+        "peak_rss_bytes": _rss(),
+        "loss": boundary["stats"]["loss_sum"] / boundary["stats"]["supervised_presentations"]
+        if boundary["stats"]["supervised_presentations"]
+        else None,
+    }
+    _check_ref(protocol["inputs"]["corpus"])
+    for ref in (start["checkpoint"], start["parent"], start["bridge"]):
+        _check_ref(ref)
+    return result
 
 
 def _validate_progress(stats, rows, epoch, next_component):
@@ -1308,6 +1365,7 @@ def _load_arms(protocol, corpus):
                 "failure",
                 "peak_rss_bytes",
                 "loss",
+                "attempt",
             ),
             "arm result",
         )
@@ -1329,6 +1387,7 @@ def _load_arms(protocol, corpus):
             raise ValueError("arm result identity differs")
         if row["status"] not in ("complete", "partial"):
             raise ValueError("invalid arm completion status")
+        _check_ref(row["attempt"])
         rows = corpus["training"][: corpus["endpoints"][str(endpoint)]]
         policy, optimizer, cursor = _resume(row["cursor"], identity, rows)
         del policy, optimizer
@@ -1374,6 +1433,7 @@ def evaluate_scaling_study(
 ) -> dict:
     """Freeze completion-only selection before deterministic validation gameplay."""
     with _execution():
+        started = time.perf_counter()
         _protocol(protocol, "evaluation")
         _keys(arm_results, ARMS, "arm result matrix")
         if (
@@ -1384,92 +1444,105 @@ def evaluate_scaling_study(
             or corpus_manifest != protocol["inputs"]["corpus"]["path"]
         ):
             raise ValueError("evaluation input path expectation differs")
-        deadline = _deadline(protocol, "evaluation")
+        output = _output(output_dir, protocol)
+        attempt = _new_attempt(output, "evaluation", started)
+        try:
+            result = _run_scaling_evaluation(output, protocol, attempt)
+        except BaseException as error:
+            status = "failed_startup" if attempt["startup_status"] != "complete" else "failed"
+            _finish_attempt(output, attempt, started, status, error)
+            raise
+        result["attempt"] = _finish_attempt(output, attempt, started, result["status"])
+        result["result"] = _publish_json(output / "evaluation.json", result)
+        return result
+
+
+def _run_scaling_evaluation(output, protocol, attempt):
+    deadline = _deadline(protocol, "evaluation")
+    with _startup_time(attempt):
         _guard(protocol, deadline)
         corpus = _scan_corpus(protocol, deadline)
         arms = _load_arms(protocol, corpus)
         selection = _select_milestone(arms)
-        output = _output(output_dir, protocol)
-        _publish_json(
-            output / "selection.json",
-            {
-                **selection,
-                "inputs": protocol["inputs"]["results"],
-                "criterion": "largest common complete epoch in 1/3/5; no outcome inputs",
-            },
-        )
-        result = {
-            "format": "colonist-rl.scaling-evaluation",
-            "version": 1,
-            "selection": selection,
-            "variants": {},
-            "journals": {},
-            "comparisons": {},
-            "comparison_unavailable": {},
-            "status": "partial",
-        }
-        if selection["epoch"] is None:
-            result["comparison_unavailable"]["all"] = "no common complete milestone"
-        else:
-            boards = protocol["partitions"]["validation_games"]
-            for name in ("heuristic", *ARMS):
-                label = name.replace("/", "-")
-                journal = {
-                    "variant": name,
-                    "status": "running",
-                    "completed_outcomes": [],
-                    "failure": None,
-                }
-                panel, policy = None, None
-                try:
+    _publish_json(
+        output / "selection.json",
+        {
+            **selection,
+            "inputs": protocol["inputs"]["results"],
+            "criterion": "largest common complete epoch in 1/3/5; no outcome inputs",
+        },
+    )
+    result = {
+        "format": "colonist-rl.scaling-evaluation",
+        "version": 1,
+        "selection": selection,
+        "variants": {},
+        "journals": {},
+        "comparisons": {},
+        "comparison_unavailable": {},
+        "status": "partial",
+    }
+    if selection["epoch"] is None:
+        result["comparison_unavailable"]["all"] = "no common complete milestone"
+    else:
+        boards = protocol["partitions"]["validation_games"]
+        for name in ("heuristic", *ARMS):
+            label = name.replace("/", "-")
+            journal = {
+                "variant": name,
+                "status": "running",
+                "completed_outcomes": [],
+                "failure": None,
+            }
+            panel, policy = None, None
+            try:
+                _guard(protocol, deadline)
+                if name != "heuristic":
+                    checkpoint = arms[name]["milestones"][str(selection["epoch"])]["checkpoint"]
+                    policy, state = load_checkpoint(_check_ref(checkpoint))
+                    del state
+
+                def on_game_end(row, label=label, journal=journal):
+                    _publish_json(
+                        output / f"{label}-game-{len(journal['completed_outcomes']):04d}.json",
+                        row,
+                    )
+                    journal["completed_outcomes"].append(row)
                     _guard(protocol, deadline)
-                    if name != "heuristic":
-                        checkpoint = arms[name]["milestones"][str(selection["epoch"])]["checkpoint"]
-                        policy, state = load_checkpoint(_check_ref(checkpoint))
-                        del state
 
-                    def on_game_end(row, label=label, journal=journal):
-                        _publish_json(
-                            output / f"{label}-game-{len(journal['completed_outcomes']):04d}.json",
-                            row,
-                        )
-                        journal["completed_outcomes"].append(row)
-                        _guard(protocol, deadline)
-
-                    panel = evaluate_blocks(
-                        policy=policy,
-                        board_seeds=boards,
-                        candidate="heuristic" if name == "heuristic" else "graph",
-                        baseline="heuristic",
-                        max_game_steps=20000,
-                        deterministic=True,
-                        deadline=deadline,
-                        on_game_end=on_game_end,
-                    )
-                    journal["status"] = panel["status"]
-                    _journal_valid(panel, journal, boards)
-                except Exception as error:  # noqa: BLE001 -- retain failures and raw journal
-                    journal["status"] = "failed"
-                    journal["failure"] = f"{type(error).__name__}: {error}"
-                finally:
-                    del policy
-                result["variants"][name] = panel
-                result["journals"][name] = _publish_json(output / f"{label}-journal.json", journal)
-                _publish_json(output / f"{label}-evaluation.json", panel)
-                if journal["failure"]:
-                    result["comparison_unavailable"][name] = journal["failure"]
-            if not result["comparison_unavailable"]:
-                pairs = [("heuristic", arm) for arm in ARMS] + [
-                    (ARMS[0], ARMS[2]),
-                    (ARMS[1], ARMS[3]),
-                ]
-                for reference, candidate in pairs:
-                    result["comparisons"][reference + "->" + candidate] = paired_block_summary(
-                        result["variants"][reference], result["variants"][candidate]
-                    )
-                result["status"] = "complete"
-        _check_ref(protocol["inputs"]["corpus"])
-        for ref in protocol["inputs"]["results"].values():
-            _check_ref(ref)
-        result["result"] = _publish_json(output / "evaluation.json", result)
-        return result
+                panel = evaluate_blocks(
+                    policy=policy,
+                    board_seeds=boards,
+                    candidate="heuristic" if name == "heuristic" else "graph",
+                    baseline="heuristic",
+                    max_game_steps=20000,
+                    deterministic=True,
+                    deadline=deadline,
+                    on_game_end=on_game_end,
+                )
+                journal["status"] = panel["status"]
+                _journal_valid(panel, journal, boards)
+            except Exception as error:  # noqa: BLE001 -- retain failures and raw journal
+                journal["status"] = "failed"
+                journal["failure"] = f"{type(error).__name__}: {error}"
+            finally:
+                del policy
+            result["variants"][name] = panel
+            result["journals"][name] = _publish_json(output / f"{label}-journal.json", journal)
+            _publish_json(output / f"{label}-evaluation.json", panel)
+            if journal["failure"]:
+                result["comparison_unavailable"][name] = journal["failure"]
+        if not result["comparison_unavailable"]:
+            pairs = [("heuristic", arm) for arm in ARMS] + [
+                (ARMS[0], ARMS[2]),
+                (ARMS[1], ARMS[3]),
+            ]
+            for reference, candidate in pairs:
+                result["comparisons"][reference + "->" + candidate] = paired_block_summary(
+                    result["variants"][reference], result["variants"][candidate]
+                )
+            result["status"] = "complete"
+    _check_ref(protocol["inputs"]["corpus"])
+    for ref in protocol["inputs"]["results"].values():
+        _check_ref(ref)
+    return result
