@@ -3,9 +3,14 @@
 The [canonical roadmap](agent-research-roadmap.md) was reset on 2026-11-06:
 nominate one working public-information player, improve consequential decisions,
 then establish reproducible VF/AB superiority and faithful live execution.
-The next screen compares persistent H, raw planning and the frozen neural parent
-on eight fresh boards/all seats (96 planned games), replacing the unexecuted
-five-arm proposal. No new games or fits have run for this strategy revision.
+The matched three-arm screen now completed 96 games: persistent H 5/32, raw 15/32,
+neural parent 2/32. All 24guarded jobs exited zero; independent saved-record review
+passed all 96 games and9,520 own inputs. No unique stronger arm passed the frozen
+conservative rule. H remains provisional control; raw is the next direct VF/AB
+challenger. [Working-player card](working-player-card.md) records identities,
+latency, diagnostic judgments, missing coverage and uncertainty. No new fit,
+TRAIN labels or model promotion occurred. The separate native comparison is not
+yet frozen or executed.
 BC is optional; PPO remains deferred. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.
 All results below retain their original experimental scope and gates.
@@ -316,7 +321,7 @@ There were no selected development-play menus or discard packets. These dependen
 cases are not a broad competence certificate. All training targets remain null.
 [Blinded judgments](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/decision-audit-001/judge-001/REPORT.md).
 
-A separate post-comparison aggregate diagnostic records parent11/control11 maritime
+A separate post-comparison aggregate diagnostic records parent 11/control11 maritime
 trades 41/82 in their 16 H games, with H wins 2/2. Frequency is not action quality;
 more trading is not a suitable default shaped reward. The diagnostic is EVAL-only
 and adds no advancement gate.
@@ -324,7 +329,7 @@ and adds no advancement gate.
 
 ## Original complete-history engineering attempt: cache failure preserved
 
-Four engineering-only games on logical138100000 completed and retained all361 own
+Four engineering-only games on logical138100000 completed and retained all 361 own
 inputs, including148 forced inputs,128 ordinary eligible value rows and101 early/mid
 rows. This board/data are excluded from main TRAIN/validation and strength claims.
 Collection took4.136 seconds. Root session84406 subsequently exited125 at9.568 seconds:
@@ -471,7 +476,7 @@ pre-run pin; its post-run hash cannot supply one retroactively.
 [Engineering review](../runs/swarm-2026-11-04/agent-research/native-focal-plan-001/engineering/run-001/EMPIRICAL-REVIEW.md).
 
 The fixed-data discarded fitter profile then completed both masks from retained
-FULL15 parent11. Each used 252 genuine TRAIN observations, 185 supervised
+FULL15 parent 11. Each used 252 genuine TRAIN observations, 185 supervised
 presentations and 16 updates, with 960 current-weight prefix/252 chunk forwards
 plus 504 initial identity forwards. Fitter calls took 0.583523/0.556337 seconds;
 the Root attempt took 14.368 seconds. Both jobs preserved parent/value-head/input
@@ -678,7 +683,7 @@ accepted sets; 28 were preferred alternatives and 8 matched the student's action
 This selected sample does not establish teacher optimality or population rates.
 [Stored-label check](../runs/swarm-2026-11-04/agent-research/conceptual-audit-001/stored-label-audit-001.json).
 
-The first actual probe stopped after loading parent29 because its extra metadata
+The first actual probe stopped after loading parent 29 because its extra metadata
 check incorrectly expected the distribution version instead of the full Git-tagged
 backend identity. It performed no observation forwards or backwards. Its complete
 evidence was preserved; a narrow reviewed repair and four pure regressions preceded
@@ -693,7 +698,7 @@ matched negative log target probabilities to within 8.69e-8. All 678 observation
 forwards and six backwards were accounted for, and both reported tensor fingerprints
 and input file hashes stayed unchanged. No optimizer or teacher query occurred.
 
-The checkpoints are ConsequenceGraphPolicy / hand_recipe / hidden32: 30 recipe
+The checkpoints are ConsequenceGraphPolicy / hand_recipe / hidden size 32: 30 recipe
 channels already exist, while four site/context channels are masked. The result
 does not prove optimizer correctness, insufficient capacity, a general absence of
 bugs, current raw-planner weakness or playing-strength improvement.

@@ -1,41 +1,42 @@
 # Strength objective and next work
 
-Strategy reset 2026-11-06. The [canonical roadmap](agent-research-roadmap.md)
-defines the full direction; the [execution plan](superpowers/plans/2026-11-06-decision-first-roadmap.md)
-defines the immediate handoff. Preserve the user's separate [roadmap](roadmap.md)
-and all frozen studies.
+The [canonical roadmap](agent-research-roadmap.md) defines the goal: one coherent,
+reliable public-information Catan player, reproducible superiority to authentic
+VF/AB, then faithful live execution. The user's separate [roadmap](roadmap.md)
+and all frozen studies remain preserved.
 
-Build one usable public-information Catan player with coherent trades, builds,
-passes and tactical decisions. Make it reproducibly stronger than authentic VF
-and AB, then establish faithful complete live-game execution of the same policy.
-Competence, benchmark strength and deployment require separate evidence.
+The first matched nomination screen completed 96 games on eight fresh boards/all
+seats. Raw won15/32, persistent H 5/32, neural parent 2/32. All 24 guards exited0;
+independent saved-record review passed. No unique stronger arm passed the frozen
+conservative rule. H remains the provisional operational comparison control under
+the predeclared fallback; raw is the leading unpromoted strength challenger.
+[Policy card and decision review](working-player-card.md).
 
-1. Nominate a working player among persistent H, raw planner and frozen neural
-   parent using one matched development screen: eight fresh boards, all seats,
-   three H backgrounds, no domestic offers, maritime trades legal; 96 planned
-   complete games. This replaces the unexecuted five-arm proposal. If uncertainty
-   prevents ranking, name a provisional operational control rather than claiming
-   the highest point estimate is strongest. Publish identity, action scope,
-   completion, decision quality and latency in a policy card.
-2. Diagnose consequential errors in that player's TRAIN decisions. Fix one
-   mechanism, inspect actual changed choices and legal follow-ups, then test fresh
-   paired games against the incumbent. Retain, revise or retire explicitly.
-3. Build evidence for broad heuristic competence across all eight decision groups
-   while addressing demonstrated strategic limitations. Targeted tactical and
-   strategic improvements can precede the broad competence claim gate. Test direct
-   superiority to both pinned references with disjoint-board confirmation.
-   No-offer strength does not establish negotiation.
-4. Maintain a thin adapter lane and demonstrate a complete live game. Shared
-   observation/action semantics keep strategy independent of the backend.
+1. Next, separately freeze a direct raw/VF/AB focal comparison on fresh boards,
+   all seats and identical three-H backgrounds/no-offer conditions. This targets
+   the actual strength goal. Do not expand the old screen or pretend its gate
+   passed. A separately confirmed superiority claim still requires both reference
+   contrasts and disjoint-board replication.
+2. Use relevant TRAIN evidence to diagnose weaknesses when the comparison or
+   working-player behavior demonstrates a need. EVAL diagnostics flagged resource
+   conversion, discard complementarity and Knight timing; they are explanatory
+   records, not training targets. Change one mechanism, inspect choices and test
+   fresh paired gameplay. Preserve a null and retire unchanged treatments.
+3. Build broader eight-group competence evidence and stronger strategy as needed;
+   targeted improvements need not wait for a broad claim gate. No-offer success
+   cannot establish negotiation. Maintain the thin shared adapter lane and test
+   complete live execution separately.
 
-BC, consequence features, bounded search, value learning and PPO are tools chosen
-for diagnosed problems. PPO remains deferred; no automatic model scaling, value
-lane, reward shaping or background data generation is queued. A simpler stronger
-player is progress. Actual decision traces must reflect the mechanism used.
+The 55 frozen EVAL diagnostics had36 sensible,14 ambiguous and5 concern notes, with
+0 verified critical failures. Three posthoc Knight examples are separate because
+the frozen rare-slot action name was misspelled. No broad competence claim follows.
+No optimizer updates, new TRAIN labels, native queries or model promotion occurred.
 
-No broad competence or VF/AB superiority is established. Closed feature, road,
-winning-prefix and value-head studies did not pass their advancement gates.
-The audited-label coverage gate prevented any fit, so it does not show BC failed.
-Preserve all exact results and limits in [measured status](training-status-2026-11-05.md).
-Final boards `123100000..123100063` and legacy finals remain untouched until a
-confirmation protocol is frozen. Reuse existing evaluation and resource guards.
+BC, bounded search, learned values and PPO remain tools for diagnosed problems.
+PPO is deferred. No automatic model scaling, value lane, shaping or background
+data generation is scheduled. Closed feature/road/winning-prefix/value studies
+retain their failed advancement gates. The audited-label study ran no fit and
+does not show BC fails. See [measured status](training-status-2026-11-05.md).
+
+Final boards 123100000..123100063 and legacy finals remain untouched until a
+confirmation protocol is frozen. Reuse existing evaluation and process guards.

@@ -61,15 +61,17 @@ model size or number of updates is a required milestone.
 
 ## Stage 1: nominate one working player
 
-The following is proposed scope, requiring a separately frozen execution protocol
-before runtime. No new games ran during this strategy revision.
-Make one matched development comparison of persistent public H, the unchanged
-raw public planner and the exact frozen neural parent. Use eight fresh boards,
-all four seats, the same three persistent H backgrounds, and no domestic offers:
-**96 planned complete games**. Maritime trades stay legal. Freeze source, parent,
-search budgets, board schedule, decision limits, contrasts and selection rule
-before execution. Reuse the existing harness. This replaces the unexecuted
-five-arm proposal; it changes no completed study.
+The first screen completed 96 games: persistent H 5/32, raw 15/32 and neural 2/32.
+The frozen conservative gate established no unique stronger arm; eligible H is
+the provisional comparison control and raw the leading unpromoted challenger.
+See the [working-player card](working-player-card.md) for decisions, identities,
+uncertainty and evidence. The separately frozen study compared persistent H, the
+unchanged raw public planner and the exact frozen neural parent. It used eight
+fresh boards, all four seats, three persistent H backgrounds and no domestic
+offers: **96 completed games**. Maritime trades stayed legal. Source, parent,
+search budgets, schedule, limits, contrasts and selection rule were frozen before
+execution. The study reused the existing harness and replaced the unexecuted
+five-arm proposal; no completed study was rewritten.
 
 Compare complete-game wins, critical decision failures, completion and latency.
 Inspect representative public decisions from each policy without creating TRAIN
@@ -182,9 +184,9 @@ four-player play.
 
 | Order | Deliverable | Boundary |
 |---|---|---|
-| 1 | Freeze and run the three-arm incumbent screen; publish its policy card. | 96 planned games; no fit, native expansion or final-strength claim. |
-| 2 | Identify one consequential weakness in that player's TRAIN decisions. | Bounded diagnosis; no general annotation framework or arbitrary label quota. |
-| 3 | Test one remedy through affected-path checks, changed-choice inspection and fresh gameplay. | Declare cost and promotion rule first; preserve a null result. |
+| Complete | Three-arm screen and [policy card](working-player-card.md). |96completegames; H 5/raw 15/NN 2; no unique stronger arm, no neural promotion. |
+| Next | Separately freeze a direct raw challenger versus authentic VF/AB comparison. | Fresh all-seat paired boards, identical backgrounds/no-offer regime, declared effect/uncertainty/budget; no extension or reinterpretation of the completed screen. |
+| Following diagnosed need | Confirm consequential weaknesses in relevant TRAIN decisions, then test one remedy. | EVAL concerns remain explanatory; affected-path checks, actual choices and fresh gameplay decide retention. No arbitrary universal label quota or automatic fit. |
 | 4 | Broader competence, strategic improvement and direct VF/AB confirmation as evidence warrants. | No automatic jump to PPO or large data generation. |
 
 The decision/learning coordinator owns this loop. The adapter coordinator owns

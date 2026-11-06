@@ -5,16 +5,18 @@ A public-information Catan player for simulator and Colonist adapters.
 The goal is one usable player with coherent trades, builds, passes and tactical
 choices, followed by reproducible superiority to authentic VF and AB and faithful
 complete live-game execution. The [revised roadmap](docs/agent-research-roadmap.md)
-separates those three claims. First nominate a working player among persistent H,
-raw planning and the frozen neural parent. Then diagnose consequential mistakes,
-change one mechanism, inspect the choices and test fresh complete games.
+separates those three claims. The first matched comparison completed 96 games:
+raw 15/32 wins, persistent H 5/32, neural parent 2/32. The [working-player card](docs/working-player-card.md) keeps H
+as provisional control under the fixed fallback and raw as the leading unpromoted
+challenger. Next compare raw directly with authentic VF/AB under a separate frozen
+protocol; diagnose weaknesses and test targeted changes using relevant TRAIN evidence.
 
 Heuristics, bounded planning and learned components can cooperate. BC and PPO
 are optional tools; PPO remains deferred until competence and an identified
 strategic need justify it. No automatic training scale-up, value-learning lane or
 reward-shaping campaign is scheduled. The
 [immediate execution plan](docs/superpowers/plans/2026-11-06-decision-first-roadmap.md)
-starts with a matched three-arm development screen, not a new fit.
+records the completed three-arm screen and its evidence-led handoff; no new fit is queued.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

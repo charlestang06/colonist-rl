@@ -10,6 +10,17 @@
 
 **Spec:** [Canonical strategy](../../agent-research-roadmap.md), especially Stage 1. This plan covers the first deliverable only; later repairs depend on its findings.
 
+## Execution status, 2026-11-06
+
+Tasks 1 and 2 complete: 96 resolved games, 24 zero-exit guards, independent saved-record
+review and 55 frozen plus 3 posthoc diagnostic decisions. [Policy card](../../working-player-card.md)
+records H as provisional control and raw as unpromoted challenger. No unique arm
+passed the conservative gate. Task 3 is deferred: the next separate investment is a
+direct raw/VF/AB comparison, because the strong raw development signal should be
+tested against the actual strength objective before repairing the fallback H.
+No frozen protocol, role or advancement rule is changed. If that comparison is
+uninformative, it costs one bounded study before further TRAIN diagnosis.
+
 ## Global constraints
 
 - Player-observable inputs only; no privileged native labels or hidden engine/deck/RNG inputs.
@@ -30,12 +41,12 @@
 
 **Produces:** a frozen three-arm protocol and deterministic board/seat/job schedule.
 
-- [ ] Check source/config/checkpoint identities and the fresh-board domain against existing records. Record the search before reserving eight boards; do not generate boards to select favorable difficulty.
-- [ ] Declare 24 one-board/four-seat jobs, balanced arm order across boards, 20,000 engine-step game cap, existing guard budgets and total run budget. Register actual handles before dispatch continues.
-- [ ] Keep raw depth 6, nodes 2,048, beam 24, geometry 100,000, seed 11, margin 10,000 and optional winning-prefix flag false. Freeze the exact code/config actually used.
-- [ ] Use persistent focal H, not a fresh heuristic reconstructed on every observation. Neural memory resets per game and advances on forced inputs too; deterministic inference, no optimizer.
-- [ ] Freeze the three paired board-level win contrasts and simultaneous 95% uncertainty rule. Proposed practical superiority margin: five percentage points, requiring support against both other public arms to name a uniquely stronger policy. Small-sample uncertainty remains explicit.
-- [ ] Freeze completion/critical-failure criteria, latency budget and a reliability/latency/simplicity fallback order. Inconclusive strength evidence permits a provisional operational control, not promotion as strongest. Retain H as the simplest fallback unless it fails those criteria.
+- [x] Check source/config/checkpoint identities and the fresh-board domain against existing records. Record the search before reserving eight boards; do not generate boards to select favorable difficulty.
+- [x] Declare 24 one-board/four-seat jobs, balanced arm order across boards, 20,000 engine-step game cap, existing guard budgets and total run budget. Register actual handles before dispatch continues.
+- [x] Keep raw depth 6, nodes 2,048, beam 24, geometry 100,000, seed 11, margin 10,000 and optional winning-prefix flag false. Freeze the exact code/config actually used.
+- [x] Use persistent focal H, not a fresh heuristic reconstructed on every observation. Neural memory resets per game and advances on forced inputs too; deterministic inference, no optimizer.
+- [x] Freeze the three paired board-level win contrasts and simultaneous 95% uncertainty rule. Proposed practical superiority margin: five percentage points, requiring support against both other public arms to name a uniquely stronger policy. Small-sample uncertainty remains explicit.
+- [x] Freeze completion/critical-failure criteria, latency budget and a reliability/latency/simplicity fallback order. Inconclusive strength evidence permits a provisional operational control, not promotion as strongest. Retain H as the simplest fallback unless it fails those criteria.
 
 **Acceptance:** reviewer can identify every arm, all 96 planned games, all limits and the selection decision before any result exists. This roadmap is not itself a completed runtime freeze.
 
@@ -47,11 +58,11 @@
 
 **Produces:** complete journals, guarded actual-work records, paired summaries and `docs/working-player-card.md`.
 
-- [ ] If worker dispatch changes, first add inert tests: H routes to persistent heuristic without loading the model; raw uses unchanged defaults; neural loads the exact checkpoint once and retains per-game memory. Require four seats per board and reject duplicate/missing records. Root observes the tests fail for the specific absent behavior, then implements and verifies only the needed change.
-- [ ] Run the 24 declared jobs under existing guards. Record terminal status, every completed/censored game and actual resource use; preserve failures rather than retrying until favorable.
-- [ ] Recompute joins and board-level contrasts from saved results. Inspect preselected representative EVAL decisions without converting them to labels. Distinguish factual critical failures from uncertain strategic disagreements.
-- [ ] Apply the frozen nomination rule. If unresolved, publish the operational fallback and uncertainty. Do not expand the same screen to chase a winner.
-- [ ] Publish the policy card: identity/configuration, observation boundary, action scope, actual results, completion, latency, critical issues, selection rationale and missing evidence. Update canonical status without altering old protocols.
+- [x] If worker dispatch changes, first add inert tests: H routes to persistent heuristic without loading the model; raw uses unchanged defaults; neural loads the exact checkpoint once and retains per-game memory. Require four seats per board and reject duplicate/missing records. Root observes the tests fail for the specific absent behavior, then implements and verifies only the needed change.
+- [x] Run the 24 declared jobs under existing guards. Record terminal status, every completed/censored game and actual resource use; preserve failures rather than retrying until favorable.
+- [x] Recompute joins and board-level contrasts from saved results. Inspect preselected representative EVAL decisions without converting them to labels. Distinguish factual critical failures from uncertain strategic disagreements.
+- [x] Apply the frozen nomination rule. If unresolved, publish the operational fallback and uncertainty. Do not expand the same screen to chase a winner.
+- [x] Publish the policy card: identity/configuration, observation boundary, action scope, actual results, completion, latency, critical issues, selection rationale and missing evidence. Update canonical status without altering old protocols.
 
 **Acceptance:** the named working control can be reproduced and its limitations are visible. This task establishes neither broad competence nor VF/AB superiority.
 
