@@ -1,5 +1,18 @@
 # Product roadmap
 
+**November 5 strategic addition:** [L6–L10](#l6--evaluate-public-successor-states-with-a-calibrated-value-function)
+extend the learning roadmap toward strong human play: public successor states,
+calibrated value-guided planning, negotiation, diverse self-play and human
+benchmarks. These are proposed milestones, not implemented capabilities or
+claims of human-level performance. Earlier dated status entries remain historical;
+see [the saved capability report](training-status-2026-11-05.md) for measured results.
+
+**November 5 training addition:** [L1](#l1--establish-a-competent-teacher-and-imitation-baseline-first-priority)
+now includes a 10k -> 100k -> 1m non-forced-decision data-scaling experiment,
+separate VF/Alpha Beta/mixed-teacher comparisons, selective search labels and
+student-state aggregation. These are planned experiments; larger datasets and
+mixed teachers have not yet demonstrated improved play.
+
 Planning snapshot: November 4, 2026, updated after the completed guest game and
 accepted evaluation, imitation, UI-contract and semantic-parser foundations.
 Status distinguishes delivered foundations
@@ -86,7 +99,7 @@ used by the Catanatron wrapper, not the engine's privileged full state.
 
 | Priority | Item | Outcome | Status / dependencies |
 | --- | --- | --- | --- |
-| P0 | L1 | Benchmark the teacher and establish competent imitation | Pilot completed; students weak; test planned balanced imitation and coverage/optimization diagnostics |
+| P0 | L1 | Benchmark the teacher and establish competent imitation | Pilot completed; students weak; planned coverage/optimization diagnostics, data scaling, teacher diversity and student-state labels |
 | P0 | A9 | Reproducible training and evaluation comparison | Pilot scoped review complete; broad installed-wheel compatibility fix pending; larger playing evidence needed |
 | P1 | L2 | Critic warm start and measured PPO improvement | After the imitation baseline; fresh learner experience |
 | Done | A1 | Shared, Colonist, and physical adapter boundaries | Implemented, independently reviewed, combined verification passed |
@@ -515,6 +528,58 @@ and validation boards disjoint. Train on ordered sequences and recompute memory
 under the current model rather than treating old hidden states as timeless
 features. Cache static board topology to reduce collection/encoding overhead.
 
+**Teacher-data scaling and diversity experiments (planned November 5):**
+
+- Measure a learning curve at approximately **10,000 -> 100,000 -> 1,000,000
+  non-forced teacher decisions**. Start with the 100k experiment; advance toward
+  1m when held-out gameplay improvement and measured throughput justify it. These
+  are experimental targets, not established sample requirements or runtime
+  promises. Keep all forced observations in each ordered recurrent history even
+  though only choice decisions count toward the supervised-data target.
+- Acquire fresh full-game trajectories across many board layouts, dice/behavior
+  seeds, all four seats and declared opponent lineups. Save actual unique boards,
+  episodes, complete/incomplete games, raw decisions and non-forced decisions.
+  More epochs and model initialization seeds do not add gameplay diversity.
+  Use nested corpus sizes where practical and a common corpus across student
+  initialization seeds so data changes and optimization variance can be separated.
+- Compare **current-heuristic-only, ValueFunction-only, AlphaBeta-only and
+  mixed-teacher** datasets after the integration and information-access checks
+  above. Alpha Beta uses the same underlying value function by default; search
+  depth alone does not establish independent strategic diversity. Select mixture
+  weights from validation results, retain per-teacher provenance and inspect
+  disagreements before pooling incompatible or systematically weaker labels.
+- Use efficient audited teachers for broad coverage, then query expensive search
+  on teacher disagreements, student mistakes and difficult conversion/expansion
+  decisions. Save query-selection rules, search budgets, score/tie information
+  when available and actual label-generation latency. Compare label quality at
+  matched query counts and separately at matched wall-clock cost; do not assume
+  Alpha Beta labels cost the same as heuristic labels.
+- Audit coverage within PLAY_TURN: useful bank/port exchanges, sensible passes,
+  build continuations, robber choices, development cards and incoming trades.
+  Acquire more naturally reached rare-action states or declare targeted scenario
+  data separately; do not force a teacher to play an inappropriate card to meet a
+  quota. Report opportunity counts and decisions by action kind/context; phase
+  balance or raw trade frequency alone cannot establish useful behavior.
+- Partition by board seed and complete game history, keeping related trajectories
+  and alternative teacher labels together. Reserve disjoint model-selection and
+  final-test boards; do not randomly split turns from the same game. Freeze a
+  common four-seat evaluation panel with multiple opponent styles, then compare
+  all corpus sizes/teacher arms using several student initialization seeds.
+- Add audited labels on states reached by the student, retaining the executed
+  behavior separately from the teacher target and preserving full histories.
+  Compare aggregation with an equal-query additional teacher-trajectory control
+  from the same starting checkpoint. More expert trajectories do not substitute
+  for recovery examples on student-induced states; see
+  [DAgger](https://proceedings.mlr.press/v15/ross11a.html).
+- Profile collection, encoding, recurrent fitting and complete-game evaluation
+  separately before setting compute budgets. Hold architecture and optimizer
+  settings fixed for the data-scaling comparison; record updates, presentations,
+  epochs, stopping rules, throughput and wall caps. Allow enough optimization to
+  interpret larger corpora, while reporting capped/unfinished runs explicitly.
+  Compare held-out loss/agreement with full-game wins, VP, useful-trade/sensible-
+  pass audits and regressions across opponents. Lower training loss alone does
+  not justify scaling or promoting a mixed teacher.
+
 **Acceptance checks:** Report teacher performance, demonstration coverage,
 held-out action agreement by decision phase, and complete-game student results.
 The student should approach teacher performance before expensive RL runs. If
@@ -620,3 +685,189 @@ the first playable learned policy.
 then L4 for targeted capacity/efficiency changes. L5 follows a measured plateau.
 The first feasibility gate is teacher -> competent imitation -> demonstrable PPO
 improvement, independently of successful manual browser gameplay.
+
+### L6 — Evaluate public successor states with a calibrated value function
+
+**Status:** Proposed November 5. Extends L2/L3; the current critic is not yet a
+validated evaluator of hypothetical trade continuations. First establish useful
+cloning with consequence features, useful-trade/sensible-pass examples and audited
+labels on student-reached states. Preserve entire recurrent histories and each
+dataset's provenance. Measure throughput so larger training runs buy more useful
+experience. Exact agreement and teacher-equivalent choices remain distinct metrics.
+
+**Goal:** Evaluate what an action enables, including `bank trade -> settlement`
+and `bank trade -> city`, rather than ranking its resource vectors in isolation.
+
+**Transition design:** Represent the decision information state as public board
+and turn context, own hand/cards, observed history and beliefs about unknowns.
+Compute deterministic known effects with exact public-rule helpers: a legal bank
+trade's resulting hand is `hand - give + receive`. Recompute build readiness from
+that hand, public geometry, pieces and phase; a resource-sufficient recipe alone
+does not establish a legal build. Keep hypothetical branches separate from verified
+Observations and the execution/resource ledger. No simulator-private state or actual
+future RNG is available to the planner.
+
+Learn distributions for genuinely unknown outcomes, such as opponent responses,
+rather than replacing known resource arithmetic with an approximate neural model.
+Dice and hidden-card events branch according to the rules and current information;
+they do not produce a single falsely certain successor. A larger learned latent
+dynamics model is a later measured alternative, not a prerequisite for these exact
+own-turn transitions. Stochastic MuZero's separation of action afterstates from
+chance outcomes is a relevant research pattern, not evidence that it will solve
+Catan: [author explanation](https://www.julian.ac/blog/2022/05/15/planning-in-stochastic-environments-with-a-learned-model/).
+
+**Value design:** For player `i`, rank an action using
+`Q_i(h, a) = E[r_i + gamma * V_i(h')]`, over possible successor information
+states `h'`. Record the continuation policy, opponent population, discount and
+reward convention that define `V`. A bank trade normally leaves another decision
+in the same turn; the value must include the opportunity to build afterward.
+Fork recurrent memory for each hypothetical history under the current weights;
+search branches must not advance the real controller's memory or ledger.
+
+Train and validate values using actual completed continuations and proper
+bootstrapping for truncations. Teacher-continuation values are not automatically
+values of a student that follows different actions. Keep the existing shaped-return
+critic identified as such, or add a separate outcome-value head. Include the
+immediate shaping reward when using `r + gamma * V`; treating raw shaped critic
+output as a win probability or ranking successors by that output alone can be
+wrong. For the existing undiscounted terminal-zero potential, the known relation
+is `V_shaped = V_win - Phi`. Richer readiness shaping is a separate experiment,
+with discount/terminal handling consistent throughout; never reward a trade merely
+for occurring. See [potential-based shaping](https://people.eecs.berkeley.edu/~russell/papers/icml99-shaping.pdf).
+
+**Acceptance checks:** Verify public transitions against held-out legal bank/port
+and build cases; test conservation, offer perspective, piece/distance constraints
+and pending-versus-committed trade semantics. Report value ranking and calibration
+on held-out completed frozen-policy games, including states after trades; a finite
+critic loss is insufficient. Compare policy-only, explicit consequence scoring and
+one-step `r + gamma * V` on the same board/seat panel. Account for continuation
+policy mismatch and unsupported successor distributions before trusting search.
+
+### L7 — Improve decisions with bounded belief-aware lookahead
+
+**Status:** Proposed. Refines L5 after the measured conversion weakness; shallow
+deterministic own-turn planning can be tested before full-game search.
+
+**Goal:** Find valuable short sequences and progressively improve the teacher,
+actor and value estimator together.
+
+**Scope:** Start with an explicit depth-two comparison over legal
+`trade -> purchase` sequences, then separately test depth-three sequences such as
+`trade -> road -> settlement`. Use exact public transitions where possible, the
+actor to propose/prune candidates and the calibrated value function at leaves.
+When the leaf critic is weak, expose the follow-up purchase explicitly rather
+than assuming one-step successor evaluation already understands it. Record node,
+latency and inference budgets; compare useful decisions per wall-clock cost.
+
+Extend only after this works: sample hidden resources/cards from consistent
+beliefs, branch on chance and model plausible opponent continuations. Decisions
+must depend on information available at that point in the hypothetical history;
+sampling a hidden world does not permit the learner to act as though it knows it.
+Four players require opponent-specific policies/values, not a simple alternating
+two-player minimax sign flip. Research such as
+[ReBeL](https://arxiv.org/abs/2007.13544) motivates belief-aware search, but its
+two-player zero-sum convergence result is not a guarantee for four-player Catan.
+
+Distill independently benchmarked search improvements into the actor and value
+targets, then collect new student-state labels. Keep data-generation policies,
+continuation assumptions and any privileged diagnostic runs identified separately.
+
+**Acceptance checks:** On audited cases, choose useful conversions and retain
+sensible passes over wasteful exchanges; raw bank-trade frequency is not success.
+Across full games, beat the unchanged heuristic/policy references at declared
+compute budgets, with several training seeds and board-level uncertainty. Verify
+that changing inaccessible true hidden state cannot change the deployed policy's
+inputs or decisions for an otherwise identical information state and random seed.
+Retain policy-only and no-search ablations to detect model-error exploitation.
+
+### L8 — Model player-trade responses and their strategic consequences
+
+**Status:** Proposed. Goes beyond the current binary incoming response and bank
+trade behavior; full negotiation is part of the eventual human-play objective.
+
+**Goal:** Make and evaluate offers by their effect on winning chances, including
+what they enable for the other player.
+
+**Scope:** Begin with a bounded offer/partner generator and explicit response
+branches: committed acceptance, rejection, timeout and counteroffer. For a simple
+accept/reject model, evaluate `P(accept | history, offer) * Q(commit)` plus
+`P(reject | history, offer) * Q(reject)`; add other branches and any actual costs
+explicitly. An offer or willingness marker is not a committed transfer. Only a
+verified commitment changes the real resource ledger.
+
+Estimate response probabilities from player-visible history and diverse opponent
+behavior. Compare both players' resulting opportunities and public victory/road/
+army races; a trade can help the agent's hand while helping a leader more.
+Model acceptance and strategic value separately, preserve resource uncertainty,
+and learn from real response outcomes without assigning invented opponent hands.
+Natural-language negotiation and unrestricted offers remain separate expansions.
+
+**Acceptance checks:** Calibrate acceptance predictions on held-out opponents;
+compare generator/scorer/response-policy ablations and incoming-only baselines.
+Report completed useful deals, rejected/expired offers, resource legality,
+opponent benefit and full-game wins, rather than maximizing acceptance rate.
+Benchmark the same trade permissions for agents and humans before comparing skill.
+
+### L9 — Train against a diverse league and improve beyond the bootstrap teacher
+
+**Status:** Proposed. Extends L2's random -> mixed -> heuristic curriculum once
+the imitation/planning experiments establish a useful starting policy.
+
+**Goal:** Develop robust strategy beyond one heuristic's habits and avoid
+forgetting or exploiting only the current opponent mixture.
+
+**Scope:** Retain fixed external benchmarks while training against frozen
+historical policies, independently tested stronger bots, varied strategic styles
+and policies that expose specific weaknesses. Measure cross-play and targeted
+best-response tests; a newer snapshot is not automatically stronger. Continue
+fresh-rollout RL after supervised warm starts, and separately test anchors or
+search distillation when they prevent collapse. Scale simulation/training only
+after profiling and controlled evidence justify the cost.
+
+League/exploiter training is a relevant precedent from
+[AlphaStar](https://deepmind.google/blog/alphastar-grandmaster-level-in-starcraft-ii-using-multi-agent-reinforcement-learning/),
+not a prediction of Catan performance. Select agents using the retained external
+panel and multiple opponent populations, not self-play ratings alone. Cloning
+the heuristic is a bootstrap; outperforming it must be measured under an
+improvement objective such as win-based RL or stronger search-guided decisions.
+
+**Acceptance checks:** Preserve baseline, imitation-only, search-assisted and
+RL checkpoints. Report improvements and regressions across held-out opponents,
+boards and seats at equal declared budgets. Assess performance against several
+styles and older policies; an internal rating increase alone does not establish
+general strength or a multiplayer equilibrium.
+
+### L10 — Establish human-level and stronger-human performance empirically
+
+**Status:** Long-term research objective, unproven. Current saved students remain
+below the fixed heuristic benchmark; none of L6–L9 establishes human-level play.
+
+**Goal:** Beat a predefined skilled human cohort under standard four-player rules,
+then test a stronger expert cohort. Define the target population before claiming
+that the agent is human-level or superhuman.
+
+**Scope:** Progress from fixed heuristic competence to held-out stronger bots and
+league robustness, then evaluate human play. Audit simulator/rule fidelity,
+information visibility, trade permissions and realistic decision latency. Keep
+pure decision-policy results separate from perception/execution reliability, and
+eventually validate the complete adapter under the same game conditions.
+
+Predeclare the opponent skill levels, board/seat randomization, lineup composition,
+sample-size or precision target, final model-selection freeze and analysis. Use
+fresh final-test boards, retain all outcomes and account for dependence from
+shared boards and repeated opponents. Twenty-five percent is the symmetric
+four-player reference, not an automatic proof of human-level skill in an uneven
+human cohort. Report effect sizes and uncertainty, not a few highlight wins.
+
+**Acceptance checks:** Demonstrate reproducible advantages over the declared
+human benchmark with complete games and comparable information/action access.
+Any claim of exceeding experts requires its own expert-cohort evidence. Training
+volume, model size, low loss, test counts, victories over weak bots and results
+from other games cannot substitute for this measurement.
+
+**Extended execution order:** Continue L1's audited cloning and student-state
+training plus measured throughput work; develop L6's exact public afterstates and
+trustworthy values; test L7's shallow search as a separate improvement mechanism.
+Add L8 negotiation and L9 league robustness incrementally, retaining common fixed
+evaluation panels. L10 is the final empirical gate. A learned world model or a
+larger network is an evidence-driven option, not a mandatory first step.
