@@ -75,6 +75,13 @@ bitwise-identical zero-start outputs. The study requires baseline headroom,
 factual checks of accepted alternatives, and actual accepted bank-trade choices
 before any gameplay. No fit or strength claim follows from the feature tests.
 
+An isolated [fit-local raw graph-input cache probe](fit-local-graph-cache-negative-2026-11-06.md)
+retained bitwise-identical parameters, optimizer states and 60-update loss, but
+increased fitter wall time from 1.495 to 1.590 seconds on the sealed pilot.
+The cache remains off and outside the working source. The complete pilot
+fit-and-score attempt was about 14.5 seconds, so later profiling should measure
+source validation and labelVAL scoring before touching the fitter again.
+
 ## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
 
 The optional `search_build_win_before_buy=False` path passed nine targeted

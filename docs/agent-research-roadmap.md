@@ -183,6 +183,12 @@ idle OS threads from active compute. Report hypothesis-to-first-gameplay time,
 setup/review versus compute time, and candidates actually compared. Those are
 iteration diagnostics, not strength metrics.
 
+The [fit-local graph-input cache probe](fit-local-graph-cache-negative-2026-11-06.md)
+preserved exact updates but slowed a sealed 60-update fit from 1.495 to 1.590
+seconds. Keep that cache isolated. The full fit-and-score attempt took about
+14.5 seconds, so segment source validation and labelVAL scoring before another
+trainer optimization.
+
 Keep TRAIN, development, validation and final roles explicit. EVAL decisions may
 explain results but never become training labels. Retain failed attempts, losses,
 censoring and adverse cases. Bank trades remain legal whenever rules permit;
