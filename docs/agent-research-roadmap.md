@@ -84,6 +84,21 @@ judgment and any fresh scoped model checks remain diagnostic; selection screens
 are neither certified future menus nor approved training labels. Reuse applicable
 completed checks rather than rerunning the old panels.
 
+The 32-case public audit and six-case historical replay are now complete. Saved
+H labels are legal and accepted by the diagnostic judgments; the six reproduced
+passes have matching action encodings and finite nonzero relevant gradients.
+This subset exposes no disconnected-gradient or action-index defect. The parents
+already use 30 hand/recipe consequence channels. The remaining four channels add
+site/context eligibility; some are action-constant or duplicate existing recipe
+flags at eligible roots, so the city stalls do not establish their benefit.
+Check for informative TRAIN contrasts before fitting a bounded feature ablation.
+
+The probe retains a resource HOLD: two samples recorded four OS threads despite
+configured Torch intra/inter-op counts of one. This is not evidence of four active
+compute threads. Diagnose the runtime separately before fitting; preserve the
+failed identity-check attempt and the resource discrepancy. No optimizer update,
+training-label approval or strength promotion resulted from these probes.
+
 Next, isolate explicit public action-consequence features against the existing
 feature set. Hold TRAIN data, model family, optimizer work, continuation and
 evaluation controls fixed so the comparison tests that feature intervention.
@@ -109,7 +124,7 @@ failure mechanism is understood and simpler methods yield convincing complete-ga
 gains. These are ordered follow-ups, not newly launched studies or a strength
 promotion.
 
-**2. Establish authentic reference comparisons.** Current native games are
+**2. Establish authentic reference comparisons in parallel.** Current native games are
 candidate-versus-three-native stress panels. The gateway currently permits native
 opponents only; a focal native reference requires a narrowly reviewed evaluation
 extension. It must remain outside policy/training/teacher routes. Then compare

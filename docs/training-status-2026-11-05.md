@@ -175,6 +175,65 @@ parents and occupancy are distinct from the current raw planner; no new rollout,
 training label approval, fit or added-data experiment is claimed here.
 [Next learning plan](../runs/swarm-2026-11-04/agent-research/next-learning-plan.md).
 
+The independent public audit classified 12 apparent missed opportunities,
+5 justified passes, 2 unnecessary trades, 4 sensible trades and 9 ambiguous
+decisions. Nine apparent misses share two boards. Named own-card mapping confirms
+that one case has nine known own VP and an apparent trade-to-tenth-point route,
+conditional on the unobserved future menu. Grades remain diagnostic and all
+training approvals remain null.
+[Public audit](../runs/swarm-2026-11-04/agent-research/conceptual-audit-001/report.md).
+
+A metadata-only check found all 32 saved H indices legal and within the diagnostic
+accepted sets; 28 were preferred alternatives and 8 matched the student's action.
+This selected sample does not establish teacher optimality or population rates.
+[Stored-label check](../runs/swarm-2026-11-04/agent-research/conceptual-audit-001/stored-label-audit-001.json).
+
+The first actual probe stopped after loading parent29 because its extra metadata
+check incorrectly expected the distribution version instead of the full Git-tagged
+backend identity. It performed no observation forwards or backwards. Its complete
+evidence was preserved; a narrow reviewed repair and four pure regressions preceded
+a separately ratified second attempt on the same six cases.
+
+Attempt002 reproduced all six historical END_TURN choices using full own histories,
+with exact candidate vectors. Audited trade probabilities were 0.182779–0.378556;
+five targets ranked second and one third. All relevant policy, action, recurrent
+and consequence parameter groups had finite nonzero gradients; value, setup and
+forced heads correctly had no gradient under these normal-turn CE probes. Losses
+matched negative log target probabilities to within 8.69e-8. All 678 observation
+forwards and six backwards were accounted for, and both reported tensor fingerprints
+and input file hashes stayed unchanged. No optimizer or teacher query occurred.
+
+The checkpoints are ConsequenceGraphPolicy / hand_recipe / hidden32: 30 recipe
+channels already exist, while four site/context channels are masked. The result
+does not prove optimizer correctness, insufficient capacity, a general absence of
+bugs, current raw-planner weakness or playing-strength improvement.
+
+Resource acceptance remains **HOLD**. Of 25 samples, two recorded four OS threads;
+the other 23 recorded one. Peak RSS was 771,850,240 bytes and guard exit was zero,
+but the strict sampled one-OS-thread requirement was not met. Configured Torch
+counts of one do not resolve that discrepancy, and four OS threads do not establish
+four active compute workers. The other 19,846 provenance/arithmetic checks passed.
+The synthetic runtime investigation is separate; the six cases will not be rerun
+to erase this HOLD.
+[Probe empirical review](../runs/swarm-2026-11-04/agent-research/training-trade-pass-probe-001/run-002/EMPIRICAL-REVIEW.md),
+[bounded feature design](../runs/swarm-2026-11-04/agent-research/learning-next-after-probe.md).
+
+The matched synthetic check is complete: default and disabled-autograd processes
+each performed 24 backwards and 96 GRU steps on the same generated CPU tensors.
+Both reached four OS threads immediately after the first backward, with identical
+reported losses/gradient digests and unchanged parameter fingerprints. Disabling
+autograd multithreading did not produce the strict OS1 result. The 19,348 metadata
+assertions passed; this neither identifies the original thread origin nor clears
+its HOLD. Resolve a prospective resource protocol before fitting.
+[Synthetic review](../runs/swarm-2026-11-04/agent-research/runtime-thread-diagnosis-001/run-001/EMPIRICAL-REVIEW.md).
+
+Focal native VF/AB evaluation is a parallel isolated implementation lane. Its
+matched-lineup API passed 12 controlled routing/privacy tests, 81 affected
+regression checks and independent source review in a separate worktree. Real native
+engineering games remain pending before integration; current native results still
+use opponent stress panels.
+[Native reference plan](../runs/swarm-2026-11-04/agent-research/native-focal-plan-001/PLAN.md).
+
 ## Earlier evidence retained
 
 Targeted FULL25 BC improved selected agreement but seed 11 regressed and seed 29
