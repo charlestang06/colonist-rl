@@ -80,27 +80,40 @@ or inconclusive results remain so; a nonpositive H replication or negative VF
 estimate deprioritizes this intervention. Higher setup scores or VP cannot rescue
 a failed win hypothesis. This experiment is planned, not launched or promoted.
 
-**2. Improve learning only against an observed mechanism.** Continue genuine
-outcome-value research independently of BC. If separate TRAIN evidence identifies
-errors on learned-policy states missing from raw-policy data, test one controlled
-continuation-data/policy-iteration step. If coverage is adequate but action ranking
-is wrong, compare a bounded pair of public-selected legal actions with genuine
-continuation outcomes. Freeze proposals, continuation, budgets and splits first;
-never turn privileged native choices or EVAL cases into teacher labels.
+**2. After the placement study, diagnose and isolate trading decisions.** First
+audit trading versus passing on student-reached TRAIN states. Inspect passes for
+useful root-legal trades that could unlock settlements, cities or expansion.
+Check public resource consequences, build deficits and connected-site access;
+a complete recipe alone does not certify a legal future build. Accept justified
+alternatives and ambiguity rather than assuming H's choice is ground truth.
+Check label consistency, action encoding and gradient flow before increasing
+training scale. Bank trading and ending share a phase, so phase balancing alone
+cannot establish that the student distinguishes their consequences.
 
-For a limited BC/DAgger experiment, audit labels and justified alternatives on
-actual student states, check encoding/gradients and retention, then judge complete
-games. Bank trading and ending share a phase, so phase balancing alone is
-insufficient. Public build deficits, connected-site affordability and trade
-consequences are candidate features only when a controlled error analysis calls
-for them. More rows, capacity, recurrence or search depth require an ablation.
+Next, isolate explicit public action-consequence features against the existing
+feature set. Hold TRAIN data, model family, optimizer work, continuation and
+evaluation controls fixed so the comparison tests that feature intervention.
+Only after this comparison, aggregate independently audited student-gameplay
+examples and test the added data as a separate intervention, with frozen labels,
+accepted alternatives and board-separated splits. Change one intervention at a
+time; do not combine feature changes and new examples in one claim. BC/DAgger is
+an optional use of the aggregated data; genuine terminal outcomes can train value
+independently of cloning success. The aggregation and separate data test remain
+required follow-up steps.
 
-Keep terminal wins as outcome targets. VP, resource efficiency and handcraft
-scores are diagnostics. Any reward shaping needs a separate controlled test
-judged by wins. Profile actual bottlenecks before increasing training work; cached
-or batched recurrent states must remain consistent with the current weights.
-PPO or chance-aware search needs a specific remaining limitation and comparison
-against the strongest frozen simpler policy.
+Judge each intervention in separate fixed GreedyNoTrade, trading H and authentic
+VF/AB panels, with paired complete games, whole-board uncertainty and a public
+decision audit. Native stress panels remain distinct from focal-reference
+comparisons, which still require the evaluation extension in section 3. Retain
+frozen parents and check retention. Reuse applicable completed checks and TRAIN
+data instead of repeating closed work. Never turn privileged native choices or
+EVAL artifacts into training labels; the current 24 EVAL cases remain excluded.
+
+Keep terminal wins as outcome targets; VP, resource efficiency and handcraft
+scores remain diagnostics. Keep PPO and reward shaping deferred until the
+failure mechanism is understood and simpler methods yield convincing complete-game
+gains. These are ordered follow-ups, not newly launched studies or a strength
+promotion.
 
 **3. Establish authentic reference comparisons.** Current native games are
 candidate-versus-three-native stress panels. The gateway currently permits native
