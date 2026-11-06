@@ -155,7 +155,7 @@ loss improvement earns a gameplay test, never promotion.
 left one fallible clearly bad H choice and 14 ambiguous ones. The actual 32-root
 H_view probe passed; 13/16 second placements disagreed with the public handcrafted
 proposal. The subsequent 64-game second-settlement-only comparison resolved all
-games across eight boards. Its preliminary win difference was +9.375 percentage
+games across eight boards. Its independently audited win difference was +9.375 percentage
 points [0, 21.875], with mean VP difference −0.09375 [−0.9375, 0.625]. This small
 mixed result establishes no promotion or native-strength advantage. The scorer is
 a handcrafted control; privileged native VF choices never become teacher labels.

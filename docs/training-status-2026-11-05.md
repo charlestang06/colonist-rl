@@ -161,12 +161,13 @@ A parallel public setup audit covered32 TRAIN cases. Independent critique leaves
 H17 reasonable/14 ambiguous/1 fallible clearly bad; original judgments are retained.
 The actual H_view probe completed32 original-menu calls and differed from the
 proposal on13/16 second placements. Its separately frozen64-game setup-only test
-resolved64/64 games under four accepted guards in23.783 seconds. Preliminary
+resolved64/64 games under four accepted guards in23.783 seconds. Audited
 whole-board win difference is+0.09375 [0,0.21875], VP−0.09375 [−0.9375,0.625],
 eight clusters. Mixed directions and coarse uncertainty establish no promotion
 or VF/AB strength. Both setup arms use raw margin10000; the grounded collector's
 raw continuation uses250000, so these are distinct controls. Independent empirical
-review is pending. No native teacher, fit or final-board use follows.
+review passed all64 outcome joins and5,616 original-menu identity checks. No
+native teacher, fit or final-board use follows.
 [Setup protocol](../runs/swarm-2026-11-04/agent-research/grounded-value/setup-control/protocol.json).
 
 The first grounded gameplay comparison is preregistered before any fit:128 new
