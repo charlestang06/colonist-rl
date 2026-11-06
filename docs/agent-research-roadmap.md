@@ -105,6 +105,9 @@ reobserve and replan.
 Run one independent teacher-assisted learning investigation in parallel. It shares
 the observation contract and evaluation path and need not wait for every planner
 repair. Choose one hypothesis rather than automatically building this whole list.
+The current [conditional student-state DAgger protocol](student-dagger-conditional-fit-2026-11-06.md)
+freezes its audit yield, matched sparse fit and fresh-game gates before final
+labels. Provisional judge suggestions do not authorize training.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -198,7 +201,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [Necessary-condition future pruning](public-future-pruning-results-2026-11-06.md): 64 resolved screen games, 32/32 same traces, 414,217 invalid candidates skipped; speed gain repeated with reversed arm order. | Enable by default for new planner work; no playing-strength gain claimed. |
 | Complete | [Opt-in purchase comparison](public-option-purchase-results-2026-11-06.md): 96 resolved games, 50 changes, 25/26 immediate builds, raw 13/48 versus option 16/48; fresh adverse BUY continuation. | Keep optional; revise the one-turn comparison and reserve new boards. |
 | Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
-| Active | Audit student-reached trade/pass/BUY states. | Accept only independent public labels; no fit or promotion from unreviewed screens. |
+| Active | [Audit student-reached trade/pass/BUY states](student-dagger-conditional-fit-2026-11-06.md). | Accept only independent public labels and factual routes; fit only if frozen coverage and H-disagreement gates pass. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
