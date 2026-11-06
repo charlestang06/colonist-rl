@@ -29,9 +29,12 @@ extra trade credit. The current legal action certifies only the first exchange.
 This feature is a public necessary-condition summary, not a claim about a
 future engine menu, unknown bank stock, other actions, or strategic value.
 `point_affordance_feature(view, action)` requires the identical Action object
-from the current legal tuple and returns one scalar. The policy uses
-`point_affordance_features(view)` for the full menu so public site eligibility
-is computed at most once per Observation, including large bank-trade menus.
+from the current legal tuple and returns one scalar. The new scalar encoder uses
+`point_affordance_features(view)` for the full menu, so its incremental public
+site eligibility check runs at most once per Observation, including large
+bank-trade menus. The inherited 34D consequence encoder still checks sites for
+each supported legal action; compare full-policy latency against the unchanged
+parent when evaluating this feature.
 
 An explicit `PointAffordanceConsequencePolicy` starts from an exact
 `hand_recipe` consequence parent, copies all inherited weights independently,
