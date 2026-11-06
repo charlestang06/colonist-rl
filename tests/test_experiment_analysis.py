@@ -199,6 +199,46 @@ def test_paired_outcomes_work_and_first_trace_divergences(tmp_path, capsys):
     assert json.loads(capsys.readouterr().out)["reference_arm"] == "z_raw"
 
 
+def test_saved_search_work_keeps_searched_latency_scope_and_reason_mix(tmp_path):
+    seed = 101
+    scope = "attempted_planner_selections_with_search_stop_other_than_not_searched"
+    reports = {
+        "z_raw": _arm_report([(seed, "complete")], nodes=8, available=4, unavailable=4),
+        "a_pruned": _arm_report([(seed, "complete")], nodes=6, available=5, unavailable=3),
+    }
+    searched = {
+        "z_raw": {"count": 2, "mean": 12.0, "p95": 19.2},
+        "a_pruned": {"count": 3, "mean": 4.0, "p95": 5.8},
+    }
+    reasons = {
+        "z_raw": {"planned": 1, "insufficient_gain": 1},
+        "a_pruned": {"planned": 2, "insufficient_gain": 1},
+    }
+    for name, report in reports.items():
+        report["searched_selection_latency_scope"] = scope
+        report["searched_selection_latency_ms"] = searched[name]
+        report["searched_plan_reason_counts"] = reasons[name]
+        report["search_diagnostics_totals"]["pruned_invalid_candidates"] = (
+            0 if name == "z_raw" else 7
+        )
+    run_dir = _write_run(
+        tmp_path / "run", seeds=[seed], arm_reports=reports,
+        games=[_game(name, seed, seat) for name in reports for seat in range(4)],
+        capture=False,
+    )
+
+    result = analysis.analyze_run(run_dir)
+    for name, report in reports.items():
+        work = result["search_work"][name]
+        assert work["scope"] == report["planning_metrics_scope"]
+        assert work["selection_latency_ms"] == report["selection_latency_ms"]
+        assert work["searched_selection_latency_scope"] == scope
+        assert work["searched_selection_latency_ms"] == searched[name]
+        assert work["searched_plan_reason_counts"] == reasons[name]
+        assert work["diagnostics"]["totals"] == report["search_diagnostics_totals"]
+    json.dumps(result, allow_nan=False)
+
+
 @pytest.mark.parametrize("artifact", ("manifest.json", "games.jsonl", "candidate_steps.jsonl"))
 def test_same_record_count_saved_artifact_mutation_is_rejected_by_digest(tmp_path, artifact):
     run_dir = _complete_run(tmp_path / "run")

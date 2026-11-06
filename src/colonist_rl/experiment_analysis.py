@@ -13,7 +13,6 @@ import math
 from hashlib import sha256
 from pathlib import Path
 
-
 _BEFORE_FIELDS = (
     "version", "phase", "turn_number", "turn_owner", "hand", "known_own_vp",
 )
@@ -280,6 +279,9 @@ def _search_work(arm_report):
         "wrapper_nodes": arm_report.get("wrapper_nodes"),
         "wrapper_geometry_visits": arm_report.get("wrapper_geometry_visits"),
         "selection_latency_ms": arm_report.get("selection_latency_ms"),
+        "searched_selection_latency_scope": arm_report.get("searched_selection_latency_scope"),
+        "searched_selection_latency_ms": arm_report.get("searched_selection_latency_ms"),
+        "searched_plan_reason_counts": arm_report.get("searched_plan_reason_counts"),
         "search_stop_counts": arm_report.get("search_stop_counts"),
         "diagnostics": {
             "scope": arm_report.get("search_diagnostics_scope"),
