@@ -3,14 +3,16 @@
 Local Catan agent research with public observations, learned policies, value-guided
 search, resource beliefs and independent trade model plug-ins.
 
-The goal is a general agent outperforming authentic VF/AB players in reproducible
-whole games. The [research roadmap](docs/agent-research-roadmap.md) runs imitation
-diagnostics, planning and learned-value experiments in parallel, with background
-case building. Cloning success does not gate value/search research. PPO is deferred.
+The goal is a player-observable agent outperforming authentic VF/AB players in
+reproducible whole games. The [research roadmap](docs/agent-research-roadmap.md)
+runs imitation diagnostics, planning and learned-value experiments in parallel,
+with background case building. Cloning success does not gate value/search research.
+PPO is deferred.
 The [current results](docs/training-status-2026-11-05.md) distinguish completed
-development studies from strength confirmation. The first 96-game fixed-budget
-evaluator comparison and cap-corrected paired repeat completed without a clear
-advantage. No authentic VF/AB superiority is established.
+development studies from strength confirmation. The first fixed evaluator
+comparisons and latest 128-game grounded comparison completed without a reliable
+model advantage. The next isolated hypothesis is second-settlement value on fresh
+boards. No authentic VF/AB superiority is established.
 
 ## Run
 
@@ -26,8 +28,9 @@ uv run pytest -q
 ```
 
 The `train` CLI is available experimental PPO infrastructure; sustained PPO is
-deferred in the research roadmap. It uses a small graph encoder and GRU with separate normal/forced/setup heads
-and an incoming accept/reject head. Legal candidates reference graph targets,
+deferred in the research roadmap. It uses a small graph encoder and GRU with
+separate normal/forced/setup heads and an incoming accept/reject head. Legal
+candidates reference graph targets,
 so the network also accepts six-player/30-tile representation fixtures. The
 simulator currently rejects six-player games explicitly; larger-board rules
 and full six-player training are a subsequent milestone.
@@ -72,10 +75,11 @@ visibility. Backend objects and hidden development cards stay outside our models
 
 The separately isolated, evaluation-only native VF/AB gateway is integrated and
 has passed a real-engine engineering seam. Native references use privileged state
-with disclosed discard/trade shims and independent planning RNG; small exposed-board reference profiles are recorded, while broader candidate
-comparisons remain pending. Their state never enters learner or teacher
-inputs. This asymmetric benchmark does not establish equal-information superiority.
-See the [native benchmark milestone](docs/agent-research-roadmap.md#immediate-experiments).
+with disclosed discard/trade shims and independent planning RNG. Small exposed-board
+reference profiles are recorded, while broader candidate comparisons remain
+pending. Their state never enters learner or teacher inputs. This asymmetric
+benchmark does not establish equal-information superiority.
+See the [native benchmark milestone](docs/agent-research-roadmap.md#what-to-pursue-next).
 
 The learner cannot initiate or counter player trades in v1. It can respond to
 incoming offers, and bank/port trades remain ordinary actions. Scripted opponents

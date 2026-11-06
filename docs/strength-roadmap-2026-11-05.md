@@ -1,44 +1,32 @@
-# Current agent research direction
+# Strength objective and immediate direction
 
-The canonical [agent research roadmap](agent-research-roadmap.md) defines the
-operational milestones toward a public-information Catan agent outperforming
-authentic, version-pinned VF and AB in reproducible complete games.
+The objective is a player-observable Catan agent that reproducibly beats authentic,
+pinned VF and AB in complete-game reference comparisons. The
+[canonical research roadmap](agent-research-roadmap.md) defines the success rule,
+next experiment, public-information contract and sealed confirmation stages.
+BC is optional; PPO remains deferred.
 
-Public turn planning and genuine outcome-value research proceed independently,
-with limited BC retention controls and background case validation. Cloning success
-is not a gate; PPO remains deferred. The [current results](training-status-2026-11-05.md)
-record the completed targeted fit, planner games, native engineering seam,
-eight native reference games, the 192-game value pilot and the completed first
-96-game evaluator comparison.
+The latest wave completed 128 grounded outcome games, both fixed 600-update fits,
+and 128 new four-arm H/VF gameplay trials. All passed independent integrity audits.
+H raw/zero/existing/productive wins were 3/3/2/4 per 16; VF wins were 7/7/7/7 per 16.
+Productive features added almost no incremental validation benefit. No arm is
+promoted and no native-VF/AB superiority is established. The 24-case diagnostic audit found 18
+reasonable / 6 ambiguous / 0 clearly bad, with explicit post-run and seat-selection
+bias; it is never training data or population competence evidence.
 
-Public-planner development games completed without establishing superiority.
-The targeted fit strongly regressed seed 11 and produced mixed seed 29 wins with
-lower VP. Legacy superiority over strict Greedy is established, but no authentic
-VF/AB superiority is established. Integrated native opponents have separately
-declared privileged-state access and phase shims. The first evaluator comparison
-resolved all 96 new games: raw/calibrated/linear
-won 3/2/3 per 16 against both H and VF on four shared exposed board clusters.
-No evaluator advantage or promotion is established. The separately reviewed narrow
-known-win geometry-cap fix is integrated; its frozen 96-game paired repeat also
-completed. All six arm/panel wins and mean VP matched reused old results on the
-same four boards, adding no independent controls or gameplay improvement. Broader
-native VF/AB confirmation remains necessary.
+The next controlled hypothesis is the existing second-settlement scorer on fresh
+boards and corrected source `3f0a298`, with the same raw continuation at margin
+10000 in both arms. Freeze two arms × 16 boards × four seats × H/VF = 256 games
+before launch, measure wins separately against H and VF, and use the
+predeclared whole-board advancement rule. This is a planned transfer replication,
+not an exact replay or a claimed improvement. No new fit or reward shaping follows
+from the current mixed results.
 
-The [post-pilot priorities](../runs/swarm-2026-11-04/agent-research/post-pilot-priorities.md)
-propose outcome learning grounded in actual public after-action states, bounded
-residual/productive-geometry controls and an independent public setup audit. The callback,
-productive features and residual runtime are now implemented and reviewed. A
-four-game smoke passed; the first128-game collection stopped correctly after
-96 verified training games on an inherited root-menu/projection disagreement,
-so no residual fit has run. A narrow original-root correction and full frozen
-rerun precede fitting. The separate64-game setup control completed with mixed
-win/VP directions and no established advantage. The 22-case conceptual
-audit is a biased evaluation-only sample and must never become training labels.
-Background batch 001 has 40 targets approved for future limited BC use; batch 002
-is an unapproved metadata draft. Neither gates planning/value. Preserve sealed
-final boards `123100000..123100063` and legacy finals for frozen confirmation.
+Current native panels use three native opponents. The opponent-only gateway needs
+a narrow isolated evaluation extension for focal VF/AB references before the
+reference milestone can be satisfied. Keep final boards `123100000..123100063` and
+legacy finals sealed.
 
-[Historical training/results](training-history-through-checkpoint08.md) and the
-[original strength plan](../runs/swarm-2026-11-04/research-roadmap-history/strength-roadmap-2026-11-05.md.before-research-reframe)
-preserve earlier plans and negative evidence. User edits in
-[docs/roadmap.md](roadmap.md) remain preserved.
+[Current results](training-status-2026-11-05.md) link exact reviews and artifacts.
+[Historical results](training-history-through-checkpoint08.md) and
+[previous roadmaps](../runs/swarm-2026-11-04/research-roadmap-history/) remain preserved.

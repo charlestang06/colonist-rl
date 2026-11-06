@@ -1,200 +1,148 @@
-# Current agent research status — 2026-11-05
+# Training and playing-strength status
 
-The objective is a public-information Catan agent whose complete-game results
-reproducibly exceed authentic, version-pinned VF and AB in declared harness
-protocols. The [canonical roadmap](agent-research-roadmap.md) defines the milestone
-ladder and next experiments. BC is a limited diagnostic/control; public planning
-and outcome-value proceed independently. PPO and large cloning collection remain
-deferred. The first fixed 96-game evaluator comparison and cap-corrected paired
-repeat completed without an established advantage. No authentic VF/AB superiority
+The goal is reproducible complete-game superiority to authentic VF and AB under
+the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-start
+tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
 is established.
 
-## Current 3.3 cohort
+## Completed grounded public-value wave
 
-These results use Catanatron
-`3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8`, with source/runtime
-identities preserved per attempt. Value collection uses its separately frozen
-checkout; native gateway integration does not change that source pin.
+The exact core is `3f0a29835d7121d0f6b66db95b9d9de45216989a`, using pinned Catanatron
+3.3.0 / Git `82aae93`. Public candidate transitions, eight productive geometry features,
+and bounded residual inference were independently reviewed. The old known-win
+cap repair remains integrated. A later root-only road projection correction accepts
+an original legal root menu's connectivity while retaining stock/cost/occupancy
+checks and strict future geometry. 203 affected-path tests passed in 3.25 seconds;
+the reserved old known-win fixture was not repeated.
 
-- **Targeted recovery completed:** the separate v4 attempt completed FULL25 and
-  288 resolved games after the earlier v3 audit-cutoff failure. Exact agreement
-  on 48 selected training cases improved 28→35 (seed 11) and 28→38 (seed 29).
-  Qualified target-or-approved-alternative agreement improved 32→42 and 35→42.
-  Seed 11 wins fell 3/32→0/32 against H and 11/16→6/16 against Greedy. Seed 29
-  remained 1/32 against H and changed 5/16→6/16 against Greedy, with mean VP lower
-  in both panels. This supports retaining stable parents and testing retention,
-  not declaring imitation impossible or recurrence defective.
-  [Recovery outcomes](../runs/swarm-2026-11-04/roadmap-resume/attempt-recovery-v4-003/final-summary.json)
-  and [qualified training analysis](../runs/swarm-2026-11-04/roadmap-resume/training-fit-diagnostic-001/qualified-training-analysis.json).
-- **Public planner development completed:** 96 new games resolved with zero
-  truncations and zero root-action identity failures. Planner/H_view wins were
-  10/32 versus 8/32 against H and 15/16 versus 16/16 against Greedy. Against H,
-  paired win difference was +6.25 points [0, 15.625] and VP +0.125
-  [−0.21875, 0.4375]; against Greedy, win difference was −6.25 points [−18.75, 0].
-  These descriptive board-bootstrap intervals establish no reliable general
-  advantage. Only 137/4,317 planner decisions were marked `planned`, with 4,180
-  fallbacks. Planner p95 was about 8.4–8.9 ms versus H_view 0.68–0.93 ms. The
-  126-series panels are exposed development and reused controls are counted once.
-  The selected-case audit is too weak to establish competence.
-  [Planner results](../runs/swarm-2026-11-04/agent-research/planning-lane/run-001/summary.json).
-- **Authentic native opponents integrated:** VF base defaults and AB depth=2,
-  `prunning=False` preserve native source identity and privileged-state access.
-  Root gateway/seam commits are `ea36614`/`d1e11bd` (isolated reviewed sources
-  `a67576c`/`1fb9d32`). The guarded real-engine seam passed 10 cases with 8 authentic
-  query completions and exit 0. Subsequent reference games resolved all eight
-  games on exposed board 126100000: H won 0/4 versus VF and 3/4 versus AB2,
-  with zero candidate legal-identity failures. Guarded wall times were 8.771/74.881
-  seconds. One board cannot establish strength.
-  Atomic discard and reject-trade shims declare `full_rule_equivalence=false`;
-  candidate access remains public-only. Chance-model defects and AB multiplayer
-  assumptions are disclosed baseline limitations. The next evidence is a larger fixed
-  candidate/reference tournament. Integrated native/ordinary paths passed 186
-  regression tests in 12.65 seconds.
-  [Access audit](../runs/swarm-2026-11-04/agent-research/native-baselines/access-audit.md),
-  [implementation review](../runs/swarm-2026-11-04/agent-research/native-opponent-implementation/REVIEW.md)
-  and [real-engine seam](../runs/swarm-2026-11-04/agent-research/native-opponent-implementation/seam-001/seam-results/manifest.json).
-- **True-outcome value pipeline smoke completed:** v3's 14 pure integrity tests
-  preceded collection. The smoke resolved all 12 games on three disjoint boards,
-  with 495 eligible positions: 133 train, 186 validation, 176 diagnostic test.
-  Fixed constant, calibrated handcrafted-score and regularized linear models
-  fitted; total guarded wall time was 10.895 seconds, exit 0 with no root resource
-  failure. Train and validation included both outcome classes; the diagnostic
-  test contained four losses and no wins. One board per split cannot establish
-  generalization or strength. This is actual post-roll position value under the
-  declared H continuation, not a validated projected-afterstate evaluator.
-  [v3 review](../runs/swarm-2026-11-04/agent-research/value-lane/v3/REVIEW.md),
-  [smoke inventory](../runs/swarm-2026-11-04/agent-research/value-lane/smoke-001/worker-complete.json)
-  and [fit report](../runs/swarm-2026-11-04/agent-research/value-lane/smoke-001/fit/report.json).
-- **Value pilot completed:** all 192 games resolved across 32 training,
-  8 validation and 8 diagnostic-test boards with four seats each. The 8,674 public
-  positions split 5,851/1,401/1,422, with 21/128, 7/32 and 9/32 wins. Both guards
-  exited 0 with no resource failure in 192.657 seconds. Independent data audit
-  verified all journals, sources, observations and terminal-outcome joins.
-  Public-linear/calibrated-handcraft validation Brier was 0.16086/0.16094;
-  diagnostic Brier was 0.15442/0.19835. Validation is essentially tied and
-  eight-board uncertainty is coarse. Fixed hyperparameters were not selected
-  on diagnostic results. Offline loss does not establish stronger play. This
-  development split is separate from sealed final strength boards. The first
-  gameplay comparison below tests fixed evaluators inside the same bounded planner.
-  [Pinned manifest](../runs/swarm-2026-11-04/agent-research/value-lane/pilot-001/manifest.json)
-  and [fixed fit report](../runs/swarm-2026-11-04/agent-research/value-lane/pilot-001/fit/report.json).
-- **First fixed value/search comparison completed:** all 96 new games resolved,
-  with no reused controls, six accepted guards exiting 0, maximum two concurrent
-  workers and 170.861 seconds root wall time. There were 8,554 recorded root legal-
-  identity checks with zero failures. Three frozen arms each played 16 games per
-  panel: raw/calibrated/linear wins were 3/2/3 against H and 3/2/3 against native VF.
-  Mean VP was 6.2500/6.3750/6.5625 against H and 7.6250/7.6875/7.5000 against VF.
-  Both panels share four exposed development board clusters, not eight.
-  Linear-minus-calibrated win difference was +6.25 points [0, 18.75] in each
-  descriptive board-bootstrap interval; VP differences were +0.1875
-  [−0.2500, +0.6875] against H and −0.1875 [−0.8750, +0.5000] against VF.
-  Linear added no wins over raw; raw contrasts also differ in score units/margins.
-  These results establish no evaluator superiority, model promotion or authentic
-  VF/AB advantage. No AB or Greedy games belong to this study.
-  [Empirical review](../runs/swarm-2026-11-04/agent-research/value-search-experiment/run-001/EMPIRICAL-REVIEW.md)
-  and [compact metrics](../runs/swarm-2026-11-04/agent-research/value-search-experiment/run-001/compactanalysis.json).
-- **Coverage and public conceptual audit:** supported nonforced decisions were
-  only 17.5–20.2% of actions; setup and unsupported contexts retained H_view.
-  Calibrated changed 0/274 supported H actions and 2/281 VF actions; linear
-  changed 41/265 and 54/265. Equal depth/node/beam/geometry limits did not equalize
-  compute, and fixed job order, different game paths and contention limit latency
-  interpretation. The audit filled 22/24 planned slots, with two declared phase
-  shortfalls: 9 reasonable, 9 ambiguous and 4 clearly bad. Its 18 linear/4 raw/0
-  calibrated cases form a biased change-only sample, not competence or arm-quality
-  rates. Four bad road choices exposed distance-blocked expansion or sacrificed
-  legal productive settlements/ports. Reasonable choices need not beat H_view.
-  Judgments used public snapshots, not future outcomes or certified projected
-  menus. These EVAL packets and judgments must never be used for training.
-  [Audit manifest](../runs/swarm-2026-11-04/agent-research/value-search-experiment/run-001/conceptual-audit-001/selection-manifest.json).
-- **Separate known-win correctness repair accepted:** an old TRAIN case, excluded
-  from the 96 games and 22 conceptual cases, showed a completed winning projection
-  at evaluator call 20/182 discarded at node 449 and 100,000 geometry visits.
-  The narrow cap fix at isolated `796e120` passed independent review and is
-  integrated at `b778830`; root's affected-path tests passed 98 in 1.30 seconds.
-  It preserves only completed own-known wins after the full supported root menu
-  and H baseline are validated. Ordinary fallback, budgets, candidate order,
-  models and margins remain unchanged. This establishes correctness, not strength.
-  [Diagnostic trace](../runs/swarm-2026-11-04/agent-research/planner-cap-fix/diagnostic-001.json),
-  [review](../runs/swarm-2026-11-04/agent-research/planner-cap-fix/REVIEW.md)
-  and [integrated test evidence](../runs/swarm-2026-11-04/agent-research/planner-cap-fix/integration-tests-001/worker.log).
-- **Cap follow-up completed:** the separately frozen
-  [protocol](../runs/swarm-2026-11-04/agent-research/cap-followup/protocol.json)
-  (`024c5251548a1ae480f73e34c1b16d3bd0b366cff61d2772046df29e408a880b`)
-  completed all 96 new cap-fixed games against the reused old 96, paired within
-  each arm/panel on the same four exposed boards. All six guards exited 0, with
-  at most two concurrent heavy workers and 82.385 seconds root wall time. All six
-  arm/panel win counts and mean VP match the original cohort, supplying no gameplay
-  improvement on these boards. This does not establish broad equivalence or
-  complete-trajectory identity. Reuse adds zero independent controls and does not
-  double effective sample size. The shorter wall time is not a controlled speedup
-  estimate. The narrow known-win fixture repair remains valid.
-  [Completed run record](../runs/swarm-2026-11-04/agent-research/cap-followup/run-001/attempt-status.json).
-- **Background batch 001 final review completed:** 64 old training-state cases
-  have certified mechanical consequences and 64 final public strategy judgments:
-  53 reasonable, 11 ambiguous. Forty targets are approved for a future limited BC
-  checkpoint only, with ten differing from stored H. Thirteen reasonable card/
-  development targets are withheld for unsupported effects; all 11 ambiguous
-  targets are also withheld. Approval does not imply unique optimality or training
-  incorporation. Use the authoritative envelope's effective amendments rather
-  than globbing original case files. This background work never gates search/value.
-  [Final audit](../runs/swarm-2026-11-04/roadmap-resume/background-cases/final-audit-001/README.md)
-  and [final envelope](../runs/swarm-2026-11-04/roadmap-resume/background-cases/final-audit-001/final-envelope.json).
-- **Background batch 002 draft prepared:** 64 unused old training states cover
-  eight full-gameplay strata on 16 boards, balanced by parent and seat. This is
-  metadata-only selection, not fresh rollouts, strategic approval or consequence
-  certification. Its public labels remain unapproved for training.
-  [Batch record](../runs/swarm-2026-11-04/roadmap-resume/background-cases/batch-002/README.md).
+The initial four-game smoke passed. Main attempt001 verified 96 train games, then
+correctly stopped when the engine accepted a root road rejected by inherited
+public geometry. It remains immutable, incomplete and unused for fitting.
+[Diagnosis](../runs/swarm-2026-11-04/agent-research/grounded-value/actual-parity-diagnosis/REPORT.md),
+[root correction review](../runs/swarm-2026-11-04/agent-research/grounded-value/root-legality/REVIEW.md).
 
-The next milestone is a controlled test of grounded public value. The public
-transition callback, eight productive geometry features and bounded residual
-runtime are integrated and independently reviewed; 124 combined focused tests
-passed in 3.88 seconds. Four smoke games resolved with 203 persisted pairs and
-262 eligible rows before deduplication. The main attempt verified96 training games
-(22 wins, 74 losses, 5,471 eligible rows before deduplication), then stopped on a
-validation original-menu road rejected by inherited public connectivity. The
-collector correctly made this fatal. No residual fit has run; preserve the
-incomplete attempt and require reviewed root-only correction plus a complete
-128-game rerun under frozen source. Shared future geometry remains strict.
-[Diagnostic report](../runs/swarm-2026-11-04/agent-research/grounded-value/actual-parity-diagnosis/REPORT.md).
+Attempt002 reran the entire same development schedule under corrected frozen
+source, without mixing old outcomes or claiming fresh independent boards:
 
-A parallel public setup audit covered32 TRAIN cases. Independent critique leaves
-H17 reasonable/14 ambiguous/1 fallible clearly bad; original judgments are retained.
-The actual H_view probe completed32 original-menu calls and differed from the
-proposal on13/16 second placements. Its separately frozen64-game setup-only test
-resolved64/64 games under four accepted guards in23.783 seconds. Audited
-whole-board win difference is+0.09375 [0,0.21875], VP−0.09375 [−0.9375,0.625],
-eight clusters. Mixed directions and coarse uncertainty establish no promotion
-or VF/AB strength. Both setup arms use raw margin10000; the grounded collector's
-raw continuation uses250000, so these are distinct controls. Independent empirical
-review passed all64 outcome joins and5,616 original-menu identity checks. No
-native teacher, fit or final-board use follows.
-[Setup protocol](../runs/swarm-2026-11-04/agent-research/grounded-value/setup-control/protocol.json).
+| Quantity | Train | Validation |
+|---|---:|---:|
+| Boards / resolved games | 24 / 96 | 8 / 32 |
+| Wins / losses | 22 / 74 | 5 / 27 |
+| Raw public pairs | 4,093 | 1,314 |
+| Eligible states before deduplication | 5,480 | 1,732 |
+| Shared deduplicated states | 4,107 | 1,318 |
+| Unsupported award afterstates excluded | 34 | 7 |
+| Missing / unknown / truncated / interrupted | 0 | 0 |
 
-The first grounded gameplay comparison is preregistered before any fit:128 new
-games, raw plus three residual arms, H/VF, four shared fresh boards/all seats.
-Report matched residual ablations separately from raw's different score units and
-margin. PPO remains deferred. The [study specification](../runs/swarm-2026-11-04/agent-research/grounded-value/spec.md)
-and post-pilot priorities preserve hypotheses and failure gates.
+All 1,805 eligible after transitions passed feature/score parity. The 41 unsupported
+public-award afterstates retain their before states and true outcomes; no other
+mismatch was masked. Normal-turn passes and card actions remain before-state data.
+All 16,501 immutable journal hashes and 128 outcome joins passed independent audit.
+Collection took 134.847 seconds, with guard exit 0, one sampled thread and RSS below 2 GiB.
+[Dataset review](../runs/swarm-2026-11-04/agent-research/grounded-value/pilot-002/EMPIRICAL-REVIEW.md).
 
-## Historical results and dormant infrastructure
+Both residuals completed the fixed 600 full-batch updates at learning rate 0.05,
+L2 coefficient 0.1 and logit bound 0.5, with zero initialization, train-only
+standardization, common states and game-balanced weights. The old calibrated H
+anchor remains a prior. The fit body took 28.913 seconds, with guard exit 0;
+no selection or early stopping occurred.
 
-The [training history through checkpoint 08](training-history-through-checkpoint08.md)
-preserves the legacy 3.2.1 studies, failed nonlinear diagnostic, partial DAgger
-attempt, first incomplete 3.3 targeted attempt and earlier superseded priorities.
-The earlier v3 failure remains a failure; the completed v4 recovery is a separate
-attempt. Engine cohorts and exposed panels must not be pooled as new independent
-evidence.
+| Model | Validation Brier | Validation log loss |
+|---|---:|---:|
+| Zero residual anchor | 0.122236097 | 0.404128809 |
+| Existing features | 0.116802910 | 0.386338809 |
+| Existing + productive | 0.116776061 | 0.386256451 |
 
-Legacy strict-Greedy superiority is real: frozen learners won 42/64 and 32/64
-against three plain Greedy opponents, versus 16/64 for Greedy. That whole-policy
-comparison does not isolate trading and does not meet the authentic VF/AB goal.
-BC scalar heads were not outcome-trained; old 64 histories lack winner labels.
-The current-weight PPO history, genuine episode/outcome records, critic warmup and
-optional frozen-BC KL infrastructure remain available but dormant. No sustained
-PPO result is established; reward shaping has not been changed for this research.
+Productive-minus-existing validation Brier is −0.000026849, with a paired eight-board
+95% t interval [−0.000743688, 0.000689990]. All validation loss-difference intervals include zero.
+The Root-run independent arithmetic audit reproduced train statistics and metrics
+for 16,275 row/model cases in 10.499 seconds, with guard exit 0. No refits or runtime policy
+probes were performed by the reviewer. Offline improvement is not strength.
+[Fit review](../runs/swarm-2026-11-04/agent-research/grounded-value/pilot-002/fit-001/FIT-REVIEW.md).
 
-The [experiment archive](../runs/swarm-2026-11-04/README.md) and
-[artifact map](../runs/swarm-2026-11-04/artifact-locations.json) retain raw records,
-negative results and original runtime identities. Active next actions come from
-the canonical roadmap, including bounded resources, censored outcomes and sealed
-final-board handling.
+## Completed fresh 128-game comparison
+
+Four arms × H/VF × four fresh boards × four seats, with zero reused controls. All 128 games
+resolved under eight zero-exit guards in 98.093 seconds; maximum registered overlap was 2,
+sampled thread count was 1 and peak RSS was 744,865,792 bytes. Independent review checked 128
+callbacks, 12,053 decisions, 192 packets, all 17,978 installed-runtime hashes and
+all 12 paired contrasts. The original harness HOLD and its reviewed recovery fixes
+remain preserved.
+
+| Arm | H wins / 16 | H mean VP | VF wins / 16 | VF mean VP |
+|---|---:|---:|---:|---:|
+| Raw handcraft | 3 | 6.5625 | 7 | 8.3125 |
+| Zero residual | 3 | 6.8750 | 7 | 8.4375 |
+| Existing residual | 2 | 6.8750 | 7 | 8.3750 |
+| Productive residual | 4 | 6.7500 | 7 | 8.4375 |
+
+The productive-minus-zero H win-rate difference is +6.25 percentage points [0, 18.75],
+from one extra win on one board; the mean VP difference is −0.125 [−0.5, 0.25].
+The productive-minus-existing H win-rate difference is +12.5 percentage points
+[0, 25]. All 16 paired VF win/loss labels agree across arms; zero-width observed
+bootstrap win ranges do not establish population equivalence. Equal totals do
+not imply identical action sequences. H/VF share four board clusters, not eight.
+These are coarse descriptive 95% whole-board bootstrap intervals, with no superiority claim.
+
+The three probability controls share probability-millionth units, margin 10000
+and nominal search limits. Raw uses handcraft units and margin 250000 and is a
+practical benchmark. All 2,488 supported nonforced decisions searched;
+291/12,053 decisions were marked `planned`. Broad fallback counts include
+forced/unsupported/insufficient-gain cases and are not error rates. Raw's
+injected-evaluator count of 0 excludes its built-in handcraft work.
+Equal limits are not equal compute: productive p95 latency was 8.935/24.542 ms against H/VF,
+versus existing 6.183/14.474 ms, with fixed order/I/O/contention caveats and no registered
+per-decision SLO. Native planning-node/timeout work remains unknown.
+
+Native VF uses privileged state, declared discard/trade shims and a declared
+chance-semantics mismatch; `full_rule_equivalence=false`. Native-panel offers are
+disabled at all seats; H opponents retain normal proposals. There is no AB arm or
+focal native reference.
+[Empirical review](../runs/swarm-2026-11-04/agent-research/grounded-value/gameplay-study/run-001/EMPIRICAL-REVIEW.md),
+[compact analysis](../runs/swarm-2026-11-04/agent-research/grounded-value/gameplay-study/run-001/compactanalysis.json).
+
+The public conceptual audit selected 24 cases: 18 reasonable, 6 ambiguous, 0 clearly
+bad. It found concrete productive roads/cities, sensible passes, and trades whose
+recipes must not be mistaken for immediately possible builds. No immediate winning
+root was missed in this sample. Selection was post-run after Root saw aggregates,
+20/24 cases are seat 0, and no selected root offers a settlement. It proves neither
+arm quality nor elimination of previous failure cases. All 192 cached packets are
+also seat-skewed. These EVAL artifacts never enter fitting or training.
+[Conceptual report](../runs/swarm-2026-11-04/agent-research/grounded-value/gameplay-study/run-001/conceptual-audit-001/REPORT.md).
+
+## Independent setup hypothesis and next decision
+
+The separate setup audit/probe completed 32 public roots. Effective H judgments
+are 17 reasonable / 14 ambiguous / 1 fallible clearly bad after independent critique.
+The 64-game second-settlement-only pilot resolved all games: baseline 4/32 wins,
+mean VP 6.5625; control 7/32, mean VP 6.46875. The control-minus-baseline win-rate
+difference is +0.09375 [0, 0.21875]; the mean VP difference is −0.09375 [−0.9375, 0.625].
+These are descriptive 95% whole-board bootstrap intervals across eight clusters.
+Both arms used raw margin 10000 and source `56cb6bc`. This mixed result supports no promotion.
+[Setup review](../runs/swarm-2026-11-04/agent-research/grounded-value/setup-control/run-001/EMPIRICAL-REVIEW.md).
+
+The next planned study is 256 fresh games for second-settlement-only transfer
+replication on corrected source, the frozen original public scorer and common raw
+margin 10000. H is primary, VF is transfer stress; source cohorts/controls remain
+separate. The canonical roadmap records its advancement rule. No new study is
+claimed launched here, and no current model was selected as a strength winner.
+[Research decision](../runs/swarm-2026-11-04/agent-research/grounded-value/post-study-priorities.md).
+
+## Earlier evidence retained
+
+Targeted FULL25 BC improved selected agreement but seed 11 regressed and seed 29
+mixed/regressed in complete games. Retain FULL15 parents. Initial planning (96 games)
+and fixed evaluator (96 games), plus a cap-corrected 96-game paired repeat, established
+no reliable advantage. The genuine outcome-value 192-game pilot had mixed offline
+results. The native seam's 10 cases and eight one-board H reference profiles are engineering
+or exposed-board evidence, not strength confirmation.
+
+Background batch 001 has 64 certified mechanical cases and final judgments of
+53 reasonable / 11 ambiguous; 40 targets are approved only for future limited BC,
+none used. Batch 002 is a 64-case unapproved metadata draft of old states, not fresh rollouts.
+Neither gates planning/value research.
+
+Detailed earlier counts, source pins and reviews are preserved in the
+[previous status](../runs/swarm-2026-11-04/research-roadmap-history/training-status-2026-11-05.md.before-grounded-study-close),
+[historical results](training-history-through-checkpoint08.md), and underlying
+archived studies. The user's `docs/roadmap.md` edit remains untouched.

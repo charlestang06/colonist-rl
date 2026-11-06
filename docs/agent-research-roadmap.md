@@ -1,243 +1,154 @@
 # Catan agent research roadmap
 
-## Objective and success criterion
+## Goal and success criterion
 
-Develop a player-observable Catan agent whose complete-game results reproducibly
-exceed authentic, version-pinned VF and AB baselines in declared harness protocols.
-Limited imitation diagnostics, transparent public search, outcome-trained value
-and continuous case validation are independent research tools. BC success is not
-a gate; PPO remains deferred.
+Develop a player-observable Catan agent that reproducibly outperforms authentic,
+version-pinned VF and AB in complete-game reference comparisons under declared
+harness protocols. Playing strength is the objective. Audited decisions, supervised
+learning, public search and outcome-trained value are tools for reaching it.
+BC supports diagnosis and warm starts; it does not gate other learning. PPO
+remains deferred.
 
-“Outperforms” means a positive predeclared candidate-minus-reference win comparison
-on untouched boards, separately for VF and AB. Rotate candidate and reference
-through the same seats, boards and opponent lineups; freeze those lineups, reference
-configuration, model, decision rule and resource limits before final evaluation.
-Predeclare the superiority threshold and board-level uncertainty rule; resample
-whole boards for uncertainty. A nominal 25% win rate alone is insufficient;
-VP, legality, completion and compute support the primary win comparison. Small
-pilots can complete successfully while remaining strategically inconclusive.
+The candidate may use its own hand/cards, the visible board, public events and
+beliefs derived from those events. Opponent hands, deck order and future RNG
+cannot enter its policy, teacher or search inputs. Authentic native VF/AB are
+isolated privileged-state evaluation references, so a result against them has
+that explicit information asymmetry.
 
-Our candidate, teachers and search use public information. Authentic native VF/AB
-are separately isolated privileged-state stress opponents; success against them
-would not establish equal-information superiority. Custom `HeuristicPolicy` H,
-H_view and GreedyNoTrade are separate controls. A public reconstruction of VF/AB
-would be a separately named optional experiment.
+Success requires separately positive, predeclared candidate-minus-reference win
+comparisons for VF and AB, with fixed focal seats, boards, background lineups,
+model, decision rule and resource limits. Freeze a practical effect threshold and
+board-level uncertainty rule before confirmation. Rotate all seats and resample
+whole boards. VP, completion, legality, decision quality and compute support the
+win result. A nominal 25% win rate, label agreement, or a small successful pilot
+cannot establish the final strength claim.
 
-## Accepted evidence
+Preserve final boards `123100000..123100063` and legacy finals until a candidate
+and confirmation protocol are frozen. No authentic VF/AB superiority is established.
 
-All recent experiments below use pinned Catanatron
-`3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8`; legacy 3.2.1 results
-remain a separate cohort in the [training history](training-history-through-checkpoint08.md).
-The [current status](training-status-2026-11-05.md) links the underlying artifacts.
+## What the evidence changes
 
-- **BC/control:** the separate v4 recovery completed FULL25 and 288 resolved games.
-  Exact agreement on 48 selected training cases improved 28→35 and 28→38; qualified
-  target-or-approved-alternative agreement improved 32→42 and 35→42. Seed 11 wins
-  regressed from 3/32→0/32 against H and 11/16→6/16 against Greedy. Seed 29 stayed
-  1/32 against H and changed 5/16→6/16 against Greedy, with lower mean VP in both
-  panels. Retain stable parents and diagnose retention. This establishes neither
-  fundamental cloning failure nor a memory defect.
-- **Public planning:** 96 new development games resolved, with verified reused
-  controls counted once. Planner versus H_view won 10/32 versus 8/32 against H,
-  and 15/16 versus 16/16 against Greedy. The respective paired win differences
-  were +6.25 points [0, 15.625] and −6.25 points [−18.75, 0] in descriptive
-  board-bootstrap intervals. No reliable general advantage is established. Only
-  137/4,317 decisions were marked `planned`; 4,180 fell back. Root-action identity
-  failures and truncations were zero; planner p95 was about 8.4–8.9 ms versus
-  0.68–0.93 ms for H_view. Inspect coverage and changed decisions before more depth.
-- **Native references:** reviewed gateway code is integrated (core `ea36614`, seam
-  worker `d1e11bd`; isolated sources `a67576c`/`1fb9d32`). The real-engine seam
-  passed all 10 cases with 8 authentic query returns. This is engineering evidence;
-  the first exposed-board H profiles resolved all eight games: 0/4 versus VF and
-  3/4 versus AB2. No superiority result is established.
-- **Outcome value:** v3 passed 14 pure integrity tests, then the guarded smoke
-  resolved 12 games across three disjoint boards and fitted the three fixed models
-  in 10.895 seconds. It produced 495 positions (133 train, 186 validation, 176
-  diagnostic test). This validates the pipeline, not value strength. The separate
-  192-game pilot on 32/8/8 train/validation/diagnostic-test boards completed,
-  producing 8,674 positions with all outcomes resolved. Public-linear/calibrated
-  handcrafted validation Brier were essentially equal (0.16086/0.16094); diagnostic
-  Brier favored public-linear (0.15442/0.19835). This mixed offline result requires
-  gameplay testing; it is not playing-strength evidence.
-- **First fixed evaluator comparison completed:** all 96 new games resolved under
-  six accepted guards, exit 0, at most two heavy workers and 170.861 seconds root
-  wall time. Raw/calibrated/linear wins were 3/2/3 per 16 against H and 3/2/3
-  against native VF. The panels share four exposed board clusters. Linear gained
-  one win over calibrated in each panel, but descriptive board-bootstrap intervals
-  touch zero and VP differences have opposite signs; it gained no wins over raw.
-  No evaluator promotion or authentic VF/AB superiority follows. The
-  [empirical review](../runs/swarm-2026-11-04/agent-research/value-search-experiment/run-001/EMPIRICAL-REVIEW.md)
-  and [compact analysis](../runs/swarm-2026-11-04/agent-research/value-search-experiment/run-001/compactanalysis.json)
-  preserve coverage, compute, comparisons and the evaluation-only conceptual audit.
-- **Cap correctness and paired repeat:** a separate old TRAIN case showed a
-  completed known win discarded at the geometry cap. The narrow fix passed
-  [independent review](../runs/swarm-2026-11-04/agent-research/planner-cap-fix/REVIEW.md)
-  at isolated `796e120` and is integrated as `b778830`; root's affected-path check
-  passed 98 tests in 1.30 seconds. It retains only completed known wins after full
-  root validation; ordinary fallback, budgets, ordering and models are unchanged.
-  The separately frozen cap follow-up completed all 96 new games, reusing the
-  old 96 as paired controls on the same four boards and adding no independent
-  controls. All six arm/panel win counts and mean VP match the old cohort; this
-  comparison shows no gameplay improvement on these boards. The fixture repair
-  remains valid, without establishing broad strength or trajectory identity.
+The [current results](training-status-2026-11-05.md) preserve source pins, exact
+counts and independent reviews. Recent work uses Catanatron
+`3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8`; legacy 3.2.1 is separate.
 
-## Milestone ladder
+Targeted BC improved selected-label agreement while regressing or mixing actual
+game results. Fixed public planning and the first value/search comparisons did
+not establish a reliable advantage. Keep stable parents and diagnose retention;
+do not make more cloning the default response to a failed game comparison.
 
-| Milestone | Work and completion evidence |
+The new grounded study completed 128 genuine outcome games, two fixed 600-update
+residual fits, and 128 separate gameplay games. Data, arithmetic and gameplay
+integrity passed independent audits. Productive features added almost no
+validation benefit over existing features. H wins for raw/zero/existing/productive
+were 3/3/2/4 per 16; native-VF wins were 7/7/7/7 per 16. Four shared development
+boards and coarse intervals do not support selecting or promoting a model.
+
+A 24-case public decision audit found 18 reasonable and 6 ambiguous choices, with no
+unmistakable error. The selected sample is biased toward seat 0, was selected after
+aggregate results were visible, and contains no root settlement option. It cannot
+prove general competence, arm quality, or elimination of older failure cases.
+Its packets and judgments remain evaluation-only.
+
+The separate second-settlement control won 7/32 versus 4/32 across eight boards,
+with slightly lower mean VP. That is a concrete, inexpensive hypothesis for a
+fresh controlled follow-up, not an established improvement. The independent
+[post-study research decision](../runs/swarm-2026-11-04/agent-research/grounded-value/post-study-priorities.md)
+explains the choice and its alternatives.
+
+## What to pursue next
+
+**1. Test one isolated source of better decisions.** The next selected experiment
+is a second-settlement-only transfer replication: two arms × 16 fresh development
+boards × four seats × H/VF = 256 new games. Keep the original public scorer and tie
+rules frozen. Both arms use the corrected current source and the same raw
+continuation at margin 10000, depth 6 / nodes 2048 / beam 24 / geometry 100000.
+First placement, setup roads, continuation algorithm, proposal conventions and
+opponent settings are held fixed; realized later states naturally differ.
+
+This is a new source cohort: the earlier setup test used `56cb6bc`; the corrected
+core is `3f0a298`. Main grounded raw used margin 250000. Do not pool these results or
+reuse their controls as new evidence. Before launch, freeze source/runtime/scorer,
+audit the 16 boards, pin H/VF phase shims, and review the minimal integration.
+Use existing guards and complete scheduled-outcome inventory.
+
+Predeclare H as the primary replication and VF as transfer stress. Advance this
+unchanged intervention only with a positive H win estimate whose 95% whole-board
+bootstrap lower endpoint exceeds zero, a nonnegative VF point estimate, complete
+integrity and acceptable measured work. Report VF uncertainty separately. Mixed
+or inconclusive results remain so; a nonpositive H replication or negative VF
+estimate deprioritizes this intervention. Higher setup scores or VP cannot rescue
+a failed win hypothesis. This experiment is planned, not launched or promoted.
+
+**2. Improve learning only against an observed mechanism.** Continue genuine
+outcome-value research independently of BC. If separate TRAIN evidence identifies
+errors on learned-policy states missing from raw-policy data, test one controlled
+continuation-data/policy-iteration step. If coverage is adequate but action ranking
+is wrong, compare a bounded pair of public-selected legal actions with genuine
+continuation outcomes. Freeze proposals, continuation, budgets and splits first;
+never turn privileged native choices or EVAL cases into teacher labels.
+
+For a limited BC/DAgger experiment, audit labels and justified alternatives on
+actual student states, check encoding/gradients and retention, then judge complete
+games. Bank trading and ending share a phase, so phase balancing alone is
+insufficient. Public build deficits, connected-site affordability and trade
+consequences are candidate features only when a controlled error analysis calls
+for them. More rows, capacity, recurrence or search depth require an ablation.
+
+Keep terminal wins as outcome targets. VP, resource efficiency and handcraft
+scores are diagnostics. Any reward shaping needs a separate controlled test
+judged by wins. Profile actual bottlenecks before increasing training work; cached
+or batched recurrent states must remain consistent with the current weights.
+PPO or chance-aware search needs a specific remaining limitation and comparison
+against the strongest frozen simpler policy.
+
+**3. Establish authentic reference comparisons.** Current native games are
+candidate-versus-three-native stress panels. The gateway currently permits native
+opponents only; a focal native reference requires a narrowly reviewed evaluation
+extension. It must remain outside policy/training/teacher routes. Then compare
+candidate and focal VF/AB separately on the same declared background lineups,
+boards and seats. Keep strict GreedyNoTrade, H/H_view and frozen parents as
+explicit, separately named controls.
+
+Pin the native Git `82aae93` sources and defaults, VF weights and AB depth 2 with
+`prunning=False`.
+Preserve upstream behavior and declare `+atomic_discard_reject_trade_v1`, synthetic
+trade rejection, native-panel no-offer behavior, the declared native chance-semantics
+mismatch and `full_rule_equivalence=false`.
+Changing a native chance/search behavior defines another baseline. AB needs
+conservative whole-attempt deadlines and truthful incomplete-game accounting.
+
+## Milestones
+
+| Stage | Required evidence |
 |---|---|
-| 1. Reliable comparisons | The seam and eight exposed-board native reference games completed. Expand fixed candidate/reference completion/legality/timeout comparisons against authentic VF/AB. Pin engine, opponent, adapter and independent RNG identities; account for every scheduled outcome. This is an integration milestone, requiring no strength assertion. |
-| 2. Genuine public outcome-value data | The pinned 192-game board-separated pilot and data audit completed. Ground the next proposed targets in actual public after-action states. Audit true terminal joins, both outcome classes and phase support; retain null/censored outcomes. Compare calibration with constant and exact handcrafted-score controls, counting boards/games rather than independent positions. |
-| 3. Isolate search and evaluation | The first fixed 96-game evaluator comparison and its cap-corrected paired repeat completed without an established advantage. Test the proposed grounded after-action value controls next. Keep H, H_view and fixed handcrafted/learned controls explicit. Hold depth/node/beam, fallback and action support fixed; report evaluator calls and inference time. Inspect changed decisions for projection/evaluator exploitation. |
-| 4. Repeatable development improvement | Expand predeclared boards, seats and lineups for a promising candidate, retaining fixed parents and native references. Require repeated complete-game benefit, legality and acceptable resources. Failed candidates redirect a lane; they do not end the research objective. This stage selects candidates. |
-| 5. Sealed confirmation | Freeze the candidate/protocol and use untouched final boards once. Preserve `123100000..123100063` and legacy finals until then. Report VF and AB comparisons separately, board-level uncertainty, information asymmetry and compute. An inconclusive final remains inconclusive; exposed boards cannot become final again. |
+| Reliable execution and data | Completed for the current wave: reviewed public callbacks/features, deterministic parity, real outcome joins, fixed-fit arithmetic and complete guarded games. Each new change still needs affected-path checks. |
+| Repeatable development improvement | An isolated frozen intervention improves complete-game wins on fresh boards under its predeclared rule; inspect decisions, completion and measured resources. Small mixed pilots do not qualify. |
+| Both native references | Positive candidate-minus-focal-VF and candidate-minus-focal-AB development comparisons under explicit information/rule regimes. Stress panels alone do not satisfy this stage. |
+| Sealed confirmation | Freeze candidate, protocol, threshold and uncertainty rule, then use untouched final boards once. An inconclusive final stays inconclusive. |
 
-Planning and outcome-value milestones proceed in parallel. Modest BC retention/
-tie-aware controls and 50–100-case background batches support every stage; neither gates search/value.
-Chance-aware information-set MCTS is considered only when simpler-planner evidence
-identifies a useful limitation. Review public-consistent hidden sampling and
-strategy fusion before adopting it. More model capacity, features, recurrence,
-search and compute each need controlled ablations. PPO remains deferred.
+## Continuous validation and adapter scope
 
-## Immediate experiments
+Build small independent TRAIN case batches across setup, trades/builds/passes,
+robber/discard, development cards, road/army races and held VP. Accept justified
+alternatives and preserve ambiguity. Batch 001 has 40 targets approved only for a
+future limited BC checkpoint; none has been used. Batch 002 is a 64-case metadata
+draft needing phase-appropriate validation and independent judgments. Neither
+gates value/search. Counterfactual validators may inspect a private environment
+solely to certify fixed public proposals; hidden state cannot select proposals or
+enter policy/teacher inputs.
 
-**Broader authentic-opponent comparisons.** The gateway seam, eight reference
-games and first H/VF evaluator comparisons are complete. A larger pinned
-candidate/reference development schedule, including native AB, remains necessary.
-Keep H_view, fixed handcrafted and frozen-parent controls where useful; freeze
-candidate choices before each comparison. Pin VF base defaults and AB depth=2, `prunning=False`, source hashes,
-root-mask/seat mapping and independent planning RNG. Declare
-`+atomic_discard_reject_trade_v1`, no domestic proposals and explicit response
-rejection: these are phase shims, with `full_rule_equivalence=false`. Preserve AB's
-native chance-model defects and coordinated-minimizer behavior as disclosed
-limitations; correcting them would define another baseline. AB's soft 20-second
-decision deadline requires a conservative external whole-attempt cap and complete
-incomplete-game inventory.
+Keep adapters behind the shared Observation/Action contract. Colonist UI controls,
+log parsing and future physical-board recognition translate into that contract;
+they do not define the learning algorithm. Maintain legality/staleness/effect
+checks while learning remains the primary research priority. Root menus are the
+current-action authority; projected future menus remain uncertified. Learner
+maritime trades and domestic responses are supported; initiating/countering a
+domestic offer requires a separate interface.
 
-**Completed cap-corrected repeat.** The reviewed evaluator hook was integrated as
-`2aa2c61` (isolated frozen source `3dc8bcf`). Its original trial closed with 96 new
-complete games, three frozen arms, four boards/all seats, H and native VF panels,
-and no reliable advantage. The separately frozen
-[cap follow-up protocol](../runs/swarm-2026-11-04/agent-research/cap-followup/protocol.json)
-(`024c5251548a1ae480f73e34c1b16d3bd0b366cff61d2772046df29e408a880b`)
-completed 96 new cap-fixed games against the reused original 96 on the same
-schedule: six guard exits 0, at most two heavy workers and 82.385 seconds root wall
-time. All six arm/panel wins and mean VP matched the original cohort. The
-[completed run](../runs/swarm-2026-11-04/agent-research/cap-followup/run-001/attempt-status.json)
-supplies no gameplay improvement on these four boards. Paired metadata comparison
-remains separate from any claim that complete trajectories are identical. The
-shorter wall time is not a controlled speedup estimate. Models, score units/margins,
-depth 6, 2,048 nodes, beam 24 and 100,000 geometry visits stayed fixed; equal limits
-do not imply equal compute. Reused controls do not double effective sample size.
-AB expansion remains necessary for the overall VF/AB objective.
-
-**Current grounded value study.** The public transition callback, eight productive
-geometry features and bounded residual runtime are integrated and independently
-reviewed. The fixed study learns from genuine public before/after observations and
-resolved outcomes under cap-corrected raw-planner continuation versus H. Compare
-zero residual, existing-feature residual and the same residual with productive
-features; fix game weights and 600 optimizer updates before collection. Preserve
-normal-turn passes and card purchases as eligible before states. No native action
-labels or evaluation cases enter training. The [study specification](../runs/swarm-2026-11-04/agent-research/grounded-value/spec.md)
-records interfaces, exact feature/anchor identities and controlled work.
-
-The four-game smoke passed. The first main attempt verified all 96 training games,
-then stopped on a validation road accepted by the engine's original legal menu but
-rejected by inherited public connectivity. No fit was run. Keep the failed attempt
-immutable; correct only original-root projection, preserve strict future geometry,
-and rerun the complete 128-game development schedule under frozen reviewed source.
-Every unexplained projection mismatch blocks fitting. If this passes, separately
-freeze 128 gameplay games: the three residual controls plus unchanged raw, H/VF,
-four new boards and all seats. Raw is a practical benchmark with different score
-units/margin; the three probability controls form the matched ablation. Offline
-loss improvement earns a gameplay test, never promotion.
-
-**Independent setup control.** A completed 32-case public TRAIN audit and critique
-left one fallible clearly bad H choice and 14 ambiguous ones. The actual 32-root
-H_view probe passed; 13/16 second placements disagreed with the public handcrafted
-proposal. The subsequent 64-game second-settlement-only comparison resolved all
-games across eight boards. Its independently audited win difference was +9.375 percentage
-points [0, 21.875], with mean VP difference −0.09375 [−0.9375, 0.625]. This small
-mixed result establishes no promotion or native-strength advantage. The scorer is
-a handcrafted control; privileged native VF choices never become teacher labels.
-The [setup study](../runs/swarm-2026-11-04/agent-research/grounded-value/setup-control/REPORT.md)
-preserves the intervention, fixed continuation and limitations.
-
-**Priorities after these controls.** First validate value grounding and complete-game
-transfer; then audit trade/build/pass choices on actual student states and use
-small, independently reviewed DAgger/retention experiments where labels are clear.
-Keep strict GreedyNoTrade, H/H_view and authentic native reference panels explicit.
-Do not increase model size or collect bulk cloning data merely to improve label
-agreement. Use terminal wins for outcome targets. VP, hand efficiency and setup
-scores are diagnostics; any reward shaping needs a separate controlled experiment
-showing it preserves the winning objective. Chance-aware search or PPO requires a
-specific observed limitation and a frozen comparison against the simpler policy.
-
-## Information, search and value contracts
-
-Execute an actual legal root action, reobserve and replan. H_view changes historical
-H's RNG and requires its own control. Public projections are not actual observations;
-unknown bank/deck quantities stay unknown. Our search never reads actual hidden
-hands, development cards or future game RNG. Native privileged state stays inside
-the isolated opponent runner and cannot enter learner inputs, teachers or labels.
-
-The reviewed value pilot predicts outcomes from actual post-roll public positions
-under a declared H continuation; it is not yet a validated projected-afterstate
-evaluator. Source/data-contract review precedes smoke, collection, fitting and
-same-budget gameplay. Distribution shift and longest-road projection remain
-limitations. Use a legitimate public afterstate encoder when that integration is
-reviewed; do not fabricate a legal `Observation` for a projected state.
-
-BC scalar heads were not outcome-trained and retain their initial tensors. The
-old 64 histories lack winner labels. True resolved outcomes supply labels;
-missing/truncated outcomes remain null and suggested H actions never become
-outcomes. Keep train/validation/diagnostic boards separate. Freeze checkpoints
-and selection rules before comparative results, and keep final boards sealed.
-The 126-series panels are exposed development; reused controls add no independent
-data. Report wins, VP, completion, uncertainty, action support, p50/p95/max latency
-and actual work. Equal nodes do not imply equal compute.
-
-## Background data and validation
-
-Continue 50–100-case batches across full gameplay alongside the main experiments.
-Persist each immutable review immediately; incorporate approved data only at
-deliberate training checkpoints. Cover minority actions, varied boards/seats and
-learner-reached errors: multi-step trades/builds, sensible passes, waste, ports,
-scarcity, development cards, robber decisions, road/army races and immediate wins.
-Accept justified alternatives and preserve ambiguity. H labels are suggestions;
-zero errors on a weak selected-case rubric is not general competence. Keep
-evaluation cases separate from training labels.
-
-Batch 001 reuses 64 old training states. All 64 mechanical consequence cases are
-certified, and [final independent strategy review](../runs/swarm-2026-11-04/roadmap-resume/background-cases/final-audit-001/README.md)
-is complete: 53 reasonable, 11 ambiguous. Forty targets are approved only for a
-future limited BC checkpoint, including ten differing from stored H; 13 reasonable
-card/development targets remain withheld for unsupported effects, as do the 11
-ambiguous targets. Use the [final envelope](../runs/swarm-2026-11-04/roadmap-resume/background-cases/final-audit-001/final-envelope.json)
-and its effective amendments, not a raw cases-directory glob. No training has
-incorporated these labels.
-
-[Batch 002](../runs/swarm-2026-11-04/roadmap-resume/background-cases/batch-002/README.md)
-is a metadata-only draft of 64 unused old training states across eight full-gameplay
-strata and 16 boards, balanced by parent and seat. It is not a fresh rollout,
-approved label set or certified consequence batch. Independent judgments and
-phase-appropriate validation remain future work.
-
-The completed evaluator study's conceptual audit contains 22 of 24 planned slots
-(two declared shortfalls): 9 reasonable, 9 ambiguous and 4 clearly bad, drawn from
-18 linear and 4 raw changes with no calibrated cases. Its small biased change-only
-sample supplies neither population error rates nor evaluator-arm quality rates.
-Blocked-road choices versus legal productive settlements motivate hypotheses;
-projected continuations remain uncertified. These EVAL packets and judgments must
-never become training data.
-Counterfactual validators may reconstruct privately solely to test fixed public
-proposals; hidden state cannot enter policy/teacher inputs. The learner's domestic-
-trade interface currently supports responses only; bank/port trades remain ordinary
-supervised actions. Initiating or countering domestic offers requires a separate
-interface.
-
-Run at most two heavy workers, one native/Torch thread and 2 GiB each, with root
-scheduling and existing guards. Pin each lane's source/runtime cohort, preserve
-failed/incomplete attempts and resume useful independent work within bounded runs.
-No paid compute is assumed. Historical evidence and superseded plans remain in the
-[archive](training-history-through-checkpoint08.md); user edits in
-[docs/roadmap.md](roadmap.md) remain preserved.
+Run at most two heavy workers, one native/Torch thread and 2 GiB each, under existing
+Root guards. Freeze source/runtime/model/schedules, retain failed attempts and
+null outcomes, and avoid adaptive retries or tuning on exposed evaluation boards.
+No paid compute is assumed. Preserve histories and the user's edits in
+[docs/roadmap.md](roadmap.md). Earlier versions and detailed studies remain in the
+[research archive](../runs/swarm-2026-11-04/research-roadmap-history/).
