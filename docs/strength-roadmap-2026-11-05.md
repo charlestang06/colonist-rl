@@ -11,9 +11,10 @@ all frozen experiment commitments and the user's separate [roadmap](roadmap.md).
    and test one targeted remedy. Cover placement; bank/build/pass; domestic
    responses; robber/discard; development-card purchase and play; road/army races;
    and VP/endgame. Missing coverage stays unknown.
-2. Improve longer consequences with bounded public planning and the independent
-   terminal-outcome value experiment. Prediction gains require a separate gameplay
-   deployment test. Neither mechanism depends on completing PPO or more BC.
+2. Improve longer consequences with bounded public planning. Value learning may
+   run alongside it when a concrete planning use justifies the study. Prediction
+   gains require a separate gameplay deployment test. Neither mechanism depends
+   on completing PPO or more BC.
 3. Advance through harder opponents with a fixed evaluation panel. Compare the
    best credible candidate directly with focal VF/AB, rotate all seats, account
    for board-level uncertainty and replicate on fresh boards. PPO is optional
@@ -22,12 +23,20 @@ all frozen experiment commitments and the user's separate [roadmap](roadmap.md).
    Keep adapter extraction, beliefs, action mapping and visible execution separate.
    Live Colonist capability and simulator strength require their own evidence.
 
-Next primary work is the two-panel audit of 88 selected cases from the 48
-histories now accepted through separate zero-query recovery, then the frozen
-added-data-only comparison. All 96 selected-or-empty slots remain fixed. The independent terminal-history lane stopped after 208 TRAIN games
-on a guard-registration failure; assess that incomplete attempt before declaring
-any successor. No automatic retry or fitting follows.
-Rank fresh TRAIN failures to choose the following tactical/planning remedy. No
+The fixed two-panel audit completed 176 first passes and 49 adjudications for
+88 selected cases. Its informative-data gate failed: a TRAIN upper bound of six
+candidates across four strata, below the required 32 across six. No data-only fit
+ran; no claim about BC or data benefit follows. Public fact checking confirms two student roads end
+in enemy-blocked expansion leaves; award/defensive value remains uncertain, and
+the teacher selected reasonable alternatives on both. A flagged trade has an
+omitted city-funding route and is not certainly bad. Next primary work diagnoses
+the road-choice mechanism and tests one narrow reachability/continuation remedy,
+including adverse award, defensive and free-road cases, followed by fresh gameplay.
+The separate value lane retains 208 independently audited TRAIN games. Collect
+the missing 112 only with a concrete planning use and a corrected successor;
+continuation 001 is on source-review HOLD and has not run. The original 320-game
+attempt remains rejected; no automatic retry or cache/head fit follows.
+Use further TRAIN evidence to choose the following tactical/planning remedy. No
 new broad training run, model expansion or shaping is the default next step.
 
 No candidate is promoted. The 384-game eligibility treatment failed its primary

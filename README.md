@@ -15,9 +15,8 @@ competence and a specific need are demonstrated.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its
-primary advancement rule: every candidate won 2/16 against trading H. The required
-new audited-data test remains next. The stable sparse-target fitter passed 43
-focused and 11 legacy checks plus independent source review. The complete-history
+primary advancement rule: every candidate won 2/16 against trading H. The stable
+sparse-target fitter passed 43 focused and 11 legacy checks plus independent source review. The complete-history
 cache repair passed engineering review on four saved
 games/361 inputs. Main value collection stopped after 208 completed TRAIN games
 on a guard-registration failure; its 320-game cohort is incomplete and no fitting follows.
@@ -25,7 +24,14 @@ The student collector recorded all 48 planned games and 4,729 own inputs, but it
 Root controller failed during final output accounting. Independent audit found
 the histories intact; a separate zero-query recovery and independent metadata
 audit now pass for all 48 episodes / 9,458 strict envelope pairs. Fixed sampling
-selected 88 cases and retained eight empty slots; independent judging is starting.
+selected 88 cases and retained eight empty slots. All 176 first passes and 49
+adjudications are frozen. The informative TRAIN upper bound is six candidates
+across four strata, below the fixed 32/six gate, so no fit ran.
+This does not show BC failed. Public fact checks identify two expansion-blocked
+road choices; a flagged trade remains uncertain because it has an alternative
+city-funding route. The next primary experiment diagnoses and improves road
+decisions, then checks fresh gameplay. Value collection resumes only with a
+concrete planning use; its 208 saved games remain accepted as a component only.
 No new targets are approved for training.
 Earlier residual and placement studies found no reliable gain;
 the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
@@ -54,8 +60,9 @@ and full six-player training are a subsequent milestone.
 ## Learning guidance
 
 The examples below describe available experimental PPO infrastructure, not the
-next research experiment. Public planning and outcome-value work proceed in
-parallel; imitation is a limited diagnostic/control.
+next research experiment. Decision diagnosis and targeted repairs come first;
+outcome-value work may run alongside them when a concrete planning use justifies
+it. Imitation remains available when sound relevant targets support it.
 
 The optional imitation warm start learns legal moves from a production-aware
 heuristic teacher. Set `--warmstart-decisions 0` to compare training from scratch.

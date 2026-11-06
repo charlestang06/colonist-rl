@@ -80,16 +80,39 @@ without new codec, model, teacher or game queries. All 96 slots were frozen:
 59 TRAIN and 29 labelVAL cases selected, eight slots empty without replacement.
 Every stratum is represented; this is occupancy coverage, not sound decisions.
 
-The 88 cases are published separately to 22 context reservations, 11 per panel,
-at most eight cases per context. Actual fresh judge contexts are starting.
-Both panels have not yet been committed together; no reveal, target approval
-or fit exists yet. Independent saved-
-metadata review passed all 96 slots and 352 public files.
-[Slot inventory](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-sampling-001/Root-private-001/slots.json).
-Packet dispatch permits at most one anchor per episode per fresh context,
-with separate panels, preventing a later prefix from revealing an earlier choice.
-Both complete panels must be committed before any reveal. These preparation
-checks establish neither label quality nor broad decision competence.
+The 88 cases were delivered through 22 fresh contexts, 11 per panel, at most
+eight cases each and one anchor per episode/context. Root used fork_turns=none,
+scoped file grants and access attestations; this is not an OS-level per-agent
+filesystem sandbox. All 176 first passes were locked before any reveal. Both
+panels were externally committed (body SHA bfcd6e8b...), then all 49 nominated
+disagreements received one third opinion in seven further fresh contexts. All
+225 original judgments remain unchanged. Independent publication review passed
+all 96 mechanical slots and 352 public files.
+
+Only six TRAIN and three labelVAL candidates meet the necessary informative-set,
+confidence and no-ambiguity conditions before public fact checking. TRAIN coverage
+is four strata, with two END_TURN and two response candidates. The fixed gate
+requires at least 32 TRAIN anchors across six strata: the study therefore stops
+with INSUFFICIENT_INFORMATIVE_COVERAGE_NO_FIT. Factual review could remove labels,
+not supply missing approvals. Zero optimizer updates/new candidates occurred.
+This is neither a tested data benefit nor a demonstration that BC cannot work.
+
+After all judgments were frozen, Root validated source/choice joins once through
+the reviewed reveal path and graded membership on the unchanged saved rows.
+TRAIN: 15 judge-accepted, 39 accepted with ambiguity, three judge-excluded pending
+fact check, two unresolved. LabelVAL: four accepted, 23 accepted with ambiguity,
+two excluded pending fact check. These are judgment memberships, not a broad
+competence or error-rate estimate. No teacher proposal or future outcome was
+used for this grading. The three TRAIN flags are two roads and one incoming
+brick-for-wheat acceptance. Separate public fact checks confirm both roads end
+in enemy-blocked expansion leaves and cannot yield an immediate award; possible
+future trail/defensive value remains uncertain. The cached teacher chose reasonable
+alternatives on both road cases. The trade review omitted a wheat-funded city
+route, so rejection is not demonstrably preferable. Frozen judgments remain
+unchanged; these facts nominate a road-decision investigation, not replacement
+labels or a broad bad-trade claim. All target approvals remain false.
+[TRAIN factual note](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-judging-001/TRAIN-diagnostic-cases-001/factual-diagnosis-001/NOTE.md).
+[Fixed slots](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-sampling-001/Root-private-001/slots.json).
 
 ## Terminal-value collection: 208 saved games; cohort incomplete
 
@@ -107,17 +130,39 @@ no validation games were collected, the cohort remains rejected, and no cache,
 value head or fitting follows. Missing games stay null, never losses. Completed
 histories and the original failure are preserved.
 
-The last guard failure file precedes its registry publication by about 114 ms.
-The launch path performs cumulative evidence scans before and after spawning,
-with the registration deadline measured from an earlier timestamp. Independent
-closed-metadata profiling supports this timing mechanism: one accounting call
-took 1.211 seconds, including 1.142 seconds of repeated per-job classification
-and 0.069 seconds of tree scanning. This is a present closed-run sample, not
-exact historical instrumentation. A narrow prospective correction is in
-preparation; no continuation or replacement run has occurred. Any successor needs its own declared
-protocol and acceptance while preserving original roles and execution failure.
+Independent retained-component audit passed all 52 jobs / 208 TRAIN histories,
+17,761 input/selection/execution joins, 7,529 forced steps, 5,722 eligible rows and
+4,549 early/mid rows. All 128 nested TRAIN games are present. Every original source
+and runtime hash matches. All 2,632 live OS1 samples pass; two final ESRCH samples
+have the exact accepted successful exit-race signature. Peak RSS was 745,340,928
+bytes and maximum overlap two. All 1,788 original producer files total exactly
+382,428,283 bytes. Strict input geometry remains inherited from the pinned actual
+producer's roundtrip gate; the reviewer did no new decoding or tensor work.
+
+The final guard failure file precedes registry publication by about 114 ms. One
+closed accounting profile took 1.211 seconds, including 1.142 seconds of repeated
+per-job classification and 0.069 seconds scanning the tree. Controller 004 moves
+this work before the launch clock and keeps the post-spawn durable ledger/registry
+path short; it passed scoped source review and its author reports 30 isolated
+tests. Root has not run it, and its copied 80-job entrypoint must not replay the
+208 retained games.
+
+A separately named remaining-28 protocol prepares only the original 112 missing
+games and an honest mixed-component 320-game assembly, preserving every original
+attempt/config/receipt identity and failure. No continuation, assembly, cache or
+head fit has run. The proposed new outer 720-second limit is separate from the
+original continuous deadline; original plus new active Root time stays bounded
+by 1,200 seconds. Capacity carries forward the retained evidence and metadata
+allowances. Root review, final source checks and an explicit runtime freeze remain
+required before collection. Continuation 001 is on source-review HOLD: its real
+entrypoint publishes the original 320-game inventory where the new worker path
+expects only the 112 missing games, and output paths lack protection against
+writing inside retained evidence before rejection. It has not run. The roadmap now makes any
+successor conditional on a concrete planning use for the learned value estimate;
+completing a dataset alone is not the next primary research objective.
 [Original value terminal receipt](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/Root-terminal-run-001.json),
-[original summary](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/run-001/summary.json).
+[original summary](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/run-001/summary.json),
+[continuation source HOLD](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/remaining-28-001/independent-review-001/REVIEW.md).
 
 ## Fixed-feature gameplay: execution accepted, primary advancement failed
 

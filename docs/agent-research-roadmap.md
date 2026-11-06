@@ -13,9 +13,10 @@ to its player and reproducibly outperforms authentic, pinned VF and AB reference
 in complete games under declared benchmark conditions. Deliver the same decision
 maker through simulator and Colonist adapters, with physical-board input later.
 
-The first milestone is reliable heuristic-level decisions and gameplay. The next
-is stronger strategic play. A neural policy, a public-information planner, an
-improved heuristic or a measured combination may achieve either milestone.
+The first deliverable is a sensible, deployable player whose trades, builds,
+passes and tactical choices are at least heuristic level. The next is stronger
+strategic play. A neural policy, a public-information planner, an improved
+heuristic or a measured combination may achieve either milestone.
 Behavioral cloning and PPO are tools, not completion criteria. The project does
 not succeed merely because it trains, imitates a teacher, accumulates games or
 executes legal screen actions.
@@ -24,6 +25,37 @@ Each research step must answer: **which decision gets better, why should this
 change improve it, and do fresh games support that claim?** Winning is the final
 objective. Decision audits explain successes and failures; loss, agreement, VP,
 trade counts and value prediction are supporting measurements.
+
+## What we should pursue
+
+Prioritize an effective decision system over a particular learning algorithm.
+Use the simplest credible policy as the starting point, then improve the part
+that produces a demonstrated costly mistake. A small tactical rule or better
+search score can be the right deliverable; it need not wait for a neural replica.
+
+The normal research cycle is: **observe a weakness → explain its cause → change
+one mechanism → inspect the changed choices → test fresh complete games**.
+Each cycle ends with a decision to retain, revise or retire the intervention.
+Good training loss, more labels and faster infrastructure do not close that cycle.
+
+Work in this order:
+
+1. Fix demonstrable tactical and economic weaknesses: blocked road expansion,
+   useful trade/build sequences, sensible passes, immediate wins, and development
+   cards with concrete benefits. Preserve reasonable alternatives and uncertainty.
+2. Improve planning where a current choice requires looking beyond one action.
+   Use public resource beliefs, board scarcity, ports, build costs and opponent
+   incentives. Treat static resource valuations as priors to test.
+3. Learn reusable estimates or policy choices when they improve that decision
+   process. BC needs sound targets on relevant student states; value learning
+   needs a plausible deployment use. Neither is a mandatory stage.
+4. Test against progressively stronger opponents, then confirm superiority to
+   both VF and AB. Use RL for a demonstrated remaining strategic limitation when
+   it is a better experiment than another targeted repair or bounded search.
+
+Keep a thin adapter lane running alongside the decision work. Screen control,
+physical recognition and simulator integration translate the same core policy;
+they do not each contain a separate strategy.
 
 ## What the evidence changes
 
@@ -45,8 +77,14 @@ trade counts and value prediction are supporting measurements.
   on a controller temporary-file accounting race. A separate zero-query recovery
   passed all 9,458 strict before/after pairs and independent metadata review. The
   original failure remains. Fixed sampling selected 88 cases (59 TRAIN, 29 labelVAL)
-  and preserved eight empty slots. Independent first passes are starting; labels
-  and data benefit remain unestablished.
+  and preserved eight empty slots. All 176 first passes and 49 adjudications are
+  frozen. The informative TRAIN upper bound is six anchors across four strata,
+  below the fixed 32/six gate: no fit ran. This does not establish BC failure.
+  Public fact checks confirm two student roads end in enemy-blocked expansion
+  leaves, while their possible award/defensive value remains uncertain. A flagged
+  trade has an omitted wheat-funded city route and is not certainly bad. The
+  cached teacher selected reasonable alternatives on both road cases; these cases
+  do not establish a teacher failure.
 - The sparse accepted-target fitter and the 361-input engineering cache repair
   passed their scoped checks. These are usable mechanisms, not evidence of a
   stronger player. No candidate is promoted.
@@ -54,7 +92,8 @@ trade counts and value prediction are supporting measurements.
   failed its guard-registration handshake, before its game worker started. The
   original 320-game cohort is rejected; no value fitting follows. Diagnose launch
   accounting/timing and declare any successor separately, retaining the fixed
-  roles and original failure.
+  roles and original failure. All 208 retained TRAIN histories passed independent
+  component audit; the missing 112 remain uncollected.
 
 ## Milestone 1: make the decisions recognizably good
 
@@ -112,6 +151,11 @@ board-level uncertainty method. Missed immediate wins or destructive loops block
 competence until resolved; absent coverage remains unknown. A 25% win rate or a
 nonsignificant comparison does not establish parity.
 
+This broad competence gate is for the broad claim. A narrow road, trade or card
+repair can be developed and tested first with relevant adverse cases and fresh
+paired games. Do not build another general audit system as a prerequisite to
+testing one well-defined improvement.
+
 ## Milestone 2: improve planning and learn consequences
 
 Pursue two testable mechanisms without making either a mandatory dependency of
@@ -125,10 +169,13 @@ measure runtime before comparing it with the existing mainly post-roll planner.
 Keep scorer, fallback and compute limits fixed in that comparison; do not bundle
 an untested value head into a larger search treatment.
 
-**Value learning:** complete the prepared true-terminal-outcome experiment with
-256 TRAIN and 64 validation games, including its nested 128-game data-size
-contrast. Compare public-feature and frozen-recurrent heads with matched work,
-calibrated constant controls and held-out prediction gates. Claim a recurrent
+**Value learning:** retain the 208 audited TRAIN histories. Before collecting the
+112 missing games, state which planning decision the estimate could improve and
+how it would be used with a verified public transition. The prepared terminal-
+outcome study remains an option, not an obligation to finish a dataset. Its
+declared design uses 256 TRAIN and 64 validation games, including a nested
+128-game data-size contrast. Compare public-feature and frozen-recurrent heads
+with matched work, calibrated constant controls and held-out prediction gates. Claim a recurrent
 encoder benefit only if it also beats the public-feature head. Keep engineering
 boards excluded. A value estimate under one continuation policy is not optimal
 value. Better prediction earns a separate gameplay deployment test; it does not
@@ -185,6 +232,9 @@ simulator and screen implementation. Catanatron is a backend, not permission to
 expose privileged state. Separate extraction, belief updates, legal action mapping,
 staleness checks and visible-effect confirmation. Keep Colonist observations and
 control examples durable so future work does not need to recreate the demo.
+Observation semantics, beliefs, valuation, planning and policy live in the shared
+core. Simulator, Colonist and future physical-board adapters provide observations,
+translate actions and confirm effects through that contract.
 
 Maintain adapter correctness alongside research; expand it when a validated policy
 needs the capability. Incoming offers and maritime trades already have distinct
@@ -195,17 +245,18 @@ claims; test both before claiming a capable Colonist player.
 
 ## The next execution queue
 
-Keep one primary decision-improvement experiment and one bounded independent
-research experiment active. Independent source review may run alongside them.
+Keep one primary decision-improvement experiment active. One bounded independent
+research experiment may run alongside it when it answers a distinct decision
+question. Independent source review may run alongside them.
 Avoid creating new frameworks, review layers or broad rewrites where an affected-
 path check and the existing harness suffice.
 
 | Priority | Next concrete deliverable | Advance or stop decision |
 |---|---|---|
-| Primary: use saved student experience | Judge the 88 selected cases from the frozen 96-slot inventory in two independent panels, with isolated contexts and no choice/teacher reveal before both complete first passes. | Recovery grants no target approval. Audit targets and missing coverage before fitting. Never rerun gameplay merely to erase finalization failure. |
-| Primary: test better data | Complete the frozen added-data-only comparison with the reviewed sparse fitter, unchanged parent and equal-work old-data control. | Keep its original advancement rules. Report an insufficient target/coverage gate instead of replacing cases. A null result prompts diagnosis, not automatic scale-up. |
-| Independent: test longer consequences | Assess the stopped 320-game attempt and fix the demonstrated launch-timing bottleneck prospectively. Any successor must retain the fixed roles, account for all 320 games and preserve the original failure. | 208 completed TRAIN games are saved, not a complete accepted cohort. No automatic retry or fit. Prediction must pass before a separate policy deployment experiment. |
-| Next decision remedy | Rank fresh TRAIN errors by recurrence, strategic cost and confidence; choose one tactical repair or planning experiment. | Audit the action change and test fresh paired games. Preserve a negative result and change the hypothesis. |
+| Primary: road decisions | Diagnose why the deployed student preferred the two expansion-blocked TRAIN roads. Check target geometry, ownership barriers, scoring and paid-resource cost; compare a narrow marginal-reachability/continuation remedy with the unchanged parent. | Check adverse award, defensive, free-road and enemy-building cases. Inspect changed choices, then use fresh paired games. No blanket ban on roads without settlement gain; no assumed teacher defect. |
+| Close the audited-data study | Preserve all 225 judgments and record insufficient informative coverage. Use the factual diagnoses to inform a distinct experiment. | Zero optimizer updates; no data-benefit or BC-failure claim. No quota relaxation, replacement cases or automatic broad relabeling. |
+| Conditional independent study: value for planning | Identify a concrete deployment question before resuming collection. If justified, collect only the 112 missing games through a corrected, separately declared continuation and join independently accepted components. | The 208 games are accepted only as a component. Continuation 001 is on source-review HOLD; it has not run. Preserve the original failure. No cache/fit until a complete accepted cohort, and no policy claim from prediction alone. |
+| Following remedy | Use TRAIN evidence to select the next economic or tactical weakness: trade/build/pass, development cards, awards or immediate wins. | Change one mechanism; check the choices and fresh gameplay. Preserve a negative result and change the hypothesis. |
 | After credible competence | Freeze the best candidate and run focal VF/AB comparisons and independent confirmation. | Promote only on the declared primary strength gates. PPO is not a prerequisite. |
 
 Do not silently rewrite frozen protocols to match this strategy. A changed
