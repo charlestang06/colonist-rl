@@ -389,6 +389,59 @@ def _transition(
     return updated
 
 
+def _root_transition(
+    view: Observation, state: ProjectedTurn, action: Action, shape: _Shape
+) -> ProjectedTurn | None:
+    """Project an original actual-menu action, only from the exact initial state.
+
+    An engine-certified root road may disagree with conservative public connectivity.
+    Its menu membership certifies connectivity alone; future intentions continue to
+    use the unchanged strict geometry and transition checks.
+    """
+    if (
+        not any(action is original for original in view.legal_actions)
+        or action.kind not in _SUPPORTED
+        or not _context_supported(view)
+        or view.rules != RulesConfig.standard()
+        or any(
+            port.ratio not in (2, 3, 4) or port.resource not in (None, *RESOURCES)
+            for port in view.board.ports
+        )
+        or any(
+            value is not None
+            for value in (action.resource, action.second_resource, action.partner, action.offer_id)
+        )
+    ):
+        return None
+    try:
+        if state != _initial_projection(view):
+            return None
+    except (_PublicContract, StopIteration):
+        return None
+    if any(
+        len(vector) != 5 or any(type(n) is not int or n < 0 for n in vector)
+        for vector in (state.hand, state.bank_lower, state.bank_upper)
+    ) or any(
+        type(stock) is not int or stock < 0
+        for stock in (state.roads_left, state.settlements_left, state.cities_left)
+    ):
+        return None
+    if action.kind == "END_TURN":
+        return state if action.target is None and action.give == action.receive == ZERO else None
+    if action.kind.startswith("BUILD_"):
+        size = len(view.board.edges if action.kind == "BUILD_ROAD" else view.board.vertices)
+        if type(action.target) is not int or not 0 <= action.target < size:
+            return None
+    if action.kind == "BUILD_ROAD":
+        if any(road.edge == action.target for road in state.roads):
+            return None
+        if action.target not in shape.edges:
+            shape = replace(shape, edges=(*shape.edges, action.target))
+    return _transition(
+        view, state, PlannedStep(action.kind, action.target, action.give, action.receive), shape
+    )
+
+
 def _score(view: Observation, state: ProjectedTurn, shape: _Shape) -> int:
     goals = []
     if state.roads_left and shape.edges:
@@ -554,8 +607,12 @@ def plan_turn(
         beam = []
         stopped = "depth_limit"
 
-        def child(parent_state, parent_shape, step, root, steps):
-            projected = _transition(view, parent_state, step, parent_shape)
+        def child(parent_state, parent_shape, step, root, steps, action=None):
+            projected = (
+                _root_transition(view, parent_state, action, parent_shape)
+                if action is not None
+                else _transition(view, parent_state, step, parent_shape)
+            )
             if projected is None:
                 return None
             projected_shape = geometry.describe(projected)
@@ -587,22 +644,12 @@ def plan_turn(
                 return result("root_validation_limit", "node_limit")
             # Count the attempt even when its shape is rejected.
             work.nodes += 1
-            if any(
-                value is not None
-                for value in (
-                    action.resource,
-                    action.second_resource,
-                    action.partner,
-                    action.offer_id,
-                )
-            ):
-                return result("public_contract_mismatch")
             if action.kind == "END_TURN":
-                if action.target is not None or action.give != ZERO or action.receive != ZERO:
+                if _root_transition(view, state, action, shape) is None:
                     return result("public_contract_mismatch")
                 continue
             step = PlannedStep(action.kind, action.target, action.give, action.receive)
-            node = child(state, shape, step, index, ())
+            node = child(state, shape, step, index, (), action)
             if node is None:
                 return result("public_contract_mismatch")
             if index == fallback_index:

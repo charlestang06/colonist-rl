@@ -34,8 +34,12 @@ rejects extension/special-build rules, so their geometry and costs cannot receiv
 the required real transition replay validation. Root approved this conservative
 restriction on 2026-11-05. General geometry helpers do not imply policy support.
 
-The current tuple is authoritative. Supported root exchanges/builds must agree
-with public affordability, connectivity, costs, port ratios and stock. Unexpected
+The current tuple is authoritative. `_root_transition` accepts only an original
+menu object on the exact initial public projection. For a root road, that menu
+certifies connectivity even when the pinned engine's menu differs from conservative
+public geometry at an opponent building. Integer target range, edge vacancy, own
+stock, exact costs, resources and bank bounds still apply. Other supported root
+exchanges/builds retain their public geometry and port-ratio checks. Unexpected
 metadata or a disagreement returns `public_contract_mismatch`. Unsupported root
 members are ignored by the search, but if H_view selects an unsupported effect,
 the whole decision returns `unsupported_heuristic_action`.
@@ -59,9 +63,10 @@ these invariants and card conservation. Hidden stock and deck order stay unknown
 Maritime gives one resource for one card of a different resource. The ratio is
 `min(4, applicable owned Port.ratio values)`, with ownership determined from
 public building endpoints; projected settlement ownership changes future ratios.
-Roads cannot cross an opponent building or use an opponent edge. Settlements obey
-the all-player distance exclusion, own-road connectivity and piece stock. City
-upgrades return a settlement piece. Draws, steals, dice, opponent actions, domestic
+Future projected roads cannot cross an opponent building or use an occupied edge;
+the root-only menu certification is never reused for future intentions or geometry
+features. Settlements obey the all-player distance exclusion, own-road connectivity
+and piece stock. City upgrades return a settlement piece. Draws, steals, dice, opponent actions, domestic
 negotiation and development cards are not projected.
 
 The only shared feature changes expose immutable `PUBLIC_BUILD_COSTS` referring
