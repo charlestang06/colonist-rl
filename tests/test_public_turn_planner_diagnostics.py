@@ -110,7 +110,9 @@ def test_root_node_cap_counts_the_attempted_projection_before_validation_stops()
 
 def test_invalid_future_candidate_consumes_the_last_available_node():
     observation = _view((4, 0, 0, 0, 0), (_trade(0, 2),))
-    plan = planner.plan_turn(observation, planner.TurnPlannerConfig(max_nodes=2, max_depth=3))
+    plan = planner.plan_turn(observation, planner.TurnPlannerConfig(
+        max_nodes=2, max_depth=3, prune_invalid_future=False,
+    ))
     assert (plan.search_stop, plan.nodes) == ("node_limit", 2)
     # The first continuation is an unaffordable city at vertex 0.
     assert _counts(plan) == {

@@ -60,8 +60,17 @@ The [fast search-budget screen](search-budget-results-2026-11-06.md) completed
 32 fresh paired games. Raising the node limit from 2,048 to 8,192 made all
 16 matched seat traces and outcomes identical, while spending 3,341 more
 attempts with no extra feasible or unique successor. Retire that unchanged
-increase. Publicly impossible future candidates, not the budget number, are
-the next search-work target.
+increase. The [future-pruning screen](public-future-pruning-results-2026-11-06.md)
+then skipped 414,217 certainly invalid candidates, exposed 101 more feasible
+successors under the original cap, and kept all 32 matched action traces and
+outcomes identical. Searched selection was faster in both arm orders. Enable
+the necessary-condition filter by default for new public-planner work.
+
+The [public purchase-option screen](public-option-purchase-results-2026-11-06.md)
+won 16/48 versus raw's 13/48 in 12 fresh matched boards, but the board-level
+effect remains uncertain and full-turn review found adverse BUY→later-build
+cases. Keep this fixed score optional. A narrower continuation repair and an
+uncertain card comparison need new hypotheses, not more games on that screen.
 
 ## Track 1: improve the working public player
 
@@ -70,23 +79,24 @@ screen. Keep it optional. Its changed raw winning seats and the exact adverse
 buy-then-city replay make uncertain card value the next economic decision gap.
 
 Attempted, feasible, unique, duplicate, depth, stop and latency diagnostics are
-now in the shared runner. A public affordability filter for **future** build
-and maritime intentions is the next bounded search experiment. Necessary
-conditions from the projected hand and conservative bank lower bound can skip
-provably impossible candidates while leaving authoritative root validation and
-final transitions unchanged. Separate a behavior-preserving latency gain on
-non-capped inputs from newly reachable states/actions on capped inputs. Record
-skipped-invalid work separately; never disguise it as attempted transitions.
-The 2,048-versus-8,192-node screen found no new state or action, so do not
-repeat that unchanged budget comparison. Change beam and depth separately only
-when diagnostics justify them.
+now in the shared runner. Necessary-condition pruning of **future** build and
+maritime intentions passed the fresh paired and reversed-order timing screens;
+it is the default, with an explicit off switch for reproducing old results.
+Skipped-invalid work stays separate from attempted transitions. The 2,048-
+versus-8,192-node screen found no new state or action, so do not repeat that
+unchanged budget comparison. Change beam and depth separately only when
+diagnostics justify them.
 
 Move toward unified trading, building, purchasing and passing. Deterministic public
-consequences should be exact. Card purchase needs uncertainty-aware future value,
-never its actual hidden draw. A better public score alone does not establish
-superiority to buying or passing. Extend useful coverage to Year of Plenty pairs,
-connected Road Building, then uncertain Monopoly/robber/Knight choices and award
-races. Execute one legal root action, reobserve and replan.
+consequences should be exact. A current legal point build that reaches the
+winning threshold deserves a direct-win guard before more trading. Card
+purchase needs uncertainty-aware future value, never its actual hidden draw.
+The option screen shows why BUY→later-trade/build continuations must be compared
+before a projected trade→build is credited as an earlier point. A better public
+score alone does not establish superiority to buying or passing. Extend useful
+coverage to Year of Plenty pairs, connected Road Building, then uncertain
+Monopoly/robber/Knight choices and award races. Execute one legal root action,
+reobserve and replan.
 
 ## Track 2: bounded learning alongside planning
 
@@ -183,8 +193,9 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [Reusable paired commands](experiment-quickstart.md) and [broad capability audit](capability-audit-2026-11-06.md). | One manifest, source-bound game journals, fast read-only comparison for planner and graph arms. |
 | Complete | [Trainable public-history critic](shadow-critic-results-2026-11-06.md) fit and development screen. | Gate failed against public-63; no policy change or unchanged extension. |
 | Complete | [2,048-versus-8,192 search-budget screen](search-budget-results-2026-11-06.md): 32 resolved games, 16/16 same traces, 3,341 extra invalid attempts. | Retire unchanged budget increase. |
-| Parallel | Necessary-condition pruning of invalid future intentions, with old/new differential and a small paired screen if safe. | Preserve non-capped behavior; distinguish speed from effective coverage. |
-| Parallel | Opt-in card purchase versus certain trade/build/pass comparison with a fixed public option credit. | Compare uncertain option value without hidden draws; test changed decisions and outcomes on fresh boards. |
+| Complete | [Necessary-condition future pruning](public-future-pruning-results-2026-11-06.md): 64 resolved screen games, 32/32 same traces, 414,217 invalid candidates skipped; speed gain repeated with reversed arm order. | Enable by default for new planner work; no playing-strength gain claimed. |
+| Complete | [Opt-in purchase comparison](public-option-purchase-results-2026-11-06.md): 96 resolved games, 50 changes, 25/26 immediate builds, raw 13/48 versus option 16/48; fresh adverse BUY continuation. | Keep optional; revise the one-turn comparison and reserve new boards. |
+| Active | Audit student-reached trade/pass/BUY states and repair direct legal-win choices. | Accept only independent public labels and exact legal roots; no fit or promotion from unreviewed screens. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter

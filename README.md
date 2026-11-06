@@ -20,13 +20,18 @@ raw 32/128, VF 19/128, AB 26/128; its superiority gate failed. The
 [city-funding screen](docs/city-before-purchase-results-2026-11-06.md) built all
 12 intended cities but won 11/48 games versus raw's 13/48, so the wrapper stays
 optional. The [paired runner](src/colonist_rl/paired_gameplay.py) and
-[capability audit](docs/capability-audit-2026-11-06.md) shorten the next loop:
-measure search coverage, then test a card-aware economic decision. The
+[capability audit](docs/capability-audit-2026-11-06.md) shorten the next loop.
+The [future-pruning screen](docs/public-future-pruning-results-2026-11-06.md)
+kept all 32 paired actions unchanged and improved searched-decision time in
+both arm orders; pruning is now the planner default. The
+[purchase-option screen](docs/public-option-purchase-results-2026-11-06.md)
+won 16/48 against raw's 13/48 but exposed adverse same-turn BUY continuations,
+so that score stays optional. The
 [trainable public-history critic](docs/shadow-critic-results-2026-11-06.md)
 failed its development nomination gate, so no learned score was inserted into
 the player. The [paired experiment commands](docs/experiment-quickstart.md)
-and [search-budget result](docs/search-budget-results-2026-11-06.md) now close
-the first fast feedback loop. No superiority or model promotion is claimed.
+and [search-budget result](docs/search-budget-results-2026-11-06.md) support
+the fast feedback loop. No superiority or model promotion is claimed.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

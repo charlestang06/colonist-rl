@@ -5,7 +5,9 @@ four focal seats. The [paired CLI](../src/colonist_rl/experiment_cli.py) calls
 the existing evaluator; the [analysis command](../src/colonist_rl/experiment_analysis.py)
 reads saved artifacts without replaying games. The
 [first search-budget screen](search-budget-results-2026-11-06.md) is a complete
-worked example.
+worked example. The [purchase-option](public-option-purchase-results-2026-11-06.md)
+and [future-pruning](public-future-pruning-results-2026-11-06.md) screens show
+changed-decision and timing readouts.
 
 ## 1. Freeze one question
 
@@ -14,7 +16,10 @@ and give the new study **new, disjoint board seeds**. Set `role` to `smoke`,
 `development`, `validation`, or `final_test`; this declaration does not check
 other archives for reused seeds. Require at least two arms and name the control
 with `reference_arm`. A public planner arm records every `TurnPlannerConfig`
-field and `gain_margin_micro`. A `city_before_purchase` arm is opt-in, and a
+field and `gain_margin_micro`. The `city_before_purchase` and
+`public_option_purchase` arms are opt-in. A new public planner defaults to
+`prune_invalid_future: true`; set it explicitly to `false` to reproduce the
+older charged-invalid search. A
 `graph_checkpoint` arm requires an exact checkpoint SHA-256. The same evaluator
 supports three named random, heuristic, greedy-no-trade, or pinned native
 opponents in the lineup. This CLI currently requires `no_offers: true` and has
@@ -55,7 +60,10 @@ saved artifact digests and the declared reference. It compares only complete
 boards shared by an arm and its control. A win-rate difference is present only
 if every game in those matched boards resolved; search-work totals remain
 descriptive over attempted selections. Trace differences identify where play
-first diverged, not which choice was optimal.
+first diverged, not which choice was optimal. The `search_work` section keeps
+searched-decision latency and reason counts separate from latency over all
+policy selections. A lower attempted-node count alone is not a runtime gain;
+compare timing and coverage on the same boards.
 
 ## 3. Decide quickly
 

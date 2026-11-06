@@ -355,10 +355,12 @@ def test_deterministic_caps_distinguish_best_prefix_from_geometry_fallback():
     assert shallow.reason == "insufficient_gain"
     assert not any(s.kind == "BUILD_CITY" for s in shallow.steps)
     # The 3-step fixture finds a useful prefix before a subsequent finite cap.
-    capped = p.plan_turn(observation, p.TurnPlannerConfig(max_nodes=100))
+    capped = p.plan_turn(observation, p.TurnPlannerConfig(max_nodes=100, prune_invalid_future=False))
     assert capped.search_stop == "node_limit" and capped.nodes == 100
     assert capped.reason == "planned"
-    assert capped == p.plan_turn(observation, p.TurnPlannerConfig(max_nodes=100))
+    assert capped == p.plan_turn(observation, p.TurnPlannerConfig(
+        max_nodes=100, prune_invalid_future=False,
+    ))
     empty = replace(observation, legal_actions=())
     with pytest.raises(ValueError, match="no legal action"):
         p.plan_turn(empty)

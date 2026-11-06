@@ -53,7 +53,7 @@ class TurnPlannerConfig:
     beam_width: int = 24
     max_geometry_visits: int = 100_000
     seed: int = 11
-    prune_invalid_future: bool = False
+    prune_invalid_future: bool = True
 
     def __post_init__(self):
         for name in ("max_depth", "max_nodes", "max_geometry_visits"):

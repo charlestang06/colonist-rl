@@ -52,8 +52,9 @@ def _state_shape(view):
     return state, shape
 
 
-def test_pruning_is_disabled_by_default_and_requires_a_bool():
-    assert planner.TurnPlannerConfig().prune_invalid_future is False
+def test_pruning_is_enabled_by_default_but_can_be_disabled():
+    assert planner.TurnPlannerConfig().prune_invalid_future is True
+    assert planner.TurnPlannerConfig(prune_invalid_future=False).prune_invalid_future is False
     assert planner.TurnPlannerConfig(prune_invalid_future=True).prune_invalid_future is True
     with pytest.raises(ValueError, match="prune_invalid_future must be a bool"):
         planner.TurnPlannerConfig(prune_invalid_future=1)
@@ -123,7 +124,7 @@ def test_zero_bank_lower_prunes_a_trade_despite_an_affordable_give(ratio):
 def test_uncapped_pruning_preserves_root_plan_score_and_feasible_coverage():
     actions = (_trade(0, 2, 4), Action("BUILD_ROAD", 0), Action("END_TURN"))
     view = _view((8, 4, 0, 0, 0), actions=actions)
-    base = planner.TurnPlannerConfig(max_depth=3, max_nodes=10_000)
+    base = planner.TurnPlannerConfig(max_depth=3, max_nodes=10_000, prune_invalid_future=False)
     original = planner.plan_turn(view, base)
     pruned = planner.plan_turn(view, replace(base, prune_invalid_future=True))
     assert original.search_stop != "node_limit"
@@ -158,7 +159,7 @@ def test_uncapped_pruning_preserves_root_plan_score_and_feasible_coverage():
 def test_capped_pruning_changes_feasible_coverage_without_changing_root_budget():
     root = _trade(0, 2, 4)
     view = _view((8, 0, 0, 0, 0), actions=(root,))
-    base = planner.TurnPlannerConfig(max_nodes=2, max_depth=2)
+    base = planner.TurnPlannerConfig(max_nodes=2, max_depth=2, prune_invalid_future=False)
     original = planner.plan_turn(view, base)
     pruned = planner.plan_turn(view, replace(base, prune_invalid_future=True))
     old, new = original.search_diagnostics, pruned.search_diagnostics
