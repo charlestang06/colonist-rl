@@ -12,6 +12,7 @@ import time
 from collections import Counter, deque
 from collections.abc import Mapping
 from contextlib import contextmanager
+from dataclasses import KW_ONLY, dataclass
 
 import numpy as np
 import torch
@@ -24,6 +25,95 @@ from .policy import KINDS
 
 SupervisedSample = tuple[Observation, int]
 EpisodeSequence = tuple[SupervisedSample, ...]
+
+
+@dataclass(frozen=True)
+class ApprovedTarget:
+    """Explicit informative target; dataset approval provenance is caller-owned."""
+
+    accepted_indices: tuple[int, ...]
+    _: KW_ONLY
+    role: str
+    train_approved: bool = False
+    val_approved: bool = False
+    legacy: bool = False
+
+
+def _validate_accepted_indices(indices, menu_size):
+    if (
+        type(indices) is not tuple
+        or not indices
+        or len(indices) >= menu_size
+        or any(type(i) is not int or not 0 <= i < menu_size for i in indices)
+        or tuple(sorted(set(indices))) != indices
+    ):
+        raise ValueError("accepted indices must be a canonical nonempty proper legal subset")
+
+
+def accepted_set_cross_entropy(logits, accepted_indices):
+    """Negative log total accepted probability; singleton is ordinary CE exactly."""
+    if not isinstance(logits, torch.Tensor) or logits.ndim != 1:
+        raise ValueError("accepted-set logits must be a one-dimensional tensor")
+    _validate_accepted_indices(accepted_indices, len(logits))
+    if len(accepted_indices) == 1:
+        return F.cross_entropy(
+            logits.unsqueeze(0), logits.new_tensor(accepted_indices, dtype=torch.long)
+        )
+    return -F.log_softmax(logits, dim=0)[list(accepted_indices)].logsumexp(0)
+
+
+def _validate_approved_targets(episodes, targets, role):
+    if type(targets) is not tuple or len(targets) != len(episodes):
+        raise ValueError("approved targets must parallel the episode tuple")
+    for episode, rows in zip(episodes, targets):
+        if type(rows) is not tuple or len(rows) != len(episode):
+            raise ValueError("approved targets must parallel every saved row")
+        for (view, original_target), target in zip(episode, rows):
+            if target is None:
+                continue
+            if not isinstance(target, ApprovedTarget):
+                raise ValueError("approved targets must be ApprovedTarget records or None")
+            _validate_accepted_indices(target.accepted_indices, len(view.legal_actions))
+            if (
+                type(target.role) is not str
+                or target.role != role
+                or any(
+                    type(flag) is not bool
+                    for flag in (target.train_approved, target.val_approved, target.legacy)
+                )
+            ):
+                raise ValueError("target role or approval flags do not permit this operation")
+            if target.legacy:
+                valid = (
+                    role == "TRAIN"
+                    and not target.train_approved
+                    and not target.val_approved
+                    and target.accepted_indices == (original_target,)
+                )
+            else:
+                valid = (
+                    (role == "TRAIN" and target.train_approved and not target.val_approved)
+                    or (role == "VAL" and target.val_approved and not target.train_approved)
+                )
+            if not valid:
+                raise ValueError(
+                    "target requires the matching explicit approval or legacy singleton"
+                )
+
+
+def _validate_anchor_schedule(episodes, targets, schedule):
+    if type(schedule) is not tuple or not schedule:
+        raise ValueError("anchor schedule must be a nonempty ordered tuple")
+    for anchor in schedule:
+        if (
+            type(anchor) is not tuple
+            or len(anchor) != 2
+            or any(type(i) is not int for i in anchor)
+            or not 0 <= anchor[0] < len(episodes)
+            or not 0 <= anchor[1] < len(episodes[anchor[0]])
+            or targets[anchor[0]][anchor[1]] is None
+        ):
+            raise ValueError("scheduled anchor must reference an approved nonforced TRAIN row")
 
 
 def _validate_sequences(episodes):
@@ -189,6 +279,18 @@ def _chunk_losses(policy, batch, memories, sequence_length, deadline, phase_weig
     return losses
 
 
+def _anchor_loss(policy, episode, start, anchor, memory, target, deadline, counters):
+    # Every intervening row contributes differentiable recurrence, never CE.
+    for view, _ in episode[start:anchor]:
+        _check_deadline(deadline)
+        memory = _memory_many(policy, (view,), (memory,))[0]
+        counters["chunk_forwards"] += 1
+    _check_deadline(deadline)
+    output = policy(episode[anchor][0], memory)
+    counters["chunk_forwards"] += 1
+    return accepted_set_cross_entropy(output.logits, target.accepted_indices)
+
+
 def fit_sequences(
     policy,
     episodes: tuple[EpisodeSequence, ...],
@@ -201,16 +303,30 @@ def fit_sequences(
     batch_size=1,
     optimizer=None,
     profile=False,
+    approved_targets=None,
+    anchor_schedule=None,
 ) -> dict:
     """Fit ordered chunks with fresh no-grad prefixes before every optimizer step.
 
     Weighted CE sums use non-forced choice count as the denominator. Batches
     contain at most one chunk from an episode, with one frozen-weight mean loss.
+    Optional approved targets consume the caller schedule once, with only its
+    anchor contributing CE through a suffix ending at that anchor.
     """
     coverage = _validate_sequences(episodes)
     _positive(epochs, "epochs")
     _positive(sequence_length, "sequence_length")
     _positive(batch_size, "batch_size")
+    anchored = approved_targets is not None or anchor_schedule is not None
+    if anchored:
+        if approved_targets is None or anchor_schedule is None:
+            raise ValueError("approved_targets and anchor_schedule must be supplied together")
+        if epochs != 1 or batch_size != 1 or sequence_length > 16 or phase_weights is not None:
+            raise ValueError(
+                "anchored updates require epochs=1, batch_size=1, suffix<=16, no weights"
+            )
+        _validate_approved_targets(episodes, approved_targets, "TRAIN")
+        _validate_anchor_schedule(episodes, approved_targets, anchor_schedule)
     if deadline is not None and (type(deadline) not in (float, int) or not math.isfinite(deadline)):
         raise ValueError("deadline must be a finite absolute monotonic time")
     if type(profile) is not bool:
@@ -260,40 +376,59 @@ def fit_sequences(
         policy.train()
         for _ in range(epochs):
             try:
-                for scheduled in _batches(episodes, sequence_length, batch_size):
+                schedule = anchor_schedule if anchored else _batches(
+                    episodes, sequence_length, batch_size
+                )
+                for scheduled in schedule:
                     _check_deadline(deadline)
-                    batch = tuple(
-                        (e, start)
-                        for e, start in scheduled
-                        if any(
-                            len(v.legal_actions) > 1 for v, _ in e[start : start + sequence_length]
-                        )
-                    )
-                    if not batch:
-                        continue
-                    losses = []
-                    # Without a batching API, retain each sequence's ordinary
-                    # prefix-then-chunk call order under the same frozen weights.
-                    groups = (
-                        (batch,)
-                        if callable(getattr(policy, "forward_many", None))
-                        else ((entry,) for entry in batch)
-                    )
-                    for group in groups:
+                    if anchored:
+                        episode_index, anchor = scheduled
+                        episode = episodes[episode_index]
+                        start = max(0, anchor - sequence_length + 1)
+                        batch = ((episode, start),)
                         with _scope("prefix", timing):
-                            memories = _prefixes(policy, group, deadline, counters)
+                            memories = _prefixes(policy, batch, deadline, counters)
                         with _scope("chunk", timing):
-                            losses.extend(
-                                _chunk_losses(
-                                    policy,
-                                    group,
-                                    memories,
-                                    sequence_length,
-                                    deadline,
-                                    phase_weights,
-                                    counters,
+                            losses = [
+                                _anchor_loss(
+                                    policy, episode, start, anchor, memories[0],
+                                    approved_targets[episode_index][anchor], deadline, counters,
                                 )
+                            ]
+                    else:
+                        batch = tuple(
+                            (e, start)
+                            for e, start in scheduled
+                            if any(
+                                len(v.legal_actions) > 1
+                                for v, _ in e[start : start + sequence_length]
                             )
+                        )
+                        if not batch:
+                            continue
+                        losses = []
+                        # Without a batching API, retain each sequence's ordinary
+                        # prefix-then-chunk call order under the same frozen weights.
+                        groups = (
+                            (batch,)
+                            if callable(getattr(policy, "forward_many", None))
+                            else ((entry,) for entry in batch)
+                        )
+                        for group in groups:
+                            with _scope("prefix", timing):
+                                memories = _prefixes(policy, group, deadline, counters)
+                            with _scope("chunk", timing):
+                                losses.extend(
+                                    _chunk_losses(
+                                        policy,
+                                        group,
+                                        memories,
+                                        sequence_length,
+                                        deadline,
+                                        phase_weights,
+                                        counters,
+                                    )
+                                )
                     _check_deadline(deadline)
                     loss = torch.stack(losses).mean()
                     if not torch.isfinite(loss):
@@ -328,7 +463,9 @@ def fit_sequences(
         "epochs": completed_epochs,
         "requested_epochs": epochs,
         "updates": updates,
-        "supervised_decisions": coverage["non_forced_decisions"],
+        "supervised_decisions": (
+            len(set(anchor_schedule)) if anchored else coverage["non_forced_decisions"]
+        ),
         "supervised_presentations": presentations,
         "status": "incomplete" if expired else "complete",
         "incomplete_reason": "deadline" if expired else None,
@@ -349,27 +486,41 @@ def _empty_score():
     return {"count": 0, "correct": 0, "accuracy": None, "cross_entropy": None}
 
 
-def score_sequences(policy, episodes: tuple[EpisodeSequence, ...]) -> dict:
-    """Replay complete ordered sequences without updating mode, weights or RNG."""
+def score_sequences(
+    policy, episodes: tuple[EpisodeSequence, ...], *, approved_targets=None
+) -> dict:
+    """Replay full histories; optional targets grant VAL-only accepted-set scoring."""
     coverage = _validate_sequences(episodes)
+    if approved_targets is not None:
+        _validate_approved_targets(episodes, approved_targets, "VAL")
     modes = [(module, module.training) for module in policy.modules()]
     totals = {"all": [], "non_forced": []}
     phases, kinds = {}, {}
     try:
         with _preserve_rng(), torch.no_grad():
             policy.eval()
-            for episode in episodes:
+            for episode_index, episode in enumerate(episodes):
                 memory = None
-                for view, target in episode:
+                for row_index, (view, target) in enumerate(episode):
                     output = policy(view, memory)
                     memory = output.memory.detach()
-                    ce = F.cross_entropy(
-                        output.logits.unsqueeze(0),
-                        output.logits.new_tensor([target], dtype=torch.long),
-                    ).item()
+                    if approved_targets is None:
+                        ce = F.cross_entropy(
+                            output.logits.unsqueeze(0),
+                            output.logits.new_tensor([target], dtype=torch.long),
+                        ).item()
+                        correct = int(output.logits.argmax().item() == target)
+                    else:
+                        approved = approved_targets[episode_index][row_index]
+                        if approved is None:
+                            continue
+                        ce = accepted_set_cross_entropy(
+                            output.logits, approved.accepted_indices
+                        ).item()
+                        correct = int(output.logits.argmax().item() in approved.accepted_indices)
                     if not math.isfinite(ce):
                         raise FloatingPointError("imitation validation CE is not finite")
-                    score = (int(output.logits.argmax().item() == target), ce)
+                    score = (correct, ce)
                     totals["all"].append(score)
                     phase, kind = view.context.kind, view.legal_actions[target].kind
                     phases.setdefault(phase, {"all": [], "non_forced": []})["all"].append(score)
@@ -402,5 +553,11 @@ def score_sequences(policy, episodes: tuple[EpisodeSequence, ...]) -> dict:
             key: {n: summarize(r) for n, r in value.items()} for key, value in kinds.items()
         },
         "coverage": coverage,
-        "note": "Teacher agreement is supervised fit, not playing competence; forced choices are excluded from non_forced metrics.",
+        "note": (
+            "Teacher agreement is supervised fit, not playing competence; "
+            "forced choices are excluded from non_forced metrics."
+            if approved_targets is None
+            else "Approved-set agreement is not playing competence; action-kind groups use "
+            "the original tuple target, not a unique approved action."
+        ),
     }
