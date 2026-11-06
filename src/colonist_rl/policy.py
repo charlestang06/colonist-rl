@@ -15,6 +15,7 @@ from torch.distributions import Categorical
 from .consequences import CONSEQUENCE_DIM, CONSEQUENCE_SCHEMA, consequence_features
 from .contracts import RESOURCES, Observation
 from .graph_inputs import NODE_DIM, graph_features
+from .successor_features import SUCCESSOR_DIM, SUCCESSOR_SCHEMA, successor_features_for_menu
 from .trading_context import (
     TRADING_CONTEXT_DIM,
     TRADING_CONTEXT_SCHEMA,
@@ -302,6 +303,39 @@ class ConsequenceGraphPolicy(GraphPolicy):
         return PolicyOutput(logits, base.value, base.memory)
 
 
+class CandidateSuccessorPolicy(ConsequenceGraphPolicy):
+    """Opt-in public candidate scorer with zero-start linear and nonlinear branches."""
+
+    architecture_kind = "graph_candidate_successor_v1"
+
+    def __init__(self, hidden_size=64, *, residual_hidden_size=16):
+        if type(residual_hidden_size) is not int or residual_hidden_size != 16:
+            raise ValueError("residual_hidden_size must be the exact integer 16")
+        super().__init__(hidden_size, feature_set="hand_recipe")
+        self.residual_hidden_size = residual_hidden_size
+        self.successor_linear = nn.Linear(SUCCESSOR_DIM, 1, bias=False)
+        self.successor_hidden = nn.Linear(SUCCESSOR_DIM + hidden_size, residual_hidden_size)
+        self.successor_out = nn.Linear(residual_hidden_size, 1, bias=False)
+        nn.init.zeros_(self.successor_linear.weight)
+        nn.init.zeros_(self.successor_out.weight)
+
+    def _output(self, view, nodes, offsets, hidden):
+        base = super()._output(view, nodes, offsets, hidden)
+        if not view.legal_actions:
+            return base
+        features = successor_features_for_menu(view, device=self.device).to(
+            dtype=self.successor_linear.weight.dtype
+        )
+        linear = self.successor_linear(features).squeeze(1)
+        interaction = torch.tanh(
+            self.successor_hidden(
+                torch.cat((features, hidden.expand(len(features), -1)), dim=1)
+            )
+        )
+        residual = linear + self.successor_out(interaction).squeeze(1)
+        return PolicyOutput(base.logits + residual, base.value, base.memory)
+
+
 class _TradingResidualConsequencePolicy(ConsequenceGraphPolicy):
     """Preserve the trained 34D reduction before adding a supported-only branch."""
 
@@ -368,6 +402,29 @@ class NonlinearConsequencePolicy(_TradingResidualConsequencePolicy):
         ).squeeze(1)
 
 
+def candidate_successor_from_consequence(
+    policy: ConsequenceGraphPolicy, *, seed=0
+) -> CandidateSuccessorPolicy:
+    """Copy an exact hand-recipe parent without advancing Torch RNG."""
+    if type(policy) is not ConsequenceGraphPolicy:
+        raise ValueError("candidate successor upgrade requires an exact consequence parent")
+    if policy.feature_set != "hand_recipe":
+        raise ValueError("candidate successor upgrade requires hand_recipe parent")
+    with torch.random.fork_rng(devices=[]):
+        torch.random.default_generator.manual_seed(seed)
+        variant = CandidateSuccessorPolicy(policy.hidden_size)
+    parameter = next(policy.parameters())
+    variant.to(device=parameter.device, dtype=parameter.dtype)
+    variant.load_state_dict({**variant.state_dict(), **policy.state_dict()}, strict=True)
+    parameters = dict(variant.named_parameters())
+    for name, old in policy.named_parameters():
+        parameters[name].requires_grad_(old.requires_grad)
+    old_modules = dict(policy.named_modules())
+    for name, module in variant.named_modules():
+        module.training = old_modules[name].training if name in old_modules else policy.training
+    return variant
+
+
 def trading_residual_from_consequence(
     policy: ConsequenceGraphPolicy, *, kind, seed=0
 ) -> ContextLinearConsequencePolicy | NonlinearConsequencePolicy:
@@ -416,6 +473,16 @@ def policy_architecture(policy: GraphPolicy) -> dict:
     """Explicit checkpoint identities; legacy metadata stays unchanged."""
     if type(policy) is GraphPolicy:
         return {"hidden_size": policy.hidden_size}
+    if type(policy) is CandidateSuccessorPolicy:
+        return {
+            "kind": policy.architecture_kind,
+            "hidden_size": policy.hidden_size,
+            "feature_schema": CONSEQUENCE_SCHEMA,
+            "feature_set": policy.feature_set,
+            "successor_schema": SUCCESSOR_SCHEMA,
+            "successor_dim": SUCCESSOR_DIM,
+            "residual_hidden_size": policy.residual_hidden_size,
+        }
     if type(policy) in (ContextLinearConsequencePolicy, NonlinearConsequencePolicy):
         architecture = {
             "kind": policy.architecture_kind,
@@ -447,6 +514,23 @@ def policy_from_architecture(architecture: dict) -> GraphPolicy:
         raise ValueError("invalid policy architecture")
     if set(architecture) == {"hidden_size"}:
         return GraphPolicy(architecture["hidden_size"])
+    if architecture.get("kind") == CandidateSuccessorPolicy.architecture_kind:
+        if (
+            set(architecture) != {
+                "kind", "hidden_size", "feature_schema", "feature_set",
+                "successor_schema", "successor_dim", "residual_hidden_size",
+            }
+            or architecture["feature_schema"] != CONSEQUENCE_SCHEMA
+            or architecture["feature_set"] != "hand_recipe"
+            or architecture["successor_schema"] != SUCCESSOR_SCHEMA
+            or type(architecture["successor_dim"]) is not int
+            or architecture["successor_dim"] != SUCCESSOR_DIM
+        ):
+            raise ValueError("unsupported candidate successor architecture or feature schema")
+        return CandidateSuccessorPolicy(
+            architecture["hidden_size"],
+            residual_hidden_size=architecture["residual_hidden_size"],
+        )
     if architecture.get("kind") in (
         ContextLinearConsequencePolicy.architecture_kind,
         NonlinearConsequencePolicy.architecture_kind,
