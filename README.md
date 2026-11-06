@@ -1,18 +1,20 @@
 # colonist-rl
 
-Local Catan agent research with public observations, learned policies, value-guided
-search, resource beliefs and independent trade model plug-ins.
+A public-information Catan player for simulator and Colonist adapters.
 
-The goal is an intelligent player-observable Catan decision maker that reproducibly
-outperforms authentic VF and AB references in complete games. The
-[revised roadmap](docs/agent-research-roadmap.md) sets four milestones: reliable
-heuristic-level decisions, better planning and consequence estimates, demonstrated
-strength against harder opponents, and faithful adapter deployment. Research
-starts with costly mistakes in current-student games and tests one remedy at a
-time. Behavioral cloning, public search, value learning and PPO are candidate
-methods; none is the goal. Use the strongest validated heuristic, planner, learned
-policy or hybrid as the starting point. PPO and new reward shaping remain deferred until
-competence and a specific need are demonstrated.
+The goal is one usable player with coherent trades, builds, passes and tactical
+choices, followed by reproducible superiority to authentic VF and AB and faithful
+complete live-game execution. The [revised roadmap](docs/agent-research-roadmap.md)
+separates those three claims. First nominate a working player among persistent H,
+raw planning and the frozen neural parent. Then diagnose consequential mistakes,
+change one mechanism, inspect the choices and test fresh complete games.
+
+Heuristics, bounded planning and learned components can cooperate. BC and PPO
+are optional tools; PPO remains deferred until competence and an identified
+strategic need justify it. No automatic training scale-up, value-learning lane or
+reward-shaping campaign is scheduled. The
+[immediate execution plan](docs/superpowers/plans/2026-11-06-decision-first-roadmap.md)
+starts with a matched three-arm development screen, not a new fit.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its
@@ -42,8 +44,8 @@ An opt-in winning-prefix search passed nine targeted and 43 affected pure checks
 An exact TRAIN replay confirmed a trade/build win. Its fresh 64-game comparison
 finished 5/32 wins in each arm, so it did not advance; defaults remain unchanged.
 [Winning-prefix experiment](docs/winning-prefix-experiment-2026-11-06.md).
-The bounded value study asks whether outcome estimates improve projected planning
-leaves; prediction alone cannot establish stronger play. No new imitation targets
+The closed bounded value study asked whether outcome estimates could support
+projected planning leaves; its failed gates authorize no deployment. No new imitation targets
 are approved for training.
 Earlier residual and placement studies found no reliable gain;
 the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
@@ -73,8 +75,8 @@ and full six-player training are a subsequent milestone.
 
 The examples below describe available experimental PPO infrastructure, not the
 next research experiment. Decision diagnosis and targeted repairs come first;
-outcome-value work may run alongside them when a concrete planning use justifies
-it. Imitation remains available when sound relevant targets support it.
+new outcome-value work needs a distinct decision hypothesis. Imitation remains
+available when sound relevant targets support it.
 
 The optional imitation warm start learns legal moves from a production-aware
 heuristic teacher. Set `--warmstart-decisions 0` to compare training from scratch.

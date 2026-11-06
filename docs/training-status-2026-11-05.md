@@ -1,11 +1,14 @@
 # Training and playing-strength status
 
-The goal is reproducible complete-game superiority to authentic VF and AB under
-the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-start
-tool; PPO remains deferred. The revised priority is fresh student decision diagnosis,
-audited targets and isolated repairs, with bounded outcome-value work alongside it.
-No authentic VF/AB superiority or new model promotion
-is established.
+The [canonical roadmap](agent-research-roadmap.md) was reset on 2026-11-06:
+nominate one working public-information player, improve consequential decisions,
+then establish reproducible VF/AB superiority and faithful live execution.
+The next screen compares persistent H, raw planning and the frozen neural parent
+on eight fresh boards/all seats (96 planned games), replacing the unexecuted
+five-arm proposal. No new games or fits have run for this strategy revision.
+BC is optional; PPO remains deferred. No broad heuristic-competence claim,
+authentic VF/AB superiority or new model promotion is established.
+All results below retain their original experimental scope and gates.
 
 ## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
 
