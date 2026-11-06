@@ -7,6 +7,30 @@ audited targets and isolated repairs, with bounded outcome-value work alongside 
 No authentic VF/AB superiority or new model promotion
 is established.
 
+## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
+
+The optional `search_build_win_before_buy=False` path passed nine targeted
+checks, 43 affected pure regressions and an exact canonical-fixture check.
+It searches near-win BUY fallbacks and returns an alternative only for a
+complete existing building-win projection.
+
+Engineering replay 002 matched 95 original TRAIN public inputs/actions, then
+executed a two-wheat-for-brick trade and settlement 37 for an actual win at 10 VP.
+The first replay stopped before any engine action because fixture serialization
+normalized 24 floats to integers. The repaired fixture restores the exact original
+public record; both the failed attempt and strict equality gate are preserved.
+
+Fresh development evaluation completed all 64 games on eight boards/all seats:
+raw and opt-in each won 5/32, with eight zero board differences and frozen 95%
+bootstrap interval [0, 0]. One BUY decision changed, to a trade followed by a city;
+both arms already won that paired game. Root session 96947 exited zero in 29.943s,
+with both guards zero, 250 OS1 samples, peak 255,639,552 bytes and one exact final
+ESRCH exit race. No model/NN/fit/native/reference call occurred.
+Saved-metadata recomputation passed 64 joins, call counts and source/runtime hashes.
+Its reviewer authored the operational writer and disclosed that limitation.
+The primary gate failed: no promotion or default change.
+[Detailed result](winning-prefix-experiment-2026-11-06.md).
+
 ## Early road correction: no advancement
 
 The opt-in public continuation helper passed 17 geometry and five wrapper tests,
@@ -140,13 +164,15 @@ labels or a broad bad-trade claim. All target approvals remain false.
 [TRAIN factual note](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-judging-001/TRAIN-diagnostic-cases-001/factual-diagnosis-001/NOTE.md).
 [Fixed slots](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-sampling-001/Root-private-001/slots.json).
 
-## Terminal-value collection: mixed320 inputs complete; no cache or fits
+## Terminal-value study: cache and four fits complete; no advancement
 
 Current status: the original failed attempt is preserved. Its accepted 208 TRAIN
 histories were joined with a separately collected 112 games (48 TRAIN, 64 VAL).
 Independent component and mixed-index metadata reviews passed for all 320 inputs:
 256 TRAIN, 64 VAL, nested TRAIN128. The successor did not replay the original 208.
-There is no new cache, value head, optimizer update or playing-strength claim.
+The separate cache and four fixed-fit results are now accepted within their
+verification scope. Their advancement gates failed; no playing-strength claim
+or policy promotion follows.
 The history below distinguishes the original failure from the accepted successor.
 
 The reviewed core 002/controller 003 passed their scoped source checks and Root's
@@ -206,10 +232,40 @@ The immutable index keeps its pending-audit flag; a separate Root receipt record
 input-only acceptance without authorizing cache or fits.
 
 The value hypothesis is public outcome scoring of projected trade/build/road
-leaves. Source helpers exist, but review found three bounded defects: published
-byte-SHA admission, saturated-probability log loss, and lost empty diagnostic
-cells. Root's 24 pure cache tests passed; the 21 numerical head tests remain
-unrun. Correct and verify these paths before freezing actual cache/fit execution.
+leaves. Published byte-SHA admission, saturated-probability log loss and empty
+diagnostic cells were repaired. All 24 cache, 21 numerical-head and four new
+regression checks passed with scoped source rereview. The actual adapter passed
+eight inert boundary/operational checks and scoped reviews. It checks live-runtime
+identity after execution and reserves aggregate storage before writes. Installed
+runtime files remain byte-pinned without changing system permissions. The frozen
+N-only cache completed with one parent load, exactly 27,706 recurrent steps and
+27,706 public encodings, including 11,818 forced inputs. There were zero full
+forwards, act/teacher/game calls, backwards or fits. Root session 57478 exited
+zero in 145.061s, with guard zero, 667 OS1 samples, peak 256,524,288 bytes and no
+exit races. The sealed 180,524,020-byte cache has SHA256
+`643aef10140b58dd77b0a96d762c51d48e4dbacc0265dab098ea1a8f18d17a98`.
+
+Independent saved-file audit matched every cache row against all 320 original
+journals, including identity/order/reset, input/observation/menu/prefix hashes,
+labels, finite 32/63 vectors, vector/cache hashes and provenance. It rehashed all
+49 source and 17,978 runtime files. Tensor identities, numeric encoder correctness,
+live environment and free-floor enforcement remain reviewed producer evidence;
+the auditor did no NN/model/codec replay. Root separately accepted the immutable
+cache as fitting input, leaving the producer's pending-audit status unchanged.
+The four fixed fits subsequently completed: public63/recurrent32 at nested128
+and full256 TRAIN, totaling 2,048 updates and 131,072 presentations. All three
+class gates passed (TRAIN33/128, TRAIN71/256, VAL17/64 wins). Root session 61368
+exited zero in 7.891s; 37 OS1 samples peaked at 149,618,688 bytes, with self-reported
+peak 163,921,920 bytes. The initial fit attempt stopped before data/numerical
+admission; one closed metadata record was sealed byte-unchanged for a separate
+receipt. No successful fit was repeated.
+
+Primary VAL early/mid Brier at full256 was constant 0.195227, public 0.150774 and
+recurrent 0.181856. Recurrent256 failed its both-control gate; both 128-to-256
+data-benefit gates failed their confidence requirements. Independent audit
+recomputed six predictions and all 228 metric/support cells; Root separately
+regenerated all 30 primary bootstrap contrasts. No clipping, tuning, bigger run
+or promotion follows. [Full value results](fixed-value-head-results-2026-11-06.md).
 The original four-fit prediction gates remain unchanged. Completing a dataset
 does not establish usefulness or make training the primary objective.
 [Original value terminal receipt](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/Root-terminal-run-001.json),

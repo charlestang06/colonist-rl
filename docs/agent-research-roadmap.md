@@ -121,16 +121,28 @@ testable explanation.
   planner skipped search. Nine have conditional one-trade/build resource and
   placement witnesses; fifteen do not. The first positive could trade two wheat
   for brick and afford a connected final-point settlement. These are public
-  hypotheses, not engine-certified missed wins. Test that exact mechanism before
-  changing general development-card preferences.
+  hypotheses; the first is now engine-certified. An exact 95-action TRAIN replay
+  followed by the opt-in trade/build path terminated with winner 0 and 10 VP.
+  Nine targeted and 43 affected pure checks passed. The separate fresh 64-game
+  comparison finished 5/32 wins in each arm, with all eight board differences zero.
+  One BUY decision changed. No strength advancement or default change follows.
+  [Experiment and limits](winning-prefix-experiment-2026-11-06.md).
 - The original terminal-value collector stopped after 208 TRAIN games on a
   guard-registration failure before block 53's worker started. That failed attempt
   remains rejected. A separately declared successor completed the missing 48
   TRAIN and 64 validation games without replaying the retained 208. Independent
   component and mixed-index reviews passed for the honest two-attempt corpus:
-  256 TRAIN, 64 validation, with nested TRAIN128. Caching and all four fits remain
-  unstarted. Three cache/head source findings still require correction; neither
-  dataset completion nor helper tests establish predictive or playing strength.
+  256 TRAIN, 64 validation, with nested TRAIN128. The one-pass cache completed all
+  27,706 own inputs, including 11,818 forced inputs, with one parent load and zero
+  full-forward replays, games or fits. Independent saved-JSON/hash review passed
+  every row against all 320 original journals and source/runtime identities.
+  Three helper fixes passed 49 synthetic checks; eight adapter checks and scoped
+  reviews passed. The four real-data fits then completed, with independent
+  prediction/metric checks and Root's exact interval regeneration. Recurrent256
+  failed its both-control representation gate; both data-size gates also failed.
+  Public features had lower validation point error, with uncertainty still too
+  wide to establish a gain over constant. No actor or head is promoted.
+  [Fixed results](fixed-value-head-results-2026-11-06.md).
 
 ## Milestone 1: make the decisions recognizably good
 
@@ -210,8 +222,9 @@ an untested value head into a larger search treatment.
 test a concrete planning hypothesis: a public outcome estimate may rank projected
 trade/build/road leaves better than handcraft scoring. The existing public
 `PositionEvaluator(root, ProjectedTurn, handcraft_micro)` seam does not need an
-imagined observation or recurrent update. Correct the bounded helper findings,
-verify them, then separately freeze actual cache and fit execution. The study
+imagined observation or recurrent update. The fixed cache and four-fit study
+completed without passing its advancement gates. A further deployment study must
+justify a distinct decision hypothesis and controls before runtime. The study
 uses 256 TRAIN and 64 validation games, including a nested
 128-game data-size contrast. Compare public-feature and frozen-recurrent heads
 with matched work, calibrated constant controls and held-out prediction gates. Claim a recurrent
@@ -292,8 +305,9 @@ path check and the existing harness suffice.
 
 | Priority | Next concrete deliverable | Advance or stop decision |
 |---|---|---|
-| Primary: winning trade/build prefix | Verify the first positive of nine conditional TRAIN witnesses against actual supported transitions. Test the narrow opt-in `search_build_win_before_buy` path: when BUY is the fallback near victory, return a different legal first action only for a certified building-win sequence. Nine new external tests are prepared, not yet run. | Check public transition fidelity, budget fallback and unchanged default behavior. If the witness fails, retain BUY and record why. If confirmed, inspect changed decisions and run a separately frozen fresh paired gameplay test. No ordinary score gain may masquerade as a certified win. |
-| Independent study: value for planning | The 320 inputs and mixed index passed scoped independent review. Resolve the three helper defects (published byte binding, stable saturated log loss, empty diagnostic cells), verify the changed paths, then freeze the single cache and four fixed fits. | Preserve TRAIN256/VAL64/nested128, raw/no-offers continuation identity and original failed attempt. Follow the original prediction gates without tuning. Only a justified candidate gets a later gameplay comparison with matched raw and calibrated-handcraft controls. |
+| Primary: establish the incumbent | Compare persistent public H, raw planner and frozen neural parent directly, alongside authentic VF/AB, on matched fresh development boards/all seats using the existing harness. The source-only five-arm proposal is not yet frozen or authorized for runtime. | Declare budget, board-level contrasts and nomination rules before execution. This is an incumbent-selection screen, not final superiority. Do not infer rankings from different studies or assume the neural parent/search is strongest. |
+| Fixed value study: closed | All four fixed fits and scoped result verification completed. Representation=False; public and recurrent data gates=False. Keep all six result cells and original roles/failures. | No larger unchanged run, retuning or automatic deployment. Public-head leaf ranking remains a separate hypothesis needing matched raw/calibrated-handcraft controls and gameplay evidence. |
+| Winning-prefix experiment: closed | The first TRAIN witness is engine-certified. The fresh 64-game comparison and saved-metadata recomputation completed, but the primary gate failed: raw and opt-in each 5/32, eight zero board differences, one changed BUY pair. | No promotion, larger repetition or default change. Keep the narrow correction optional; the exposed TRAIN win cannot establish a stronger player. Select a more consequential next hypothesis from permitted TRAIN evidence. |
 | Following remedy | Use TRAIN evidence to select the next economic or tactical weakness: trade/build/pass, development cards, awards or immediate wins. | Change one mechanism; check the choices and fresh gameplay. Preserve a negative result and change the hypothesis. |
 | After credible competence | Freeze the best candidate and run focal VF/AB comparisons and independent confirmation. | Promote only on the declared primary strength gates. PPO is not a prerequisite. |
 

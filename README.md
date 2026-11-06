@@ -21,7 +21,10 @@ sparse-target fitter passed 43 focused and 11 legacy checks plus independent sou
 cache repair passed engineering review on four saved
 games/361 inputs. The original value attempt stopped after 208 TRAIN games;
 a separate successor completed the missing 112. Component and mixed-index audits
-passed for all 320 inputs (256 TRAIN, 64 validation). Cache and fits are unstarted.
+passed for all 320 inputs (256 TRAIN, 64 validation). The one-pass cache now
+contains all 27,706 own inputs and passed saved-record audit. Four fixed value
+heads completed, but neither the recurrent-representation nor either data-benefit
+gate passed. [Value results](docs/fixed-value-head-results-2026-11-06.md).
 The student collector recorded all 48 planned games and 4,729 own inputs, but its
 Root controller failed during final output accounting. Independent audit found
 the histories intact; a separate zero-query recovery and independent metadata
@@ -35,8 +38,10 @@ city-funding route. An opt-in road correction completed 114 games of a frozen
 128-game study. Against H it won 2/32 versus the parent's 3/32; both GNT arms
 stopped at the fixed own-input cap. It did not advance. See the
 [road experiment](docs/road-continuation-experiment-2026-11-06.md).
-Next work verifies nine conditional near-win trade/build witnesses, then tests a
-narrow winning-prefix search when the fallback chooses a development-card purchase.
+An opt-in winning-prefix search passed nine targeted and 43 affected pure checks.
+An exact TRAIN replay confirmed a trade/build win. Its fresh 64-game comparison
+finished 5/32 wins in each arm, so it did not advance; defaults remain unchanged.
+[Winning-prefix experiment](docs/winning-prefix-experiment-2026-11-06.md).
 The bounded value study asks whether outcome estimates improve projected planning
 leaves; prediction alone cannot establish stronger play. No new imitation targets
 are approved for training.

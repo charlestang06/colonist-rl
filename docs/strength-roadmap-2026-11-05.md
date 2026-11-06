@@ -35,15 +35,26 @@ and both GNT arms hit the fixed 512-input cap. The frozen study retains 114
 completed, two unfinished and twelve unstarted games. Retire the unchanged
 treatment; local plausibility did not establish strength.
 [Detailed result](road-continuation-experiment-2026-11-06.md).
-Next primary work verifies the first positive of nine conditional one-trade/build
-witnesses among 24 near-win BUY+trade TRAIN states. Test the narrow opt-in winning-
-prefix path, including budget fallback and unchanged defaults, then fresh paired
-gameplay if actual transitions certify the proposed win. The public witnesses
-alone do not certify missed wins. Start from the strongest validated decision
-system; a neural parent is not a mandatory deployment base.
+The first positive of nine conditional TRAIN witnesses is now engine-certified:
+exact replay followed by trade/build won at 10 VP. The opt-in path passed nine
+targeted and 43 affected pure checks. Fresh paired evaluation completed 64 games
+but tied at 5/32 wins in each arm; all eight board differences were zero. Only one
+BUY decision changed, in a game both arms already won. No strength advancement or
+default change. [Details](winning-prefix-experiment-2026-11-06.md).
+Next primary work compares persistent public H, raw planner and frozen neural
+parent directly alongside authentic VF/AB on matched fresh development boards.
+Start from the strongest validated decision system; a neural parent is not a
+mandatory deployment base. The source-only incumbent-screen proposal still needs
+its own frozen protocol/budget before runtime.
 The separate value lane now has all 320 planned inputs: retained 208 plus a
 separately collected 112, with independent component and mixed-index reviews
-passed. Fix three bounded cache/head helper findings before actual cache/fits.
+passed. Three cache/head fixes passed 49 synthetic checks and source review;
+eight inert adapter checks and scoped reviews passed. The one-pass cache completed
+all 27,706 inputs and passed independent saved-file audit plus Root input acceptance.
+Four real-data fits then completed with 2,048 updates/131,072 presentations. The
+recurrent representation and both data-size gates failed; no model is promoted.
+Public features had lower point error, with uncertain gains over constant.
+[Fixed value results](fixed-value-head-results-2026-11-06.md).
 Its hypothesis is improved ranking of projected trade/build/road leaves, with
 matched raw and calibrated-handcraft gameplay controls later. The original failed
 attempt stays rejected; no prediction or deployment benefit is established.
@@ -57,7 +68,8 @@ rule; each candidate won 2/16 against trading H. The focal raw/VF/AB2 pilot scor
 histories/4,729 own inputs survive a failed controller finalization. Separate
 recovery passed 9,458 strict pairs and independent metadata review; approved labels
 and data benefit remain unestablished. Main value input collection is complete;
-caching and fitting remain unstarted. Engineering checks establish mechanisms, not strength.
+caching/fixed-fit results are accepted, with advancement gates failed.
+Engineering and prediction checks do not establish stronger play.
 See [current results](training-status-2026-11-05.md) for measured work and limits.
 
 Bank trades remain legal whenever the rules permit them. Strict GreedyNoTrade
