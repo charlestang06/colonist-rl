@@ -7,7 +7,7 @@ audited targets and isolated repairs, with bounded outcome-value work alongside 
 No authentic VF/AB superiority or new model promotion
 is established.
 
-## Latest preparation: cache repaired; sparse fitter still pending
+## Latest preparation: cache repaired; sparse fitter verified
 
 The separate cache-only repair completed on the original four engineering
 histories, preserving the failed attempt. It encoded all 361 own inputs in both
@@ -20,18 +20,46 @@ did not deserialize/replay the model. This is engineering feasibility only.
 Board 138100000 stays outside main TRAIN/validation and strength claims.
 [Repair review](../runs/swarm-2026-11-04/agent-research/complete-history-cache-repair-002/independent-audit-001/EMPIRICAL-REVIEW.md).
 
-The sparse accepted-target fitter passed its initial 41 synthetic tests, including
-anchor-only updates and recurrence. Independent source review then identified
-large-common-offset instability in multi-action loss. Both added regressions
-failed as expected; the numerical fix and full 43-case/legacy regression review
-remain pending. No real-data fit or candidate promotion occurred.
-[Source review](../runs/swarm-2026-11-04/agent-research/approved-target-loss-review-001/REVIEW.md).
+The sparse accepted-target fitter passed all 43 focused and 11 existing legacy
+tests after a one-expression numerical repair. The two new large-common-offset
+regressions first reproduced zero-loss cancellation; the stable formulation uses
+selected log-softmax values before log-sum-exp. Singleton CE remains exact.
+Independent review confirms the legacy dense branch/shared update tail and all
+original helpers remain AST-identical. The API supports one approved loss anchor
+per update, complete current-weight prefixes, recurrence-only unapproved rows and
+VAL-only accepted-set scoring. Approval provenance remains the caller's duty.
+[API](approved-target-loss.md),
+[source addendum](../runs/swarm-2026-11-04/agent-research/approved-target-loss-review-001/stability-fix-review-001/REVIEW.md).
+
+Root sessions 41793/73868 both terminated zero, with guard exits zero and all
+39 live samples within the prospective OS-at-most-four/RSS 2 GiB test policy;
+peak RSS was 352,796,672 bytes. Focused tests recorded 547 toy observation
+forwards/419 backwards. Original tiny legacy fixtures recorded 21 resets,
+336 engine steps, 252 H calls, 50 graph/102 toy observation forwards and
+32 backwards. Those incomplete mechanical fixtures are not new research data
+or strength games. No checkpoint query or real-data study fit occurred, and the
+historical strict-OS1 HOLD remains unchanged.
+[Root verification](../runs/swarm-2026-11-04/agent-research/approved-target-loss-integration-001/ROOT-VERIFICATION.json).
 
 The corrected current-student experiment design passed independent review; it
 still requires collection, label audit and its fixed added-data-only comparison.
-The separate 320-game terminal-history collection SPEC is prepared, with no main
-games collected or value heads fit. These are preparation milestones, not evidence
-of better decisions. The [canonical roadmap](agent-research-roadmap.md) defines the
+The separate 320-game terminal-history collector passed 17 isolated stdlib/stub
+tests in Root session 53863; no real project/model/engine was imported by that
+runner. Prelaunch review then identified a codec-readiness gap: serialization alone
+does not establish that saved inputs pass the later strict decoder. A minimal
+successor must verify decode/re-export identity while planning on the original
+view objects. The original core/evidence remain preserved; no actual collection
+or automatic continuation is authorized by those stub results.
+
+Its fixed 64 TRAIN/16 VAL board reservation passed a scoped metadata review;
+the actual runtime master is still unfrozen, with no main games collected or
+value heads fit. The student-history collector design was reviewed for pure
+implementation, with no collection yet. These are preparation milestones, not
+evidence of better decisions.
+[Value collector handoff](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/implementation-001/ROOT-HANDOFF.md),
+[reservation scope](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/board-reservation-001/REPORT.md),
+[student collector design](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/SPEC.md).
+The [canonical roadmap](agent-research-roadmap.md) defines the
 new order: safe sparse learning, audited current-student data, targeted tactical
 repair and verified longer planning; PPO follows demonstrated competence.
 

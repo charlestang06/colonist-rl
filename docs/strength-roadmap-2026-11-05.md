@@ -13,9 +13,8 @@ alternatives and ambiguous judgments. Cover placement, trades/build/pass,
 domestic responses, robber/discard, development-card buying and play, road/army
 races and VP/endgame. Missing coverage prevents a broad competence claim.
 
-Next: repair the accepted-set loss's numerical instability, finish the 43-case and
-legacy regression review, then collect/audit current-student data and run the
-frozen added-data-only comparison. In a separate bounded lane, complete the
+Next: collect/audit current-student data and run the frozen added-data-only
+comparison using the reviewed sparse fitter. In a separate bounded lane, complete the
 role-aware terminal-history collector and its reviewed 320-game schedule; test
 value prediction before policy deployment. A small tactical repair from fresh
 TRAIN failures can proceed alongside these experiments; it need not wait for BC.
@@ -33,8 +32,8 @@ over both references. These exposed data remain outside training.
 
 The separate complete-history cache repair passed engineering review on four
 saved games/361 inputs, preserving the first failed attempt. Main value collection
-and fitting remain unstarted. The sparse loss passed 41 initial tests; two later
-offset regressions reproduced an uncovered issue, so it remains pending repair.
+and fitting remain unstarted. The sparse fitter's offset issue is repaired;
+43 focused and 11 legacy tests passed with independent source review.
 Neither result establishes stronger play. [Current status](training-status-2026-11-05.md)
 records evidence and limitations.
 

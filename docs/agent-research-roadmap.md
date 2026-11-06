@@ -67,9 +67,9 @@ required next stage or a substitute for understanding obvious mistakes.
 - Four engineering games retained 361 complete own inputs. The cache-only repair
   passed independent engineering review after the original fingerprint failure.
   This establishes a usable history/cache path, not a trained value model.
-- Independent review exposed a reproduced numerical instability in the new
-  accepted-alternative loss. The fitter remains pending repair and full regression
-  review; preparation is not yet a usable real-data training path.
+- The accepted-alternative fitter now passes focused and legacy regressions plus
+  independent source review after a reproduced numerical issue was repaired.
+  Collection, independent target approval and real-data benefit remain untested.
 
 No candidate is promoted. No VF/AB superiority or broad heuristic competence has
 been demonstrated. Preserve failed attempts, resource HOLDs and null outcomes.
@@ -196,8 +196,7 @@ broad adapter refactoring remain later work.
 
 | Order | Deliverable | Decision it enables |
 |---|---|---|
-| Primary data lane, step 1 | Repair accepted-set numerical stability; run focused/affected legacy checks and independent review. | Safe sparse learning from explicitly approved alternatives. |
-| Primary data lane, step 2 | Collect and audit the prepared current-student cases; run the frozen added-data-only contrast. | Whether better on-policy targets improve decisions and games at equal work. |
+| Primary data lane | Use the reviewed sparse fitter to collect/audit the prepared current-student cases, then run the frozen added-data-only contrast. | Whether better on-policy targets improve decisions and games at equal work. |
 | Parallel bounded lane | Complete the role-aware terminal-history collector and reviewed 320-game schedule; then fit the frozen value/data-size contrasts. | Whether real outcomes provide useful predictive information beyond existing public features. |
 | Parallel small remedy | Choose one tactical repair from fresh TRAIN failures and test it alone; it need not wait for sparse fitting or the data-only result. | Whether a concrete decision gap can be closed without broad retraining. |
 | After transition feasibility | Verify and profile public cross-turn transitions; compare bounded search with the current planner. | Whether planning farther pays for its cost. |
