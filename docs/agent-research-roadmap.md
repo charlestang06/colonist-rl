@@ -77,9 +77,10 @@ ambiguous choices from demonstrably bad actions. EVAL observations never become
 TRAIN labels. Public logs constrain resource beliefs; hidden steals and
 unknown cards prevent perfect knowledge of opponents' hands.
 
-For each failure, inspect legality, action encoding, target consistency and
-relevant gradients first. Then distinguish bad supervision, student-state
-coverage, missing information, insufficient planning and optimization trouble.
+For each failure, inspect legality, action encoding and target consistency first;
+inspect relevant gradients when the failing component is learned. Then distinguish
+bad supervision, student-state coverage, missing information, insufficient planning
+and optimization trouble.
 Choose the smallest remedy that addresses the diagnosed cause:
 
 - Bad targets: correct or omit them; preserve acceptable alternatives.
@@ -95,10 +96,11 @@ state and a declared offer regime. Neither trade frequency nor avoiding trades
 is the target. Resource values depend on the board, hand, ports, stage and
 opponents. Scarcity priors are hypotheses to test, not universal labels or rewards.
 
-A heuristic-competence claim requires both an independent held-out audit across
-all eight groups and fresh all-seat gameplay against strict GreedyNoTrade and
-trading H. Before that evaluation, freeze coverage counts, reasonable/bad decision
-thresholds, critical-error rules, practical noninferiority margin, board count and
+A heuristic-competence claim requires an independent audit across all eight
+groups from preselected fresh EVAL games, plus fresh all-seat gameplay against
+strict GreedyNoTrade and trading H. Do not substitute label-validation or exposed
+diagnostic cases for that audit; its observations and judgments stay out of TRAIN.
+Before that evaluation, freeze coverage counts, reasonable/bad decision thresholds, critical-error rules, practical noninferiority margin, board count and
 board-level uncertainty method. Missed immediate wins or destructive loops block
 competence until resolved; absent coverage remains unknown. A 25% win rate or a
 nonsignificant comparison does not establish parity.
@@ -147,9 +149,11 @@ stops testing the weakness of interest.
 Compare the strongest credible candidate directly with focal VF and focal AB;
 this comparison does not require PPO. Use fresh paired boards, rotate all seats,
 match background opponents and offer rules, and report whole-board uncertainty.
-Require positive candidate-minus-reference contrasts against both references and
-replication on disjoint fresh boards before claiming reproducible superiority.
-Freeze the minimum practical effect and uncertainty rule before confirmation.
+Before confirmation, freeze the minimum practical effect and an uncertainty rule
+that supports superiority against both focal references. Require the declared
+lower bounds for both candidate-minus-reference contrasts to exceed that margin,
+with replication on disjoint fresh boards, before claiming reproducible superiority.
+Positive point estimates alone do not pass.
 Three-native stress panels answer a different question and cannot substitute for
 these focal comparisons. A failed primary result cannot be rescued by VP or a
 secondary opponent panel.
