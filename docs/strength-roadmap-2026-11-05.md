@@ -26,16 +26,20 @@ The 32-case TRAIN audit and six historical replays found consistent action
 encoding and relevant gradients in the selected cases. The parents already use
 30 recipe features. A separate eligibility contrast screen supports a bounded
 four-channel comparison; two discarded profiles completed exact work and passed
-their prospective resource audit. Main fixed-data fits and the required separate
-audited-data experiment remain next; no new model is promoted.
+their prospective resource audit. Four fixed-data fits then completed and passed independent metadata/resource
+audit. Eligibility adds no validation exact-label gain over control; keep all four
+weights and unchanged parents for complete-game comparisons. Those games and the
+required separate audited-data experiment remain next; no model is promoted.
 
 The evaluation-only focal VF/AB API is now implemented and passed 12 real
 engineering games plus independent selector/outcome/resource audit. Raw/VF/AB
 scores of 4/3/4 per four against GreedyNoTrade on one exposed board are not
-strength evidence. Next use four fresh audited boards/all seats against matched
-persistent H backgrounds with offers disabled (48 new games). Preserve the
-engineering runtime provenance limitation and add the extra macOS executable
-pin before new runs. Three-native stress panels remain distinct. Keep final
+strength evidence. The later fresh 48-game H-no-offers pilot completed and passed
+independent audit: raw 3/16, VF 0/16, AB2 4/16. Paired raw-minus-VF was +18.75pp
+[0,37.5]; raw-minus-AB was −6.25pp [−25,12.5]. Four clusters do not establish
+superiority and the negative AB point cannot be rescued by VF. Keep this cohort
+EVAL-only and do not retune on it. The extra macOS executable was pinned before
+this new pilot; the older engineering provenance limitation remains historical. Three-native stress panels remain distinct. Keep final
 boards `123100000..123100063` and legacy finals sealed.
 
 [Current results](training-status-2026-11-05.md) link exact reviews and artifacts.

@@ -102,8 +102,14 @@ this profile does not retroactively clear it or approve main fits.
 
 The full fixed-data preparation binds 64 original episodes to whole-board
 TRAIN/validation/retention splits. Each proposed two-epoch fit has 400 updates,
-3,858 presentations, 18,048 prefix and 6,078 chunk observations. Main worker,
-protocol and reviewed gameplay schedule are separate; no main fit or promotion has run.
+3,858 presentations, 18,048 prefix and 6,078 chunk observations. The four main fits are now complete and independently audited: 1,600 total
+updates and 116,370 observation forwards, with four evaluation checkpoints kept.
+An import-inspection failure in attempt001 is preserved separately; the narrow
+repair preceded the full unchanged attempt002. Eligibility adds no validation
+exact-label gain over control (one fewer correct label for parent 29), so CE cannot
+justify selection. The reviewed gameplay schedule remains separate; no model is
+promoted. Compare all fitted arms and unchanged parents in complete games before
+the required audited-data follow-up.
 
 The probe retains a resource HOLD: two samples recorded four OS threads despite
 configured Torch intra/inter-op counts of one. This is not evidence of four active
@@ -144,11 +150,18 @@ and three GreedyNoTrade backgrounds. Scores were raw 4/4, VF 3/4 and AB 4/4;
 this is engineering evidence, not strength or fresh controls. Candidate-versus-
 three-native stress panels remain a separate protocol.
 
-Next compare the unchanged public raw candidate and focal VF/AB separately on
-four audited fresh boards/all seats against three persistent H opponents, with
-`no_offers=True` in every arm. This 48-game pilot addresses the weak-background
-ceiling risk; the strict GreedyNoTrade engineering panel remains separate. Keep
-native information/rule asymmetry explicit and require later fresh replication.
+The subsequent 48-game H-no-offers pilot completed on four audited fresh boards
+and all seats: raw 3/16, VF 0/16, AB2 4/16. Paired raw-minus-VF was +18.75
+percentage points [0,37.5]; raw-minus-AB was −6.25 [−25,12.5], using four whole-board
+clusters. The goal remains unmet. The candidate is not nominated for confirmation;
+VF, VP or Greedy engineering cannot rescue the AB result. Preserve this cohort
+as EVAL-only and do not retune on it.
+
+Strength work should examine public cross-turn sampling and richer true-terminal
+TRAIN value learning, with tactical chance-aware coverage as a separate bounded
+avenue. The PM memo proposes causal tests and failure criteria, not automatic
+launches. Keep the required feature games and audited-data comparison separate;
+BC does not gate value/search. Native information/rule asymmetry remains explicit.
 The engineering audit also records an additional macOS framework executable
 without a declared pre-run pin; add that pin prospectively, without rewriting
 old evidence. Keep strict GreedyNoTrade, H/H_view and frozen parents as

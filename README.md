@@ -13,9 +13,9 @@ development studies from strength confirmation. The first fixed evaluator
 comparisons and the 128-game grounded comparison found no reliable model advantage.
 A fresh 256-game second-settlement study then failed its primary advancement rule.
 The trade/pass mechanics audit is complete. Native focal-reference execution
-passed 12 real engineering games; the next strength pilot uses matched harder
-H-no-offers backgrounds. Discarded fitter profiles support preparing a fixed-data
-eligibility-feature ablation, followed by independently audited added data.
+passed 12 real engineering games. A fresh 48-game matched H-no-offers pilot
+then found no superiority over both references (raw 3/16, VF 0/16, AB2 4/16). Four fixed-data eligibility-feature fits are complete and await paired games;
+independently audited added data remains a separate required follow-up.
 No authentic VF/AB superiority is established.
 
 ## Run

@@ -5,6 +5,93 @@ the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-star
 tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
 is established.
 
+## Matched focal-reference pilot: goal remains unmet
+
+The separate 48-game pilot completed on four audited fresh development boards,
+all seats, with three persistent H opponents and offers disabled in every arm.
+The unchanged public raw planner won 3/16, native VF 0/16 and native AB2 4/16.
+Whole-board paired bootstrap (20,000 common resamples, seed 137510011) gave:
+
+| Contrast | Difference | 95% interval |
+|---|---:|---:|
+|raw minus VF|+18.75 percentage points|[0,37.5]|
+|raw minus AB2|−6.25 percentage points|[−25,12.5]|
+
+Four clusters are descriptive. The VF interval includes zero and the AB point
+estimate is negative; neither supports promotion or superiority over both refs.
+Do not rescue the AB result with VF wins, VP or the earlier Greedy engineering
+cohort. No final boards were opened and no evaluation data becomes training data.
+
+Independent audit passed 42,658 metadata checks. All 48 outcomes, 12 worker/guard
+joins, 144 actual background-seat records and 13,933 H selections were verified.
+All 604 live resource samples had one OS thread, peak RSS 760,414,208 bytes;
+recorded pilot concurrency was 2 and Root wall 73.690 seconds. Native original
+calls 2,515 plus 374 discard shims reconcile with 2,889 focal calls. Root exit 0,
+immutable complete/accepted status and summary all match. All declared source,
+runtime and prospectively pinned macOS App bytes passed. A failed first metadata
+audit assumed an optional legacy identity field on H rows; its correction and
+history are retained, with no game rerun or execution-record change.
+[Pilot empirical review](../runs/swarm-2026-11-04/agent-research/native-focal-pilot-001/run-001/EMPIRICAL-REVIEW.md).
+
+The [PM memo](../runs/swarm-2026-11-04/agent-research/native-next-avenues-001/PM-MEMO.md)
+recommends public cross-turn sampled search, independent true-terminal TRAIN value
+learning, then one chance-aware tactical class. These are proposed causal tests,
+not newly implemented policies. Keep the required feature-game and audited-data
+comparisons separate; cloning success does not gate value/search research.
+
+## Fixed-data feature fits: complete, awaiting games
+
+Four fits completed from retained FULL15 parents 11/29: existing hand_recipe
+control versus eligibility features, with coefficients 30:34 initially zeroed in
+both arms. Each made exactly 400 updates/3,858 presentations/18,048 prefix and
+6,078 chunk observations, using fresh Adam 3e-4, sequence 16, batch 1 and uniform CE.
+Only the eight TRAIN boards supplied updates. Validation and retention were
+scoring-only; each unchanged parent was scored once after its control fit.
+
+Attempt001 failed in import-file inspection: inherited Torch namespace metadata
+`__file__='_ops.py'` was mistaken for a real file. Four parent loads, model
+construction and decoding occurred, but source control flow proves zero NN
+forwards, optimizer updates, scores or exports. Its 72-file snapshot and failed
+records remain intact. The narrow ModuleType/instance-dictionary repair passed 13
+isolated regression tests and independent review; real missing/unpinned files
+still fail closed. Attempt002 reran the complete unchanged four-job work plan.
+[Failed attempt](../runs/swarm-2026-11-04/agent-research/feature-ablation-001/run-001/EMPIRICAL-REVIEW.md).
+
+Attempt002 passed 45,433 independent metadata checks. All four guards/workers
+exited zero; Root wall was 125.784 seconds, sequential maximum 1. Total work was
+116,370 observation forwards, 1,600 updates and 15,432 presentations. All 550 external
+samples met the prospective OS-at-most-four/RSS 2 GiB policy; peak RSS 1461.109375 MiB.
+Source/runtime/data/parent hashes and the additional pre-run macOS App executable
+pin passed. Four read-only evaluation checkpoints were saved. Tensor/save-state
+claims are frozen-producer assertions and metadata evidence, not independent
+checkpoint deserialization. Old attempt001 remains failed and the older six-case
+strict-OS1 HOLD is unchanged.
+[Completed fit review](../runs/swarm-2026-11-04/agent-research/feature-ablation-001/run-002/EMPIRICAL-REVIEW.md).
+
+These are exact stored-H-label counts on already exposed development splits:
+
+| Parent | Condition | Validation correct /881 | Retention correct /947 | Validation CE |
+|---|---|---:|---:|---:|
+|11|unchanged parent|495|465|0.962506|
+|11|fitted control|503|468|0.960765|
+|11|fitted eligibility|503|468|0.960549|
+|29|unchanged parent|475|462|0.966185|
+|29|fitted control|488|481|0.982735|
+|29|fitted eligibility|487|481|0.982412|
+
+The additional eligibility features add no validation exact-label gain over the
+control; their small CE difference does not establish better decisions or wins.
+Keep all four fitted weights and both original parents for the predeclared game
+comparison. No model is selected or promoted from this table.
+
+A review-only 96-job/384-game plan now compares those six candidates across
+GreedyNoTrade, trading-H and separate three-native VF/AB stress panels. Its four
+learning board IDs remain provisional until separately audited. The required
+new audited student TRAIN aggregation and separate data-only test remain after
+this feature comparison, including a null result. The independent 48-game raw/VF/AB
+focal pilot has a frozen fresh four-board H-no-offers protocol and was launched
+separately; its outcomes are not training data or pooled with these fit metrics.
+
 ## Native reference execution and fitter feasibility
 
 The evaluation-only focal-native API is integrated with byte-identical reviewed
@@ -31,16 +118,16 @@ plus 504 initial identity forwards. Fitter calls took 0.583523/0.556337 seconds;
 the Root attempt took 14.368 seconds. Both jobs preserved parent/value-head/input
 integrity and discarded all fitted weights. Independent audit passed 19,157
 checks; all 48 external samples met the prospective CPU/Torch1, autograd-disabled,
-OS-at-most-four and RSS2GiB policy (peak 747.25 MiB). This does not clear the old
+OS-at-most-four and RSS 2 GiB policy (peak 747.25 MiB). This does not clear the old
 six-case strict-OS1 HOLD or approve main fits.
 [Profile review](../runs/swarm-2026-11-04/agent-research/feature-fit-profile-001/run-001/EMPIRICAL-REVIEW.md).
 
 The next feature-ablation data manifest binds 64 episodes/16 whole boards:
 TRAIN 3,041 rows/1,929 choices; validation 1,457/881; retention 1,518/947.
 Only TRAIN can feed updates. Each planned two-epoch fit has exactly 400 updates,
-3,858 presentations, 18,048 prefix and 6,078 chunk observations. Four completed
-weights would require separate game comparisons before any selection; no main
-fit or new model promotion exists. A separate 48-game matched H-no-offers focal
+3,858 presentations, 18,048 prefix and 6,078 chunk observations. The subsequent four completed
+fits are reported above; their weights still require separate game comparisons
+before any selection. No new model promotion exists. A separate 48-game matched H-no-offers focal
 pilot is being prepared, with fresh board identities audited before GO. Strict
 GreedyNoTrade, H-no-offers, trading-H and three-native stress results stay separate.
 
