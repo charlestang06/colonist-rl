@@ -38,7 +38,13 @@ then produced 17 changed decisions across six boards in a 32-game TRAIN
 capture. Its incremental eligible-decision p95 was 51.843 ms against a frozen
 25 ms limit, so the study stopped before any smoke or fresh game screen. The
 exact public probe and choice-blind diagnostic are archived; the source remains
-on an isolated branch. A separate prospective batched-throughput study is active.
+on an isolated branch. A separate prospective batched-throughput study followed.
+That [batched v2 study](public-one-round-throughput-v2-results-2026-11-06.md)
+then exactly matched v1 roots/scores on 129 archived public views and produced
+30 changed choices across eight new TRAIN boards. It reduced median decision
+time but its prospective incremental p95 was 28.670 ms, still above the
+unchanged 25 ms gate. It too stopped before smoke or development games; its
+source and complete public evidence remain on an isolated branch.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

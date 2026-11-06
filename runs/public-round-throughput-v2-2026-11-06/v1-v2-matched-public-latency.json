@@ -1,0 +1,21 @@
+{
+  "eligible_counts": {
+    "v1": 127,
+    "v2": 127
+  },
+  "median_ms": {
+    "v1": 49.305834,
+    "v2": 13.464
+  },
+  "order": "alternating v1/v2 by capture index",
+  "outcomes_or_judge_packet_read": false,
+  "p95_ms": {
+    "v1": 96.9766375,
+    "v2": 26.323566899999996
+  },
+  "role": "read_only_matched_archived_public_timing",
+  "v1_archive_sha256": "7e845999416af1a66f496b76d95825249555ebaf2d9a46863327a9171101cc4d",
+  "v1_reference_commit": "ca0870e",
+  "v2_source_commit": "e7d4a7b",
+  "views": 129
+}

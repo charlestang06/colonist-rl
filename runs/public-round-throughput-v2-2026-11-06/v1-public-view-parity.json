@@ -1,0 +1,23 @@
+{
+  "compared_fields": [
+    "root_index",
+    "original_action_identity",
+    "reason",
+    "search_stop",
+    "steps",
+    "score_before_micro",
+    "score_after_micro",
+    "nodes",
+    "geometry_visits",
+    "search_diagnostics",
+    "wrapper_diagnostics_except_timing"
+  ],
+  "mismatch_capture_indices": [],
+  "mismatch_count": 0,
+  "outcomes_or_judge_packet_read": false,
+  "public_view_count": 129,
+  "role": "read_only_v1_public_view_parity",
+  "v1_archive_sha256": "7e845999416af1a66f496b76d95825249555ebaf2d9a46863327a9171101cc4d",
+  "v1_reference_commit": "ca0870e",
+  "v2_batch_commit": "42e0eba"
+}
