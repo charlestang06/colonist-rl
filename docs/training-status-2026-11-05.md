@@ -68,6 +68,13 @@ archived and unpromoted. A posthoc review identified unverified conditions on
 some accepted alternatives. Future designs must check baseline headroom and
 fact-check accepted alternatives before fit.
 
+The separately frozen [point-affordance feature study](point-affordance-feature-protocol-2026-11-06.md)
+has frozen a fresh student-state acquisition plan. Its opt-in source is isolated on
+branch `cytang/learning-point-affordance`; the unchanged seed-11 parent has
+bitwise-identical zero-start outputs. The study requires baseline headroom,
+factual checks of accepted alternatives, and actual accepted bank-trade choices
+before any gameplay. No fit or strength claim follows from the feature tests.
+
 ## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
 
 The optional `search_build_win_before_buy=False` path passed nine targeted
