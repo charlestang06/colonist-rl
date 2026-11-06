@@ -766,6 +766,15 @@ def plan_turn(
         ):
             return result("insufficient_gain", stopped)
         roots_validated = True
+        # A validated current point build ends the game without future intentions.
+        if view.own_victory_points == view.rules.victory_points - 1:
+            direct_wins = [
+                node
+                for node in beam
+                if node.winning and node.steps[0].kind in ("BUILD_CITY", "BUILD_SETTLEMENT")
+            ]
+            if direct_wins:
+                return result("planned", "current_legal_win", min(direct_wins, key=_Node.order))
         beam_truncations += max(0, len(beam) - config.beam_width)
         beam = sorted(beam, key=lambda n: n.order())[: config.beam_width]
         for _depth in range(1, config.max_depth):

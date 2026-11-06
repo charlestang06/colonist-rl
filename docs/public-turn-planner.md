@@ -88,6 +88,13 @@ every generated future attempt (including rejected/duplicate children) consumes
 one node. Root enumeration is city, settlement, road, maritime, END, canonical
 within each group. Future enumeration uses that build order, then maritime
 exchanges in the same canonical `_step_key` order used for roots and path ties.
+After the complete supported root menu is validated, a current legal city or
+settlement that raises **known own VP from 9 to 10** in the standard profile is
+selected before future search. Among multiple direct wins, the existing node
+order chooses one. The returned action is the original menu object. This guard
+does not claim points from roads, cards, or unsupported rules, and a root
+validation limit or contract mismatch still falls back. Its `planned` result has
+`search_stop=current_legal_win`, one selected step, and root-only search counts.
 Every feasible prefix can stop without creating an END action. Children
 are deduplicated by complete projected state plus original root index. The best
 24 endpoints form the next beam; no widening or appealing-chain completion occurs
@@ -127,10 +134,11 @@ plus building-point gain against the supported rules' victory target. No new
 longest-road/largest-army award is inferred, and no opponent hidden VP is guessed.
 Accessibility sites are alternatives, not simultaneous guaranteed settlements.
 
-Ties prefer known win, score, fewer exchanges, fewer steps, canonical path, then
-original root index. Supported actions' resource/second-resource/partner/offer-id
-fields are all null, so their omitted path-key fields are constant null sentinels;
-kind/target (null `-1`)/give/receive determine the remaining canonical key.
+For paths after the direct-win guard, ties prefer known win, score, fewer
+exchanges, fewer steps, canonical path, then original root index. Supported
+actions' resource/second-resource/partner/offer-id fields are all null, so
+their omitted path-key fields are constant null sentinels; kind/target (null
+`-1`)/give/receive determine the remaining canonical key.
 Override requires a build and strict gain above both root and H_view's supported
 one-step score, or a known winning path. Bank cycling alone cannot override.
 
@@ -152,10 +160,10 @@ No benchmark, rollout, label generation or training is authorized by this module
 `unsupported_context`, `unsupported_rules`, `unsupported_heuristic_action`,
 `public_contract_mismatch`, `root_validation_limit`, and `geometry_limit`.
 `search_stop` independently records `not_searched`, `depth_limit`, `node_limit`,
-`empty_beam`, or `geometry_limit`. `steps` is empty on every H_view fallback;
-`score_after_micro` then equals root score (zero if scoring was not reached),
-not an assertion that an unsupported H effect was simulated. No debug export
-schema is added.
+`empty_beam`, `geometry_limit`, or `current_legal_win`. `steps` is empty on every
+H_view fallback. On fallback, `score_after_micro` equals root score (zero if
+scoring was not reached), not an assertion that an unsupported H effect was
+simulated. No debug export schema is added.
 
 ## Validation and runtime limits
 
@@ -189,3 +197,9 @@ or censored games; never substitute a timed fallback or ordinary loss label.
 No coefficient/budget tuning followed these timings. The table records the
 pre-review implementation. The later canonical future maritime ordering fix was
 not retimed, so this table is not a runtime check of the corrected candidate.
+
+The direct-win regression freezes only the public engine Observation at board
+seed 138250001, seat 3, version 365. Its legal menu includes settlement 48 at
+known own VP 9 and hand `(1, 4, 2, 2, 1)`. The earlier planner searched a
+two-trade city win; the guard selects the current legal settlement. This is a
+choice-contract regression, not a gameplay strength measurement.

@@ -647,7 +647,7 @@ def test_geometry_cap_before_complete_root_validation_does_not_preserve_a_win():
     assert plan.first_action is p.HeuristicViewPolicy().act(observation)
 
 
-def test_geometry_cap_preserves_a_completed_win_despite_a_low_evaluator_score():
+def test_current_legal_win_preempts_geometry_cap_despite_a_low_evaluator_score():
     p = planner()
     observation = view(hand=(4, 0, 0, 2, 3))
     observation = replace(
@@ -664,11 +664,13 @@ def test_geometry_cap_preserves_a_completed_win_despite_a_low_evaluator_score():
         p.TurnPlannerConfig(max_geometry_visits=150),
         evaluator=lambda root, state, handcraft: -state.building_point_gain * 1_000_000,
     )
-    assert plan.reason == "planned" and plan.search_stop == "geometry_limit"
+    assert plan.reason == "planned" and plan.search_stop == "current_legal_win"
     assert plan.first_action is observation.legal_actions[0]
     assert plan.steps == (p.PlannedStep("BUILD_CITY", 0),)
     assert plan.score_after_micro == -1_000_000 < plan.score_before_micro
-    assert plan.geometry_visits == 150
+    assert plan.geometry_visits < 150
+    assert plan.search_diagnostics is not None
+    assert plan.search_diagnostics.future_attempts == 0
 
 
 def test_geometry_cap_does_not_infer_a_win_from_projected_roads():
