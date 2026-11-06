@@ -116,10 +116,11 @@ the observation contract and evaluation path and need not wait for every planner
 repair. Choose one hypothesis rather than automatically building this whole list.
 The [conditional student-state DAgger protocol](student-dagger-conditional-fit-2026-11-06.md)
 stopped before fitting when its H-disagreement gate failed. A new learning study
-must freeze its own selection and gates. The [planner point-route blind pilot](planner-point-pilot-protocol-2026-11-06.md)
-has frozen 15 TRAIN and seven separate label-validation student-reached cases
-before new labels. Its planner routes are hypotheses, not approved supervision;
-fit and gameplay remain conditional on independent strategic and factual gates.
+must freeze its own selection and gates. The [planner point-route blind pilot](planner-point-pilot-results-2026-11-06.md)
+audited 15 TRAIN and seven label-validation student-reached cases, then
+completed two matched 60-update fits. The audited arm failed held-out CE and
+accepted-hit gates; the parent already hit six of seven accepted sets, making
+the frozen plus-two hit gate impossible. No game ran or checkpoint was promoted.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -159,6 +160,12 @@ repeat small panels under a rule incapable of resolving the meaningful effect.
 Plan confirmation against a practical effect and say when the affordable design
 is inconclusive. Never rescue a failed frozen gate by changing its metric or
 extending its sample automatically.
+
+Before fitting against a discrete held-out hit target, score the unchanged
+parent once on approved validation anchors and check that the maximum possible
+gain can reach the frozen target. If it cannot, stop before updates. This check
+does not create new labels or permit tuning to validation. Report actual legal
+action kinds, especially bank trades, separately from broad accepted-set hits.
 
 Use the [manifest-driven paired runner and analyzer](experiment-quickstart.md)
 for planner and graph-checkpoint comparisons. It records configs, explicit
@@ -216,7 +223,7 @@ and six-player learning follow reliable standard four-player play.
 | Stopped before games | [Public one-round production option](public-one-round-production-results-2026-11-06.md): 17 changed TRAIN decisions across six boards, but incremental p95 51.843 ms exceeded the frozen 25 ms limit. | Preserve the exact probe and isolated source; a distinct batched calculation must pass a new prospective latency gate before any game screen. |
 | Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
 | Complete | [Audit student-reached trade/pass/BUY states](student-dagger-audit-results-2026-11-06.md): 20 TRAIN/five label-validation supported sets; only three TRAIN sets excluded H against the frozen minimum four. | Stop before fitting; preserve ambiguous cases and exact audit. |
-| Active learning pilot | [Audit public planner point-route overrides](planner-point-pilot-protocol-2026-11-06.md) on 15 TRAIN/seven label-validation student-reached cases. | Check exact H disagreement, independent strategic labels, route feasibility and retention before any fit or fresh-game screen. |
+| Complete | [Planner point-route sparse fit](planner-point-pilot-results-2026-11-06.md): 15 TRAIN/seven label-validation anchors, two 60-update arms; audited CE 0.528851 versus parent 0.525773/H arm 0.520527, identical 6/7 accepted hits and zero actual trade choices. | Stop before games; future acquisition needs baseline headroom and fact-checked alternative roots. |
 | Active throughput study | Batch the exact public four-roll endpoint calculation on a separately frozen source and new TRAIN boards. | Keep the 25 ms incremental p95, root identity and replay gates; do not use failed-screen outcomes to tune the new probe. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 

@@ -51,6 +51,17 @@ frozen minimum was four. It stopped before any fit or gameplay screen. This is
 separate from the earlier 88-case audit below, which failed its own coverage
 gate. The audit is archived with exact joins and corrected resource descriptions.
 
+The distinct [planner point-route pilot](planner-point-pilot-results-2026-11-06.md)
+passed its conditional pre-fit review and completed two matched 60-update
+sparse fits. Its audited model had worse held-out accepted-set CE than both
+controls, identical 6/7 accepted-set hits, and no actual bank-trade choices
+on four trade-route anchors. The parent's 6/7 starting hits made the frozen
+plus-two hit gate impossible. All 1,075 other nonforced validation rows retained
+stable H agreement. It stopped before games; both fitted checkpoints remain
+archived and unpromoted. A posthoc review identified unverified conditions on
+some accepted alternatives. Future designs must check baseline headroom and
+fact-check accepted alternatives before fit.
+
 ## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
 
 The optional `search_build_win_before_buy=False` path passed nine targeted
