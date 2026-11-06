@@ -9,8 +9,8 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from colonist_rl.contracts import Action
 from colonist_rl import paired_gameplay as paired
+from colonist_rl.contracts import Action
 from colonist_rl.public_turn_planner import PlannedStep, SearchDiagnostics, TurnPlan
 
 
@@ -190,6 +190,67 @@ def test_partial_block_is_reported_without_claiming_a_paired_board(monkeypatch):
     assert matched["arms"]["plain"]["wins"] == matched["arms"]["road"]["wins"] == 1
     assert matched["paired_resolved"] is False and matched["contrast_vs_reference"] is None
     assert len(persisted) == 13
+
+
+def test_searched_selection_latency_excludes_unsearched_decisions_per_board_and_arm(monkeypatch):
+    durations = {31: (1, 10, 3, 20), 47: (5, 30, 40, 50)}
+    ticks = []
+    cursor = 0.0
+    for seed in (31, 47):
+        for milliseconds in durations[seed]:
+            ticks.extend((cursor, cursor + milliseconds / 1000))
+            cursor += 1.0
+    clock = iter(ticks)
+    monkeypatch.setattr(paired, "time", NS(perf_counter=lambda: next(clock)))
+
+    class MixedPlanner:
+        def plan(self, view):
+            seed, seat = divmod(view.context.version, 10)
+            searched = seat == 0 or (seed == 31 and seat == 2)
+            return NS(
+                first_action=view.legal_actions[0], root_index=0,
+                reason=("planned" if seat == 0 else "insufficient_gain")
+                if searched else "unsupported_context",
+                search_stop=("node_limit" if seat == 2 else "complete")
+                if searched else "not_searched",
+                nodes=2 if searched else 0, geometry_visits=0,
+            )
+
+    def evaluate(adapter, **kwargs):
+        seed = kwargs["board_seeds"][0]
+        rows = []
+        for seat in range(4):
+            action = Action("END_TURN")
+            selected, _ = adapter.act(_view(seat, seed * 10 + seat, (action,)))
+            assert selected is action
+            rows.append(_row(seed, seat, {"END_TURN": 1}, won=seat == 0))
+        return {"status": "complete", "outcomes": rows, "partial_outcomes": [],
+                "interrupted_game": None}
+
+    monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
+    result = paired.run_paired_panel({"mixed": MixedPlanner}, board_seeds=[31, 47])
+    arm = result["arms"]["mixed"]
+    board31, board47 = arm["boards"]
+    assert board31["selection_latency_ms"]["count"] == 4
+    assert board47["selection_latency_ms"]["count"] == 4
+    assert arm["selection_latency_ms"]["count"] == 8
+    assert board31["selection_latency_ms"]["mean"] == pytest.approx(8.5)
+    assert arm["selection_latency_ms"]["mean"] == pytest.approx(19.875)
+    assert arm["searched_selection_latency_scope"] == (
+        "attempted_planner_selections_with_search_stop_other_than_not_searched")
+    assert board31["searched_selection_latency_ms"] == pytest.approx(
+        {"count": 2, "mean": 2.0, "p95": 2.9}
+    )
+    assert board47["searched_selection_latency_ms"] == pytest.approx(
+        {"count": 1, "mean": 5.0, "p95": 5.0}
+    )
+    assert arm["searched_selection_latency_ms"] == pytest.approx(
+        {"count": 3, "mean": 3.0, "p95": 4.8}
+    )
+    assert board31["searched_plan_reason_counts"] == {
+        "planned": 1, "insufficient_gain": 1}
+    assert board47["searched_plan_reason_counts"] == {"planned": 1}
+    assert arm["searched_plan_reason_counts"] == {"planned": 2, "insufficient_gain": 1}
 
 
 def test_candidate_step_callback_identifies_arm_and_board_in_multiarm_panel(monkeypatch):
@@ -493,6 +554,7 @@ def test_graph_policy_path_delegates_mode_and_memory_without_planner_calls(monke
         "END_TURN": 8}
     assert board["plan_reason_counts"] == board["search_stop_counts"] == {}
     assert board["selection_latency_ms"]["count"] == 8
+    assert board["searched_selection_latency_ms"]["count"] == 0
     assert board["search_diagnostics_record_count"] == 0
     assert board["search_diagnostics_unavailable_count"] == 8
     assert board["search_diagnostics_totals"]["attempted_transitions"] == 0
@@ -510,6 +572,7 @@ def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypat
             root_attempts=1, future_attempts=4, feasible_transitions=5,
             unique_successors=4, duplicate_successors=1, max_feasible_depth=3,
             selected_plan_depth=2, beam_truncations=1,
+            pruned_invalid_candidates=3,
         ),
         311: SearchDiagnostics(
             root_attempts=2, feasible_transitions=1, invalid_transitions=1,
@@ -519,7 +582,7 @@ def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypat
         470: SearchDiagnostics(
             root_attempts=1, future_attempts=2, feasible_transitions=2,
             invalid_transitions=1, unique_successors=2, max_feasible_depth=2,
-            selected_plan_depth=1,
+            selected_plan_depth=1, pruned_invalid_candidates=2,
         ),
     }
     missing_nodes = {312: 7, 471: 9}
@@ -580,6 +643,7 @@ def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypat
         "selected_plan_depth_sum": 2,
         "max_feasible_depth_sum": 4,
         "beam_truncations": 1,
+        "pruned_invalid_candidates": 3,
     }
     assert board31["search_diagnostics_depth_histograms"] == {
         "selected_plan_depth": {"0": 2, "2": 1},
@@ -600,6 +664,7 @@ def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypat
         "selected_plan_depth_sum": 1,
         "max_feasible_depth_sum": 2,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 2,
     }
     assert board47["search_diagnostics_depth_histograms"] == {
         "selected_plan_depth": {"1": 1}, "max_feasible_depth": {"2": 1}}
@@ -617,6 +682,7 @@ def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypat
         "selected_plan_depth_sum": 3,
         "max_feasible_depth_sum": 6,
         "beam_truncations": 1,
+        "pruned_invalid_candidates": 5,
     }
     assert arm["search_diagnostics_depth_histograms"] == {
         "selected_plan_depth": {"0": 2, "1": 1, "2": 1},

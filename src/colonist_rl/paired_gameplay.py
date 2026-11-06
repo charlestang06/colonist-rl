@@ -15,7 +15,6 @@ from dataclasses import asdict, dataclass
 
 from .evaluation import CandidatePublicStep, evaluate_blocks
 
-
 _CHANGED_DETAIL_LIMIT = 64
 _SEARCH_DIAGNOSTIC_COUNT_FIELDS = (
     "root_attempts",
@@ -25,6 +24,7 @@ _SEARCH_DIAGNOSTIC_COUNT_FIELDS = (
     "unique_successors",
     "duplicate_successors",
     "beam_truncations",
+    "pruned_invalid_candidates",
 )
 
 
@@ -298,6 +298,10 @@ def _metrics(rows, records, partial_rows=()):
         diagnostics["status"] for diagnostics in wrapper_diagnostics
         if diagnostics.get("status") is not None
     )
+    searched_records = [
+        record for record in records
+        if record["search_stop"] not in (None, "not_searched")
+    ]
     return {
         "game_metrics_scope": "complete_four_seat_blocks",
         "action_kind_counts_scope": "complete_four_seat_blocks",
@@ -314,6 +318,13 @@ def _metrics(rows, records, partial_rows=()):
                                            if record["plan_reason"] is not None)),
         "search_stop_counts": dict(Counter(record["search_stop"] for record in records
                                            if record["search_stop"] is not None)),
+        "searched_selection_latency_scope": (
+            "attempted_planner_selections_with_search_stop_other_than_not_searched"
+        ),
+        "searched_plan_reason_counts": dict(Counter(
+            record["plan_reason"] for record in searched_records
+            if record["plan_reason"] is not None
+        )),
         "wrapper_status_counts": dict(statuses),
         "wrapper_changed_count": sum(record["wrapper_changed"] for record in records),
         "plan_nodes": sum(record["nodes"] for record in records),
@@ -324,6 +335,7 @@ def _metrics(rows, records, partial_rows=()):
                                        for diagnostics in wrapper_diagnostics),
         **_search_diagnostic_metrics(records),
         "selection_latency_ms": _latency_summary(records),
+        "searched_selection_latency_ms": _latency_summary(searched_records),
     }
 
 

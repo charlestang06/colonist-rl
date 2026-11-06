@@ -53,6 +53,7 @@ class TurnPlannerConfig:
     beam_width: int = 24
     max_geometry_visits: int = 100_000
     seed: int = 11
+    prune_invalid_future: bool = False
 
     def __post_init__(self):
         for name in ("max_depth", "max_nodes", "max_geometry_visits"):
@@ -62,6 +63,8 @@ class TurnPlannerConfig:
             raise ValueError("beam_width must be a positive integer")
         if type(self.seed) is not int:
             raise ValueError("seed must be an integer")
+        if type(self.prune_invalid_future) is not bool:
+            raise ValueError("prune_invalid_future must be a bool")
 
 
 _DEFAULT_CONFIG = TurnPlannerConfig()
@@ -109,6 +112,9 @@ class SearchDiagnostics:
     projection. ``max_feasible_depth`` includes projections stopped by a later
     geometry cap. ``beam_truncations`` counts successors actually dropped by
     beam slicing. The selected depth is zero for the fallback action.
+    ``pruned_invalid_candidates`` counts scanned future intentions skipped by
+    the optional public necessary-condition filter before an attempt is charged;
+    it is separate from attempted and feasible/invalid conservation.
     """
 
     root_attempts: int = 0
@@ -120,6 +126,7 @@ class SearchDiagnostics:
     max_feasible_depth: int = 0
     selected_plan_depth: int = 0
     beam_truncations: int = 0
+    pruned_invalid_candidates: int = 0
 
 
 @dataclass(frozen=True)
@@ -555,6 +562,26 @@ def _candidates(view: Observation, state: ProjectedTurn, shape: _Shape):
     yield from sorted(maritime, key=_step_key)
 
 
+def _future_certainly_invalid(state: ProjectedTurn, step: PlannedStep) -> bool:
+    """Only reject a future intention that fails a public resource necessity.
+
+    The full geometry, trade-ratio, bank-upper, and contract checks remain in
+    ``_transition``. Unknown intentions pass through to that final check.
+    """
+    if step.kind in ("BUILD_CITY", "BUILD_SETTLEMENT", "BUILD_ROAD"):
+        give, receive = PUBLIC_BUILD_COSTS[step.kind], ZERO
+    elif step.kind == "MARITIME_TRADE":
+        give, receive = step.give, step.receive
+    else:
+        return False
+    return any(
+        held < cost or available < needed
+        for held, cost, available, needed in zip(
+            state.hand, give, state.bank_lower, receive
+        )
+    )
+
+
 def _context_supported(view: Observation) -> bool:
     c = view.context
     return (
@@ -593,7 +620,7 @@ def plan_turn(
     best = None
     roots_validated = False
     evaluator_calls = evaluator_time_ns = 0
-    root_attempts = future_attempts = 0
+    root_attempts = future_attempts = pruned_invalid_candidates = 0
     feasible_transitions = unique_successors = duplicate_successors = 0
     max_feasible_depth = beam_truncations = 0
 
@@ -636,6 +663,7 @@ def plan_turn(
                 max_feasible_depth=max_feasible_depth,
                 selected_plan_depth=len(node.steps) if node is not None else 0,
                 beam_truncations=beam_truncations,
+                pruned_invalid_candidates=pruned_invalid_candidates,
             ),
         )
 
@@ -748,6 +776,11 @@ def plan_turn(
                     if work.nodes >= config.max_nodes:
                         stopped, exhausted = "node_limit", True
                         break
+                    if config.prune_invalid_future and _future_certainly_invalid(
+                        parent.state, step
+                    ):
+                        pruned_invalid_candidates += 1
+                        continue
                     # Invalid and duplicate future intentions also consume a node.
                     work.nodes += 1
                     future_attempts += 1

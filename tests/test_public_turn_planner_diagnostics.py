@@ -84,7 +84,7 @@ def test_pre_search_fallback_has_zeroed_search_diagnostics():
         (
             "root_attempts", "future_attempts", "feasible_transitions", "invalid_transitions",
             "unique_successors", "duplicate_successors", "max_feasible_depth",
-            "selected_plan_depth", "beam_truncations",
+            "selected_plan_depth", "beam_truncations", "pruned_invalid_candidates",
         ),
         0,
     )
@@ -104,6 +104,7 @@ def test_root_node_cap_counts_the_attempted_projection_before_validation_stops()
         "max_feasible_depth": 1,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -122,6 +123,7 @@ def test_invalid_future_candidate_consumes_the_last_available_node():
         "max_feasible_depth": 1,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -139,6 +141,7 @@ def test_invalid_root_projection_is_charged_before_contract_fallback():
         "max_feasible_depth": 0,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -157,6 +160,7 @@ def test_commuting_futures_share_one_successor_at_the_same_depth(monkeypatch):
         "max_feasible_depth": 3,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -175,6 +179,7 @@ def test_beam_truncations_count_successors_dropped_by_width(monkeypatch):
         "max_feasible_depth": 2,
         "selected_plan_depth": 0,
         "beam_truncations": 1,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -192,6 +197,7 @@ def test_end_turn_only_reaches_an_empty_beam_after_one_feasible_root():
         "max_feasible_depth": 1,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -215,6 +221,7 @@ def test_geometry_cap_after_projection_preserves_feasible_root_accounting():
         "max_feasible_depth": 1,
         "selected_plan_depth": 0,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
 
 
@@ -242,4 +249,5 @@ def test_selected_plan_depth_is_one_for_a_direct_city():
         "max_feasible_depth": 1,
         "selected_plan_depth": 1,
         "beam_truncations": 0,
+        "pruned_invalid_candidates": 0,
     }
