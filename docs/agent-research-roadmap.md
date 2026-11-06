@@ -156,7 +156,7 @@ integration but does not replace the shared information boundary. Keep Colonist
 transport under adapters/colonist and physical input under adapters/physical;
 do not fork strategy into a screen-specific policy.
 
-Make one bounded action-family inventory: setup; bank/build/pass; purchase/cards;
+The [bounded capability audit](capability-audit-2026-11-06.md) maps setup; bank/build/pass; purchase/cards;
 robber/discard/steal; domestic offers/responses; awards; VP/endgame. Record legal
 representation, exact versus uncertain consequences, execution support and decision
 evidence. This is a map of gaps, not an exhaustive-state prerequisite. Extend
