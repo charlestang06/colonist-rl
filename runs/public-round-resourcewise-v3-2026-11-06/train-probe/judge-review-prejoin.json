@@ -1,0 +1,90 @@
+{
+  "cards_sha256": "b2c3b650fa40dae9a690abad21e74efcf6dd6f7bd0c4cb68f61a14cbbb1a7bf3",
+  "cases": [
+    {
+      "clearly_harmful_root_indices": [
+        4
+      ],
+      "id": "784bd8caca9ef431",
+      "immediate_win_root_indices": [],
+      "rationale": "At 2 public VP there is no current point-win root. Trading all four wheat for a fourth wood adds an already abundant resource while brick and ore are absent; it enables no current build and sacrifices wheat needed for city or card lines. Other exchanges are not certified harmful."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "3e32eb3ae211eef1",
+      "immediate_win_root_indices": [],
+      "rationale": "At 5 public VP there is no current point-win root. Ore is produced on rolls 3 and 10 while wheat and brick production are absent; each offered resource could serve a future road, card, or city route. No root is clearly destructive from this public state."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "6a5a5b3d8fbb9231",
+      "immediate_win_root_indices": [],
+      "rationale": "At 3 public VP there is no current point-win root. The two-for-one sheep trades can rebalance missing ore, wheat, or wood; extra brick might support later roads. None can be called clearly destructive without the continuation."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "dacbbbde9cf77e2f",
+      "immediate_win_root_indices": [],
+      "rationale": "At 3 public VP there is no current point-win root. Sheep is produced often and the trades can preposition materials for roads or later point builds; no exchange is clearly destructive on the visible state alone."
+    },
+    {
+      "clearly_harmful_root_indices": [
+        4,
+        7
+      ],
+      "id": "223f918a76ea3896",
+      "immediate_win_root_indices": [],
+      "rationale": "At 4 public VP there is no current point-win root. Root 4 turns two sheep into a fifth wood despite four wood and strong wood production with zero brick. Root 7 turns four wood into a third sheep despite two sheep and sheep production. Neither unlocks a current build; both add to an existing surplus while spending a useful exchange stock."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "1555c069651f2c05",
+      "immediate_win_root_indices": [],
+      "rationale": "At 2 public VP there is no current point-win root. Ore production is strong and trading it can preposition scarce wheat, sheep, brick, or wood; no choice is conclusively destructive without its later road or card plan."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "a7375346f7ff9f9e",
+      "immediate_win_root_indices": [],
+      "rationale": "At 5 public VP there is no current point-win root. Wheat, wood, and ore production differ, with brick absent; several swaps may support a future city or road. A surplus-wood swap is questionable, but multi-road value is not ruled out."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "d3e414915b1ba831",
+      "immediate_win_root_indices": [],
+      "rationale": "At 6 public VP there is no current point-win root and there is no connected settlement site now. A road sequence may create a site, so apparently weak surplus trades are not certified destructive without that continuation."
+    },
+    {
+      "clearly_harmful_root_indices": [],
+      "id": "75d1989c52781593",
+      "immediate_win_root_indices": [],
+      "rationale": "At 6 public VP there is no current point-win root. The three-for-one wheat port can fund a card, future city, or road materials; an extra brick may serve multiple roads. No certain destructive root is visible."
+    },
+    {
+      "clearly_harmful_root_indices": [
+        3
+      ],
+      "id": "b403d89ad1ce1cd1",
+      "immediate_win_root_indices": [],
+      "rationale": "At 2 public VP there is no current point-win root. Root 3 spends four wood for a fourth sheep despite three sheep already held, sheep production, and no wheat or ore. It enables no current build; the same wood exchange could instead supply a missing brick, wheat, or ore."
+    },
+    {
+      "clearly_harmful_root_indices": [
+        2
+      ],
+      "id": "392660afd9a1be99",
+      "immediate_win_root_indices": [],
+      "rationale": "At 2 public VP there is no current point-win root. Root 2 spends four wheat for a third sheep despite two sheep and sheep production, while wood is absent and has no shown production. It enables no current build; the same exchange can supply the missing wood for a road."
+    },
+    {
+      "clearly_harmful_root_indices": [
+        2,
+        3
+      ],
+      "id": "f78b64673b81e406",
+      "immediate_win_root_indices": [],
+      "rationale": "At 5 public VP there is no current point-win root. Roots 2 and 3 spend four brick to add wheat or sheep already held in sufficient quantity and produced, enabling no current build. The same brick exchange for ore would make a development-card purchase affordable immediately."
+    }
+  ],
+  "packet_sha256": "146fd62d599dda75b62344a0953f0782f95b573debe7e93c56606564c06d1e44"
+}

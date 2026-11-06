@@ -79,6 +79,13 @@ proved an archived BUY→same-city route, then tied the old option at 8/32 wins
 and lost 0.0625 mean VP on eight fresh boards. Its frozen negative-VP gate
 retired the guarded configuration; screened code remains on an isolated branch.
 
+The [resource-wise public forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md)
+made exact four-roll calculations fast enough for games: 3.801 ms incremental
+p95 on fresh TRAIN views. Its 96-game development screen tied raw and static
+at 11/32 wins, despite 19 changed actions; no changed turn gained a same-turn
+point build. The frozen three-win gate failed. The next distinct question is
+whether scoring END without its later bank-trade option overcredits trading now.
+
 ## Track 1: improve the working public player
 
 The city-funding experiment is complete as a mechanical test and adverse gameplay
@@ -232,6 +239,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [Planner point-route sparse fit](planner-point-pilot-results-2026-11-06.md): 15 TRAIN/seven label-validation anchors, two 60-update arms; audited CE 0.528851 versus parent 0.525773/H arm 0.520527, identical 6/7 accepted hits and zero actual trade choices. | Stop before games; future acquisition needs baseline headroom and fact-checked alternative roots. |
 | Active acquisition | [Point-affordance feature study](point-affordance-feature-protocol-2026-11-06.md): an opt-in zero-start public bank-trade gap feature, fresh disjoint student cohorts, parent-nontrade challenge cases and blind factual review. | Check approved-label yield and parent headroom before any matched fit; measure actual accepted bank-trade rescues and retention before games. |
 | Stopped before games | [Exact batched public forecast v2](public-one-round-throughput-v2-results-2026-11-06.md): 129/129 archived public-view decisions identical to v1; 30 changed TRAIN decisions across eight new boards; incremental p95 28.670 ms exceeded the unchanged 25 ms gate. | Preserve isolated source/evidence; require a distinct credible throughput mechanism before another prospective screen. |
+| Complete, not promoted | [Exact resource-wise forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md): 268 archived public views matched v1/v2, fresh incremental p95 3.801 ms, 29 TRAIN changes, then 96 development games with raw/static/forecast all 11/32 wins. | Frozen plus-three-win gate failed; keep optional and test delayed-trade option value as a separate hypothesis. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter

@@ -1,0 +1,33 @@
+{
+  "board_seeds": [
+    138380000,
+    138380001,
+    138380002,
+    138380003,
+    138380004,
+    138380005,
+    138380006,
+    138380007
+  ],
+  "calculation": "resourcewise_exact_ordered_11pow4_v3",
+  "focal_policy": "raw_public_planner",
+  "focal_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "max_game_steps": 20000,
+  "no_offers": true,
+  "numpy_version": "2.5.4",
+  "opponent_lineup": [
+    "heuristic",
+    "heuristic",
+    "heuristic"
+  ],
+  "protocol_sha256": "25b6ee65209480f08cdd8144edbe8c1cd3eab8326b767e4686baba5019b77ae4",
+  "python_version": "3.13.2",
+  "role": "train_probe_v3",
+  "source_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "wall_seconds": 1800
+}

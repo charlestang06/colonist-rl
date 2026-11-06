@@ -1,0 +1,100 @@
+{
+  "file_count": 23,
+  "files": {
+    "archived-public-preflight.json": {
+      "bytes": 2677,
+      "sha256": "b80c03dc9b2dc3364f52b8ee4b7efed79253ce5d453db25d4021cd4c5b0ab827"
+    },
+    "development-manifest.json": {
+      "bytes": 728,
+      "sha256": "23208cc510d7818aee669cba9669949b718b494e1a735a107c7793f8c05d8d99"
+    },
+    "development/analysis.json": {
+      "bytes": 29760,
+      "sha256": "51cf00ad6ea3c761d08f34cc360dedc5489e2c5231428e5ed410705deabc300b"
+    },
+    "development/followthrough-analysis.json": {
+      "bytes": 58955,
+      "sha256": "e350613901945a51c50cae3fdf937620adc81e06481ce13a74541381e70f01c2"
+    },
+    "development/paired-20261106T191538Z-d0cd6bbc/candidate_steps.jsonl": {
+      "bytes": 4112127,
+      "sha256": "4f50649dfd3434982d8daa4dbbaa58f0ec27879777016b4ff71c9549b7beaff6"
+    },
+    "development/paired-20261106T191538Z-d0cd6bbc/games.jsonl": {
+      "bytes": 61207,
+      "sha256": "ac93357850e32dc4ccd21b08700f45df3a2a6f3589dad7b6e9c9555e5ad40810"
+    },
+    "development/paired-20261106T191538Z-d0cd6bbc/manifest.json": {
+      "bytes": 3015,
+      "sha256": "47f41eead14534d5684ce0f4ebddfc4e62946ac2374c5058cb6a8cd36050db0c"
+    },
+    "development/paired-20261106T191538Z-d0cd6bbc/summary.json": {
+      "bytes": 211533,
+      "sha256": "d2f1159b05e59660add2eecb218d462657a88b35a4944310d0c90bc8655779ea"
+    },
+    "smoke-manifest.json": {
+      "bytes": 616,
+      "sha256": "e453dae485935021bf4f6d1547862ae5a45db154662d3150e538ffbcf26eb3fe"
+    },
+    "smoke/paired-20261106T191509Z-072d27b1/candidate_steps.jsonl": {
+      "bytes": 238859,
+      "sha256": "7cb6cadb03e3a3904e77894d8406525a61c3272bdbe1ffcca7721398dd63c85f"
+    },
+    "smoke/paired-20261106T191509Z-072d27b1/games.jsonl": {
+      "bytes": 7015,
+      "sha256": "0e120f620530d4856e9483485a8033d962eb79de78e937ea2f9ca12dd49c2665"
+    },
+    "smoke/paired-20261106T191509Z-072d27b1/manifest.json": {
+      "bytes": 2881,
+      "sha256": "28d2bf81b0072f4778a4ebb37985fc866978af3e262cc3101b3c2788bbc1796a"
+    },
+    "smoke/paired-20261106T191509Z-072d27b1/summary.json": {
+      "bytes": 24748,
+      "sha256": "013a4e80bb6592a1085db89ae0cbf401ca918f40bb99dd81322305519030fe19"
+    },
+    "train-probe/decision-audit.jsonl": {
+      "bytes": 396079,
+      "sha256": "8e888a7db105425ec64fbbec25713547b747719375ccee7e6592877e5b9fac47"
+    },
+    "train-probe/games.jsonl": {
+      "bytes": 19801,
+      "sha256": "baddce36fd5b840d89c00f867ec34d46f2ab82701f3f627c15891fa28f2ae57f"
+    },
+    "train-probe/judge-cards.md": {
+      "bytes": 6496,
+      "sha256": "b2c3b650fa40dae9a690abad21e74efcf6dd6f7bd0c4cb68f61a14cbbb1a7bf3"
+    },
+    "train-probe/judge-packet.json": {
+      "bytes": 749595,
+      "sha256": "146fd62d599dda75b62344a0953f0782f95b573debe7e93c56606564c06d1e44"
+    },
+    "train-probe/judge-review-prejoin.json": {
+      "bytes": 5098,
+      "sha256": "8e14438860490055c474dd5d8791a42eb07e57f612b8901ba2b27272b648bfc3"
+    },
+    "train-probe/probe-manifest.json": {
+      "bytes": 706,
+      "sha256": "ed0293397f356568831b8e46672eac4a91975bdc0babfeaf682178a0c472deb5"
+    },
+    "train-probe/probe-summary.json": {
+      "bytes": 2577,
+      "sha256": "8e0babae5c6ed7dc7cadb9459188a95e769dcdb639cbaa9bf91d36c819b99705"
+    },
+    "train-probe/raw-before.jsonl": {
+      "bytes": 2166210,
+      "sha256": "ee73cf67876ee94e3785ef07ac77f7d1b455db2bdd0e8e10bd747959e0ebe93b"
+    },
+    "train-probe/review-join.json": {
+      "bytes": 7441,
+      "sha256": "73640330a6d640b28a8b501e96a6e2254907e8e9c5acbf8130bf90999cbe5c94"
+    },
+    "train-probe/selection-first12-root-only.json": {
+      "bytes": 735233,
+      "sha256": "6a74844dcfa6bf5f5128a9803b9cb18c840378a645862778adbf3d81f172ee2c"
+    }
+  },
+  "protocol_sha256": "25b6ee65209480f08cdd8144edbe8c1cd3eab8326b767e4686baba5019b77ae4",
+  "role": "resourcewise_v3_stopped_development_evidence",
+  "source_tree_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6"
+}

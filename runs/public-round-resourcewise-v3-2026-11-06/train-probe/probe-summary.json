@@ -1,0 +1,92 @@
+{
+  "all_games_resolved": true,
+  "artifact_sha256": {
+    "decision-audit.jsonl": "8e888a7db105425ec64fbbec25713547b747719375ccee7e6592877e5b9fac47",
+    "games.jsonl": "baddce36fd5b840d89c00f867ec34d46f2ab82701f3f627c15891fa28f2ae57f",
+    "probe-manifest.json": "ed0293397f356568831b8e46672eac4a91975bdc0babfeaf682178a0c472deb5",
+    "raw-before.jsonl": "ee73cf67876ee94e3785ef07ac77f7d1b455db2bdd0e8e10bd747959e0ebe93b",
+    "selection-first12-root-only.json": "6a74844dcfa6bf5f5128a9803b9cb18c840378a645862778adbf3d81f172ee2c"
+  },
+  "board_reports": [
+    {
+      "board_seed": 138380000,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380001,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380002,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380003,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380004,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380005,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380006,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138380007,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    }
+  ],
+  "choice_blind_review_gate_pending": true,
+  "mechanical": {
+    "capture_count": 141,
+    "changed_board_count": 8,
+    "eligible_count": 141,
+    "eligible_incremental_p95_ms": 3.801166,
+    "forecast_status_counts": {
+      "ambiguous_bank": 2,
+      "insufficient_gain": 110,
+      "public_round_forecast_trade": 29
+    },
+    "forecast_vs_static_changes": 29,
+    "identity_loop_latency_gate_pass": true,
+    "max_anticipatory_trades_per_turn": 1,
+    "replay_mismatches": 0,
+    "root_identity_errors": 0,
+    "search_work_mismatches": 0,
+    "yield_gate_pass": true
+  },
+  "mechanical_gate_pass": true,
+  "role": "train_probe_v3",
+  "source_after_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "source_before_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "source_unchanged": true
+}

@@ -1,0 +1,80 @@
+{
+  "archived_outcomes_read": false,
+  "archived_review_read": false,
+  "archives": {
+    "v1": {
+      "archive_sha256": "7e845999416af1a66f496b76d95825249555ebaf2d9a46863327a9171101cc4d",
+      "frozen_source_commit": "ca0870e",
+      "parity": {
+        "capture_count": 129,
+        "eligible_count": 127,
+        "mismatch_count": 0,
+        "mismatches": []
+      },
+      "public_before_bytes": 2008219,
+      "public_before_sha256": "8c3dccc5fc2f474b03218c0e2779a2a7b5433cab22af99bd4e7bfcf1f68a3cd8"
+    },
+    "v2": {
+      "archive_sha256": "ad213ec57a50da968ac89a9699472372580eb48c709c8de080e82961119e1402",
+      "frozen_source_commit": "e7d4a7b",
+      "parity": {
+        "capture_count": 139,
+        "eligible_count": 139,
+        "mismatch_count": 0,
+        "mismatches": []
+      },
+      "public_before_bytes": 2151568,
+      "public_before_sha256": "f73cf98db7e1eb0378b93266b5601d1ea471c4812c79519ab7c1cfe954d57f8f"
+    }
+  },
+  "engineering_stop_threshold_ms": 27.0,
+  "exact_parity_pass": true,
+  "new_train_capture_permitted": true,
+  "numpy_version": "2.5.4",
+  "python_version": "3.13.2",
+  "role": "read_only_archived_public_v3_parity_speed_preflight",
+  "source_commit": "bf1a0b49e9c8b6bc02f1729d2f6c930bf34f23e3",
+  "source_tree_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "speed_preflight": {
+    "eligible_count": 139,
+    "engineering_stop": false,
+    "frozen_v2_incremental_p95_ms": 17.7821994,
+    "p95_reduction_ms": 13.857994600000001,
+    "stage_profile": [
+      {
+        "board_seed": 138360000,
+        "capture_index": 8,
+        "median_stage_ms": {
+          "array_setup_ms": 0.521854,
+          "endpoint_assembly_ms": 0.13735350000000002,
+          "parent_ms": 2.293291,
+          "projection_geometry_static_ms": 0.255708,
+          "resource_trajectories_ms": 1.6851665,
+          "source_mass_ms": 2.4459165,
+          "weighted_reduction_ms": 0.0778745
+        },
+        "root_count": 5,
+        "scenario_count": 10,
+        "seat": 1
+      },
+      {
+        "board_seed": 138360000,
+        "capture_index": 27,
+        "median_stage_ms": {
+          "array_setup_ms": 0.5662294999999999,
+          "endpoint_assembly_ms": 0.24362499999999998,
+          "parent_ms": 8.509958000000001,
+          "projection_geometry_static_ms": 0.41154199999999996,
+          "resource_trajectories_ms": 2.413042,
+          "source_mass_ms": 3.3799580000000002,
+          "weighted_reduction_ms": 0.150667
+        },
+        "root_count": 9,
+        "scenario_count": 18,
+        "seat": 3
+      }
+    ],
+    "v3_incremental_median_ms": 2.976875,
+    "v3_incremental_p95_ms": 3.9242047999999983
+  }
+}

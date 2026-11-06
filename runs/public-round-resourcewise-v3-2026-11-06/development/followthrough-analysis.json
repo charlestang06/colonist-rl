@@ -1,0 +1,2256 @@
+{
+  "comparison_scope": "pairwise_matched_complete_board_seat_games",
+  "comparisons": {
+    "forecast": {
+      "board_bootstrap_95": {
+        "board_count": 8,
+        "confidence": 0.95,
+        "mean_victory_points_difference": [
+          -0.0625,
+          0.21875
+        ],
+        "method": "percentile",
+        "min_boards": 8,
+        "paired_win_rate_difference": [
+          -0.09375,
+          0.09375
+        ],
+        "resamples": 20000,
+        "scope": "matched_complete_four_seat_boards_resampled_with_replacement",
+        "seed": 20261106,
+        "status": "descriptive"
+      },
+      "matched_board_seeds": [
+        138390000,
+        138390001,
+        138390002,
+        138390003,
+        138390004,
+        138390005,
+        138390006,
+        138390007
+      ],
+      "matched_game_count": 32,
+      "mean_victory_points_difference": 0.0625,
+      "paired_win_rate_difference": 0.0,
+      "resolved_win_pair_count": 32,
+      "trace_divergence": {
+        "category_counts": {
+          "prior_public_state_divergence": 0,
+          "same_before_state_different_action": 13,
+          "same_trace": 19,
+          "unequal_trace_length": 0
+        },
+        "detail_limit": 32,
+        "details": [
+          {
+            "arm_action": {
+              "give": [
+                0,
+                4,
+                0,
+                0,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                0,
+                4,
+                1,
+                2,
+                0
+              ],
+              "known_own_vp": 2,
+              "phase": "PLAY_TURN",
+              "turn_number": 21,
+              "turn_owner": 3,
+              "version": 62
+            },
+            "board_seed": 138390000,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 3,
+            "step_index": 16
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                4
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                2,
+                0,
+                0,
+                1,
+                5
+              ],
+              "known_own_vp": 3,
+              "phase": "PLAY_TURN",
+              "turn_number": 39,
+              "turn_owner": 1,
+              "version": 125
+            },
+            "board_seed": 138390001,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 1,
+            "step_index": 31
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                4,
+                0,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                1,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                3,
+                0,
+                4,
+                2,
+                0
+              ],
+              "known_own_vp": 2,
+              "phase": "PLAY_TURN",
+              "turn_number": 25,
+              "turn_owner": 3,
+              "version": 69
+            },
+            "board_seed": 138390001,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 3,
+            "step_index": 15
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                1,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                3,
+                0,
+                1,
+                4,
+                0
+              ],
+              "known_own_vp": 3,
+              "phase": "PLAY_TURN",
+              "turn_number": 83,
+              "turn_owner": 1,
+              "version": 305
+            },
+            "board_seed": 138390002,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 1,
+            "step_index": 77
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                4
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                0,
+                1,
+                0,
+                1,
+                5
+              ],
+              "known_own_vp": 2,
+              "phase": "PLAY_TURN",
+              "turn_number": 33,
+              "turn_owner": 3,
+              "version": 112
+            },
+            "board_seed": 138390002,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 3,
+            "step_index": 33
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                2
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                0,
+                0,
+                1,
+                2,
+                2
+              ],
+              "known_own_vp": 8,
+              "phase": "PLAY_TURN",
+              "turn_number": 110,
+              "turn_owner": 0,
+              "version": 431
+            },
+            "board_seed": 138390004,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 0,
+            "step_index": 94
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                4
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                0,
+                0,
+                0,
+                1,
+                5
+              ],
+              "known_own_vp": 8,
+              "phase": "PLAY_TURN",
+              "turn_number": 93,
+              "turn_owner": 3,
+              "version": 356
+            },
+            "board_seed": 138390004,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 3,
+            "step_index": 102
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                4
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                1,
+                0,
+                0,
+                1,
+                5
+              ],
+              "known_own_vp": 2,
+              "phase": "PLAY_TURN",
+              "turn_number": 16,
+              "turn_owner": 2,
+              "version": 43
+            },
+            "board_seed": 138390005,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 2,
+            "step_index": 10
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                1,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                3,
+                0,
+                1,
+                4,
+                0
+              ],
+              "known_own_vp": 3,
+              "phase": "PLAY_TURN",
+              "turn_number": 50,
+              "turn_owner": 0,
+              "version": 171
+            },
+            "board_seed": 138390006,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 0,
+            "step_index": 44
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                2
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                1,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                2,
+                3,
+                0,
+                0,
+                2
+              ],
+              "known_own_vp": 6,
+              "phase": "PLAY_TURN",
+              "turn_number": 99,
+              "turn_owner": 1,
+              "version": 372
+            },
+            "board_seed": 138390006,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 1,
+            "step_index": 77
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                3,
+                0,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                1,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                2,
+                0,
+                3,
+                1,
+                0
+              ],
+              "known_own_vp": 7,
+              "phase": "PLAY_TURN",
+              "turn_number": 77,
+              "turn_owner": 3,
+              "version": 288
+            },
+            "board_seed": 138390006,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 3,
+            "step_index": 69
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                0,
+                4,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                0,
+                1,
+                1,
+                4,
+                3
+              ],
+              "known_own_vp": 8,
+              "phase": "PLAY_TURN",
+              "turn_number": 110,
+              "turn_owner": 0,
+              "version": 399
+            },
+            "board_seed": 138390007,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 0,
+            "step_index": 109
+          },
+          {
+            "arm_action": {
+              "give": [
+                0,
+                0,
+                4,
+                0,
+                0
+              ],
+              "kind": "MARITIME_TRADE",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                1,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "before": {
+              "hand": [
+                1,
+                0,
+                4,
+                0,
+                0
+              ],
+              "known_own_vp": 6,
+              "phase": "PLAY_TURN",
+              "turn_number": 47,
+              "turn_owner": 1,
+              "version": 136
+            },
+            "board_seed": 138390007,
+            "category": "same_before_state_different_action",
+            "reference_action": {
+              "give": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "kind": "END_TURN",
+              "offer_id": null,
+              "partner": null,
+              "receive": [
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "resource": null,
+              "second_resource": null,
+              "target": null
+            },
+            "seat": 1,
+            "step_index": 40
+          }
+        ],
+        "game_count": 32,
+        "omitted_detail_count": 0,
+        "scope": "matched_complete_board_seat_games_captured_public_fields"
+      },
+      "turn_followthrough": {
+        "complete_turn_pair_count": 13,
+        "detail_limit": 32,
+        "details": [
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    4,
+                    0,
+                    0,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  4,
+                  0,
+                  0,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390000,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": true,
+              "reference": true
+            },
+            "known_vp_at_divergence": 2,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 3,
+            "step_index": 16,
+            "turn_number": 21
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    4
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390001,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 3,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 1,
+            "step_index": 31,
+            "turn_number": 39
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "BUILD_ROAD",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    4,
+                    0,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "BUILD_ROAD",
+                  "target": 42
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  4,
+                  0,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  1,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390001,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 2,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 3,
+            "step_index": 15,
+            "turn_number": 25
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "BUILD_ROAD",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    4,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "BUILD_ROAD",
+                  "target": 68
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  4,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  1,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390002,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 3,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 1,
+            "step_index": 77,
+            "turn_number": 83
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    4
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390002,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": true,
+              "reference": false
+            },
+            "known_vp_at_divergence": 2,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 3,
+            "step_index": 33,
+            "turn_number": 33
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    2
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390004,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": true,
+              "reference": true
+            },
+            "known_vp_at_divergence": 8,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 0,
+            "step_index": 94,
+            "turn_number": 110
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    4
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390004,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 8,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 3,
+            "step_index": 102,
+            "turn_number": 93
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    4
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  4
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390005,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 2,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 2,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 2,
+            "step_index": 10,
+            "turn_number": 16
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "BUILD_ROAD",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    4,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "BUILD_ROAD",
+                  "target": 21
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  4,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  1,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390006,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 3,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 3,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 0,
+            "step_index": 44,
+            "turn_number": 50
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    2
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    1,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 6,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  2
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390006,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 6,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 6,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 1,
+            "step_index": 77,
+            "turn_number": 99
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "BUILD_ROAD",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    3,
+                    0,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    1,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "BUILD_ROAD",
+                  "target": 69
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 7,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  3,
+                  0,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  1,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390006,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": false
+            },
+            "known_vp_at_divergence": 7,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 7,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 3,
+            "step_index": 69,
+            "turn_number": 77
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "BUILD_ROAD",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    4,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "kind": "BUILD_ROAD",
+                  "target": 53
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  0,
+                  4,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390007,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": false,
+              "reference": true
+            },
+            "known_vp_at_divergence": 8,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 8,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 0,
+            "step_index": 109,
+            "turn_number": 110
+          },
+          {
+            "arm": {
+              "action_kinds": [
+                "MARITIME_TRADE",
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    4,
+                    0,
+                    0
+                  ],
+                  "kind": "MARITIME_TRADE",
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    1,
+                    0
+                  ]
+                },
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 6,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "give": [
+                  0,
+                  0,
+                  4,
+                  0,
+                  0
+                ],
+                "kind": "MARITIME_TRADE",
+                "receive": [
+                  0,
+                  0,
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "board_seed": 138390007,
+            "end_known_vp_delta": 0,
+            "final_game_won": {
+              "arm": true,
+              "reference": true
+            },
+            "known_vp_at_divergence": 6,
+            "reference": {
+              "action_kinds": [
+                "END_TURN"
+              ],
+              "actions": [
+                {
+                  "kind": "END_TURN"
+                }
+              ],
+              "end_known_vp": 6,
+              "end_reason": "END_TURN",
+              "first_action": {
+                "kind": "END_TURN"
+              },
+              "first_point_build": null,
+              "terminal_win_on_divergent_turn": false
+            },
+            "seat": 1,
+            "step_index": 40,
+            "turn_number": 47
+          }
+        ],
+        "eligible_own_turn_pair_count": 13,
+        "end_known_vp_counts": {
+          "arm_higher": 0,
+          "equal": 13,
+          "reference_higher": 0
+        },
+        "first_action_divergence_count": 13,
+        "first_action_transitions": {
+          "END_TURN->MARITIME_TRADE": 13
+        },
+        "immediate_followup_point_build_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "incomplete_turn_pair_count": 0,
+        "later_point_build_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "matched_game_count": 32,
+        "omitted_detail_count": 0,
+        "scope": "first_changed_action_on_matched_captured_own_turns",
+        "terminal_win_on_divergent_turn_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "unassessed_context_count": 0
+      },
+      "victory_points_difference_scope": "matched_game_pairs_with_finite_vp",
+      "victory_points_pair_count": 32,
+      "win_difference_counts": {
+        "arm_only_win": 1,
+        "reference_only_win": 1,
+        "same_result": 30
+      },
+      "win_difference_counts_scope": "resolved_matched_game_pairs",
+      "win_rate_difference_scope": "all_matched_game_pairs_resolved"
+    },
+    "static": {
+      "board_bootstrap_95": {
+        "board_count": 8,
+        "confidence": 0.95,
+        "mean_victory_points_difference": [
+          0.0,
+          0.0
+        ],
+        "method": "percentile",
+        "min_boards": 8,
+        "paired_win_rate_difference": [
+          0.0,
+          0.0
+        ],
+        "resamples": 20000,
+        "scope": "matched_complete_four_seat_boards_resampled_with_replacement",
+        "seed": 20261106,
+        "status": "descriptive"
+      },
+      "matched_board_seeds": [
+        138390000,
+        138390001,
+        138390002,
+        138390003,
+        138390004,
+        138390005,
+        138390006,
+        138390007
+      ],
+      "matched_game_count": 32,
+      "mean_victory_points_difference": 0.0,
+      "paired_win_rate_difference": 0.0,
+      "resolved_win_pair_count": 32,
+      "trace_divergence": {
+        "category_counts": {
+          "prior_public_state_divergence": 0,
+          "same_before_state_different_action": 0,
+          "same_trace": 32,
+          "unequal_trace_length": 0
+        },
+        "detail_limit": 32,
+        "details": [],
+        "game_count": 32,
+        "omitted_detail_count": 0,
+        "scope": "matched_complete_board_seat_games_captured_public_fields"
+      },
+      "turn_followthrough": {
+        "complete_turn_pair_count": 0,
+        "detail_limit": 32,
+        "details": [],
+        "eligible_own_turn_pair_count": 0,
+        "end_known_vp_counts": {
+          "arm_higher": 0,
+          "equal": 0,
+          "reference_higher": 0
+        },
+        "first_action_divergence_count": 0,
+        "first_action_transitions": {},
+        "immediate_followup_point_build_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "incomplete_turn_pair_count": 0,
+        "later_point_build_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "matched_game_count": 32,
+        "omitted_detail_count": 0,
+        "scope": "first_changed_action_on_matched_captured_own_turns",
+        "terminal_win_on_divergent_turn_count": {
+          "arm": 0,
+          "reference": 0
+        },
+        "unassessed_context_count": 0
+      },
+      "victory_points_difference_scope": "matched_game_pairs_with_finite_vp",
+      "victory_points_pair_count": 32,
+      "win_difference_counts": {
+        "arm_only_win": 0,
+        "reference_only_win": 0,
+        "same_result": 32
+      },
+      "win_difference_counts_scope": "resolved_matched_game_pairs",
+      "win_rate_difference_scope": "all_matched_game_pairs_resolved"
+    }
+  },
+  "format": "colonist-rl.paired-analysis",
+  "reference_arm": "raw",
+  "run_dir": "/private/tmp/colonist-swarm-bxz1k39_/public-production-resourcewise-v3/runs/public-round-resourcewise-v3-2026-11-06/development/paired-20261106T191538Z-d0cd6bbc",
+  "run_status": "complete",
+  "search_work": {
+    "forecast": {
+      "attempted_selection_count": 2946,
+      "diagnostics": {
+        "coverage_fraction": 1.0,
+        "depth_histograms": {
+          "max_feasible_depth": {
+            "0": 1667,
+            "1": 906,
+            "2": 213,
+            "3": 119,
+            "4": 41
+          },
+          "selected_plan_depth": {
+            "0": 2846,
+            "1": 19,
+            "2": 64,
+            "3": 16,
+            "4": 1
+          }
+        },
+        "record_count": 2946,
+        "scope": "attempted_policy_selections_with_search_diagnostics",
+        "totals": {
+          "attempted_transitions": 31273,
+          "beam_truncations": 10269,
+          "duplicate_successors": 1390,
+          "feasible_transitions": 31273,
+          "future_attempts": 25195,
+          "invalid_transitions": 0,
+          "max_feasible_depth_sum": 1853,
+          "pruned_invalid_candidates": 373811,
+          "root_attempts": 6078,
+          "selected_plan_depth_sum": 199,
+          "unique_successors": 29883
+        },
+        "unavailable_count": 0
+      },
+      "geometry_visits": 14400300,
+      "plan_nodes": 31273,
+      "scope": "attempted_policy_selections",
+      "search_stop_counts": {
+        "current_legal_win": 9,
+        "empty_beam": 1213,
+        "geometry_limit": 57,
+        "not_searched": 1667
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 50,
+        "insufficient_gain": 1110,
+        "planned": 100,
+        "public_round_forecast_trade": 19
+      },
+      "searched_selection_latency_ms": {
+        "count": 1279,
+        "mean": 2.6150812779752024,
+        "p95": 9.582883119583126
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 2946,
+        "mean": 1.4367591572618168,
+        "p95": 6.891989090945572
+      },
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0
+    },
+    "raw": {
+      "attempted_selection_count": 2965,
+      "diagnostics": {
+        "coverage_fraction": 1.0,
+        "depth_histograms": {
+          "max_feasible_depth": {
+            "0": 1701,
+            "1": 873,
+            "2": 222,
+            "3": 126,
+            "4": 43
+          },
+          "selected_plan_depth": {
+            "0": 2854,
+            "1": 19,
+            "2": 72,
+            "3": 19,
+            "4": 1
+          }
+        },
+        "record_count": 2965,
+        "scope": "attempted_policy_selections_with_search_diagnostics",
+        "totals": {
+          "attempted_transitions": 32802,
+          "beam_truncations": 11137,
+          "duplicate_successors": 1488,
+          "feasible_transitions": 32802,
+          "future_attempts": 26754,
+          "invalid_transitions": 0,
+          "max_feasible_depth_sum": 1867,
+          "pruned_invalid_candidates": 384727,
+          "root_attempts": 6048,
+          "selected_plan_depth_sum": 224,
+          "unique_successors": 31314
+        },
+        "unavailable_count": 0
+      },
+      "geometry_visits": 15064997,
+      "plan_nodes": 32802,
+      "scope": "attempted_policy_selections",
+      "search_stop_counts": {
+        "current_legal_win": 10,
+        "empty_beam": 1196,
+        "geometry_limit": 58,
+        "not_searched": 1701
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 51,
+        "insufficient_gain": 1102,
+        "planned": 111
+      },
+      "searched_selection_latency_ms": {
+        "count": 1264,
+        "mean": 2.4408765676537456,
+        "p95": 9.765085519757115
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 2965,
+        "mean": 1.3391153469939305,
+        "p95": 6.716058682650323
+      },
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0
+    },
+    "static": {
+      "attempted_selection_count": 2965,
+      "diagnostics": {
+        "coverage_fraction": 1.0,
+        "depth_histograms": {
+          "max_feasible_depth": {
+            "0": 1701,
+            "1": 873,
+            "2": 222,
+            "3": 126,
+            "4": 43
+          },
+          "selected_plan_depth": {
+            "0": 2854,
+            "1": 19,
+            "2": 72,
+            "3": 19,
+            "4": 1
+          }
+        },
+        "record_count": 2965,
+        "scope": "attempted_policy_selections_with_search_diagnostics",
+        "totals": {
+          "attempted_transitions": 32802,
+          "beam_truncations": 11137,
+          "duplicate_successors": 1488,
+          "feasible_transitions": 32802,
+          "future_attempts": 26754,
+          "invalid_transitions": 0,
+          "max_feasible_depth_sum": 1867,
+          "pruned_invalid_candidates": 384727,
+          "root_attempts": 6048,
+          "selected_plan_depth_sum": 224,
+          "unique_successors": 31314
+        },
+        "unavailable_count": 0
+      },
+      "geometry_visits": 15064997,
+      "plan_nodes": 32802,
+      "scope": "attempted_policy_selections",
+      "search_stop_counts": {
+        "current_legal_win": 10,
+        "empty_beam": 1196,
+        "geometry_limit": 58,
+        "not_searched": 1701
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 51,
+        "insufficient_gain": 1102,
+        "planned": 111
+      },
+      "searched_selection_latency_ms": {
+        "count": 1264,
+        "mean": 2.4180322310067948,
+        "p95": 9.475001692771908
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 2965,
+        "mean": 1.3282800028116315,
+        "p95": 6.67201606556773
+      },
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0
+    }
+  },
+  "trace_capture": true,
+  "version": 1
+}

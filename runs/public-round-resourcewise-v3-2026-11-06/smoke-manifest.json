@@ -1,0 +1,30 @@
+{
+  "format": "colonist-rl.paired-experiment",
+  "version": 1,
+  "role": "smoke",
+  "reference_arm": "raw",
+  "board_seeds": [
+    138389999
+  ],
+  "arms": {
+    "raw": {
+      "kind": "public_planner"
+    },
+    "static": {
+      "kind": "public_round_static"
+    },
+    "forecast": {
+      "kind": "public_round_forecast"
+    }
+  },
+  "opponent_lineup": [
+    "heuristic",
+    "heuristic",
+    "heuristic"
+  ],
+  "no_offers": true,
+  "max_game_steps": 20000,
+  "wall_seconds": 600,
+  "capture_candidate_steps": true,
+  "expected_source_sha256": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6"
+}

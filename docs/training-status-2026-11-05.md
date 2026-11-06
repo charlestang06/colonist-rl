@@ -45,6 +45,13 @@ then exactly matched v1 roots/scores on 129 archived public views and produced
 time but its prospective incremental p95 was 28.670 ms, still above the
 unchanged 25 ms gate. It too stopped before smoke or development games; its
 source and complete public evidence remain on an isolated branch.
+The distinct [resource-wise v3 study](public-one-round-resourcewise-v3-results-2026-11-06.md)
+passed exact archived parity and the fresh 25 ms latency gate at 3.801 ms,
+then completed 96 fresh development games. Forecast changed 19 actions but
+won 11/32, tied with raw and static; it failed its frozen three-win advantage
+gate. No v3 policy was promoted. Its next question is the option to defer a
+bank trade until after observing future production, not another unchanged v3
+screen.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

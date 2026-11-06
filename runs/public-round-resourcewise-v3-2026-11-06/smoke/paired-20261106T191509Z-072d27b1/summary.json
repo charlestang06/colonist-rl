@@ -1,0 +1,769 @@
+{
+  "arms": {
+    "forecast": {
+      "action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "action_kind_counts_scope": "complete_four_seat_blocks",
+      "attempted_action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "boards": [
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "action_kind_counts_scope": "complete_four_seat_blocks",
+          "attempted_action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "board_seed": 138389999,
+          "changed_decision_details": [],
+          "changed_detail_omitted_count": 0,
+          "finished_games": 4,
+          "game_metrics_scope": "complete_four_seat_blocks",
+          "games": 4,
+          "geometry_visits": 1435796,
+          "incomplete_reason": null,
+          "interrupted_game": null,
+          "partial_action_kind_counts": {},
+          "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+          "plan_nodes": 3405,
+          "plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5,
+            "unsupported_context": 77,
+            "unsupported_heuristic_action": 12
+          },
+          "planning_metrics_scope": "attempted_policy_selections",
+          "resolved_games": 4,
+          "search_diagnostics_depth_histograms": {
+            "max_feasible_depth": {
+              "0": 89,
+              "1": 57,
+              "2": 12,
+              "3": 13,
+              "4": 1
+            },
+            "selected_plan_depth": {
+              "0": 167,
+              "1": 1,
+              "2": 3,
+              "3": 1
+            }
+          },
+          "search_diagnostics_record_count": 172,
+          "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+          "search_diagnostics_totals": {
+            "attempted_transitions": 3405,
+            "beam_truncations": 1371,
+            "duplicate_successors": 114,
+            "feasible_transitions": 3405,
+            "future_attempts": 2926,
+            "invalid_transitions": 0,
+            "max_feasible_depth_sum": 124,
+            "pruned_invalid_candidates": 27807,
+            "root_attempts": 479,
+            "selected_plan_depth_sum": 10,
+            "unique_successors": 3291
+          },
+          "search_diagnostics_unavailable_count": 0,
+          "search_stop_counts": {
+            "current_legal_win": 1,
+            "empty_beam": 75,
+            "geometry_limit": 7,
+            "not_searched": 89
+          },
+          "searched_plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5
+          },
+          "searched_selection_latency_ms": {
+            "count": 83,
+            "mean": 3.297661159030465,
+            "p95": 12.055587372742588
+          },
+          "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+          "selection_latency_ms": {
+            "count": 172,
+            "mean": 1.8461964629200656,
+            "p95": 9.577181364875276
+          },
+          "status": "complete",
+          "truncated_games": 0,
+          "wins": 1,
+          "wrapper_changed_count": 0,
+          "wrapper_geometry_visits": 0,
+          "wrapper_nodes": 0,
+          "wrapper_status_counts": {
+            "ineligible_parent": 131,
+            "insufficient_gain": 4,
+            "no_bank_trade": 37
+          }
+        }
+      ],
+      "completed_board_seeds": [
+        138389999
+      ],
+      "finished_games": 4,
+      "game_metrics_scope": "complete_four_seat_blocks",
+      "games": 4,
+      "geometry_visits": 1435796,
+      "partial_action_kind_counts": {},
+      "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+      "plan_nodes": 3405,
+      "plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5,
+        "unsupported_context": 77,
+        "unsupported_heuristic_action": 12
+      },
+      "planning_metrics_scope": "attempted_policy_selections",
+      "resolved_games": 4,
+      "search_diagnostics_depth_histograms": {
+        "max_feasible_depth": {
+          "0": 89,
+          "1": 57,
+          "2": 12,
+          "3": 13,
+          "4": 1
+        },
+        "selected_plan_depth": {
+          "0": 167,
+          "1": 1,
+          "2": 3,
+          "3": 1
+        }
+      },
+      "search_diagnostics_record_count": 172,
+      "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+      "search_diagnostics_totals": {
+        "attempted_transitions": 3405,
+        "beam_truncations": 1371,
+        "duplicate_successors": 114,
+        "feasible_transitions": 3405,
+        "future_attempts": 2926,
+        "invalid_transitions": 0,
+        "max_feasible_depth_sum": 124,
+        "pruned_invalid_candidates": 27807,
+        "root_attempts": 479,
+        "selected_plan_depth_sum": 10,
+        "unique_successors": 3291
+      },
+      "search_diagnostics_unavailable_count": 0,
+      "search_stop_counts": {
+        "current_legal_win": 1,
+        "empty_beam": 75,
+        "geometry_limit": 7,
+        "not_searched": 89
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5
+      },
+      "searched_selection_latency_ms": {
+        "count": 83,
+        "mean": 3.297661159030465,
+        "p95": 12.055587372742588
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 172,
+        "mean": 1.8461964629200656,
+        "p95": 9.577181364875276
+      },
+      "status": "complete",
+      "totals_scope": "descriptive_completed_arm_boards",
+      "truncated_games": 0,
+      "wins": 1,
+      "wrapper_changed_count": 0,
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0,
+      "wrapper_status_counts": {
+        "ineligible_parent": 131,
+        "insufficient_gain": 4,
+        "no_bank_trade": 37
+      }
+    },
+    "raw": {
+      "action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "action_kind_counts_scope": "complete_four_seat_blocks",
+      "attempted_action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "boards": [
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "action_kind_counts_scope": "complete_four_seat_blocks",
+          "attempted_action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "board_seed": 138389999,
+          "changed_decision_details": [],
+          "changed_detail_omitted_count": 0,
+          "finished_games": 4,
+          "game_metrics_scope": "complete_four_seat_blocks",
+          "games": 4,
+          "geometry_visits": 1435796,
+          "incomplete_reason": null,
+          "interrupted_game": null,
+          "partial_action_kind_counts": {},
+          "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+          "plan_nodes": 3405,
+          "plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5,
+            "unsupported_context": 77,
+            "unsupported_heuristic_action": 12
+          },
+          "planning_metrics_scope": "attempted_policy_selections",
+          "resolved_games": 4,
+          "search_diagnostics_depth_histograms": {
+            "max_feasible_depth": {
+              "0": 89,
+              "1": 57,
+              "2": 12,
+              "3": 13,
+              "4": 1
+            },
+            "selected_plan_depth": {
+              "0": 167,
+              "1": 1,
+              "2": 3,
+              "3": 1
+            }
+          },
+          "search_diagnostics_record_count": 172,
+          "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+          "search_diagnostics_totals": {
+            "attempted_transitions": 3405,
+            "beam_truncations": 1371,
+            "duplicate_successors": 114,
+            "feasible_transitions": 3405,
+            "future_attempts": 2926,
+            "invalid_transitions": 0,
+            "max_feasible_depth_sum": 124,
+            "pruned_invalid_candidates": 27807,
+            "root_attempts": 479,
+            "selected_plan_depth_sum": 10,
+            "unique_successors": 3291
+          },
+          "search_diagnostics_unavailable_count": 0,
+          "search_stop_counts": {
+            "current_legal_win": 1,
+            "empty_beam": 75,
+            "geometry_limit": 7,
+            "not_searched": 89
+          },
+          "searched_plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5
+          },
+          "searched_selection_latency_ms": {
+            "count": 83,
+            "mean": 2.9163168131721666,
+            "p95": 11.149078747257589
+          },
+          "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+          "selection_latency_ms": {
+            "count": 172,
+            "mean": 1.6446819604742666,
+            "p95": 9.12500456906854
+          },
+          "status": "complete",
+          "truncated_games": 0,
+          "wins": 1,
+          "wrapper_changed_count": 0,
+          "wrapper_geometry_visits": 0,
+          "wrapper_nodes": 0,
+          "wrapper_status_counts": {}
+        }
+      ],
+      "completed_board_seeds": [
+        138389999
+      ],
+      "finished_games": 4,
+      "game_metrics_scope": "complete_four_seat_blocks",
+      "games": 4,
+      "geometry_visits": 1435796,
+      "partial_action_kind_counts": {},
+      "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+      "plan_nodes": 3405,
+      "plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5,
+        "unsupported_context": 77,
+        "unsupported_heuristic_action": 12
+      },
+      "planning_metrics_scope": "attempted_policy_selections",
+      "resolved_games": 4,
+      "search_diagnostics_depth_histograms": {
+        "max_feasible_depth": {
+          "0": 89,
+          "1": 57,
+          "2": 12,
+          "3": 13,
+          "4": 1
+        },
+        "selected_plan_depth": {
+          "0": 167,
+          "1": 1,
+          "2": 3,
+          "3": 1
+        }
+      },
+      "search_diagnostics_record_count": 172,
+      "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+      "search_diagnostics_totals": {
+        "attempted_transitions": 3405,
+        "beam_truncations": 1371,
+        "duplicate_successors": 114,
+        "feasible_transitions": 3405,
+        "future_attempts": 2926,
+        "invalid_transitions": 0,
+        "max_feasible_depth_sum": 124,
+        "pruned_invalid_candidates": 27807,
+        "root_attempts": 479,
+        "selected_plan_depth_sum": 10,
+        "unique_successors": 3291
+      },
+      "search_diagnostics_unavailable_count": 0,
+      "search_stop_counts": {
+        "current_legal_win": 1,
+        "empty_beam": 75,
+        "geometry_limit": 7,
+        "not_searched": 89
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5
+      },
+      "searched_selection_latency_ms": {
+        "count": 83,
+        "mean": 2.9163168131721666,
+        "p95": 11.149078747257589
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 172,
+        "mean": 1.6446819604742666,
+        "p95": 9.12500456906854
+      },
+      "status": "complete",
+      "totals_scope": "descriptive_completed_arm_boards",
+      "truncated_games": 0,
+      "wins": 1,
+      "wrapper_changed_count": 0,
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0,
+      "wrapper_status_counts": {}
+    },
+    "static": {
+      "action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "action_kind_counts_scope": "complete_four_seat_blocks",
+      "attempted_action_kind_counts": {
+        "BUILD_CITY": 5,
+        "BUILD_ROAD": 31,
+        "BUILD_SETTLEMENT": 13,
+        "BUY_DEVELOPMENT_CARD": 7,
+        "DISCARD_RESOURCE": 10,
+        "END_TURN": 41,
+        "MARITIME_TRADE": 9,
+        "MOVE_ROBBER": 9,
+        "PLAY_KNIGHT_CARD": 3,
+        "PLAY_MONOPOLY": 1,
+        "PLAY_YEAR_OF_PLENTY": 1,
+        "ROLL": 42
+      },
+      "boards": [
+        {
+          "action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "action_kind_counts_scope": "complete_four_seat_blocks",
+          "attempted_action_kind_counts": {
+            "BUILD_CITY": 5,
+            "BUILD_ROAD": 31,
+            "BUILD_SETTLEMENT": 13,
+            "BUY_DEVELOPMENT_CARD": 7,
+            "DISCARD_RESOURCE": 10,
+            "END_TURN": 41,
+            "MARITIME_TRADE": 9,
+            "MOVE_ROBBER": 9,
+            "PLAY_KNIGHT_CARD": 3,
+            "PLAY_MONOPOLY": 1,
+            "PLAY_YEAR_OF_PLENTY": 1,
+            "ROLL": 42
+          },
+          "board_seed": 138389999,
+          "changed_decision_details": [],
+          "changed_detail_omitted_count": 0,
+          "finished_games": 4,
+          "game_metrics_scope": "complete_four_seat_blocks",
+          "games": 4,
+          "geometry_visits": 1435796,
+          "incomplete_reason": null,
+          "interrupted_game": null,
+          "partial_action_kind_counts": {},
+          "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+          "plan_nodes": 3405,
+          "plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5,
+            "unsupported_context": 77,
+            "unsupported_heuristic_action": 12
+          },
+          "planning_metrics_scope": "attempted_policy_selections",
+          "resolved_games": 4,
+          "search_diagnostics_depth_histograms": {
+            "max_feasible_depth": {
+              "0": 89,
+              "1": 57,
+              "2": 12,
+              "3": 13,
+              "4": 1
+            },
+            "selected_plan_depth": {
+              "0": 167,
+              "1": 1,
+              "2": 3,
+              "3": 1
+            }
+          },
+          "search_diagnostics_record_count": 172,
+          "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+          "search_diagnostics_totals": {
+            "attempted_transitions": 3405,
+            "beam_truncations": 1371,
+            "duplicate_successors": 114,
+            "feasible_transitions": 3405,
+            "future_attempts": 2926,
+            "invalid_transitions": 0,
+            "max_feasible_depth_sum": 124,
+            "pruned_invalid_candidates": 27807,
+            "root_attempts": 479,
+            "selected_plan_depth_sum": 10,
+            "unique_successors": 3291
+          },
+          "search_diagnostics_unavailable_count": 0,
+          "search_stop_counts": {
+            "current_legal_win": 1,
+            "empty_beam": 75,
+            "geometry_limit": 7,
+            "not_searched": 89
+          },
+          "searched_plan_reason_counts": {
+            "geometry_limit": 7,
+            "insufficient_gain": 71,
+            "planned": 5
+          },
+          "searched_selection_latency_ms": {
+            "count": 83,
+            "mean": 2.9324185782033636,
+            "p95": 10.8365542255342
+          },
+          "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+          "selection_latency_ms": {
+            "count": 172,
+            "mean": 1.683010160652271,
+            "p95": 9.722916118334966
+          },
+          "status": "complete",
+          "truncated_games": 0,
+          "wins": 1,
+          "wrapper_changed_count": 0,
+          "wrapper_geometry_visits": 0,
+          "wrapper_nodes": 0,
+          "wrapper_status_counts": {
+            "ineligible_parent": 131,
+            "insufficient_gain": 4,
+            "no_bank_trade": 37
+          }
+        }
+      ],
+      "completed_board_seeds": [
+        138389999
+      ],
+      "finished_games": 4,
+      "game_metrics_scope": "complete_four_seat_blocks",
+      "games": 4,
+      "geometry_visits": 1435796,
+      "partial_action_kind_counts": {},
+      "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+      "plan_nodes": 3405,
+      "plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5,
+        "unsupported_context": 77,
+        "unsupported_heuristic_action": 12
+      },
+      "planning_metrics_scope": "attempted_policy_selections",
+      "resolved_games": 4,
+      "search_diagnostics_depth_histograms": {
+        "max_feasible_depth": {
+          "0": 89,
+          "1": 57,
+          "2": 12,
+          "3": 13,
+          "4": 1
+        },
+        "selected_plan_depth": {
+          "0": 167,
+          "1": 1,
+          "2": 3,
+          "3": 1
+        }
+      },
+      "search_diagnostics_record_count": 172,
+      "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+      "search_diagnostics_totals": {
+        "attempted_transitions": 3405,
+        "beam_truncations": 1371,
+        "duplicate_successors": 114,
+        "feasible_transitions": 3405,
+        "future_attempts": 2926,
+        "invalid_transitions": 0,
+        "max_feasible_depth_sum": 124,
+        "pruned_invalid_candidates": 27807,
+        "root_attempts": 479,
+        "selected_plan_depth_sum": 10,
+        "unique_successors": 3291
+      },
+      "search_diagnostics_unavailable_count": 0,
+      "search_stop_counts": {
+        "current_legal_win": 1,
+        "empty_beam": 75,
+        "geometry_limit": 7,
+        "not_searched": 89
+      },
+      "searched_plan_reason_counts": {
+        "geometry_limit": 7,
+        "insufficient_gain": 71,
+        "planned": 5
+      },
+      "searched_selection_latency_ms": {
+        "count": 83,
+        "mean": 2.9324185782033636,
+        "p95": 10.8365542255342
+      },
+      "searched_selection_latency_scope": "attempted_planner_selections_with_search_stop_other_than_not_searched",
+      "selection_latency_ms": {
+        "count": 172,
+        "mean": 1.683010160652271,
+        "p95": 9.722916118334966
+      },
+      "status": "complete",
+      "totals_scope": "descriptive_completed_arm_boards",
+      "truncated_games": 0,
+      "wins": 1,
+      "wrapper_changed_count": 0,
+      "wrapper_geometry_visits": 0,
+      "wrapper_nodes": 0,
+      "wrapper_status_counts": {
+        "ineligible_parent": 131,
+        "insufficient_gain": 4,
+        "no_bank_trade": 37
+      }
+    }
+  },
+  "candidate_steps": 516,
+  "candidate_steps_jsonl_sha256": "7cb6cadb03e3a3904e77894d8406525a61c3272bdbe1ffcca7721398dd63c85f",
+  "checkpoint_sha256_after": {},
+  "format": "colonist-rl.paired-summary",
+  "games_jsonl_sha256": "0e120f620530d4856e9483485a8033d962eb79de78e937ea2f9ca12dd49c2665",
+  "journal_games": 12,
+  "journal_valid": true,
+  "manifest_sha256": "28d2bf81b0072f4778a4ebb37985fc866978af3e262cc3101b3c2788bbc1796a",
+  "paired_complete_board_seeds": [
+    138389999
+  ],
+  "paired_resolved_board_seeds": [
+    138389999
+  ],
+  "paired_summary": {
+    "arms": {
+      "forecast": {
+        "games": 4,
+        "mean_victory_points": 6.0,
+        "resolved_games": 4,
+        "truncated_games": 0,
+        "win_rate": 0.25,
+        "wins": 1
+      },
+      "raw": {
+        "games": 4,
+        "mean_victory_points": 6.0,
+        "resolved_games": 4,
+        "truncated_games": 0,
+        "win_rate": 0.25,
+        "wins": 1
+      },
+      "static": {
+        "games": 4,
+        "mean_victory_points": 6.0,
+        "resolved_games": 4,
+        "truncated_games": 0,
+        "win_rate": 0.25,
+        "wins": 1
+      }
+    },
+    "board_seeds": [
+      138389999
+    ],
+    "contrast_vs_reference": {
+      "forecast": {
+        "mean_victory_points_difference": 0.0,
+        "win_rate_difference": 0.0
+      },
+      "static": {
+        "mean_victory_points_difference": 0.0,
+        "win_rate_difference": 0.0
+      }
+    },
+    "paired_resolved": true,
+    "reference_arm": "raw",
+    "scope": "matched_four_seat_boards_only",
+    "status": "complete"
+  },
+  "provenance_errors": [],
+  "requested_board_seeds": [
+    138389999
+  ],
+  "role": "smoke",
+  "run_dir": "/private/tmp/colonist-swarm-bxz1k39_/public-production-resourcewise-v3/runs/public-round-resourcewise-v3-2026-11-06/smoke/paired-20261106T191509Z-072d27b1",
+  "runner_status": "complete",
+  "source_sha256_end": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "source_sha256_start": "48fa5edf4e8a2075bbd2563a09cf5d8b5d0a5a6ea41e8fca32ef4e721c8625c6",
+  "status": "complete",
+  "summary_path": "/private/tmp/colonist-swarm-bxz1k39_/public-production-resourcewise-v3/runs/public-round-resourcewise-v3-2026-11-06/smoke/paired-20261106T191509Z-072d27b1/summary.json",
+  "validated_manifest_sha256": "dafabd4e33cb289df920860f6066e9bb5a53f5b9f62e007f6b0b46e8cbb968b6",
+  "version": 1,
+  "versions_sha256_end": "90789ec1a608f8ad24e5f6a17352c4ef6349da84e89477f99875daea738b6493",
+  "versions_sha256_start": "90789ec1a608f8ad24e5f6a17352c4ef6349da84e89477f99875daea738b6493"
+}
