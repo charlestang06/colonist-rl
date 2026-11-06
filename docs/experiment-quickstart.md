@@ -9,6 +9,12 @@ worked example. The [purchase-option](public-option-purchase-results-2026-11-06.
 and [future-pruning](public-future-pruning-results-2026-11-06.md) screens show
 changed-decision and timing readouts.
 
+For a proposed trade or build sequence, use the
+[public route fact replay](public-fact-replay.md) on a SHA-bound observation
+before running this paired game panel. It verifies that the exact current root
+and named immediate continuations are feasible under a public-consistent
+engine witness; strategic ranking still needs separate evidence.
+
 ## 1. Freeze one question
 
 Start from the archived [budget manifest](../runs/swarm-2026-11-04/agent-research/search-budget-001/screen-manifest.json)
