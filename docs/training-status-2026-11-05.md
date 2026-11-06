@@ -27,6 +27,12 @@ The [search-budget screen](search-budget-results-2026-11-06.md) then completed
 attempts and no feasible state, action or game change; that budget increase
 was retired. The [paired commands](experiment-quickstart.md) and public trace
 analyzer were verified on planner and neural-checkpoint smoke runs.
+The [BUY-continuation guard](public-buy-continuation-results-2026-11-06.md)
+then changed three fresh first decisions; every guarded BUY still built a
+point that turn, but one chose a different city. It tied the old purchase
+option at 8/32 wins and lost 0.0625 mean VP on eight boards, so its frozen
+advancement rule retired the configuration. The source remains on a local
+isolated branch for reproduction, outside the working player.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

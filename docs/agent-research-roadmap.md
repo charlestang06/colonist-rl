@@ -74,6 +74,10 @@ won 16/48 versus raw's 13/48 in 12 fresh matched boards, but the board-level
 effect remains uncertain and full-turn review found adverse BUY→later-build
 cases. Keep this fixed score optional. A narrower continuation repair and an
 uncertain card comparison need new hypotheses, not more games on that screen.
+The separate [BUY-continuation guard](public-buy-continuation-results-2026-11-06.md)
+proved an archived BUY→same-city route, then tied the old option at 8/32 wins
+and lost 0.0625 mean VP on eight fresh boards. Its frozen negative-VP gate
+retired the guarded configuration; screened code remains on an isolated branch.
 
 ## Track 1: improve the working public player
 
@@ -97,9 +101,11 @@ the standard winning threshold before a longer future search, within the
 planner's supported rolled-turn flow. Card
 purchase needs uncertainty-aware future value, never its actual hidden draw.
 The option screen shows why BUY→later-trade/build continuations must be compared
-before a projected trade→build is credited as an earlier point. A better public
-score alone does not establish superiority to buying or passing. Extend useful
-coverage to Year of Plenty pairs, connected Road Building, then uncertain
+before a projected trade→build is credited as an earlier point. The retired
+BUY guard showed that preserving a purchase merely because one point route
+exists can change the eventual building site and other actions. Compare
+complete continuations before another purchase rule. Extend useful coverage
+to Year of Plenty pairs, connected Road Building, then uncertain
 Monopoly/robber/Knight choices and award races. Execute one legal root action,
 reobserve and replan.
 
@@ -204,6 +210,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [2,048-versus-8,192 search-budget screen](search-budget-results-2026-11-06.md): 32 resolved games, 16/16 same traces, 3,341 extra invalid attempts. | Retire unchanged budget increase. |
 | Complete | [Necessary-condition future pruning](public-future-pruning-results-2026-11-06.md): 64 resolved screen games, 32/32 same traces, 414,217 invalid candidates skipped; speed gain repeated with reversed arm order. | Enable by default for new planner work; no playing-strength gain claimed. |
 | Complete | [Opt-in purchase comparison](public-option-purchase-results-2026-11-06.md): 96 resolved games, 50 changes, 25/26 immediate builds, raw 13/48 versus option 16/48; fresh adverse BUY continuation. | Keep optional; revise the one-turn comparison and reserve new boards. |
+| Complete | [BUY-continuation guard](public-buy-continuation-results-2026-11-06.md): 96 resolved games, three fresh guard changes; old/guard 8/32 wins and guard −0.0625 mean VP. | Retire guarded configuration under frozen rule; preserve screened code on isolated branch. |
 | Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
 | Complete | [Audit student-reached trade/pass/BUY states](student-dagger-audit-results-2026-11-06.md): 20 TRAIN/five label-validation supported sets; only three TRAIN sets excluded H against the frozen minimum four. | Stop before fitting; preserve ambiguous cases and exact audit. |
 | Next learning candidate | Audit public planner point-route overrides on distinct student-reached TRAIN/label-validation states under a new protocol. | Check exact H disagreement, independent strategic labels, route feasibility and retention before any fit or fresh-game screen. |
