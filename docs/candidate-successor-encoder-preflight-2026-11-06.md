@@ -25,9 +25,19 @@ an unknown-hand mask. Road, settlement and city piece counts matched on all
 each was a player's second initial settlement granting public adjacent
 resources. A red regression test and the setup grant fix reduced them to zero.
 
+The reproducible `tools/audit_successor_history.py` then swept all 16 sealed
+TRAIN boards, without reading labelVAL histories, teacher overlays, or outcomes:
+64 games, 6,215 decisions and 13 executed action kinds including Year of
+Plenty and Road Building. All full-menu rows were finite. **4,181** known-hand
+transitions, **2,151** direct-build piece checks and every direct placement
+matched the next public observation; **2,034** resource outcomes were masked.
+The saved TRAIN-only audit has zero mismatches and a SHA-256 for each history.
+
 The focused policy, consequence, migration and successor suite passed **80
-tests**. Ruff passed on all touched Python files. This is a one-board
-transition audit; it does not certify every action type or card sequence.
+tests**. The full repository suite passed **1,832 tests**, with 2 skipped and
+48 subtests passed. Ruff passed on all touched Python files. This is a
+transition audit, not a proof of sound strategic choices or every possible
+card sequence.
 
 ## Inference cost
 
