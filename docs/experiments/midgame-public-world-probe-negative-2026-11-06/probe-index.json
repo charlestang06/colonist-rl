@@ -1,0 +1,46 @@
+{
+  "case_receipt_sha256_by_ordinal": {
+    "0": "b105279eb890d06733b5355e4c8ac9edd57bf52f2f2527923ee70fa23e91ee8c"
+  },
+  "case_status_counts": {
+    "continuation_error": 1
+  },
+  "cases_attempted": 1,
+  "changed_board_count": 0,
+  "changed_bucket_count": 0,
+  "changed_by_reason": {
+    "current_public_win": 0,
+    "paired_worldwise_dominance": 0
+  },
+  "changed_from_raw_count": 0,
+  "continuations_recorded": 0,
+  "elapsed_seconds": 0.441,
+  "engine_identity": {
+    "backend_version": "3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8",
+    "commit": "82aae93ab1f7c267218be0566df573ce477ec3d8",
+    "distribution": "catanatron",
+    "number_placement": "official_spiral",
+    "seed_offset": 1,
+    "source_url": "https://github.com/bcollazo/catanatron.git",
+    "version": "3.3.0"
+  },
+  "engine_steps": 0,
+  "format": "colonist-rl.midgame-public-world-probe-index",
+  "frozen_candidate_continuation_cap": 660,
+  "independent_original_reproduction": "The learning lead reproduced frozen cases 0 and 31 from durable Original public histories with exact candidate indices and world-evidence dictionaries before this probe.",
+  "preflight_summary_sha256": "6ac660106140686d40d57567eb2f321e33523f4b9b1b4ae0db60f034f2d0d84c",
+  "probe_script_sha256": "7a33610d6ff583221db34772dc6c467785b5dd59cd56dfd50e6d4ffe64c1a081",
+  "probe_source_commit": "103eb6e870f71c932a1c41be39bb2231b36d6ae4",
+  "proposals_sha256": "3a2b852598f9bc60a359079eec1930b2e76c97bb7d392dde5c9d69663efef549",
+  "protocol_continuation_ceiling": 768,
+  "resolved_continuations": 0,
+  "seed_schedule_sha256": "2d3871cf4dff13d99e82d6414567c3446c4bd6bd2314a15d63ec818f9845dc59",
+  "selection_sha256": "3aef1a88a41f0f62b2f43969c9b836d55be092546fb42e3fdd45d955959870f3",
+  "source_role": "TRAIN",
+  "stopped_reason": "continuation_error",
+  "teacher_reason_counts": {
+    "None": 1
+  },
+  "version": 1,
+  "wall_limit_seconds": 900
+}
