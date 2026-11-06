@@ -16,10 +16,13 @@ Both tracks should share evaluation facilities and reach fresh gameplay quickly.
 The [working-player card](docs/working-player-card.md) retains H as provisional
 control and raw as the leading unpromoted challenger. The direct
 [native comparison](docs/native-reference-results-2026-11-06.md) completed 384 games:
-raw 32/128, VF 19/128, AB 26/128; its superiority gate failed. Next finish the
-city-funding-trade-before-purchase test, instrument search coverage and cost, then
-compare search budgets with other settings fixed. No superiority or model
-promotion is claimed.
+raw 32/128, VF 19/128, AB 26/128; its superiority gate failed. The
+[city-funding screen](docs/city-before-purchase-results-2026-11-06.md) built all
+12 intended cities but won 11/48 games versus raw's 13/48, so the wrapper stays
+optional. The [paired runner](src/colonist_rl/paired_gameplay.py) and
+[capability audit](docs/capability-audit-2026-11-06.md) shorten the next loop:
+measure search coverage, then test a card-aware economic decision. No superiority
+or model promotion is claimed.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

@@ -12,8 +12,14 @@ latency, diagnostic judgments, missing coverage and uncertainty. No new fit,
 TRAIN labels or model promotion occurred. The separate
 [native comparison](native-reference-results-2026-11-06.md) then completed 384 games: raw 32/128, VF 19/128, AB 26/128. Its gate failed; both primary
 intervals cross zero. There is no automatic extension, confirmation or promotion.
-Relevant TRAIN diagnosis now identifies a purchase-before-trade/build planning
-gap for bounded engine factcheck and intervention testing; no fit has started.
+Relevant TRAIN diagnosis identified a purchase-before-trade/build gap. The
+[city-before-purchase study](city-before-purchase-results-2026-11-06.md)
+verified one exact city route and an adverse buy-then-city continuation, then
+completed a fresh 96-game paired screen. The wrapper built 12/12 intended
+cities but won 11/48 versus raw's 13/48; it remains off by default. The
+[shared runner](../src/colonist_rl/paired_gameplay.py) and
+[capability audit](capability-audit-2026-11-06.md) are available. No new fit
+has started.
 The current strategy permits one bounded parallel learning investigation; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

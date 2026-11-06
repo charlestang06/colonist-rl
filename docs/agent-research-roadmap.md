@@ -45,16 +45,16 @@ hypothesis. Narrow road and winning-prefix interventions did not advance. Preser
 these results; do not repeat unchanged treatments with more updates or games.
 
 TRAIN diagnosis found 18 public one-bank city-funding opportunities across 15
-episodes before purchase. These are hypotheses, not optimality labels: buying a
-card may be better. The opt-in city-before-purchase wrapper passed 64 targeted
-tests; exact engine continuation and fresh gameplay remain pending.
+episodes before purchase. The [opt-in wrapper screen](city-before-purchase-results-2026-11-06.md)
+confirmed a real city route and all 12 fresh overrides built the intended city,
+yet it won 11/48 games versus raw's 13/48. It remains off by default. The
+purchase comparison needs card option value, not another unchanged wrapper run.
 
 ## Track 1: improve the working public player
 
-Finish the already implemented bounded city-funding experiment, including adverse
-cases where purchasing first is reasonable. Keep it optional until changed choices
-and fresh games support retention. A legal executable sequence is not necessarily
-a good strategic choice.
+The city-funding experiment is complete as a mechanical test and adverse gameplay
+screen. Keep it optional. Its changed raw winning seats and the exact adverse
+buy-then-city replay make uncertain card value the next economic decision gap.
 
 Next diagnose search before increasing compute. Record attempted transitions,
 feasible transitions, unique states, depth reached, chosen sequence, stop reason
@@ -63,11 +63,11 @@ is part of the key. Reduce invalid and duplicate work while preserving legal
 semantics, deterministic ordering and honest budget accounting.
 
 Then compare 2,048 versus 8,192 nodes at depth 6 and beam 24, keeping scoring,
-gain margin, fallbacks, geometry budget, seeds and opponents fixed. Both budget arms must use the same implementation. Assess efficiency changes
-against the original planner separately, so implementation and budget effects
-are not conflated. Measure useful coverage and actual changed actions as well as
-wins. Change beam/depth separately
-only when diagnostics justify it.
+gain margin, fallbacks, geometry budget, seeds and opponents fixed. Both budget
+arms use the same implementation; assess efficiency changes against the original
+planner separately. The archived raw panel hit the node cap in only 103 of 4,896
+searched decisions, so first verify that the larger budget reaches useful states.
+Change beam and depth separately only when diagnostics justify it.
 
 Move toward unified trading, building, purchasing and passing. Deterministic public
 consequences should be exact. Card purchase needs uncertainty-aware future value,
@@ -168,10 +168,11 @@ and six-player learning follow reliable standard four-player play.
 
 | Order | Concrete output | Decision |
 |---|---|---|
-| 1 | Positive/adverse TRAIN engine continuations, affected wrapper checks and fresh paired city-before-purchase gameplay. | Retain optional, revise or retire using actual decisions and games. |
-| Parallel | Review learning failures and prepare one distinct student-state/critic hypothesis with controls and data provenance. | Run a bounded experiment if justified; otherwise identify the specific missing evidence. |
-| 2 | Common runner path, search diagnostics and bounded action-family inventory. | Remove the next measured bottleneck; avoid new framework work. |
-| 3 | Search-efficiency changes, then fixed-depth/beam 2,048-versus-8,192-node comparison. | Broader action models follow the observed bottleneck. |
+| Complete | [City replay and paired screen](city-before-purchase-results-2026-11-06.md): executable route, 12/12 follow-through, raw 13/48 versus wrapper 11/48. | Keep wrapper optional; no promotion or unchanged extension. |
+| Complete | [Reusable paired runner](../src/colonist_rl/paired_gameplay.py) and [broad capability audit](capability-audit-2026-11-06.md). | Use the same fast gameplay path across mechanisms. |
+| Parallel | One distinct outcome-trained shadow critic experiment using accepted TRAIN data and a declared development screen. | No actor promotion from prediction alone. |
+| Next | Search attempted/feasible/unique/depth diagnostics, then targeted efficiency and fixed-depth/beam 2,048-versus-8,192-node comparison if useful. | Measure actual changed decisions and cost before increasing search. |
+| Following | Unified card purchase versus certain trade/build/pass evaluation. | Compare uncertain option value with exact public consequences. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
