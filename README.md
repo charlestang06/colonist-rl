@@ -10,7 +10,8 @@ heuristic-level decisions, better planning and consequence estimates, demonstrat
 strength against harder opponents, and faithful adapter deployment. Research
 starts with costly mistakes in current-student games and tests one remedy at a
 time. Behavioral cloning, public search, value learning and PPO are candidate
-methods; none is the goal. PPO and new reward shaping remain deferred until
+methods; none is the goal. Use the strongest validated heuristic, planner, learned
+policy or hybrid as the starting point. PPO and new reward shaping remain deferred until
 competence and a specific need are demonstrated.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
@@ -18,8 +19,9 @@ superiority. The 384-game feature comparison passed integrity review but failed 
 primary advancement rule: every candidate won 2/16 against trading H. The stable
 sparse-target fitter passed 43 focused and 11 legacy checks plus independent source review. The complete-history
 cache repair passed engineering review on four saved
-games/361 inputs. Main value collection stopped after 208 completed TRAIN games
-on a guard-registration failure; its 320-game cohort is incomplete and no fitting follows.
+games/361 inputs. The original value attempt stopped after 208 TRAIN games;
+a separate successor completed the missing 112. Component and mixed-index audits
+passed for all 320 inputs (256 TRAIN, 64 validation). Cache and fits are unstarted.
 The student collector recorded all 48 planned games and 4,729 own inputs, but its
 Root controller failed during final output accounting. Independent audit found
 the histories intact; a separate zero-query recovery and independent metadata
@@ -29,10 +31,15 @@ adjudications are frozen. The informative TRAIN upper bound is six candidates
 across four strata, below the fixed 32/six gate, so no fit ran.
 This does not show BC failed. Public fact checks identify two expansion-blocked
 road choices; a flagged trade remains uncertain because it has an alternative
-city-funding route. The next primary experiment diagnoses and improves road
-decisions, then checks fresh gameplay. Value collection resumes only with a
-concrete planning use; its 208 saved games remain accepted as a component only.
-No new targets are approved for training.
+city-funding route. An opt-in road correction completed 114 games of a frozen
+128-game study. Against H it won 2/32 versus the parent's 3/32; both GNT arms
+stopped at the fixed own-input cap. It did not advance. See the
+[road experiment](docs/road-continuation-experiment-2026-11-06.md).
+Next work verifies nine conditional near-win trade/build witnesses, then tests a
+narrow winning-prefix search when the fallback chooses a development-card purchase.
+The bounded value study asks whether outcome estimates improve projected planning
+leaves; prediction alone cannot establish stronger play. No new imitation targets
+are approved for training.
 Earlier residual and placement studies found no reliable gain;
 the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
 

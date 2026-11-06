@@ -7,6 +7,32 @@ audited targets and isolated repairs, with bounded outcome-value work alongside 
 No authentic VF/AB superiority or new model promotion
 is established.
 
+## Early road correction: no advancement
+
+The opt-in public continuation helper passed 17 geometry and five wrapper tests,
+including an observed barrier mutation failure and exact parent-memory/RNG checks.
+It replaced both blocked TRAIN examples with the cached teacher alternatives.
+Those exposed cases did not establish gameplay benefit.
+
+The frozen 128-game study completed 114 games. H finished parent 3/32 wins versus
+correction 2/32; paired whole-board difference −3.125 percentage points, frozen
+bootstrap 95% [−9.375, 0]. Both GNT jobs completed 25 games, then stopped at
+exactly 512 own inputs/forwards in board 138170006 seat 1, leaving two unfinished
+and twelve unstarted games in total. GNT whole-panel rates remain undefined.
+The cap includes forced discards; it alone cannot diagnose a strategic loop.
+
+Independent saved-metadata review passed all 114 completion/count joins, twelve
+selected/executed road pairs, 51 source and 17,978 runtime hashes, opaque parent,
+actual PID/argv/config bindings, and 1,117 OS1 samples (peak 251,543,552 bytes).
+H final tensor fingerprints match; GNT postflight fingerprints remain unknown.
+Root independently rehashed all 957 saved audit bindings. Source/producer
+assertions and metadata verification remain distinct; no new model or codec was
+queried by the reviewer. No optimizer, teacher or native call occurred in gameplay.
+
+Retire the unchanged treatment. It remains an experimental opt-in helper, with no
+default policy change or candidate promotion. The original cap and null outcomes
+are preserved. [Study details](road-continuation-experiment-2026-11-06.md).
+
 ## Student collection and accepted technical recovery
 
 The actual current-student collection recorded all 48 fixed games, but Root session
@@ -114,7 +140,14 @@ labels or a broad bad-trade claim. All target approvals remain false.
 [TRAIN factual note](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-judging-001/TRAIN-diagnostic-cases-001/factual-diagnosis-001/NOTE.md).
 [Fixed slots](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-sampling-001/Root-private-001/slots.json).
 
-## Terminal-value collection: 208 saved games; cohort incomplete
+## Terminal-value collection: mixed320 inputs complete; no cache or fits
+
+Current status: the original failed attempt is preserved. Its accepted 208 TRAIN
+histories were joined with a separately collected 112 games (48 TRAIN, 64 VAL).
+Independent component and mixed-index metadata reviews passed for all 320 inputs:
+256 TRAIN, 64 VAL, nested TRAIN128. The successor did not replay the original 208.
+There is no new cache, value head, optimizer update or playing-strength claim.
+The history below distinguishes the original failure from the accepted successor.
 
 The reviewed core 002/controller 003 passed their scoped source checks and Root's
 27 isolated controller tests before actual collection. Metadata freeze initially
@@ -126,8 +159,8 @@ Actual Root session 90337 exited 1 after 418.261 seconds. The controller launche
 validated 52 successful blocks / 208 completed TRAIN games, then stopped admission on
 TRAIN-053 guard 125. That guard failed its supervisor-registration handshake before
 starting a game worker; 27 later blocks were unstarted. All 320 games are required:
-no validation games were collected, the cohort remains rejected, and no cache,
-value head or fitting follows. Missing games stay null, never losses. Completed
+no validation games were collected in that attempt, which remains rejected.
+Missing games stayed null, never losses. Completed
 histories and the original failure are preserved.
 
 Independent retained-component audit passed all 52 jobs / 208 TRAIN histories,
@@ -147,22 +180,43 @@ path short; it passed scoped source review and its author reports 30 isolated
 tests. Root has not run it, and its copied 80-job entrypoint must not replay the
 208 retained games.
 
-A separately named remaining-28 protocol prepares only the original 112 missing
+A separately named remaining-28 protocol covered only the original 112 missing
 games and an honest mixed-component 320-game assembly, preserving every original
-attempt/config/receipt identity and failure. No continuation, assembly, cache or
-head fit has run. The proposed new outer 720-second limit is separate from the
-original continuous deadline; original plus new active Root time stays bounded
-by 1,200 seconds. Capacity carries forward the retained evidence and metadata
-allowances. Root review, final source checks and an explicit runtime freeze remain
-required before collection. Continuation 001 is on source-review HOLD: its real
+attempt/config/receipt identity and failure. Continuation 001 remains on source-review HOLD: its real
 entrypoint publishes the original 320-game inventory where the new worker path
 expects only the 112 missing games, and output paths lack protection against
-writing inside retained evidence before rejection. It has not run. The roadmap now makes any
-successor conditional on a concrete planning use for the learned value estimate;
-completing a dataset alone is not the next primary research objective.
+writing inside retained evidence before rejection. It has not run.
+
+Corrected source 002 passed scoped review and 17 isolated tests. Actual successor
+Root session 1914 exited zero in 167.930 seconds: all 28 jobs / 112 games completed,
+with 9,945 own inputs, 4,289 forced steps, 3,064 eligible rows and 2,468 early/mid
+rows. Independent review passed the component and unchanged retained evidence.
+All 1,334 live samples met OS1; peak RSS was 748,093,440 bytes, maximum overlap two.
+Together the components contain 27,706 own inputs, 11,818 forced steps, 8,786
+eligible rows and 7,017 early/mid rows.
+
+Separate mixed-index assembly session 37682 exited zero in 28.915 seconds.
+Independent review passed all 320 ordered game/role/component joins and the exact
+521,561-byte published manifest, SHA256
+`041ec55e72c2f537396a2d83de2fcad1cdd919526c1528990af7a26639be53b8`.
+Its 115 OS1 samples peaked at 57,606,144 bytes. Original plus successor plus
+assembly active Root time was 615.105 seconds, within the separately declared
+1,200-second aggregate bound; the original failed deadline was not extended.
+The immutable index keeps its pending-audit flag; a separate Root receipt records
+input-only acceptance without authorizing cache or fits.
+
+The value hypothesis is public outcome scoring of projected trade/build/road
+leaves. Source helpers exist, but review found three bounded defects: published
+byte-SHA admission, saturated-probability log loss, and lost empty diagnostic
+cells. Root's 24 pure cache tests passed; the 21 numerical head tests remain
+unrun. Correct and verify these paths before freezing actual cache/fit execution.
+The original four-fit prediction gates remain unchanged. Completing a dataset
+does not establish usefulness or make training the primary objective.
 [Original value terminal receipt](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/Root-terminal-run-001.json),
 [original summary](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/run-001/summary.json),
 [continuation source HOLD](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/remaining-28-001/independent-review-001/REVIEW.md).
+[New112 component review](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/remaining-28-002/empirical-review-001/REVIEW.md),
+[mixed-index review](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/remaining-28-002/assembly-empirical-review-001/REVIEW.md).
 
 ## Fixed-feature gameplay: execution accepted, primary advancement failed
 

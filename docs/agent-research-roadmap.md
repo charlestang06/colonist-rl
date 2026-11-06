@@ -21,6 +21,20 @@ Behavioral cloning and PPO are tools, not completion criteria. The project does
 not succeed merely because it trains, imitates a teacher, accumulates games or
 executes legal screen actions.
 
+The deliverable is the complete decision system: a permitted observation and
+history enter; one legal action and its updated memory leave. Rules, search,
+beliefs and learned estimates may cooperate inside that system. Keep the
+strongest validated incumbent as the control; the existing neural parent is not
+automatically the deployment candidate. A simpler policy that plays better is
+progress. An improvement must fit a declared per-decision compute budget and
+remain usable through the shared adapter contract.
+
+Success has three separate claims: competent decisions, reproducible benchmark
+strength, and reliable live execution. Evidence for one does not prove the others.
+The final strength claim requires superiority to both pinned references with
+independent confirmation; the final product claim also requires a complete live
+game through the adapter. Until then, report exactly which claim has been tested.
+
 Each research step must answer: **which decision gets better, why should this
 change improve it, and do fresh games support that claim?** Winning is the final
 objective. Decision audits explain successes and failures; loss, agreement, VP,
@@ -57,6 +71,13 @@ Keep a thin adapter lane running alongside the decision work. Screen control,
 physical recognition and simulator integration translate the same core policy;
 they do not each contain a separate strategy.
 
+Allocate most effort to closing this decision-to-gameplay loop. Use infrastructure
+work only to unblock the next concrete comparison. Do not scale a treatment
+because it is available, preserve it because implementation was expensive, or
+collect more examples without stating what decision they can change. Retire an
+unchanged treatment after its declared failure; a successor needs a different,
+testable explanation.
+
 ## What the evidence changes
 
 - The fixed eligibility-feature comparison completed 384 games but failed its
@@ -85,15 +106,31 @@ they do not each contain a separate strategy.
   trade has an omitted wheat-funded city route and is not certainly bad. The
   cached teacher selected reasonable alternatives on both road cases; these cases
   do not establish a teacher failure.
+- The resulting narrow road correction passed 22 geometry/wrapper tests and
+  matched both teacher alternatives in exposed TRAIN diagnostics. Its frozen
+  128-game study completed 114 games, with two unfinished and twelve unstarted.
+  H wins were parent 3/32 versus correction 2/32, paired difference −3.125 points,
+  bootstrap 95% [−9.375, 0]. Both GNT arms hit 512 own inputs in the same game;
+  their whole-panel rates remain undefined. Retire this unchanged treatment.
+  Plausible local choices did not establish a stronger player.
+  [Full result and limits](road-continuation-experiment-2026-11-06.md).
 - The sparse accepted-target fitter and the 361-input engineering cache repair
   passed their scoped checks. These are usable mechanisms, not evidence of a
   stronger player. No candidate is promoted.
-- The terminal-value collector produced 208 completed TRAIN games before block 53
-  failed its guard-registration handshake, before its game worker started. The
-  original 320-game cohort is rejected; no value fitting follows. Diagnose launch
-  accounting/timing and declare any successor separately, retaining the fixed
-  roles and original failure. All 208 retained TRAIN histories passed independent
-  component audit; the missing 112 remain uncollected.
+- A TRAIN-only scan found 24 near-win BUY+trade observations where the raw public
+  planner skipped search. Nine have conditional one-trade/build resource and
+  placement witnesses; fifteen do not. The first positive could trade two wheat
+  for brick and afford a connected final-point settlement. These are public
+  hypotheses, not engine-certified missed wins. Test that exact mechanism before
+  changing general development-card preferences.
+- The original terminal-value collector stopped after 208 TRAIN games on a
+  guard-registration failure before block 53's worker started. That failed attempt
+  remains rejected. A separately declared successor completed the missing 48
+  TRAIN and 64 validation games without replaying the retained 208. Independent
+  component and mixed-index reviews passed for the honest two-attempt corpus:
+  256 TRAIN, 64 validation, with nested TRAIN128. Caching and all four fits remain
+  unstarted. Three cache/head source findings still require correction; neither
+  dataset completion nor helper tests establish predictive or playing strength.
 
 ## Milestone 1: make the decisions recognizably good
 
@@ -169,11 +206,13 @@ measure runtime before comparing it with the existing mainly post-roll planner.
 Keep scorer, fallback and compute limits fixed in that comparison; do not bundle
 an untested value head into a larger search treatment.
 
-**Value learning:** retain the 208 audited TRAIN histories. Before collecting the
-112 missing games, state which planning decision the estimate could improve and
-how it would be used with a verified public transition. The prepared terminal-
-outcome study remains an option, not an obligation to finish a dataset. Its
-declared design uses 256 TRAIN and 64 validation games, including a nested
+**Value learning:** use the completed, independently reviewed mixed320 inputs to
+test a concrete planning hypothesis: a public outcome estimate may rank projected
+trade/build/road leaves better than handcraft scoring. The existing public
+`PositionEvaluator(root, ProjectedTurn, handcraft_micro)` seam does not need an
+imagined observation or recurrent update. Correct the bounded helper findings,
+verify them, then separately freeze actual cache and fit execution. The study
+uses 256 TRAIN and 64 validation games, including a nested
 128-game data-size contrast. Compare public-feature and frozen-recurrent heads
 with matched work, calibrated constant controls and held-out prediction gates. Claim a recurrent
 encoder benefit only if it also beats the public-feature head. Keep engineering
@@ -253,11 +292,16 @@ path check and the existing harness suffice.
 
 | Priority | Next concrete deliverable | Advance or stop decision |
 |---|---|---|
-| Primary: road decisions | Diagnose why the deployed student preferred the two expansion-blocked TRAIN roads. Check target geometry, ownership barriers, scoring and paid-resource cost; compare a narrow marginal-reachability/continuation remedy with the unchanged parent. | Check adverse award, defensive, free-road and enemy-building cases. Inspect changed choices, then use fresh paired games. No blanket ban on roads without settlement gain; no assumed teacher defect. |
-| Close the audited-data study | Preserve all 225 judgments and record insufficient informative coverage. Use the factual diagnoses to inform a distinct experiment. | Zero optimizer updates; no data-benefit or BC-failure claim. No quota relaxation, replacement cases or automatic broad relabeling. |
-| Conditional independent study: value for planning | Identify a concrete deployment question before resuming collection. If justified, collect only the 112 missing games through a corrected, separately declared continuation and join independently accepted components. | The 208 games are accepted only as a component. Continuation 001 is on source-review HOLD; it has not run. Preserve the original failure. No cache/fit until a complete accepted cohort, and no policy claim from prediction alone. |
+| Primary: winning trade/build prefix | Verify the first positive of nine conditional TRAIN witnesses against actual supported transitions. Test the narrow opt-in `search_build_win_before_buy` path: when BUY is the fallback near victory, return a different legal first action only for a certified building-win sequence. Nine new external tests are prepared, not yet run. | Check public transition fidelity, budget fallback and unchanged default behavior. If the witness fails, retain BUY and record why. If confirmed, inspect changed decisions and run a separately frozen fresh paired gameplay test. No ordinary score gain may masquerade as a certified win. |
+| Independent study: value for planning | The 320 inputs and mixed index passed scoped independent review. Resolve the three helper defects (published byte binding, stable saturated log loss, empty diagnostic cells), verify the changed paths, then freeze the single cache and four fixed fits. | Preserve TRAIN256/VAL64/nested128, raw/no-offers continuation identity and original failed attempt. Follow the original prediction gates without tuning. Only a justified candidate gets a later gameplay comparison with matched raw and calibrated-handcraft controls. |
 | Following remedy | Use TRAIN evidence to select the next economic or tactical weakness: trade/build/pass, development cards, awards or immediate wins. | Change one mechanism; check the choices and fresh gameplay. Preserve a negative result and change the hypothesis. |
 | After credible competence | Freeze the best candidate and run focal VF/AB comparisons and independent confirmation. | Promote only on the declared primary strength gates. PPO is not a prerequisite. |
+
+The audited-data study is closed with insufficient informative coverage: all 225
+judgments remain preserved, with zero optimizer updates and no BC-failure claim.
+The unchanged road correction is retired. Do not reopen either by relaxing its
+gate. Broad imitation, PPO, reward shaping, larger models and physical-board
+recognition are deferred options, not a parallel backlog to execute automatically.
 
 Do not silently rewrite frozen protocols to match this strategy. A changed
 experiment needs a separately declared successor; completed nulls, failures and

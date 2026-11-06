@@ -29,13 +29,24 @@ candidates across four strata, below the required 32 across six. No data-only fi
 ran; no claim about BC or data benefit follows. Public fact checking confirms two student roads end
 in enemy-blocked expansion leaves; award/defensive value remains uncertain, and
 the teacher selected reasonable alternatives on both. A flagged trade has an
-omitted city-funding route and is not certainly bad. Next primary work diagnoses
-the road-choice mechanism and tests one narrow reachability/continuation remedy,
-including adverse award, defensive and free-road cases, followed by fresh gameplay.
-The separate value lane retains 208 independently audited TRAIN games. Collect
-the missing 112 only with a concrete planning use and a corrected successor;
-continuation 001 is on source-review HOLD and has not run. The original 320-game
-attempt remains rejected; no automatic retry or cache/head fit follows.
+omitted city-funding route and is not certainly bad. The narrow road correction
+passed 22 focused tests but did not advance: H wins were 2/32 versus parent 3/32,
+and both GNT arms hit the fixed 512-input cap. The frozen study retains 114
+completed, two unfinished and twelve unstarted games. Retire the unchanged
+treatment; local plausibility did not establish strength.
+[Detailed result](road-continuation-experiment-2026-11-06.md).
+Next primary work verifies the first positive of nine conditional one-trade/build
+witnesses among 24 near-win BUY+trade TRAIN states. Test the narrow opt-in winning-
+prefix path, including budget fallback and unchanged defaults, then fresh paired
+gameplay if actual transitions certify the proposed win. The public witnesses
+alone do not certify missed wins. Start from the strongest validated decision
+system; a neural parent is not a mandatory deployment base.
+The separate value lane now has all 320 planned inputs: retained 208 plus a
+separately collected 112, with independent component and mixed-index reviews
+passed. Fix three bounded cache/head helper findings before actual cache/fits.
+Its hypothesis is improved ranking of projected trade/build/road leaves, with
+matched raw and calibrated-handcraft gameplay controls later. The original failed
+attempt stays rejected; no prediction or deployment benefit is established.
 Use further TRAIN evidence to choose the following tactical/planning remedy. No
 new broad training run, model expansion or shaping is the default next step.
 
@@ -45,8 +56,8 @@ rule; each candidate won 2/16 against trading H. The focal raw/VF/AB2 pilot scor
 17-reasonable/two-ambiguous audit cannot establish broad competence. All 48 student
 histories/4,729 own inputs survive a failed controller finalization. Separate
 recovery passed 9,458 strict pairs and independent metadata review; approved labels
-and data benefit remain unestablished. Main value collection is incomplete and
-fitting remains unstarted. Engineering checks establish mechanisms, not strength.
+and data benefit remain unestablished. Main value input collection is complete;
+caching and fitting remain unstarted. Engineering checks establish mechanisms, not strength.
 See [current results](training-status-2026-11-05.md) for measured work and limits.
 
 Bank trades remain legal whenever the rules permit them. Strict GreedyNoTrade
