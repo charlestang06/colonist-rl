@@ -177,6 +177,14 @@ for the search. Its frozen win and bootstrap gates failed. Keep the opening
 policy isolated. A new opening attempt must change the value mechanism and
 use fresh board roles; do not adjust this surrogate on confirmation boards.
 
+The first [midgame public-world probe](experiments/midgame-public-world-probe-negative-2026-11-06/README.md)
+stopped on its first frozen state before any complete continuation or teacher
+label. Its sampler allowed resource hands that satisfied each focal marginal
+belief and the finite bank but contradicted the joint public-event history;
+the first visible trade then failed an observer ledger. Preserve the zero-game
+negative artifact. A repaired event-consistent joint sampler needs synthetic
+mechanical proof and fresh roles before another outcome probe.
+
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
   student reaches, preserving acceptable alternatives and ambiguity. Aggregate
