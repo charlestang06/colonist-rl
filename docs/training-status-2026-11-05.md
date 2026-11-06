@@ -5,6 +5,50 @@ the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-star
 tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
 is established.
 
+## Native reference execution and fitter feasibility
+
+The evaluation-only focal-native API is integrated with byte-identical reviewed
+source from `1cfaa4c`; policy, fitter and native algorithms are unchanged. Its
+12 focused and 81 affected checks passed. A separate wrapper regression fixed
+between-game interruption work being repeated; all nine wrapper checks passed.
+
+The exposed-board engineering run completed 12 new games in 46.816 seconds:
+raw/VF/AB wins were 4/3/4 per four, each across all seats against three strict
+GreedyNoTrade backgrounds. Independent audit passed 24,284 checks, including
+12 outcome joins, 36 actual background-seat records and 4,292 legal background
+selections. All 223 external samples had one OS thread; peak RSS was
+723,664,896 bytes. All guards/workers exited zero. This verifies execution,
+not stronger play. Native node/timeout work remains unknown; raw timing
+quantiles are producer aggregates. The declared SIDE/interpreter/venv/package
+pins passed, but a separate macOS framework `orig_argv[0]` executable lacked a
+pre-run pin; its post-run hash cannot supply one retroactively.
+[Engineering review](../runs/swarm-2026-11-04/agent-research/native-focal-plan-001/engineering/run-001/EMPIRICAL-REVIEW.md).
+
+The fixed-data discarded fitter profile then completed both masks from retained
+FULL15 parent11. Each used 252 genuine TRAIN observations, 185 supervised
+presentations and 16 updates, with 960 current-weight prefix/252 chunk forwards
+plus 504 initial identity forwards. Fitter calls took 0.583523/0.556337 seconds;
+the Root attempt took 14.368 seconds. Both jobs preserved parent/value-head/input
+integrity and discarded all fitted weights. Independent audit passed 19,157
+checks; all 48 external samples met the prospective CPU/Torch1, autograd-disabled,
+OS-at-most-four and RSS2GiB policy (peak 747.25 MiB). This does not clear the old
+six-case strict-OS1 HOLD or approve main fits.
+[Profile review](../runs/swarm-2026-11-04/agent-research/feature-fit-profile-001/run-001/EMPIRICAL-REVIEW.md).
+
+The next feature-ablation data manifest binds 64 episodes/16 whole boards:
+TRAIN 3,041 rows/1,929 choices; validation 1,457/881; retention 1,518/947.
+Only TRAIN can feed updates. Each planned two-epoch fit has exactly 400 updates,
+3,858 presentations, 18,048 prefix and 6,078 chunk observations. Four completed
+weights would require separate game comparisons before any selection; no main
+fit or new model promotion exists. A separate 48-game matched H-no-offers focal
+pilot is being prepared, with fresh board identities audited before GO. Strict
+GreedyNoTrade, H-no-offers, trading-H and three-native stress results stay separate.
+
+Eight supplementary saved TRAIN discard judgments add five reasonable and three
+ambiguous first-discard decisions. Stored H labels were visible; no full discard
+sequence, future-engine consequence or new training target was approved.
+[Discard review](../runs/swarm-2026-11-04/agent-research/batch002-discard-review-001/REPORT.md).
+
 ## Completed grounded public-value wave
 
 The exact core is `3f0a29835d7121d0f6b66db95b9d9de45216989a`, using pinned Catanatron

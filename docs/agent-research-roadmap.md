@@ -91,7 +91,19 @@ This subset exposes no disconnected-gradient or action-index defect. The parents
 already use 30 hand/recipe consequence channels. The remaining four channels add
 site/context eligibility; some are action-constant or duplicate existing recipe
 flags at eligible roots, so the city stalls do not establish their benefit.
-Check for informative TRAIN contrasts before fitting a bounded feature ablation.
+The metadata screen found 127 TRAIN roots/311 BANK-versus-END pairs where
+eligibility changes a recipe contrast, supporting a bounded feature ablation.
+Two discarded profiles then completed exact work under a separate prospective
+CPU/Torch1, autograd-disabled, OS-thread-at-most-four policy: 16 updates and
+185 presentations per mask. Fitter calls took 0.584/0.556 seconds; all 48 external
+samples passed that new policy. Parent weights stayed unchanged and no fitted
+weights were saved. The strict earlier OS1 probe HOLD remains historical evidence;
+this profile does not retroactively clear it or approve main fits.
+
+The full fixed-data preparation binds 64 original episodes to whole-board
+TRAIN/validation/retention splits. Each proposed two-epoch fit has 400 updates,
+3,858 presentations, 18,048 prefix and 6,078 chunk observations. Main worker,
+protocol and reviewed gameplay schedule are separate; no main fit or promotion has run.
 
 The probe retains a resource HOLD: two samples recorded four OS threads despite
 configured Torch intra/inter-op counts of one. This is not evidence of four active
@@ -124,12 +136,22 @@ failure mechanism is understood and simpler methods yield convincing complete-ga
 gains. These are ordered follow-ups, not newly launched studies or a strength
 promotion.
 
-**2. Establish authentic reference comparisons in parallel.** Current native games are
-candidate-versus-three-native stress panels. The gateway currently permits native
-opponents only; a focal native reference requires a narrowly reviewed evaluation
-extension. It must remain outside policy/training/teacher routes. Then compare
-candidate and focal VF/AB separately on the same declared background lineups,
-boards and seats. Keep strict GreedyNoTrade, H/H_view and frozen parents as
+**2. Establish authentic reference comparisons in parallel.** The reviewed evaluation-only
+`evaluate_native_reference_blocks` API now supports focal VF/AB without opening
+policy/training/teacher routes. Twelve real engineering games on one exposed
+board passed independent outcome, selector and resource checks, with all seats
+and three GreedyNoTrade backgrounds. Scores were raw 4/4, VF 3/4 and AB 4/4;
+this is engineering evidence, not strength or fresh controls. Candidate-versus-
+three-native stress panels remain a separate protocol.
+
+Next compare the unchanged public raw candidate and focal VF/AB separately on
+four audited fresh boards/all seats against three persistent H opponents, with
+`no_offers=True` in every arm. This 48-game pilot addresses the weak-background
+ceiling risk; the strict GreedyNoTrade engineering panel remains separate. Keep
+native information/rule asymmetry explicit and require later fresh replication.
+The engineering audit also records an additional macOS framework executable
+without a declared pre-run pin; add that pin prospectively, without rewriting
+old evidence. Keep strict GreedyNoTrade, H/H_view and frozen parents as
 explicit, separately named controls.
 
 Pin the native Git `82aae93` sources and defaults, VF weights and AB depth 2 with

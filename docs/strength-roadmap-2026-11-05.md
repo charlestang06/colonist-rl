@@ -22,17 +22,21 @@ control-minus-baseline H difference was −1.5625 percentage points
 arithmetic checks passed. The predeclared primary H rule failed, so deprioritize
 this placement intervention. Higher VP does not change that decision.
 
-Next, diagnose student-reached TRAIN trades versus passes, check newly audited
-misses for label/encoding/gradient problems, then isolate consequence features.
-Only afterward test independently audited added data as a separate intervention.
-A frozen 32-case public TRAIN sample is prepared; its historical neural parents
-remain distinct from the current raw planner. No new fit or reward shaping has
-been launched from these results.
+The 32-case TRAIN audit and six historical replays found consistent action
+encoding and relevant gradients in the selected cases. The parents already use
+30 recipe features. A separate eligibility contrast screen supports a bounded
+four-channel comparison; two discarded profiles completed exact work and passed
+their prospective resource audit. Main fixed-data fits and the required separate
+audited-data experiment remain next; no new model is promoted.
 
-Current native panels use three native opponents. The opponent-only gateway needs
-a narrow isolated evaluation extension for focal VF/AB references before the
-reference milestone can be satisfied. Keep final boards `123100000..123100063` and
-legacy finals sealed.
+The evaluation-only focal VF/AB API is now implemented and passed 12 real
+engineering games plus independent selector/outcome/resource audit. Raw/VF/AB
+scores of 4/3/4 per four against GreedyNoTrade on one exposed board are not
+strength evidence. Next use four fresh audited boards/all seats against matched
+persistent H backgrounds with offers disabled (48 new games). Preserve the
+engineering runtime provenance limitation and add the extra macOS executable
+pin before new runs. Three-native stress panels remain distinct. Keep final
+boards `123100000..123100063` and legacy finals sealed.
 
 [Current results](training-status-2026-11-05.md) link exact reviews and artifacts.
 [Historical results](training-history-through-checkpoint08.md) and
