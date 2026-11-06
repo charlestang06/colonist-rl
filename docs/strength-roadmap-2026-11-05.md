@@ -14,13 +14,20 @@ promoted and no native-VF/AB superiority is established. The 24-case diagnostic 
 reasonable / 6 ambiguous / 0 clearly bad, with explicit post-run and seat-selection
 bias; it is never training data or population competence evidence.
 
-The next controlled hypothesis is the existing second-settlement scorer on fresh
-boards and corrected source `3f0a298`, with the same raw continuation at margin
-10000 in both arms. Freeze two arms × 16 boards × four seats × H/VF = 256 games
-before launch, measure wins separately against H and VF, and use the
-predeclared whole-board advancement rule. This is a planned transfer replication,
-not an exact replay or a claimed improvement. No new fit or reward shaping follows
-from the current mixed results.
+The subsequent 256-game second-settlement transfer study completed on corrected
+source `3f0a298`, with common raw margin 10000 and 16 fresh shared boards. H wins
+were baseline 20/64 versus control 19/64; VF wins were 26/64 versus 32/64. The
+control-minus-baseline H difference was −1.5625 percentage points
+[−12.5,10.9375], while VF was +9.375 [−4.6875,21.875]. Independent provenance and
+arithmetic checks passed. The predeclared primary H rule failed, so deprioritize
+this placement intervention. Higher VP does not change that decision.
+
+Next, diagnose student-reached TRAIN trades versus passes, check newly audited
+misses for label/encoding/gradient problems, then isolate consequence features.
+Only afterward test independently audited added data as a separate intervention.
+A frozen 32-case public TRAIN sample is prepared; its historical neural parents
+remain distinct from the current raw planner. No new fit or reward shaping has
+been launched from these results.
 
 Current native panels use three native opponents. The opponent-only gateway needs
 a narrow isolated evaluation extension for focal VF/AB references before the

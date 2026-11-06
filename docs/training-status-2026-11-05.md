@@ -121,12 +121,59 @@ These are descriptive 95% whole-board bootstrap intervals across eight clusters.
 Both arms used raw margin 10000 and source `56cb6bc`. This mixed result supports no promotion.
 [Setup review](../runs/swarm-2026-11-04/agent-research/grounded-value/setup-control/run-001/EMPIRICAL-REVIEW.md).
 
-The next planned study is 256 fresh games for second-settlement-only transfer
-replication on corrected source, the frozen original public scorer and common raw
-margin 10000. H is primary, VF is transfer stress; source cohorts/controls remain
-separate. The canonical roadmap records its advancement rule. No new study is
-claimed launched here, and no current model was selected as a strength winner.
-[Research decision](../runs/swarm-2026-11-04/agent-research/grounded-value/post-study-priorities.md).
+## Completed 256-game setup transfer
+
+The transfer study completed all 256 new games: two arms × 16 fresh shared boards
+× four seats × H/VF. Both arms used corrected source `3f0a298`, common raw margin
+10000 and the original frozen public second-settlement scorer. There were no
+fitted models, independently queried teachers, fits, reused controls or pooled
+source cohorts. Built-in raw heuristics and the frozen placement scorer remain
+part of the candidate.
+
+| Arm | H wins / 64 | H mean VP | VF wins / 64 | VF mean VP |
+|---|---:|---:|---:|---:|
+| Raw baseline | 20 | 7.015625 | 26 | 7.703125 |
+| Second-settlement control | 19 | 7.484375 | 32 | 8.406250 |
+
+Control-minus-baseline H win difference is −0.015625, with predeclared 95%
+whole-board bootstrap interval [−0.125,0.109375]. VF difference is +0.09375
+[−0.046875,0.21875]. The panels share 16 board clusters. Mean VP differences
+are +0.46875 for H and +0.703125 for VF, but VP cannot rescue the failed primary
+H advancement rule. Deprioritize this unchanged placement intervention and
+proceed to trade/pass diagnosis; no strength promotion follows.
+
+The independent audit joined all 256 resolved outcomes, 128 identical pre-second
+public-root/prefix pairs, source/runtime, original-menu identities, guards and
+durable attempts; 338,196 checks across 107 categories had zero failures. Root
+wall time was 243.678 seconds, maximum job 55.306 seconds, maximum heavy overlap
+2, and peak sampled RSS 765,394,944 bytes with one sampled thread. Control paths
+used about 11–12% more candidate time and 23–25% more nodes than baseline, despite
+equal nominal limits. Future paths differ after placement; equal budgets are
+not equal measured work.
+
+A preparation-test incident accidentally created real guard/worker processes
+against a manufactured configuration. Its temporary child evidence was lost;
+static binding checks support expected rejection before the runtime factory,
+but per-child progress cannot be certified. No incident data is accepted.
+Subsequent isolation repairs passed 12 focused tests before the separately
+frozen Root-run study. The incident, missing evidence and retained failures remain
+documented in the [empirical review](../runs/swarm-2026-11-04/agent-research/setup-transfer/run-001/EMPIRICAL-REVIEW.md).
+
+## Active trade/pass diagnosis
+
+An existing 3.3.0 TRAIN corpus contains 6,016 rows from 64 complete historical
+neural-student episodes. After excluding the 192 prior targeted/background
+observation hashes, public screening found 563 passes and 191 bank selections
+within bank-plus-END menus. A frozen sample contains 14 apparent single-trade
+recipe/site opportunities, nine other passes and nine executed bank trades.
+Its 32 cases span 11 boards and 15 episodes, with 26 same-episode case pairs;
+the selected screen is not a population error rate.
+
+Public judgments and scoped current-weight model checks remain diagnostic.
+Recipe/site arithmetic does not certify a future engine menu. The historical
+parents and occupancy are distinct from the current raw planner; no new rollout,
+training label approval, fit or added-data experiment is claimed here.
+[Next learning plan](../runs/swarm-2026-11-04/agent-research/next-learning-plan.md).
 
 ## Earlier evidence retained
 

@@ -50,37 +50,23 @@ aggregate results were visible, and contains no root settlement option. It canno
 prove general competence, arm quality, or elimination of older failure cases.
 Its packets and judgments remain evaluation-only.
 
-The separate second-settlement control won 7/32 versus 4/32 across eight boards,
-with slightly lower mean VP. That is a concrete, inexpensive hypothesis for a
-fresh controlled follow-up, not an established improvement. The independent
-[post-study research decision](../runs/swarm-2026-11-04/agent-research/grounded-value/post-study-priorities.md)
-explains the choice and its alternatives.
+The separate eight-board second-settlement pilot motivated a fresh 256-game
+transfer study on corrected source `3f0a298`, with raw margin 10000 in both arms.
+Across 16 new shared boards and all seats, baseline/control wins were 20/19 per 64
+against H and 26/32 per 64 against native VF. Control-minus-baseline win differences
+were −1.5625 percentage points [−12.5,10.9375] for H and +9.375 [−4.6875,21.875]
+for VF, using the predeclared whole-board bootstrap. All 256 outcomes and 128
+pre-second public-root/prefix pairs passed independent integrity checks.
+
+The primary H advancement rule failed. Deprioritize this unchanged placement
+intervention; higher VP and the positive VF point estimate cannot rescue it.
+Do not pool the old source cohort or retune on these exposed boards. No candidate
+is promoted. The [empirical review](../runs/swarm-2026-11-04/agent-research/setup-transfer/run-001/EMPIRICAL-REVIEW.md)
+records provenance, measured work and the separate preparation-test incident.
 
 ## What to pursue next
 
-**1. Test one isolated source of better decisions.** The next selected experiment
-is a second-settlement-only transfer replication: two arms × 16 fresh development
-boards × four seats × H/VF = 256 new games. Keep the original public scorer and tie
-rules frozen. Both arms use the corrected current source and the same raw
-continuation at margin 10000, depth 6 / nodes 2048 / beam 24 / geometry 100000.
-First placement, setup roads, continuation algorithm, proposal conventions and
-opponent settings are held fixed; realized later states naturally differ.
-
-This is a new source cohort: the earlier setup test used `56cb6bc`; the corrected
-core is `3f0a298`. Main grounded raw used margin 250000. Do not pool these results or
-reuse their controls as new evidence. Before launch, freeze source/runtime/scorer,
-audit the 16 boards, pin H/VF phase shims, and review the minimal integration.
-Use existing guards and complete scheduled-outcome inventory.
-
-Predeclare H as the primary replication and VF as transfer stress. Advance this
-unchanged intervention only with a positive H win estimate whose 95% whole-board
-bootstrap lower endpoint exceeds zero, a nonnegative VF point estimate, complete
-integrity and acceptable measured work. Report VF uncertainty separately. Mixed
-or inconclusive results remain so; a nonpositive H replication or negative VF
-estimate deprioritizes this intervention. Higher setup scores or VP cannot rescue
-a failed win hypothesis. This experiment is planned, not launched or promoted.
-
-**2. After the placement study, diagnose and isolate trading decisions.** First
+**1. Diagnose and isolate trading decisions.** First
 audit trading versus passing on student-reached TRAIN states. Inspect passes for
 useful root-legal trades that could unlock settlements, cities or expansion.
 Check public resource consequences, build deficits and connected-site access;
@@ -89,6 +75,14 @@ alternatives and ambiguity rather than assuming H's choice is ground truth.
 Check label consistency, action encoding and gradient flow before increasing
 training scale. Bank trading and ending share a phase, so phase balancing alone
 cannot establish that the student distinguishes their consequences.
+
+A frozen 32-case TRAIN sample is prepared from existing historical neural-student
+trajectories: 14 apparent single-trade recipe/site opportunities, nine other passes
+and nine executed bank trades. It spans 11 boards/15 episodes and is clustered,
+with older checkpoint occupancy distinct from the current raw planner. Public
+judgment and any fresh scoped model checks remain diagnostic; selection screens
+are neither certified future menus nor approved training labels. Reuse applicable
+completed checks rather than rerunning the old panels.
 
 Next, isolate explicit public action-consequence features against the existing
 feature set. Hold TRAIN data, model family, optimizer work, continuation and
@@ -104,7 +98,7 @@ required follow-up steps.
 Judge each intervention in separate fixed GreedyNoTrade, trading H and authentic
 VF/AB panels, with paired complete games, whole-board uncertainty and a public
 decision audit. Native stress panels remain distinct from focal-reference
-comparisons, which still require the evaluation extension in section 3. Retain
+comparisons, which still require the evaluation extension in section 2. Retain
 frozen parents and check retention. Reuse applicable completed checks and TRAIN
 data instead of repeating closed work. Never turn privileged native choices or
 EVAL artifacts into training labels; the current 24 EVAL cases remain excluded.
@@ -115,7 +109,7 @@ failure mechanism is understood and simpler methods yield convincing complete-ga
 gains. These are ordered follow-ups, not newly launched studies or a strength
 promotion.
 
-**3. Establish authentic reference comparisons.** Current native games are
+**2. Establish authentic reference comparisons.** Current native games are
 candidate-versus-three-native stress panels. The gateway currently permits native
 opponents only; a focal native reference requires a narrowly reviewed evaluation
 extension. It must remain outside policy/training/teacher routes. Then compare

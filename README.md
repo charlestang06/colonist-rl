@@ -10,9 +10,10 @@ with background case building. Cloning success does not gate value/search resear
 PPO is deferred.
 The [current results](docs/training-status-2026-11-05.md) distinguish completed
 development studies from strength confirmation. The first fixed evaluator
-comparisons and latest 128-game grounded comparison completed without a reliable
-model advantage. The next isolated hypothesis is second-settlement value on fresh
-boards. No authentic VF/AB superiority is established.
+comparisons and the 128-game grounded comparison found no reliable model advantage.
+A fresh 256-game second-settlement study then failed its primary advancement rule.
+The next work audits useful bank trades versus passes before testing consequence
+features and independently audited added data. No authentic VF/AB superiority is established.
 
 ## Run
 
