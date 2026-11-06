@@ -37,7 +37,7 @@ passes. The intended building was executed as the next own action in 25 of
 winning settlement after the first trade; the parent instead made two more
 bank trades and won by building a city later in the same turn. An
 [exact engine replay](../runs/swarm-2026-11-04/agent-research/public-option-001/failure-investigation.json)
-confirmed the settlement was on the real menu. The [direct-win guard](agent-research-roadmap.md)
+confirmed the settlement was on the real menu. The [direct-win guard](public-turn-planner.md)
 is a separate planner repair, not evidence for this purchase score.
 
 ## Conceptual decision audit

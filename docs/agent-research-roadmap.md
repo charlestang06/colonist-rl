@@ -88,8 +88,10 @@ unchanged budget comparison. Change beam and depth separately only when
 diagnostics justify them.
 
 Move toward unified trading, building, purchasing and passing. Deterministic public
-consequences should be exact. A current legal point build that reaches the
-winning threshold deserves a direct-win guard before more trading. Card
+consequences should be exact. The [direct-win guard](public-turn-planner.md)
+now selects a fully validated current legal city or settlement that reaches
+the standard winning threshold before a longer future search, within the
+planner's supported rolled-turn flow. Card
 purchase needs uncertainty-aware future value, never its actual hidden draw.
 The option screen shows why BUY→later-trade/build continuations must be compared
 before a projected trade→build is credited as an earlier point. A better public
@@ -195,7 +197,8 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [2,048-versus-8,192 search-budget screen](search-budget-results-2026-11-06.md): 32 resolved games, 16/16 same traces, 3,341 extra invalid attempts. | Retire unchanged budget increase. |
 | Complete | [Necessary-condition future pruning](public-future-pruning-results-2026-11-06.md): 64 resolved screen games, 32/32 same traces, 414,217 invalid candidates skipped; speed gain repeated with reversed arm order. | Enable by default for new planner work; no playing-strength gain claimed. |
 | Complete | [Opt-in purchase comparison](public-option-purchase-results-2026-11-06.md): 96 resolved games, 50 changes, 25/26 immediate builds, raw 13/48 versus option 16/48; fresh adverse BUY continuation. | Keep optional; revise the one-turn comparison and reserve new boards. |
-| Active | Audit student-reached trade/pass/BUY states and repair direct legal-win choices. | Accept only independent public labels and exact legal roots; no fit or promotion from unreviewed screens. |
+| Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
+| Active | Audit student-reached trade/pass/BUY states. | Accept only independent public labels; no fit or promotion from unreviewed screens. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
