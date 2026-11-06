@@ -1,0 +1,9 @@
+# Fresh midgame public capture
+
+The frozen parent policy played four seats on each of 16 TRAIN boards (logical seeds 157620000–157620015) against heuristic opponents, with domestic offers disabled. All 64 games resolved. Saved-file verification and an independent public-prefix audit passed for 6,304 own decision rows. Every row retains its exact current Observation, ordered legal menu, and complete visible-event prefix. Private game outcomes are in separate files and are not teacher labels.
+
+Source commit: `9ba231e4e9f98956b9a514a14bda3302c99a127c`. Capture protocol SHA-256: `46cef90b63c278755f8c0c285f9897c8be17f8e0fb28b5f5e08c3dd6857a2174`. Capture manifest SHA-256: `1e71df36e6f1e96be7e4a8cfbb83c341081702077b7d590d582ceceb8bea8139`. Fresh-role seed-clearance SHA-256: `627c5f7c89a61614f4b3296d739c94c00fec833bf016b2deb4591fe0e02b295e`.
+
+The complete byte-verified capture, source snapshot, public-prefix audit, and separate private outcomes are archived in Original and Root ignored runs at `runs/swarm-2026-11-04/agent-research/midgame-joint-world-capture-001/`. Its `ARTIFACT-MANIFEST.json` SHA-256 is `64abe626a653b62469033f27fe8f6f6d4468b9cacaab338907bc31045801847f` (103 files, 4,596,617 bytes). The first board took 5.77 seconds; the remaining 15 sequential boards took about 80 seconds. Peak RSS was not instrumented.
+
+The separately frozen public-only selector chose 32 cases across all 16 boards, with eight trade, eight BUY, eight playable-card, and eight END/pass cases. Its selection receipt SHA-256 is `3c41a3a461d4b249e8982b6d969e434dd6bf4456bd7231b7159ae4ae104afbbc`. Independent joins verified every selected Observation, menu, full prefix, and focus action against the archive. This is an acquisition result only; no counterfactual preference label or teacher-strength claim follows from it. The 157630000–157630007 labelVAL boards remain unopened.
