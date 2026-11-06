@@ -2,8 +2,38 @@
 
 The goal is reproducible complete-game superiority to authentic VF and AB under
 the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-start
-tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
+tool; PPO remains deferred. The revised priority is fresh student decision diagnosis,
+audited targets and isolated repairs, with bounded outcome-value work alongside it.
+No authentic VF/AB superiority or new model promotion
 is established.
+
+## Latest preparation: cache repaired; sparse fitter still pending
+
+The separate cache-only repair completed on the original four engineering
+histories, preserving the failed attempt. It encoded all 361 own inputs in both
+recurrent-step and full-forward passes (722 observation passes), with one parent
+load and no new games, action selections, teachers, backwards or fitting. Root
+session 57187 exited 0 in 7.555 seconds. Independent review passed 26,501 metadata
+checks; all 33 live samples met OS1 and peak RSS was 725,843,968 bytes. Tensor/codec
+identity remains tied to the pinned producer's assertions; the independent audit
+did not deserialize/replay the model. This is engineering feasibility only.
+Board 138100000 stays outside main TRAIN/validation and strength claims.
+[Repair review](../runs/swarm-2026-11-04/agent-research/complete-history-cache-repair-002/independent-audit-001/EMPIRICAL-REVIEW.md).
+
+The sparse accepted-target fitter passed its initial 41 synthetic tests, including
+anchor-only updates and recurrence. Independent source review then identified
+large-common-offset instability in multi-action loss. Both added regressions
+failed as expected; the numerical fix and full 43-case/legacy regression review
+remain pending. No real-data fit or candidate promotion occurred.
+[Source review](../runs/swarm-2026-11-04/agent-research/approved-target-loss-review-001/REVIEW.md).
+
+The corrected current-student experiment design passed independent review; it
+still requires collection, label audit and its fixed added-data-only comparison.
+The separate 320-game terminal-history collection SPEC is prepared, with no main
+games collected or value heads fit. These are preparation milestones, not evidence
+of better decisions. The [canonical roadmap](agent-research-roadmap.md) defines the
+new order: safe sparse learning, audited current-student data, targeted tactical
+repair and verified longer planning; PPO follows demonstrated competence.
 
 ## Fixed-feature gameplay: execution accepted, primary advancement failed
 
@@ -50,7 +80,7 @@ more trading is not a suitable default shaped reward. The diagnostic is EVAL-onl
 and adds no advancement gate.
 [Aggregate diagnostic](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/run-001/H-trading-aggregate-diagnostic.json).
 
-## Complete-history engineering collection: cache failure preserved
+## Original complete-history engineering attempt: cache failure preserved
 
 Four engineering-only games on logical138100000 completed and retained all361 own
 inputs, including148 forced inputs,128 ordinary eligible value rows and101 early/mid
@@ -62,22 +92,22 @@ The expected015826… digest came from imitation_study._state_digest; the code u
 the older probe's different serialization, whose same-parent digest was03b8678….
 This is a producer-algorithm binding error, not evidence that the parent changed.
 Checkpoint load/construction and parameter operations occurred; source control flow
-stopped before the first observation forward. Preserve the failed attempt and its
-four complete histories. A separately reviewed cache-only repair must use the
-original producer function, separate input/execution bindings and a new output path;
-no game replay, fitting or automatic expansion is authorized by this failure.
+stopped before the first observation forward. The separate repair reported above
+used the original producer function, separate input/execution bindings and a new
+output path. This original run remains failed, with its histories and evidence
+unchanged. No game replay or fitting was part of the repair.
 [Failed pilot empirical review](../runs/swarm-2026-11-04/agent-research/complete-history-value-pilot-001/independent-audit-001/EMPIRICAL-REVIEW.md).
 
 ## Direction revision: 2026-11-06
 
-The canonical roadmap now makes audited sensible decisions and robust heuristic-level
-play an explicit development milestone, followed by superiority over both native
-references. Fresh complete-history outcome-value learning, one bounded tactical
-coverage experiment and a validated public transition/search seam are independent
-avenues. BC remains optional; PPO and reward shaping remain deferred. The prepared
-384 feature games and required separate audited current-student data comparison
-are retained, not silently replaced. This is a direction change, not new strength
-or a launch authorization.
+The canonical roadmap now organizes work around costly decisions, trustworthy
+teaching and isolated repairs. Audited sensible play and fresh heuristic-level
+gameplay precede a superiority claim over both native references. Terminal-outcome
+learning remains a separate bounded experiment; tactical repairs and verified
+public transitions precede larger search. BC remains optional; PPO and new reward
+shaping remain deferred. The completed 384 feature comparison and required separate
+audited current-student data comparison are retained. This direction change is
+not new strength or a launch authorization.
 
 A [metadata history audit](../runs/swarm-2026-11-04/agent-research/value-history-availability-001/REPORT.md)
 reconciles the legacy 96 TRAIN/32 validation outcomes: 8,165/2,673 own decisions,

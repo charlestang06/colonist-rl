@@ -3,19 +3,22 @@
 Local Catan agent research with public observations, learned policies, value-guided
 search, resource beliefs and independent trade model plug-ins.
 
-The goal is sensible heuristic-level play followed by reproducible complete-game
-superiority over authentic VF/AB references, using only player-observable inputs.
-The [research roadmap](docs/agent-research-roadmap.md) prioritizes audited current-student
-decisions, complete-history outcome-value learning and bounded public planning across
-turns. BC is optional; PPO and reward shaping remain deferred. Adapters share the
-Observation/Action contract while learning remains the main priority.
+The goal is a strong player-observable Catan decision maker: demonstrate sensible
+heuristic-level play, then reproducibly outperform authentic VF/AB references in
+complete games. The [research roadmap](docs/agent-research-roadmap.md) starts with
+costly decisions in fresh student games, trustworthy teaching targets and one
+controlled repair at a time. Terminal-outcome value learning is a separate bounded
+experiment; longer public search follows verified tactical coverage. BC is optional;
+PPO and new reward shaping follow demonstrated competence and a specific need.
+Adapters share the Observation/Action contract while learning gets priority.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its
 primary advancement rule: every candidate won 2/16 against trading H. The required
-new audited-data test remains next. Complete-history value collection has a four-game
-engineering cohort; its first cache failed a fingerprint check and is under a
-cache-only repair. Earlier residual and placement studies found no reliable gain;
+new audited-data test remains next, after a numerical repair to the sparse target
+loss. The complete-history cache repair passed engineering review on four saved
+games/361 inputs; main value collection and fitting remain unstarted.
+Earlier residual and placement studies found no reliable gain;
 the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
 
 ## Run

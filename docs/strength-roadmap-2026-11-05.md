@@ -1,40 +1,46 @@
 # Strength objective and next work
 
-Direction revised 2026-11-06. Build a player-observable Catan agent with sensible
-heuristic-level decisions, then demonstrate reproducible complete-game superiority
-over authentic pinned VF and AB. The [canonical roadmap](agent-research-roadmap.md)
-defines priorities, proposed competence gates, experiment boundaries and confirmation.
+Direction revised 2026-11-06. Build a strong player-observable Catan decision maker:
+first demonstrate sensible heuristic-level play, then reproducible complete-game
+superiority over authentic pinned VF and AB. The [canonical roadmap](agent-research-roadmap.md)
+defines the goal, execution order, evidence gates and adapter boundaries.
 
-Pursue three connected avenues: audit current-student decisions and collect complete
-histories; learn terminal-outcome value from fresh board-separated games; and test
-bounded public planning across turns. BC is an optional tool. PPO and reward shaping
-remain deferred until evidence motivates them. Adapter maintenance continues behind
-the shared Observation/Action contract while learning gets priority.
+The main loop is fresh student games, public decision diagnosis, trustworthy
+teaching targets, one isolated repair and matched gameplay. Check the teacher
+rather than treating imitation accuracy as quality. Bank trades stay legal;
+GreedyNoTrade deliberately declines them. Preserve useful passes, acceptable
+alternatives and ambiguous judgments. Cover placement, trades/build/pass,
+domestic responses, robber/discard, development-card buying and play, road/army
+races and VP/endgame. Missing coverage prevents a broad competence claim.
 
-The 384-game feature comparison is complete and independently accepted. Pooled
-parent/control/eligible wins were GNT 17/25/26 per 32, trading H 4/4/4, native-VF
-stress 3/7/7 and native-AB stress 3/7/7. The primary eligibility-minus-control H
-contrast was zero on every board; the feature treatment does not advance. Secondary
-refit gains are not focal-reference superiority or heuristic competence.
+Next: repair the accepted-set loss's numerical instability, finish the 43-case and
+legacy regression review, then collect/audit current-student data and run the
+frozen added-data-only comparison. In a separate bounded lane, complete the
+role-aware terminal-history collector and its reviewed 320-game schedule; test
+value prediction before policy deployment. A small tactical repair from fresh
+TRAIN failures can proceed alongside these experiments; it need not wait for BC.
+Validate/profile public cross-turn transitions before larger search. BC is optional.
+Compare the strongest competent candidate directly with VF/AB; PPO is not a
+prerequisite. PPO and new shaping follow demonstrated competence and a specific
+hypothesis. Maintain adapters behind the common Observation/Action
+contract while learning gets priority.
 
-All 24 explanatory slots were judged, representing 19 unique public cases:
-17 reasonable, two ambiguous, none clearly bad. Coverage was setup/bank/robber,
-with no development-card or discard packet. These dependent EVAL cases cannot
-become training targets. Required new current-student audited-data work remains.
+No candidate is promoted. The 384-game eligibility comparison failed its primary
+rule: every candidate won 2/16 against trading H. The explanatory EVAL audit's
+17 reasonable/two ambiguous unique cases covered setup/bank/robber only. The
+native focal pilot scored raw/VF/AB2 3/0/4 per 16, which establishes no superiority
+over both references. These exposed data remain outside training.
 
-The new engineering collector retained four complete games/361 chronological own
-inputs. Its first cache failed on a fingerprint-format mismatch before observation
-forwards; the loaded parent was not trained. Preserve the failed attempt and repair
-only the cache on those saved histories. Main value collection/fitting remains
-unstarted; no success claim follows from data persistence alone.
+The separate complete-history cache repair passed engineering review on four
+saved games/361 inputs, preserving the first failed attempt. Main value collection
+and fitting remain unstarted. The sparse loss passed 41 initial tests; two later
+offset regressions reproduced an uncovered issue, so it remains pending repair.
+Neither result establishes stronger play. [Current status](training-status-2026-11-05.md)
+records evidence and limitations.
 
-The latest native pilot scored raw 3/16, VF 0/16 and AB2 4/16. Raw-minus-AB was
-−6.25pp [−25,12.5] across four boards; there is no superiority claim or finalist.
-Earlier residual and placement studies also failed to establish reliable gains.
-Use these results to retire unchanged interventions, not to equate audits or more
-training with strength. Keep all evaluation artifacts out of training and final
-boards `123100000..123100063` plus legacy finals sealed.
-
-[Current results](training-status-2026-11-05.md) preserve exact counts and reviews.
-[Historical results](training-history-through-checkpoint08.md) and
+Retire unchanged failed interventions. Compare on fresh boards, rotate every seat,
+retain strict GNT/trading-H controls and separate focal-native benchmarks from
+three-native stress panels. Scale after a primary measured benefit. Keep final
+boards `123100000..123100063` and legacy finals untouched until confirmation is
+frozen. [Historical results](training-history-through-checkpoint08.md) and
 [previous roadmaps](../runs/swarm-2026-11-04/research-roadmap-history/) remain available.
