@@ -11,9 +11,12 @@ turns. BC is optional; PPO and reward shaping remain deferred. Adapters share th
 Observation/Action contract while learning remains the main priority.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
-superiority. Four feature fits await their prepared paired-game comparison, followed
-by a separate audited added-data test. Earlier residual and placement studies found
-no reliable gain; the latest native pilot scored raw/VF/AB2 3/0/4 per 16.
+superiority. The 384-game feature comparison passed integrity review but failed its
+primary advancement rule: every candidate won 2/16 against trading H. The required
+new audited-data test remains next. Complete-history value collection has a four-game
+engineering cohort; its first cache failed a fingerprint check and is under a
+cache-only repair. Earlier residual and placement studies found no reliable gain;
+the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
 
 ## Run
 

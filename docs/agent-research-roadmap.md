@@ -32,7 +32,10 @@ VF/AB are privileged-state evaluation references; report that information asymme
   subset. The parent already has 30 hand/recipe consequence features.
 - Four fixed-data eligibility-feature fits completed with independent audit.
   Extra channels gave no validation exact-label gain over control; complete-game
-  comparison remains necessary. There is no basis for selecting a fitted arm yet.
+  comparison is now complete: 384 games passed independent integrity checks. All
+  six candidates won 2/16 against trading H. Eligibility versus control was zero
+  on H/VF/AB and one pooled extra win against GreedyNoTrade. The primary rule
+  failed; do not advance this feature treatment or select from secondary results.
 - More BC agreement, the earlier outcome residuals and the 256-game placement
   intervention did not establish reliable gameplay improvement. Do not repeat
   those unchanged interventions simply at larger scale.
@@ -131,14 +134,23 @@ separate interventions. More purchases or higher VP do not establish improvement
 
 ## Close existing comparisons without letting them dictate the research program
 
-Finish the already prepared 384-game feature comparison: two retained parents and
-their control/eligibility fits, four panels, four fresh boards and all seats. Keep
-its predeclared schedules, advancement and retention rules unchanged. The package
-is in preparation; freshness certification, independent harness review and Root
-runtime authorization precede games. An incomplete or failed attempt remains so.
-Do not infer selection from CE or silently turn this into a new search comparison.
+The fixed 384-game comparison is complete and independently audited: 228,796
+checks, 96 prescribed successful jobs, 43,854 neural observation forwards and
+all 384 outcomes. Eligibility-minus-control was zero on the primary H panel on
+all four boards, with bootstrap interval [0,0]; this is not proof of population
+equivalence. Shared refitting improved secondary GNT/native stress results but
+cannot rescue the primary failure. No model is promoted, no feature replication
+is nominated and these exposed boards remain EVAL-only.
 
-After that comparison, independently audit new current-student TRAIN labels and
+The fixed explanatory audit retained all 24 slots, with 19 unique public cases:
+17 reasonable, two ambiguous and none clearly bad. It covers 12 setup, six
+bank/pass and six robber slots. A broad build qualifier selected setup in every
+dev/build-assigned slot; no selected development-card or discard case exists.
+Do not replace slots, infer general competence or train on these judgments.
+[Empirical review](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/independent-audit-001/EMPIRICAL-REVIEW.md)
+and [blinded audit](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/decision-audit-001/judge-001/REPORT.md).
+
+Next, independently audit new current-student TRAIN labels and
 run the required added-data-only comparison, holding architecture, features and
 optimizer work fixed. Accepted alternatives and ambiguity travel with labels.
 This remains required even if the feature result is null. BC/DAgger is optional as
@@ -149,12 +161,18 @@ training-approved. None of these obligations blocks independent value/search wor
 
 ## Immediate deliverables
 
-1. Close the prepared feature-game comparison under its existing rules, without
-   selecting a model early. Finish the independent harness review first.
-2. Specify and collect the new complete-history current-student TRAIN cohort;
-   independently audit its decisions and freeze the separate added-data test.
-3. Build and profile the complete-history terminal-outcome collector and frozen
-   embedding path. Freeze the value/data contrasts before fitting.
+1. Complete a cache-only mechanical repair on the four collected engineering
+   histories. Their 361 own inputs are retained, but the first cache failed at a
+   fingerprint-format gate before its first observation forward. Keep that failure;
+   reuse the histories with separate input/execution bindings and the original
+   producer digest, without new games. No main value collection is authorized yet.
+2. Review the minimal sparse-loss approval seam, then collect and independently
+   audit new current-student TRAIN cases. The proposed 48-game/64 TRAIN-case plus
+   32 validation-case design uses two blinded judges; unaudited rows remain prefix
+   inputs with zero new loss. Review it before launch and test the added data alone.
+3. Use the complete-history pilot's measured collection/cache costs to freeze the
+   separate terminal-outcome corpus, shared frozen embeddings and value/data-size
+   contrasts before fitting. A successful collector is not a successful value model.
 4. Test one bounded tactical coverage gap, starting with development-card buying,
    while validating the public transition seam needed by longer search.
 

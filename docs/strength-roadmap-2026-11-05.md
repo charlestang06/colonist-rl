@@ -11,12 +11,22 @@ bounded public planning across turns. BC is an optional tool. PPO and reward sha
 remain deferred until evidence motivates them. Adapter maintenance continues behind
 the shared Observation/Action contract while learning gets priority.
 
-Close the already trained feature intervention with its prepared 384-game comparison,
-then complete the independently audited current-student added-data-only experiment.
-Keep these controlled comparisons separate from new value/search interventions.
-No feature arm is selected: four fits passed integrity audit but extra eligibility
-channels gave no exact-label validation gain. The older outcome cohort cannot supply
-full recurrent histories; all 128 episodes omit some own observation views.
+The 384-game feature comparison is complete and independently accepted. Pooled
+parent/control/eligible wins were GNT 17/25/26 per 32, trading H 4/4/4, native-VF
+stress 3/7/7 and native-AB stress 3/7/7. The primary eligibility-minus-control H
+contrast was zero on every board; the feature treatment does not advance. Secondary
+refit gains are not focal-reference superiority or heuristic competence.
+
+All 24 explanatory slots were judged, representing 19 unique public cases:
+17 reasonable, two ambiguous, none clearly bad. Coverage was setup/bank/robber,
+with no development-card or discard packet. These dependent EVAL cases cannot
+become training targets. Required new current-student audited-data work remains.
+
+The new engineering collector retained four complete games/361 chronological own
+inputs. Its first cache failed on a fingerprint-format mismatch before observation
+forwards; the loaded parent was not trained. Preserve the failed attempt and repair
+only the cache on those saved histories. Main value collection/fitting remains
+unstarted; no success claim follows from data persistence alone.
 
 The latest native pilot scored raw 3/16, VF 0/16 and AB2 4/16. Raw-minus-AB was
 −6.25pp [−25,12.5] across four boards; there is no superiority claim or finalist.

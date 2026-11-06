@@ -5,6 +5,69 @@ the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-star
 tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
 is established.
 
+## Fixed-feature gameplay: execution accepted, primary advancement failed
+
+The frozen 384-game comparison completed on four fresh development boards and
+all seats: six retained candidates, four distinct panels, 96 successful guarded
+jobs. Independent audit passed 228,796 checks with no issue, verifying all outcomes,
+actual argv/PID/model/background joins, full own-history recurrence and the frozen
+four-board paired-bootstrap arithmetic. Root exit was 0 and wall 974.223 seconds.
+
+| Arm, pooled across two parents | GNT /32 | Trading H /32 | Three native VF /32 | Three native AB2 /32 |
+|---|---:|---:|---:|---:|
+| Unchanged parents | 17 | 4 | 3 | 3 |
+| Fixed-data control fits | 25 | 4 | 7 | 7 |
+| Eligibility fits | 26 | 4 | 7 | 7 |
+
+Every individual candidate won 2/16 on H. Eligibility-minus-control H was zero
+on all four board clusters, interval [0,0]; this does not prove equivalence outside
+this cohort. The required positive primary point/lower endpoint both failed.
+Eligibility-minus-control was also zero on native stress panels; the extra GNT win
+cannot rescue it. Shared refitting's secondary gains over parents are not the
+eligibility effect. No feature advancement, candidate promotion or native-reference
+superiority follows. Keep the exposed cohort out of training.
+
+Measured work was 43,854 neural observation forwards, 96 checkpoint loads,
+123,054 background selections and 1,152 background seat-game records. All 9,188
+live samples met OS1/RSS 2 GiB; peak sampled RSS was 779,206,656 bytes and maximum
+heavy overlap two. One final ESRCH race had the exact accepted non-live signature.
+All 49 source/17,978 runtime files and six opaque checkpoint files matched their
+pins. These are joined metadata/source checks, not an independent game replay.
+The historical six-case resource HOLD remains unchanged.
+[Empirical review](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/independent-audit-001/EMPIRICAL-REVIEW.md).
+
+The fixed public audit preserved all 24 slots/19 unique packet-prefix pairs:
+17 unique cases were reasonable, two ambiguous and none clearly bad. Slot counts
+were 22/2/0 because duplicates share judgments. Actual coverage was 12 setup,
+six bank/pass and six robber slots; the build qualifier also admitted setup.
+There were no selected development-play menus or discard packets. These dependent
+cases are not a broad competence certificate. All training targets remain null.
+[Blinded judgments](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/decision-audit-001/judge-001/REPORT.md).
+
+A separate post-comparison aggregate diagnostic records parent11/control11 maritime
+trades 41/82 in their 16 H games, with H wins 2/2. Frequency is not action quality;
+more trading is not a suitable default shaped reward. The diagnostic is EVAL-only
+and adds no advancement gate.
+[Aggregate diagnostic](../runs/swarm-2026-11-04/agent-research/feature-gameplay-001/run-001/H-trading-aggregate-diagnostic.json).
+
+## Complete-history engineering collection: cache failure preserved
+
+Four engineering-only games on logical138100000 completed and retained all361 own
+inputs, including148 forced inputs,128 ordinary eligible value rows and101 early/mid
+rows. This board/data are excluded from main TRAIN/validation and strength claims.
+Collection took4.136 seconds. Root session84406 subsequently exited125 at9.568 seconds:
+the cache fingerprint gate failed, with no accepted cache or fitted model.
+
+The expected015826… digest came from imitation_study._state_digest; the code used
+the older probe's different serialization, whose same-parent digest was03b8678….
+This is a producer-algorithm binding error, not evidence that the parent changed.
+Checkpoint load/construction and parameter operations occurred; source control flow
+stopped before the first observation forward. Preserve the failed attempt and its
+four complete histories. A separately reviewed cache-only repair must use the
+original producer function, separate input/execution bindings and a new output path;
+no game replay, fitting or automatic expansion is authorized by this failure.
+[Failed pilot empirical review](../runs/swarm-2026-11-04/agent-research/complete-history-value-pilot-001/independent-audit-001/EMPIRICAL-REVIEW.md).
+
 ## Direction revision: 2026-11-06
 
 The canonical roadmap now makes audited sensible decisions and robust heuristic-level
@@ -58,7 +121,7 @@ learning, then one chance-aware tactical class. These are proposed causal tests,
 not newly implemented policies. Keep the required feature-game and audited-data
 comparisons separate; cloning success does not gate value/search research.
 
-## Fixed-data feature fits: complete, awaiting games
+## Fixed-data feature fits: completed before the game comparison
 
 Four fits completed from retained FULL15 parents 11/29: existing hand_recipe
 control versus eligibility features, with coefficients 30:34 initially zeroed in
@@ -100,18 +163,23 @@ These are exact stored-H-label counts on already exposed development splits:
 
 The additional eligibility features add no validation exact-label gain over the
 control; their small CE difference does not establish better decisions or wins.
-Keep all four fitted weights and both original parents for the predeclared game
-comparison. No model is selected or promoted from this table.
+All four fitted weights and both original parents were retained for the completed
+predeclared comparison above. No model was selected or promoted from this table.
 
-A review-only 96-job/384-game plan now compares those six candidates across
+The 96-job/384-game comparison subsequently used those six candidates across
 GreedyNoTrade, trading-H and separate three-native VF/AB stress panels. Its four
-learning board IDs remain provisional until separately audited. The required
-new audited student TRAIN aggregation and separate data-only test remain after
-this feature comparison, including a null result. The independent 48-game raw/VF/AB
-focal pilot has a frozen fresh four-board H-no-offers protocol and was launched
-separately; its outcomes are not training data or pooled with these fit metrics.
+learning boards passed their scoped prior-use audit before launch. The primary
+feature rule failed as reported above. New audited student TRAIN aggregation and
+the separate data-only test remain required after this null feature result. The
+independent 48-game raw/VF/AB H-no-offers focal pilot also completed separately;
+its outcomes are not training data or pooled with these fit metrics.
 
 ## Native reference execution and fitter feasibility
+
+The following retained notes describe earlier preparation checkpoints. Later full
+fits, integration and native/gameplay closures are reported above. Historical
+resource findings retain their original scope; current next work follows the
+canonical roadmap.
 
 The evaluation-only focal-native API is integrated with byte-identical reviewed
 source from `1cfaa4c`; policy, fitter and native algorithms are unchanged. Its
@@ -143,11 +211,11 @@ six-case strict-OS1 HOLD or approve main fits.
 
 The next feature-ablation data manifest binds 64 episodes/16 whole boards:
 TRAIN 3,041 rows/1,929 choices; validation 1,457/881; retention 1,518/947.
-Only TRAIN can feed updates. Each planned two-epoch fit has exactly 400 updates,
-3,858 presentations, 18,048 prefix and 6,078 chunk observations. The subsequent four completed
-fits are reported above; their weights still require separate game comparisons
-before any selection. No new model promotion exists. A separate 48-game matched H-no-offers focal
-pilot is being prepared, with fresh board identities audited before GO. Strict
+Only TRAIN fed updates. Each completed two-epoch fit had exactly 400 updates,
+3,858 presentations, 18,048 prefix and 6,078 chunk observations. The subsequent four
+fits and completed 384-game comparison are reported above; the feature advancement
+rule failed and no new model promotion exists. The separate 48-game matched
+H-no-offers focal pilot also completed after its scoped prior-use audit. Strict
 GreedyNoTrade, H-no-offers, trading-H and three-native stress results stay separate.
 
 Eight supplementary saved TRAIN discard judgments add five reasonable and three
@@ -377,11 +445,11 @@ assertions passed; this neither identifies the original thread origin nor clears
 its HOLD. Resolve a prospective resource protocol before fitting.
 [Synthetic review](../runs/swarm-2026-11-04/agent-research/runtime-thread-diagnosis-001/run-001/EMPIRICAL-REVIEW.md).
 
-Focal native VF/AB evaluation is a parallel isolated implementation lane. Its
-matched-lineup API passed 12 controlled routing/privacy tests, 81 affected
-regression checks and independent source review in a separate worktree. Real native
-engineering games remain pending before integration; current native results still
-use opponent stress panels.
+The earlier focal-native preparation lane passed 12 controlled routing/privacy
+tests, 81 affected checks and independent source review in a separate worktree.
+At that checkpoint, real native engineering and integration were pending. Both
+subsequently completed, followed by the separate 48-game focal pilot reported above;
+three-native stress panels remain a distinct protocol.
 [Native reference plan](../runs/swarm-2026-11-04/agent-research/native-focal-plan-001/PLAN.md).
 
 ## Earlier evidence retained
