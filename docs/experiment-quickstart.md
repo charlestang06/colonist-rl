@@ -25,6 +25,10 @@ supports three named random, heuristic, greedy-no-trade, or pinned native
 opponents in the lineup. This CLI currently requires `no_offers: true` and has
 no historical-policy pool.
 
+The control can itself be a `graph_checkpoint`: matched parent and trained
+checkpoints can run as a neural-only panel. The declared `reference_arm` runs
+first, and every checkpoint keeps its own exact SHA-256 binding.
+
 Keep the hypothesis, changed configuration field, control, and stop rule in a
 small protocol before running. Begin with one excluded smoke board, then a
 modest fresh development panel. Reserve independent validation and final

@@ -17,10 +17,9 @@ import tomllib
 from contextlib import nullcontext
 from copy import deepcopy
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
-
 
 _FORMAT = "colonist-rl.paired-experiment"
 _VERSION = 1
@@ -188,8 +187,6 @@ def _validate_manifest(raw, *, base):
                 raise ValueError(f"arm {name} checkpoint sha256 mismatch")
             arms[name] = {"kind": kind, "checkpoint": str(path), "checkpoint_sha256": actual}
             checkpoints[name] = {"path": str(path), "sha256": actual, "bytes": path.stat().st_size}
-    if not any(spec["kind"] == "public_planner" for spec in arms.values()):
-        raise ValueError("at least one raw public_planner arm is required")
     reference = raw["reference_arm"]
     if type(reference) is not str or reference not in arms:
         raise ValueError("reference_arm must name a declared arm")
@@ -262,7 +259,7 @@ def _factories(validated):
 def _new_run_dir(root):
     root.mkdir(parents=True, exist_ok=True)
     for _ in range(5):
-        name = datetime.now(timezone.utc).strftime("paired-%Y%m%dT%H%M%SZ-") + uuid4().hex[:8]
+        name = datetime.now(UTC).strftime("paired-%Y%m%dT%H%M%SZ-") + uuid4().hex[:8]
         candidate = root / name
         try:
             candidate.mkdir()

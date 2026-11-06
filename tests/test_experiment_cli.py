@@ -269,7 +269,6 @@ def test_reference_arm_is_first_when_its_name_sorts_after_treatment(tmp_path, mo
     lambda m: m.update(wall_seconds=-1),
     lambda m: m.update(capture_candidate_steps=1),
     lambda m: m.update(arms={"raw": m["arms"]["raw"]}),
-    lambda m: m.update(arms={"city": m["arms"]["city"], "city2": m["arms"]["city"]}),
     lambda m: m["arms"]["city"].update(kind="unrecognized"),
     lambda m: m["arms"]["raw"].update(gain_margin_micro=-1),
     lambda m: m["arms"]["raw"]["config"].update(max_nodes=-1),
@@ -327,6 +326,36 @@ def test_graph_checkpoint_hash_is_pinned_and_factory_returns_fresh_copies(tmp_pa
     assert len(loaded) == 1 and summary["status"] == "complete"
     saved = json.loads((Path(summary["run_dir"]) / "manifest.json").read_text())
     assert saved["checkpoints"]["graph"]["sha256"] == manifest["arms"]["graph"]["checkpoint_sha256"]
+
+
+def test_graph_only_three_arm_panel_uses_declared_neural_parent_reference(tmp_path, monkeypatch):
+    from colonist_rl.experiment_analysis import analyze_run
+
+    _patch_runtime(monkeypatch)
+    checkpoint = tmp_path / "student.pt"
+    checkpoint.write_bytes(b"synthetic checkpoint bytes")
+    digest = sha256(checkpoint.read_bytes()).hexdigest()
+    spec = {"kind": "graph_checkpoint", "checkpoint": "student.pt",
+            "checkpoint_sha256": digest}
+    manifest = _manifest()
+    manifest["reference_arm"] = "parent"
+    manifest["arms"] = {"audited": spec, "parent": spec, "H_labels": spec}
+    manifest_path = tmp_path / "graph-only.json"
+    _write_manifest(manifest_path, manifest)
+    monkeypatch.setattr(cli, "_load_graph_policy", lambda path: {"path": str(path)})
+
+    summary = cli.run_manifest(manifest_path, tmp_path / "runs")
+
+    assert summary["status"] == "complete" and summary["journal_games"] == 12
+    saved = json.loads((Path(summary["run_dir"]) / "manifest.json").read_text())
+    assert set(saved["validated_manifest"]["arms"]) == {"parent", "audited", "H_labels"}
+    assert summary["paired_summary"]["reference_arm"] == "parent"
+    assert set(saved["checkpoints"]) == {"parent", "audited", "H_labels"}
+    assert {item["sha256"] for item in saved["checkpoints"].values()} == {digest}
+    analysis = analyze_run(summary["run_dir"])
+    assert analysis["reference_arm"] == "parent"
+    assert set(analysis["comparisons"]) == {"audited", "H_labels"}
+    assert all(result["matched_game_count"] == 4 for result in analysis["comparisons"].values())
 
 
 def test_source_change_after_gameplay_marks_summary_invalid(tmp_path, monkeypatch):
