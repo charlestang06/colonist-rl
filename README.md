@@ -3,20 +3,17 @@
 Local Catan agent research with public observations, learned policies, value-guided
 search, resource beliefs and independent trade model plug-ins.
 
-The goal is a player-observable agent outperforming authentic VF/AB players in
-reproducible whole games. The [research roadmap](docs/agent-research-roadmap.md)
-runs imitation diagnostics, planning and learned-value experiments in parallel,
-with background case building. Cloning success does not gate value/search research.
-PPO is deferred.
-The [current results](docs/training-status-2026-11-05.md) distinguish completed
-development studies from strength confirmation. The first fixed evaluator
-comparisons and the 128-game grounded comparison found no reliable model advantage.
-A fresh 256-game second-settlement study then failed its primary advancement rule.
-The trade/pass mechanics audit is complete. Native focal-reference execution
-passed 12 real engineering games. A fresh 48-game matched H-no-offers pilot
-then found no superiority over both references (raw 3/16, VF 0/16, AB2 4/16). Four fixed-data eligibility-feature fits are complete and await paired games;
-independently audited added data remains a separate required follow-up.
-No authentic VF/AB superiority is established.
+The goal is sensible heuristic-level play followed by reproducible complete-game
+superiority over authentic VF/AB references, using only player-observable inputs.
+The [research roadmap](docs/agent-research-roadmap.md) prioritizes audited current-student
+decisions, complete-history outcome-value learning and bounded public planning across
+turns. BC is optional; PPO and reward shaping remain deferred. Adapters share the
+Observation/Action contract while learning remains the main priority.
+
+The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
+superiority. Four feature fits await their prepared paired-game comparison, followed
+by a separate audited added-data test. Earlier residual and placement studies found
+no reliable gain; the latest native pilot scored raw/VF/AB2 3/0/4 per 16.
 
 ## Run
 
@@ -83,7 +80,7 @@ with disclosed discard/trade shims and independent planning RNG. Small exposed-b
 reference profiles are recorded, while broader candidate comparisons remain
 pending. Their state never enters learner or teacher inputs. This asymmetric
 benchmark does not establish equal-information superiority.
-See the [native benchmark milestone](docs/agent-research-roadmap.md#what-to-pursue-next).
+See the [native benchmark milestone](docs/agent-research-roadmap.md#how-an-intervention-earns-more-resources).
 
 The learner cannot initiate or counter player trades in v1. It can respond to
 incoming offers, and bank/port trades remain ordinary actions. Scripted opponents

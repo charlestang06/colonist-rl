@@ -5,6 +5,25 @@ the [canonical roadmap](agent-research-roadmap.md). BC is a diagnostic/warm-star
 tool; PPO remains deferred. No authentic VF/AB superiority or new model promotion
 is established.
 
+## Direction revision: 2026-11-06
+
+The canonical roadmap now makes audited sensible decisions and robust heuristic-level
+play an explicit development milestone, followed by superiority over both native
+references. Fresh complete-history outcome-value learning, one bounded tactical
+coverage experiment and a validated public transition/search seam are independent
+avenues. BC remains optional; PPO and reward shaping remain deferred. The prepared
+384 feature games and required separate audited current-student data comparison
+are retained, not silently replaced. This is a direction change, not new strength
+or a launch authorization.
+
+A [metadata history audit](../runs/swarm-2026-11-04/agent-research/value-history-availability-001/REPORT.md)
+reconciles the legacy 96 TRAIN/32 validation outcomes: 8,165/2,673 own decisions,
+4,093/1,314 saved normal before views and 4,072/1,359 steps with metadata-only
+exclusion records. All 128 episodes lack a retained complete chronological own
+history. Collect fresh histories for recurrent value learning; do not fabricate
+missing states or silently pool continuation policies. No models or games were
+queried for this availability check.
+
 ## Matched focal-reference pilot: goal remains unmet
 
 The separate 48-game pilot completed on four audited fresh development boards,
