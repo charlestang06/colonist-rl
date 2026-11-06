@@ -1,0 +1,121 @@
+{
+  "changed_boards": 2,
+  "changed_kind_counts": {
+    "BUY_DEVELOPMENT_CARD->MARITIME_TRADE": 2
+  },
+  "changed_roots": 2,
+  "eligible_parent_buy": 208,
+  "eligible_parent_end": 126,
+  "eligible_public_views": 2782,
+  "exact_root_errors": [],
+  "gate": {
+    "max_incremental_p95_ms": 25.0,
+    "min_changed_boards": 4,
+    "min_changed_roots": 8,
+    "min_parent_buy": 8
+  },
+  "gate_pass": false,
+  "incremental_latency_ms": {
+    "count": 334,
+    "max": 98.266125,
+    "median": 3.6708955000000003,
+    "p95": 13.3150544
+  },
+  "known_current_win_errors": [],
+  "parent_kind_counts": {
+    "BUILD_CITY": 9,
+    "BUILD_ROAD": 35,
+    "BUILD_SETTLEMENT": 12,
+    "BUY_DEVELOPMENT_CARD": 208,
+    "END_TURN": 126,
+    "MARITIME_TRADE": 65,
+    "PLAY_KNIGHT_CARD": 31,
+    "PLAY_MONOPOLY": 9,
+    "PLAY_ROAD_BUILDING": 8,
+    "PLAY_YEAR_OF_PLENTY": 9
+  },
+  "partition_counts": {
+    "with_buy_menu": 366,
+    "without_buy_menu": 2416
+  },
+  "protocol_sha256": "54f90b2c38cfaf39dca786f91ce404ae4bdc6fee22188214279188b60c346224",
+  "role": "reused_broad_train_public_engineering_only",
+  "sampled_public_views": 512,
+  "selected_rule": "SHA-sorted first 256 with BUY menu and 256 without, public rolled standard views",
+  "source_commit": "1f0c9dc6d50ac65547f21c245348fb1357719882",
+  "source_files": [
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410000/history.json.gz",
+      "sha256": "d8c89fa156595b373aff0b675857d4bd331dc9e6ea32f3b75cffd161aefdece2"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410001/history.json.gz",
+      "sha256": "adf33fc19952e84281e937afdcdfe89f9823512249028a10357d2fc355db0b87"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410002/history.json.gz",
+      "sha256": "37de51f5e91ce2c5f517fd4da5855a8f2ff654ab3caf8e5f9abf2bff247ed5d7"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410003/history.json.gz",
+      "sha256": "7ae9fd8c9b0af632ec5b29c105ecf3bf9237fcb106afb7bc8b593d2b314c6333"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410004/history.json.gz",
+      "sha256": "481a43321fb377fd6c2fbf68d8216ea4c4a9ce6d1633b88b46bed48442c23ab8"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410005/history.json.gz",
+      "sha256": "104e591920a349a9cb06b0ef549885f181a42b15b57746c409338933d9a9e9a3"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410006/history.json.gz",
+      "sha256": "3cffe39c6799a078ba428c5cd11a3aec7825b0ae3471a5efa2c93824e631f011"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410007/history.json.gz",
+      "sha256": "f128be67ddbfb9b419d201b2da3f416b1b8042976a876d948301fadc0d8b4c54"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410008/history.json.gz",
+      "sha256": "0a367ffd147e24e795c76b2d1b18f976a4949b5a39d39fad1631011453abea9b"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410009/history.json.gz",
+      "sha256": "f71e13bd3d68b3d141b2004df51ba849d0c1d1c17711bc5b0f7ef3a0de87e962"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410010/history.json.gz",
+      "sha256": "17ed878c80413df6a87d08987faa8f62654d9c866077bdf1997c57f4d6d14c5c"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410011/history.json.gz",
+      "sha256": "12bef4675d4fccf2141bc0cb1750f6e7efd54e07e8279ac8b636b0bfdf533574"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410012/history.json.gz",
+      "sha256": "5d920bbadb0fc3de49e6daccc2e96fa290cdfe4be36a813a8ea51a41ccfec9eb"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410013/history.json.gz",
+      "sha256": "7dadfc8a15b9eb053c82991f1822beeb3be5b883114e608911db9dc591085112"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410014/history.json.gz",
+      "sha256": "18856b21d74f49856cefad77ed306409ec5ede415065dba5b4b0c8d1aa795957"
+    },
+    {
+      "path": "/private/tmp/colonist-swarm-bxz1k39_/broad-action-value-distill/runs/raw-ranking-pilot-2026-11-06/boards/train-157410015/history.json.gz",
+      "sha256": "d3c6ad50c9d5eec2f0ccef079ff7565c688031789b9338dbd90dd54a9080be47"
+    }
+  ],
+  "source_tree_sha256": "4da0c8285d1514f775cb9eb8282daad52d153c6a1ef64eafb27b50b536c26d06",
+  "status_counts": {
+    "changed_root": 2,
+    "insufficient_margin": 19,
+    "parent_retained": 109,
+    "uncertain_tie": 30,
+    "uncertain_winner": 147,
+    "unmodeled_later_buy": 27
+  }
+}

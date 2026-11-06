@@ -1,0 +1,28 @@
+{
+  "archive": "/private/tmp/colonist-swarm-bxz1k39_/public-cross-turn-search/runs/public-round-resourcewise-v3-2026-11-06/v3-evidence.tar.gz",
+  "archive_member": "train-probe/raw-before.jsonl",
+  "archive_sha256": "f74ae708c180ffad30dca839a90932bd2ff1fb17d3e221277fee21de51eda672",
+  "changed_roots": 0,
+  "eligible_archived_views": 141,
+  "incremental_latency_ms": {
+    "max": 20.077375,
+    "median": 6.430771,
+    "p95": 9.060904599999997
+  },
+  "latency_gate_ms": 25.0,
+  "latency_pass": true,
+  "parity_errors": [],
+  "parity_pass": true,
+  "role": "archived_public_engineering_preflight",
+  "sample_rule": "evenly spaced eligible rows in archived source order",
+  "sampled_views": 128,
+  "source_commit": "687fdbc62215d22004cb705e7dd60729e4aed09a",
+  "source_tree_sha256": "469e4ff1170cacafa490500a4d0d88c10fd223588306df3477e8ec062dc4b526",
+  "status_counts": {
+    "insufficient_margin": 16,
+    "parent_retained": 47,
+    "uncertain_tie": 13,
+    "uncertain_winner": 27,
+    "unmodeled_later_buy": 25
+  }
+}

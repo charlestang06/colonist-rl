@@ -52,6 +52,17 @@ won 11/32, tied with raw and static; it failed its frozen three-win advantage
 gate. No v3 policy was promoted. Its next question is the option to defer a
 bank trade until after observing future production, not another unchanged v3
 screen.
+The later [unified continuation v2 screen](experiments/unified-public-continuation-v2-2026-11-06/RESULT.md)
+modeled that later bank option and found two changed choices across two reused
+TRAIN boards, below its frozen eight/four gate. It stopped before fresh games.
+The [broad raw-ranking pilot](broad-raw-ranking-pilot-results-2026-11-06.md)
+collected 96 games and 9,291 student observations and received 36 blind pair
+judgments, but its 13 TRAIN raw-only judgments spanned only two parent action
+kinds against a frozen minimum of three. It stopped before any optimizer update
+or evaluation game. A new full-actor study is being frozen on 6,215 TRAIN
+student observations with raw-planner labels and fresh validation/game boards.
+The opt-in candidate-successor encoder passed a separate 16-board TRAIN
+transition audit; it has no measured playing-strength benefit yet.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

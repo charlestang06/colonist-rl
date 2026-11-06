@@ -1,0 +1,2156 @@
+{
+  "canonical_payload_sha256": "ad841e9a04eb911039faa101a6966cb3e85e01fe3086d77e0be795563ef63b20",
+  "cases": [
+    {
+      "before_observation_sha256": "60f740a79d1381ab6b3e33514b1ea492a0735f3a595b4b3f5880e5e55354b24f",
+      "contradictions": [],
+      "engine_menu_verified": true,
+      "exact_root_menu_equal": true,
+      "explicit_claim_checks": [
+        {
+          "branches": [
+            {
+              "all_followups_replayed": true,
+              "checks": {
+                "final_has_longest_road": false,
+                "final_longest_road_length": 1,
+                "final_public_vp": 3,
+                "intrinsic_point_build_count": 1,
+                "public_vp_gain_from_before_root": 1
+              },
+              "contradictions": [],
+              "expected_followup_actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "kind": "BUILD_CITY",
+                  "offer_id": null,
+                  "partner": null,
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "resource": null,
+                  "second_resource": null,
+                  "target": 22
+                }
+              ],
+              "followup_steps": [
+                {
+                  "action": {
+                    "give": [
+                      0,
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "kind": "BUILD_CITY",
+                    "offer_id": null,
+                    "partner": null,
+                    "receive": [
+                      0,
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "resource": null,
+                    "second_resource": null,
+                    "target": 22
+                  },
+                  "bank_delta": [
+                    0,
+                    0,
+                    0,
+                    2,
+                    3
+                  ],
+                  "cities_left_delta": -1,
+                  "exact_action_match_count": 1,
+                  "expected_bank_after": [
+                    17,
+                    18,
+                    16,
+                    16,
+                    16
+                  ],
+                  "expected_hand_after": [
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                  ],
+                  "had_longest_road_before": false,
+                  "hand_after": [
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                  ],
+                  "hand_before": [
+                    1,
+                    1,
+                    0,
+                    2,
+                    3
+                  ],
+                  "hand_delta": [
+                    0,
+                    0,
+                    0,
+                    -2,
+                    -3
+                  ],
+                  "has_longest_road_after": false,
+                  "longest_road_after": 1,
+                  "longest_road_before": 1,
+                  "ordinal": 1,
+                  "own_development_after": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "own_development_before": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "piece_and_card_accounting_equal": true,
+                  "played_knights_after": 0,
+                  "played_knights_before": 0,
+                  "post_step_context": {
+                    "actor": 3,
+                    "discard_remaining": 0,
+                    "eligible_partners": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "free_roads": 0,
+                    "has_played_development_card": true,
+                    "has_rolled": true,
+                    "kind": "PLAY_TURN",
+                    "offer": null,
+                    "turn_number": 21,
+                    "turn_owner": 3,
+                    "version": 64
+                  },
+                  "post_step_ordered_legal_menu": [
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 14
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 18
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 28
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 29
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 4
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 64
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "BUILD_ROAD",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": 68
+                    },
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "END_TURN",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": null
+                    }
+                  ],
+                  "post_step_ordered_legal_menu_count": 8,
+                  "post_step_ordered_legal_menu_sha256": "50bad0978fed14df5febee3967af36d64566706a9e2559f47c686697c7f45787",
+                  "pre_step_ordered_menu_count": 10,
+                  "pre_step_ordered_menu_sha256": "f55c90c093931452d149f2830f023acd2d2b4fa72dd93e1d688365e8f8f1369d",
+                  "public_bank_lower_after": [
+                    17,
+                    18,
+                    16,
+                    16,
+                    16
+                  ],
+                  "public_bank_lower_before": [
+                    17,
+                    18,
+                    16,
+                    14,
+                    13
+                  ],
+                  "public_bank_upper_after": [
+                    17,
+                    18,
+                    16,
+                    16,
+                    16
+                  ],
+                  "public_bank_upper_before": [
+                    17,
+                    18,
+                    16,
+                    14,
+                    13
+                  ],
+                  "public_checks": {
+                    "city_piece_available": true,
+                    "owned_settlement": true,
+                    "passes": true
+                  },
+                  "public_vp_after": 3,
+                  "public_vp_before": 2,
+                  "public_vp_delta": 1,
+                  "resource_accounting_equal": true,
+                  "resource_premise": {
+                    "independently_proven": true,
+                    "kind": "none"
+                  },
+                  "roads_left_delta": 0,
+                  "settlements_left_delta": 1,
+                  "synthetic_bank_after": [
+                    17,
+                    18,
+                    16,
+                    16,
+                    16
+                  ],
+                  "synthetic_bank_before": [
+                    17,
+                    18,
+                    16,
+                    14,
+                    13
+                  ],
+                  "terminated": false,
+                  "winner": null
+                }
+              ],
+              "name": "main",
+              "status": "engine_verified",
+              "unverified_reasons": []
+            }
+          ],
+          "claimed_edge_endpoints": null,
+          "claimed_longest_road_award": false,
+          "claimed_longest_road_length": null,
+          "claimed_port": null,
+          "claimed_public_vp_gain": null,
+          "contradictions": [],
+          "parse_errors": [],
+          "status": "engine_verified",
+          "text": "Structured immediate route from older public fixture",
+          "unverified_reasons": []
+        }
+      ],
+      "packet_id": "v2-reused-train-157410010-372",
+      "post_root_menu": [
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_CITY",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 22
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_CITY",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 4
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 14
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 18
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 28
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 29
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 4
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 64
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_ROAD",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 68
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "END_TURN",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        }
+      ],
+      "post_root_menu_scope": "synthetic public-consistent state, not source hidden-state replay",
+      "post_root_menu_sha256": "f55c90c093931452d149f2830f023acd2d2b4fa72dd93e1d688365e8f8f1369d",
+      "public_bank_bounds_before": {
+        "lower": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ],
+        "upper": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ]
+      },
+      "replayed_root_menu_sha256": "88a78210f6ef8436bf79d736880f6bb5a1f39a653e93307562379b3bca47ba55",
+      "root_action": {
+        "give": [
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        "kind": "MARITIME_TRADE",
+        "offer_id": null,
+        "partner": null,
+        "receive": [
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "resource": null,
+        "second_resource": null,
+        "target": null
+      },
+      "root_action_equals_indexed_menu_action": true,
+      "root_hand_delta": [
+        0,
+        0,
+        -4,
+        1,
+        0
+      ],
+      "root_index": 10,
+      "root_index_valid": true,
+      "root_longest_road_delta": 0,
+      "root_played_knights_delta": 0,
+      "root_public_vp_delta": 0,
+      "root_step": {
+        "action": {
+          "give": [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        "bank_delta": [
+          0,
+          0,
+          4,
+          -1,
+          0
+        ],
+        "cities_left_delta": 0,
+        "exact_action_match_count": 1,
+        "expected_bank_after": [
+          17,
+          18,
+          16,
+          14,
+          13
+        ],
+        "expected_hand_after": [
+          1,
+          1,
+          0,
+          2,
+          3
+        ],
+        "had_longest_road_before": false,
+        "hand_after": [
+          1,
+          1,
+          0,
+          2,
+          3
+        ],
+        "hand_before": [
+          1,
+          1,
+          4,
+          1,
+          3
+        ],
+        "hand_delta": [
+          0,
+          0,
+          -4,
+          1,
+          0
+        ],
+        "has_longest_road_after": false,
+        "longest_road_after": 1,
+        "longest_road_before": 1,
+        "ordinal": 0,
+        "own_development_after": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "own_development_before": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "piece_and_card_accounting_equal": true,
+        "played_knights_after": 0,
+        "played_knights_before": 0,
+        "post_step_context": {
+          "actor": 3,
+          "discard_remaining": 0,
+          "eligible_partners": [
+            0,
+            1,
+            2
+          ],
+          "free_roads": 0,
+          "has_played_development_card": true,
+          "has_rolled": true,
+          "kind": "PLAY_TURN",
+          "offer": null,
+          "turn_number": 21,
+          "turn_owner": 3,
+          "version": 63
+        },
+        "post_step_ordered_legal_menu": [
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_CITY",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 22
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_CITY",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 4
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 14
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 18
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 28
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 29
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 4
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 64
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_ROAD",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 68
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "END_TURN",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          }
+        ],
+        "post_step_ordered_legal_menu_count": 10,
+        "post_step_ordered_legal_menu_sha256": "f55c90c093931452d149f2830f023acd2d2b4fa72dd93e1d688365e8f8f1369d",
+        "pre_step_ordered_menu_count": 13,
+        "pre_step_ordered_menu_sha256": "88a78210f6ef8436bf79d736880f6bb5a1f39a653e93307562379b3bca47ba55",
+        "public_bank_lower_after": [
+          17,
+          18,
+          16,
+          14,
+          13
+        ],
+        "public_bank_lower_before": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ],
+        "public_bank_upper_after": [
+          17,
+          18,
+          16,
+          14,
+          13
+        ],
+        "public_bank_upper_before": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ],
+        "public_checks": {
+          "effective_exchange_ratio": 4,
+          "give_matches_public_port_ratio": true,
+          "give_named": {
+            "SHEEP": 4
+          },
+          "one_received_resource": true,
+          "passes": true,
+          "public_hand_can_pay": true,
+          "receive_named": {
+            "WHEAT": 1
+          }
+        },
+        "public_vp_after": 2,
+        "public_vp_before": 2,
+        "public_vp_delta": 0,
+        "resource_accounting_equal": true,
+        "resource_premise": {
+          "checks": [
+            {
+              "guaranteed": true,
+              "prior_steps_bank_delta_for_resource": 0,
+              "public_bank_lower_before": 15,
+              "public_lower_bound_guarantees": true,
+              "requested": 1,
+              "resource": "WHEAT",
+              "root_menu_still_guarantees": true,
+              "saved_root_menu_has_receipt": true
+            }
+          ],
+          "independently_proven": true,
+          "kind": "bank_receipt"
+        },
+        "roads_left_delta": 0,
+        "settlements_left_delta": 0,
+        "synthetic_bank_after": [
+          17,
+          18,
+          16,
+          14,
+          13
+        ],
+        "synthetic_bank_before": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ],
+        "terminated": false,
+        "winner": null
+      },
+      "saved_before_hash_equal": true,
+      "saved_root_menu_count": 13,
+      "saved_root_menu_hash_equal": true,
+      "saved_root_menu_sha256": "88a78210f6ef8436bf79d736880f6bb5a1f39a653e93307562379b3bca47ba55",
+      "scope": "Factual feasibility of this exact root only; no strategic preference or original private-state replay.",
+      "status": "engine_verified",
+      "synthetic_setup": {
+        "actual_root_menu_count": 13,
+        "actual_root_menu_sha256": "88a78210f6ef8436bf79d736880f6bb5a1f39a653e93307562379b3bca47ba55",
+        "attempted": true,
+        "candidate_count": 1,
+        "core_public_view_differences": [],
+        "core_public_view_equal": true,
+        "development_inventory": {
+          "deck_forced_empty_by_current_menu": false,
+          "known_played_knights": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "public_development_counts": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "synthetic_deck_count": 24,
+          "synthetic_opponent_card_types": {
+            "0": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "1": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "2": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "unplayable_vp_cards_deck_lower_bound": 4
+        },
+        "exact_ordered_root_menu_equal": true,
+        "full_public_board_equal": true,
+        "synthetic_bank": [
+          17,
+          18,
+          12,
+          15,
+          13
+        ],
+        "synthetic_hands": [
+          [
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            3,
+            0,
+            2
+          ],
+          [
+            1,
+            1,
+            4,
+            1,
+            3
+          ]
+        ]
+      },
+      "unverified_reasons": []
+    },
+    {
+      "before_observation_sha256": "ad405613ce316d714b3355f6b82eb53087505dad40cc0cab80004fe5a395c433",
+      "contradictions": [],
+      "engine_menu_verified": true,
+      "exact_root_menu_equal": true,
+      "explicit_claim_checks": [
+        {
+          "branches": [
+            {
+              "all_followups_replayed": true,
+              "checks": {
+                "final_has_longest_road": false,
+                "final_longest_road_length": 2,
+                "final_public_vp": 3,
+                "intrinsic_point_build_count": 1,
+                "public_vp_gain_from_before_root": 1
+              },
+              "contradictions": [],
+              "expected_followup_actions": [
+                {
+                  "give": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "kind": "BUILD_CITY",
+                  "offer_id": null,
+                  "partner": null,
+                  "receive": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "resource": null,
+                  "second_resource": null,
+                  "target": 18
+                }
+              ],
+              "followup_steps": [
+                {
+                  "action": {
+                    "give": [
+                      0,
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "kind": "BUILD_CITY",
+                    "offer_id": null,
+                    "partner": null,
+                    "receive": [
+                      0,
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "resource": null,
+                    "second_resource": null,
+                    "target": 18
+                  },
+                  "bank_delta": [
+                    0,
+                    0,
+                    0,
+                    2,
+                    3
+                  ],
+                  "cities_left_delta": -1,
+                  "exact_action_match_count": 1,
+                  "expected_bank_after": [
+                    11,
+                    16,
+                    19,
+                    17,
+                    13
+                  ],
+                  "expected_hand_after": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                  ],
+                  "had_longest_road_before": false,
+                  "hand_after": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                  ],
+                  "hand_before": [
+                    0,
+                    0,
+                    0,
+                    2,
+                    4
+                  ],
+                  "hand_delta": [
+                    0,
+                    0,
+                    0,
+                    -2,
+                    -3
+                  ],
+                  "has_longest_road_after": false,
+                  "longest_road_after": 2,
+                  "longest_road_before": 2,
+                  "ordinal": 1,
+                  "own_development_after": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "own_development_before": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "piece_and_card_accounting_equal": true,
+                  "played_knights_after": 0,
+                  "played_knights_before": 0,
+                  "post_step_context": {
+                    "actor": 0,
+                    "discard_remaining": 0,
+                    "eligible_partners": [
+                      1,
+                      2,
+                      3
+                    ],
+                    "free_roads": 0,
+                    "has_played_development_card": false,
+                    "has_rolled": true,
+                    "kind": "PLAY_TURN",
+                    "offer": null,
+                    "turn_number": 54,
+                    "turn_owner": 0,
+                    "version": 164
+                  },
+                  "post_step_ordered_legal_menu": [
+                    {
+                      "give": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "kind": "END_TURN",
+                      "offer_id": null,
+                      "partner": null,
+                      "receive": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                      ],
+                      "resource": null,
+                      "second_resource": null,
+                      "target": null
+                    }
+                  ],
+                  "post_step_ordered_legal_menu_count": 1,
+                  "post_step_ordered_legal_menu_sha256": "2c0eafef008c052e4887a5a3f7170823333b1f643017efe4d81e96b9cc661290",
+                  "pre_step_ordered_menu_count": 7,
+                  "pre_step_ordered_menu_sha256": "dbaa9fe6d0b31f2717829eb10b1b12450e58ab5cce9bf4cb24e5abfe424edfeb",
+                  "public_bank_lower_after": [
+                    8,
+                    15,
+                    18,
+                    16,
+                    12
+                  ],
+                  "public_bank_lower_before": [
+                    8,
+                    15,
+                    18,
+                    14,
+                    9
+                  ],
+                  "public_bank_upper_after": [
+                    11,
+                    17,
+                    19,
+                    17,
+                    16
+                  ],
+                  "public_bank_upper_before": [
+                    11,
+                    17,
+                    19,
+                    15,
+                    13
+                  ],
+                  "public_checks": {
+                    "city_piece_available": true,
+                    "owned_settlement": true,
+                    "passes": true
+                  },
+                  "public_vp_after": 3,
+                  "public_vp_before": 2,
+                  "public_vp_delta": 1,
+                  "resource_accounting_equal": true,
+                  "resource_premise": {
+                    "independently_proven": true,
+                    "kind": "none"
+                  },
+                  "roads_left_delta": 0,
+                  "settlements_left_delta": 1,
+                  "synthetic_bank_after": [
+                    11,
+                    16,
+                    19,
+                    17,
+                    13
+                  ],
+                  "synthetic_bank_before": [
+                    11,
+                    16,
+                    19,
+                    15,
+                    10
+                  ],
+                  "terminated": false,
+                  "winner": null
+                }
+              ],
+              "name": "main",
+              "status": "engine_verified",
+              "unverified_reasons": []
+            }
+          ],
+          "claimed_edge_endpoints": null,
+          "claimed_longest_road_award": false,
+          "claimed_longest_road_length": null,
+          "claimed_port": null,
+          "claimed_public_vp_gain": null,
+          "contradictions": [],
+          "parse_errors": [],
+          "status": "engine_verified",
+          "text": "Structured immediate route from older public fixture",
+          "unverified_reasons": []
+        }
+      ],
+      "packet_id": "v2-reused-train-157410015-32",
+      "post_root_menu": [
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_CITY",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 18
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "BUILD_CITY",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": 5
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "kind": "END_TURN",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        {
+          "give": [
+            0,
+            0,
+            0,
+            0,
+            4
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        }
+      ],
+      "post_root_menu_scope": "synthetic public-consistent state, not source hidden-state replay",
+      "post_root_menu_sha256": "dbaa9fe6d0b31f2717829eb10b1b12450e58ab5cce9bf4cb24e5abfe424edfeb",
+      "public_bank_bounds_before": {
+        "lower": [
+          8,
+          15,
+          14,
+          15,
+          9
+        ],
+        "upper": [
+          11,
+          17,
+          15,
+          16,
+          13
+        ]
+      },
+      "replayed_root_menu_sha256": "0f7054729253523e4ecebc8f6b9d34dbc43e4cf4fe1ba0637ebf398017115cbc",
+      "root_action": {
+        "give": [
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        "kind": "MARITIME_TRADE",
+        "offer_id": null,
+        "partner": null,
+        "receive": [
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "resource": null,
+        "second_resource": null,
+        "target": null
+      },
+      "root_action_equals_indexed_menu_action": true,
+      "root_hand_delta": [
+        0,
+        0,
+        -4,
+        1,
+        0
+      ],
+      "root_index": 7,
+      "root_index_valid": true,
+      "root_longest_road_delta": 0,
+      "root_played_knights_delta": 0,
+      "root_public_vp_delta": 0,
+      "root_step": {
+        "action": {
+          "give": [
+            0,
+            0,
+            4,
+            0,
+            0
+          ],
+          "kind": "MARITIME_TRADE",
+          "offer_id": null,
+          "partner": null,
+          "receive": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "resource": null,
+          "second_resource": null,
+          "target": null
+        },
+        "bank_delta": [
+          0,
+          0,
+          4,
+          -1,
+          0
+        ],
+        "cities_left_delta": 0,
+        "exact_action_match_count": 1,
+        "expected_bank_after": [
+          11,
+          16,
+          19,
+          15,
+          10
+        ],
+        "expected_hand_after": [
+          0,
+          0,
+          0,
+          2,
+          4
+        ],
+        "had_longest_road_before": false,
+        "hand_after": [
+          0,
+          0,
+          0,
+          2,
+          4
+        ],
+        "hand_before": [
+          0,
+          0,
+          4,
+          1,
+          4
+        ],
+        "hand_delta": [
+          0,
+          0,
+          -4,
+          1,
+          0
+        ],
+        "has_longest_road_after": false,
+        "longest_road_after": 2,
+        "longest_road_before": 2,
+        "ordinal": 0,
+        "own_development_after": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "own_development_before": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "piece_and_card_accounting_equal": true,
+        "played_knights_after": 0,
+        "played_knights_before": 0,
+        "post_step_context": {
+          "actor": 0,
+          "discard_remaining": 0,
+          "eligible_partners": [
+            1,
+            2,
+            3
+          ],
+          "free_roads": 0,
+          "has_played_development_card": false,
+          "has_rolled": true,
+          "kind": "PLAY_TURN",
+          "offer": null,
+          "turn_number": 54,
+          "turn_owner": 0,
+          "version": 163
+        },
+        "post_step_ordered_legal_menu": [
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_CITY",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 18
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "BUILD_CITY",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": 5
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "kind": "END_TURN",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              4
+            ],
+            "kind": "MARITIME_TRADE",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              0,
+              1,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              4
+            ],
+            "kind": "MARITIME_TRADE",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              4
+            ],
+            "kind": "MARITIME_TRADE",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          },
+          {
+            "give": [
+              0,
+              0,
+              0,
+              0,
+              4
+            ],
+            "kind": "MARITIME_TRADE",
+            "offer_id": null,
+            "partner": null,
+            "receive": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "resource": null,
+            "second_resource": null,
+            "target": null
+          }
+        ],
+        "post_step_ordered_legal_menu_count": 7,
+        "post_step_ordered_legal_menu_sha256": "dbaa9fe6d0b31f2717829eb10b1b12450e58ab5cce9bf4cb24e5abfe424edfeb",
+        "pre_step_ordered_menu_count": 10,
+        "pre_step_ordered_menu_sha256": "0f7054729253523e4ecebc8f6b9d34dbc43e4cf4fe1ba0637ebf398017115cbc",
+        "public_bank_lower_after": [
+          8,
+          15,
+          18,
+          14,
+          9
+        ],
+        "public_bank_lower_before": [
+          8,
+          15,
+          14,
+          15,
+          9
+        ],
+        "public_bank_upper_after": [
+          11,
+          17,
+          19,
+          15,
+          13
+        ],
+        "public_bank_upper_before": [
+          11,
+          17,
+          15,
+          16,
+          13
+        ],
+        "public_checks": {
+          "effective_exchange_ratio": 4,
+          "give_matches_public_port_ratio": true,
+          "give_named": {
+            "SHEEP": 4
+          },
+          "one_received_resource": true,
+          "passes": true,
+          "public_hand_can_pay": true,
+          "receive_named": {
+            "WHEAT": 1
+          }
+        },
+        "public_vp_after": 2,
+        "public_vp_before": 2,
+        "public_vp_delta": 0,
+        "resource_accounting_equal": true,
+        "resource_premise": {
+          "checks": [
+            {
+              "guaranteed": true,
+              "prior_steps_bank_delta_for_resource": 0,
+              "public_bank_lower_before": 15,
+              "public_lower_bound_guarantees": true,
+              "requested": 1,
+              "resource": "WHEAT",
+              "root_menu_still_guarantees": true,
+              "saved_root_menu_has_receipt": true
+            }
+          ],
+          "independently_proven": true,
+          "kind": "bank_receipt"
+        },
+        "roads_left_delta": 0,
+        "settlements_left_delta": 0,
+        "synthetic_bank_after": [
+          11,
+          16,
+          19,
+          15,
+          10
+        ],
+        "synthetic_bank_before": [
+          11,
+          16,
+          15,
+          16,
+          10
+        ],
+        "terminated": false,
+        "winner": null
+      },
+      "saved_before_hash_equal": true,
+      "saved_root_menu_count": 10,
+      "saved_root_menu_hash_equal": true,
+      "saved_root_menu_sha256": "0f7054729253523e4ecebc8f6b9d34dbc43e4cf4fe1ba0637ebf398017115cbc",
+      "scope": "Factual feasibility of this exact root only; no strategic preference or original private-state replay.",
+      "status": "engine_verified",
+      "synthetic_setup": {
+        "actual_root_menu_count": 10,
+        "actual_root_menu_sha256": "0f7054729253523e4ecebc8f6b9d34dbc43e4cf4fe1ba0637ebf398017115cbc",
+        "attempted": true,
+        "candidate_count": 1,
+        "core_public_view_differences": [],
+        "core_public_view_equal": true,
+        "development_inventory": {
+          "deck_forced_empty_by_current_menu": false,
+          "known_played_knights": [
+            0,
+            0,
+            1,
+            2
+          ],
+          "public_development_counts": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "synthetic_deck_count": 20,
+          "synthetic_opponent_card_types": {
+            "1": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "2": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "3": [
+              2,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "unplayable_vp_cards_deck_lower_bound": 3
+        },
+        "exact_ordered_root_menu_equal": true,
+        "full_public_board_equal": true,
+        "synthetic_bank": [
+          11,
+          16,
+          15,
+          16,
+          10
+        ],
+        "synthetic_hands": [
+          [
+            0,
+            0,
+            4,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            0,
+            0,
+            5
+          ],
+          [
+            4,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "unverified_reasons": []
+    }
+  ],
+  "checker_path": "/private/tmp/colonist-swarm-bxz1k39_/repo/tools/public_fact_replay.py",
+  "checker_sha256": "6cbe0f1860efaef3c66961118c7b17e6243e2c9f07a993f8934c5d7afd5ebddc",
+  "fact_input_path": "/private/tmp/colonist-swarm-bxz1k39_/public-cross-turn-search/runs/unified-public-continuation-v2-2026-11-06/changed-public-facts-input.json",
+  "fact_input_sha256": "bd34bb45d741eb2333cd0ab13f45ba5bebbb2ec43b0f42b1d1dd6d585fbd0ad2",
+  "format": "colonist-rl.public-fact-replay/1",
+  "identity": {
+    "engine": {
+      "backend_version": "3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8",
+      "commit": "82aae93ab1f7c267218be0566df573ce477ec3d8",
+      "distribution": "catanatron",
+      "number_placement": "official_spiral",
+      "seed_offset": 1,
+      "source_url": "https://github.com/bcollazo/catanatron.git",
+      "version": "3.3.0"
+    },
+    "python_executable": "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+    "python_version": "3.13.2",
+    "source_files_sha256": {
+      "beliefs.py": "0325db1b05671c1226811993a01a548226ba602650091fb6279523b1cfb2eaa7",
+      "board.py": "1043fecf5f98db501d4f6253c10a45bf3d7f42f877f77313bcec9214b4301a82",
+      "contracts.py": "6a0553194539e002d991a7bd130e8780a6c922b7191636435518c1a53604f0b9",
+      "engine_identity.py": "c493fae6880221d512be81b8e67399cb4cdf581fef908055d994c063b128ed39",
+      "simulator.py": "4002bf4e10b90e87f8c0c5963fc705ca6985b14a9518c7eb375d1b648c81948f"
+    },
+    "source_head": "ccb08a8c447b2a91a766cfa26891495804251ca7"
+  },
+  "method": "For each exact root: reconstruct a public-consistent synthetic pinned-engine state; require full board, core public view, and entire ordered current legal menu equality; execute that indexed root; capture and hash its complete post-root legal menu; replay only explicitly named immediate actions from their own menus; check resource, piece, point, award, and public bank/deck premises. A synthetic witness establishes feasibility only.",
+  "resource_order": [
+    "WOOD",
+    "BRICK",
+    "SHEEP",
+    "WHEAT",
+    "ORE"
+  ],
+  "status_vocabulary": [
+    "engine_verified",
+    "rule_derived_feasible",
+    "contradicted",
+    "unverified"
+  ],
+  "summary": {
+    "case_count": 2,
+    "contradicted_pairs": [],
+    "distinct_packet_count": 2,
+    "exact_root_menu_equal_count": 2,
+    "post_root_menu_recorded_count": 2,
+    "status_counts": {
+      "engine_verified": 2
+    },
+    "unverified_pairs": []
+  }
+}

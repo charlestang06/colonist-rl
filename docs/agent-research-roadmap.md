@@ -85,6 +85,12 @@ p95 on fresh TRAIN views. Its 96-game development screen tied raw and static
 at 11/32 wins, despite 19 changed actions; no changed turn gained a same-turn
 point build. The frozen three-win gate failed. The next distinct question is
 whether scoring END without its later bank-trade option overcredits trading now.
+The [unified continuation v2 screen](experiments/unified-public-continuation-v2-2026-11-06/RESULT.md)
+made that comparison with bounded public routes and a later bank option for
+END. It met exact-root and p95 latency gates but changed only two choices on
+two reused TRAIN boards, below its frozen eight/four intervention gate. Both
+trade-to-city routes were engine-feasible; no fresh game was spent and this
+configuration is not a qualified new teacher.
 
 ## Track 1: improve the working public player
 
@@ -115,6 +121,10 @@ complete continuations before another purchase rule. Extend useful coverage
 to Year of Plenty pairs, connected Road Building, then uncertain
 Monopoly/robber/Knight choices and award races. Execute one legal root action,
 reobserve and replan.
+The unified continuation screen is now closed at its low-intervention gate.
+Its 147 uncertain-winner and 27 unmodeled-later-BUY cases are diagnostic leads,
+not permission to retune the same reused panel. A later planner hypothesis
+needs a new prospective score/uncertainty treatment and its own evidence roles.
 
 ## Track 2: bounded learning alongside planning
 
@@ -135,6 +145,14 @@ label-validation rows. It made zero accepted bank-trade rescues and stopped
 before games. Pursue broad action ranking from a qualified public teacher,
 with actual trade/pass/BUY and opponent-strength gates, rather than extending
 this scalar treatment.
+The [broad raw-ranking pilot](broad-raw-ranking-pilot-results-2026-11-06.md)
+then captured 96 games and 9,291 student observations, verified 36 selected
+public point routes, and obtained 24 TRAIN/12 label-validation blind judgments.
+It stopped **before fitting** because the 13 TRAIN raw-only judgments covered
+only END and one bank-trade parent root, short of the frozen three-kind gate.
+No pairwise or gameplay claim follows. The next distinct learning study uses
+the 6,215 TRAIN student observations and raw-planner root labels for full-actor
+cloning, with fresh validation and game boards and a game-strength gate.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -142,8 +160,11 @@ this scalar treatment.
   informative TRAIN labels with coverage suited to the experiment, rather than a
   universal quota. Phase balancing alone misses trade/pass confusion because both
   share a phase. Teachers are fallible candidate generators, not optimal oracles.
-- **Consequence features:** separately test resources missing after a trade and
-  connected-settlement affordability, with the same learner/data as control.
+- **Consequence features:** the small point-affordance treatment failed its
+  controlled learning screen. A separate 67-column public candidate-successor
+  branch passed mechanical TRAIN transition and exact-parent preflight, but has
+  no gameplay or learning benefit yet. Cross it with a qualified full-actor
+  objective only in a fresh, matched representation comparison.
 - **Shadow critic:** the bounded trainable-GRU test is now closed after failing
   its simple public-feature control. Future value-learning work needs a new,
   decision-relevant hypothesis and independent data. Teacher scores are not win
@@ -247,6 +268,9 @@ and six-player learning follow reliable standard four-player play.
 | Stopped before games | [Point-affordance feature study](point-affordance-results-2026-11-06.md): 24 TRAIN/12 label-validation cases passed independent review and prefit gates; matched 48-update arms made identical validation choices, 4/12 accepted hits and zero feature trade rescues. | Retire this scalar treatment under its frozen screen; qualify a stronger public teacher and test broad action ranking on new data. |
 | Stopped before games | [Exact batched public forecast v2](public-one-round-throughput-v2-results-2026-11-06.md): 129/129 archived public-view decisions identical to v1; 30 changed TRAIN decisions across eight new boards; incremental p95 28.670 ms exceeded the unchanged 25 ms gate. | Preserve isolated source/evidence; require a distinct credible throughput mechanism before another prospective screen. |
 | Complete, not promoted | [Exact resource-wise forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md): 268 archived public views matched v1/v2, fresh incremental p95 3.801 ms, 29 TRAIN changes, then 96 development games with raw/static/forecast all 11/32 wins. | Frozen plus-three-win gate failed; keep optional and test delayed-trade option value as a separate hypothesis. |
+| Stopped before fresh games | [Unified public continuation v2](experiments/unified-public-continuation-v2-2026-11-06/RESULT.md): exact-root parity 334/334 and p95 13.315 ms, but only two changed BUY→bank→city choices on two reused TRAIN boards versus required eight/four. | Preserve fact-verified routes; no teacher nomination or same-panel retuning. |
+| Stopped before fitting | [Broad raw-ranking pilot](broad-raw-ranking-pilot-results-2026-11-06.md): 96 games, 9,291 student observations, 36 engine-feasible blind pairs; TRAIN raw-only 13/10 boards but only two parent kinds versus required three. | Preserve sealed judgments; do not fit under that pilot. |
+| In progress | Full-actor raw-planner cloning on 6,215 TRAIN student observations, with fresh validation and complete-game evaluation. | Require actual choice improvement and opponent performance before any promotion; defer PPO. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter

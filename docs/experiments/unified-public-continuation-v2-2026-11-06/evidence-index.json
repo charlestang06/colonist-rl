@@ -1,0 +1,47 @@
+{
+  "files": {
+    "v1-archived-preflight.json": {
+      "saved_bytes": 1018,
+      "saved_sha256": "6427e7f7bd687b5f09782c956515f376d937b437c0ac378eccd52b5a5241d148",
+      "source_path": "runs/unified-public-continuation-2026-11-06/archived-preflight.json",
+      "source_sha256": "6427e7f7bd687b5f09782c956515f376d937b437c0ac378eccd52b5a5241d148"
+    },
+    "v1-archived-preflight.rows.jsonl.gz": {
+      "saved_bytes": 34755,
+      "saved_sha256": "d395ec41cc62098b7bf0a22ca19f125fcc6b83c8054a812c7bc186dbac096dfa",
+      "source_path": "runs/unified-public-continuation-2026-11-06/archived-preflight.rows.jsonl",
+      "source_sha256": "1acc0cef714f5c36214c582008416c02cfc7f73fc95dc863a07185e2192f1915"
+    },
+    "v2-changed-public-facts-input.json": {
+      "saved_bytes": 133098,
+      "saved_sha256": "bd34bb45d741eb2333cd0ab13f45ba5bebbb2ec43b0f42b1d1dd6d585fbd0ad2",
+      "source_path": "runs/unified-public-continuation-v2-2026-11-06/changed-public-facts-input.json",
+      "source_sha256": "bd34bb45d741eb2333cd0ab13f45ba5bebbb2ec43b0f42b1d1dd6d585fbd0ad2"
+    },
+    "v2-changed-public-facts-report.json": {
+      "saved_bytes": 53624,
+      "saved_sha256": "d440cac71524848b64556fa4b05f4848e209b9c33aa77d904eabd1ff3044ff97",
+      "source_path": "runs/unified-public-continuation-v2-2026-11-06/changed-public-facts-report.json",
+      "source_sha256": "d440cac71524848b64556fa4b05f4848e209b9c33aa77d904eabd1ff3044ff97"
+    },
+    "v2-reused-train-engineering.json": {
+      "saved_bytes": 5593,
+      "saved_sha256": "4e3e06867a71a795545c1481b86d6a9076885f67c9ad225007bdee4eba79c010",
+      "source_path": "runs/unified-public-continuation-v2-2026-11-06/reused-train-engineering.json",
+      "source_sha256": "4e3e06867a71a795545c1481b86d6a9076885f67c9ad225007bdee4eba79c010"
+    },
+    "v2-reused-train-engineering.rows.jsonl.gz": {
+      "saved_bytes": 119492,
+      "saved_sha256": "1758d4016bef11c76c6a986656cd60beaf36f1bef43b4e101ac3d9f7e6d0ba2b",
+      "source_path": "runs/unified-public-continuation-v2-2026-11-06/reused-train-engineering.rows.jsonl",
+      "source_sha256": "b6fe26c90b39f4a9807b6c0564b199b56e57a24b1161a06e77a7dbd1af9a7d68"
+    }
+  },
+  "role": "public_only_engineering_evidence",
+  "v1_protocol_sha256": "b8cc4a5f736d9ec85b078a78d766eec4d4c5e3eee8148f4e6803d8844e2e8e45",
+  "v1_source_commit": "687fdbc62215d22004cb705e7dd60729e4aed09a",
+  "v1_source_tree_sha256": "469e4ff1170cacafa490500a4d0d88c10fd223588306df3477e8ec062dc4b526",
+  "v2_protocol_sha256": "54f90b2c38cfaf39dca786f91ce404ae4bdc6fee22188214279188b60c346224",
+  "v2_source_commit": "1f0c9dc6d50ac65547f21c245348fb1357719882",
+  "v2_source_tree_sha256": "4da0c8285d1514f775cb9eb8282daad52d153c6a1ef64eafb27b50b536c26d06"
+}
