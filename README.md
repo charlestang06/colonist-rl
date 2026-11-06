@@ -8,8 +8,9 @@ whole games. The [research roadmap](docs/agent-research-roadmap.md) runs imitati
 diagnostics, planning and learned-value experiments in parallel, with background
 case building. Cloning success does not gate value/search research. PPO is deferred.
 The [current results](docs/training-status-2026-11-05.md) distinguish completed
-development studies from the next native VF/AB game benchmark and fixed-budget
-learned-value planner comparison; no authentic VF/AB superiority is established.
+development studies from strength confirmation. The first 96-game fixed-budget
+evaluator comparison and cap-corrected paired repeat completed without a clear
+advantage. No authentic VF/AB superiority is established.
 
 ## Run
 
