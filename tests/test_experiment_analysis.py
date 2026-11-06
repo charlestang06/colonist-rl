@@ -177,6 +177,8 @@ def test_paired_outcomes_work_and_first_trace_divergences(tmp_path, capsys):
         "arm_only_win": 1, "reference_only_win": 0, "same_result": 3}
     assert comparison["victory_points_pair_count"] == 4
     assert comparison["mean_victory_points_difference"] == 0.5
+    assert comparison["board_bootstrap_95"]["status"] == "insufficient_boards"
+    assert comparison["board_bootstrap_95"]["paired_win_rate_difference"] is None
     trace = comparison["trace_divergence"]
     assert trace["category_counts"] == {
         "same_trace": 1, "same_before_state_different_action": 1,
@@ -197,6 +199,57 @@ def test_paired_outcomes_work_and_first_trace_divergences(tmp_path, capsys):
     assert bounded["trace_divergence"]["omitted_detail_count"] == 1
     assert analysis.main(["--run-dir", str(run_dir)]) == 0
     assert json.loads(capsys.readouterr().out)["reference_arm"] == "z_raw"
+
+
+def test_board_bootstrap_resamples_whole_matched_boards_deterministically(tmp_path):
+    seeds = list(range(200, 208))
+    reports = {
+        name: _arm_report([(seed, "complete") for seed in seeds])
+        for name in ("z_raw", "a_city")
+    }
+    games = [
+        _game(name, seed, seat, won=(name == "a_city" and seed == seeds[0]),
+              vp=6 if name == "a_city" and seed == seeds[0] else 5)
+        for name in reports for seed in seeds for seat in range(4)
+    ]
+    run_dir = _write_run(
+        tmp_path / "run", seeds=seeds, arm_reports=reports, games=games,
+        capture=False,
+    )
+    first = analysis.analyze_run(run_dir)["comparisons"]["a_city"]
+    second = analysis.analyze_run(run_dir)["comparisons"]["a_city"]
+    assert first["paired_win_rate_difference"] == 0.125
+    assert first["mean_victory_points_difference"] == 0.125
+    boot = first["board_bootstrap_95"]
+    assert boot == second["board_bootstrap_95"]
+    assert boot["status"] == "descriptive"
+    assert boot["board_count"] == 8
+    assert boot["resamples"] == 20_000
+    assert boot["paired_win_rate_difference"] == boot["mean_victory_points_difference"]
+    low, high = boot["paired_win_rate_difference"]
+    assert low == 0.0 and high >= 0.25
+
+
+def test_board_bootstrap_omits_win_interval_if_one_matched_game_is_unresolved(tmp_path):
+    seeds = list(range(300, 308))
+    reports = {
+        name: _arm_report([(seed, "complete") for seed in seeds])
+        for name in ("z_raw", "a_city")
+    }
+    games = [
+        _game(name, seed, seat,
+              won=None if name == "a_city" and seed == seeds[0] and seat == 0 else False,
+              vp=6 if name == "a_city" and seed == seeds[0] else 5)
+        for name in reports for seed in seeds for seat in range(4)
+    ]
+    run_dir = _write_run(
+        tmp_path / "run", seeds=seeds, arm_reports=reports, games=games,
+        capture=False,
+    )
+    comparison = analysis.analyze_run(run_dir)["comparisons"]["a_city"]
+    assert comparison["paired_win_rate_difference"] is None
+    assert comparison["board_bootstrap_95"]["paired_win_rate_difference"] is None
+    assert comparison["board_bootstrap_95"]["mean_victory_points_difference"] is not None
 
 
 def test_saved_search_work_keeps_searched_latency_scope_and_reason_mix(tmp_path):

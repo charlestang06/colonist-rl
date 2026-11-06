@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import random
 from hashlib import sha256
 from pathlib import Path
 
@@ -29,6 +30,9 @@ _TRACE_CATEGORIES = (
 )
 _DEFAULT_DETAIL_LIMIT = 32
 _MAX_DETAIL_LIMIT = 64
+_BOOTSTRAP_MIN_BOARDS = 8
+_BOOTSTRAP_RESAMPLES = 20_000
+_BOOTSTRAP_SEED = 20_261_106
 
 
 def _read_json(path: Path):
@@ -263,6 +267,74 @@ def _paired_outcomes(pairs):
     }
 
 
+def _percentile(values, fraction):
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * fraction
+    lower = int(position)
+    return ordered[lower] + (ordered[min(lower + 1, len(ordered) - 1)] - ordered[lower]) * (
+        position - lower
+    )
+
+
+def _board_bootstrap(pairs, matched_seeds):
+    """Descriptive paired intervals resampling whole four-seat board blocks."""
+    board_count = len(matched_seeds)
+    report = {
+        "scope": "matched_complete_four_seat_boards_resampled_with_replacement",
+        "method": "percentile", "confidence": 0.95,
+        "seed": _BOOTSTRAP_SEED, "min_boards": _BOOTSTRAP_MIN_BOARDS,
+        "board_count": board_count, "resamples": 0,
+        "status": "insufficient_boards" if board_count < _BOOTSTRAP_MIN_BOARDS else "unavailable",
+        "paired_win_rate_difference": None,
+        "mean_victory_points_difference": None,
+    }
+    if board_count < _BOOTSTRAP_MIN_BOARDS:
+        return report
+    by_board = {seed: [] for seed in matched_seeds}
+    for seed, seat, reference, arm in pairs:
+        by_board[seed].append((seat, reference, arm))
+    if any(len(by_board[seed]) != 4 for seed in matched_seeds):
+        raise ValueError("matched bootstrap board must contain four paired seats")
+    win_values, vp_values = [], []
+    for seed in matched_seeds:
+        rows = by_board[seed]
+        win_values.append(
+            sum(int(arm["won"]) - int(reference["won"])
+                for _, reference, arm in rows) / 4
+            if all(type(reference.get("won")) is bool and type(arm.get("won")) is bool
+                   for _, reference, arm in rows) else None
+        )
+        vp_values.append(
+            sum(arm["victory_points"] - reference["victory_points"]
+                for _, reference, arm in rows) / 4
+            if all(_finite_number(reference.get("victory_points"))
+                   and _finite_number(arm.get("victory_points"))
+                   for _, reference, arm in rows) else None
+        )
+    have_wins = all(value is not None for value in win_values)
+    have_vp = all(value is not None for value in vp_values)
+    if not (have_wins or have_vp):
+        return report
+    report["status"] = "descriptive"
+    report["resamples"] = _BOOTSTRAP_RESAMPLES
+    samples = {"paired_win_rate_difference": [], "mean_victory_points_difference": []}
+    rng = random.Random(_BOOTSTRAP_SEED)
+    for _ in range(_BOOTSTRAP_RESAMPLES):
+        picks = [rng.randrange(board_count) for _ in range(board_count)]
+        if have_wins:
+            samples["paired_win_rate_difference"].append(
+                sum(win_values[index] for index in picks) / board_count
+            )
+        if have_vp:
+            samples["mean_victory_points_difference"].append(
+                sum(vp_values[index] for index in picks) / board_count
+            )
+    for name, values in samples.items():
+        if values:
+            report[name] = [_percentile(values, 0.025), _percentile(values, 0.975)]
+    return report
+
+
 def _search_work(arm_report):
     available = arm_report.get("search_diagnostics_record_count")
     unavailable = arm_report.get("search_diagnostics_unavailable_count")
@@ -393,6 +465,7 @@ def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT):
             "matched_board_seeds": matched_seeds,
             "matched_game_count": len(pairs),
             **_paired_outcomes(pairs),
+            "board_bootstrap_95": _board_bootstrap(pairs, matched_seeds),
         }
         if capture:
             comparison["trace_divergence"] = _trace_summary(

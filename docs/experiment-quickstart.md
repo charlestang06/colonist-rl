@@ -65,6 +65,13 @@ searched-decision latency and reason counts separate from latency over all
 policy selections. A lower attempted-node count alone is not a runtime gain;
 compare timing and coverage on the same boards.
 
+For at least eight matched complete boards, each comparison also reports a
+deterministic 20,000-resample percentile interval for paired win-rate and mean
+victory-point differences. It resamples whole four-seat boards and omits a win
+interval if any matched game is unresolved. With fewer boards it explicitly
+reports `insufficient_boards`. These are descriptive uncertainty readouts, not
+automatic promotion tests.
+
 ## 3. Decide quickly
 
 Read the matched result, intervention frequency, first changed public states,
