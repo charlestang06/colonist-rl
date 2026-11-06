@@ -11,6 +11,7 @@ from colonist_rl.contracts import Action, Building, DecisionContext, Observation
 from colonist_rl.successor_features import (
     SUCCESSOR_COLUMNS,
     SUCCESSOR_DIM,
+    SUCCESSOR_SCHEMA,
     successor_feature_values,
     successor_features_for_menu,
 )
@@ -117,7 +118,7 @@ def test_second_setup_settlement_grants_its_public_adjacent_starting_resources()
 
 def test_uncertain_robber_result_has_an_explicit_mask_without_invented_hand():
     observation = view(context=DecisionContext("MOVE_ROBBER", 10, 10, 2),
-                       actions=(Action("MOVE_ROBBER", target=0),))
+                       actions=(Action("MOVE_ROBBER", target=0, partner=20),))
     got = successor_feature_values(observation, observation.legal_actions[0])
     assert got["hand_known"] == 0
     assert got["uncertain_resource_result"] == 1
@@ -125,16 +126,26 @@ def test_uncertain_robber_result_has_an_explicit_mask_without_invented_hand():
     assert all(got[f"settlement_deficit_after_{r}"] == 0
                for r in ("WOOD", "BRICK", "SHEEP", "WHEAT", "ORE"))
 
+    no_victim = replace(observation, legal_actions=(Action("MOVE_ROBBER", target=0),))
+    safe = successor_feature_values(no_victim, no_victim.legal_actions[0])
+    assert safe["hand_known"] == 1
+    assert safe["uncertain_resource_result"] == 0
+    assert safe["hand_after_WOOD"] == safe["hand_before_WOOD"] == 0.4
+
 
 def test_dev_resource_choice_and_robber_geometry_keep_uncertainty_separate():
     plenty = view(hand=(0, 0, 0, 0, 0), actions=(
         Action("PLAY_YEAR_OF_PLENTY", resource="ORE", second_resource="ORE"),
+        Action("PLAY_YEAR_OF_PLENTY", resource="ORE"),
         Action("PLAY_MONOPOLY", resource="ORE"),
     ))
     chosen = successor_feature_values(plenty, plenty.legal_actions[0])
-    unknown = successor_feature_values(plenty, plenty.legal_actions[1])
+    one_card = successor_feature_values(plenty, plenty.legal_actions[1])
+    unknown = successor_feature_values(plenty, plenty.legal_actions[2])
     assert chosen["hand_known"] == 1
     assert chosen["hand_after_ORE"] == 0.2
+    assert one_card["hand_known"] == 1
+    assert one_card["hand_after_ORE"] == 0.1
     assert unknown["hand_known"] == 0
     assert unknown["uncertain_resource_result"] == 1
     assert unknown["hand_after_ORE"] == 0
@@ -143,7 +154,7 @@ def test_dev_resource_choice_and_robber_geometry_keep_uncertainty_separate():
     own_vertex = next(v for v in board.tile_vertices[0] if v not in board.tile_vertices[1])
     robber = replace(
         plenty, board=board, buildings=(Building(own_vertex, 10),), robber_tile=0,
-        legal_actions=(Action("MOVE_ROBBER", target=1),),
+        legal_actions=(Action("MOVE_ROBBER", target=1, partner=20),),
     )
     moved = successor_feature_values(robber, robber.legal_actions[0])
     assert moved["hand_known"] == 0
@@ -151,9 +162,71 @@ def test_dev_resource_choice_and_robber_geometry_keep_uncertainty_separate():
     assert moved["production_unblocked_delta_WHEAT"] == pytest.approx(5 / 36)
 
 
+def test_public_largest_army_and_longest_road_awards_can_win_immediately():
+    knight = replace(
+        view(actions=(Action("PLAY_KNIGHT_CARD"),)),
+        players=(
+            PublicPlayer(10, 9, 0, 1, played_knights=2),
+            *(PublicPlayer(i, 0, 0, 0) for i in (20, 30, 40)),
+        ),
+        development=(1, 0, 0, 0, 0),
+    )
+    army = successor_feature_values(knight, knight.legal_actions[0])
+    assert army["known_point_gain"] == 2
+    assert army["wins_now"] == 1
+    assert army["own_vp_after"] == 1.1
+    held = replace(
+        knight,
+        players=(
+            knight.players[0],
+            PublicPlayer(20, 4, 0, 0, played_knights=4, has_largest_army=True),
+            *knight.players[2:],
+        ),
+    )
+    assert successor_feature_values(held, held.legal_actions[0])["known_point_gain"] == 0
+
+    road = replace(
+        view(hand=(1, 1, 0, 0, 0), roads=tuple(Road(i, 10) for i in range(4)),
+             actions=(Action("BUILD_ROAD", target=4),)),
+        players=(
+            PublicPlayer(10, 9, 2, 0, roads_left=11, longest_road=4),
+            *(PublicPlayer(i, 0, 0, 0) for i in (20, 30, 40)),
+        ),
+    )
+    longest = successor_feature_values(road, road.legal_actions[0])
+    assert longest["known_point_gain"] == 2
+    assert longest["wins_now"] == 1
+    assert longest["own_vp_after"] == 1.1
+    tied = replace(
+        road,
+        players=(
+            road.players[0],
+            PublicPlayer(20, 7, 0, 0, longest_road=5, has_longest_road=True),
+            *road.players[2:],
+        ),
+    )
+    assert successor_feature_values(tied, tied.legal_actions[0])["known_point_gain"] == 0
+
+
+def test_enemy_settlement_blocks_road_through_vertex_but_counts_road_ending_there():
+    base = view(
+        hand=(1, 1, 0, 0, 0), roads=tuple(Road(i, 10) for i in range(4)),
+        actions=(Action("BUILD_ROAD", target=4),),
+    )
+    base = replace(base, players=(
+        PublicPlayer(10, 8, 2, 0, roads_left=11, longest_road=4),
+        *(PublicPlayer(i, 0, 0, 0) for i in (20, 30, 40)),
+    ))
+    at_end = replace(base, buildings=(Building(0, 20),))
+    assert successor_feature_values(at_end, at_end.legal_actions[0])["known_point_gain"] == 2
+    in_middle = replace(base, buildings=(Building(2, 20),))
+    assert successor_feature_values(in_middle, in_middle.legal_actions[0])["known_point_gain"] == 0
+
+
 def test_exact_legal_identity_menu_parity_finite_values_and_no_mutation():
     observation = view()
     original = deepcopy(observation)
+    assert SUCCESSOR_SCHEMA == "public-candidate-successor-v2"
     assert SUCCESSOR_DIM == len(SUCCESSOR_COLUMNS)
     assert len(set(SUCCESSOR_COLUMNS)) == SUCCESSOR_DIM
     with pytest.raises(ValueError, match="exact current legal action"):

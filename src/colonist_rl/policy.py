@@ -306,7 +306,7 @@ class ConsequenceGraphPolicy(GraphPolicy):
 class CandidateSuccessorPolicy(ConsequenceGraphPolicy):
     """Opt-in public candidate scorer with zero-start linear and nonlinear branches."""
 
-    architecture_kind = "graph_candidate_successor_v1"
+    architecture_kind = "graph_candidate_successor_v2"
 
     def __init__(self, hidden_size=64, *, residual_hidden_size=16):
         if type(residual_hidden_size) is not int or residual_hidden_size != 16:
@@ -412,10 +412,13 @@ def candidate_successor_from_consequence(
         raise ValueError("candidate successor upgrade requires hand_recipe parent")
     with torch.random.fork_rng(devices=[]):
         torch.random.default_generator.manual_seed(seed)
-        variant = CandidateSuccessorPolicy(policy.hidden_size)
+        with torch.device("cpu"):
+            variant = CandidateSuccessorPolicy(policy.hidden_size)
     parameter = next(policy.parameters())
     variant.to(device=parameter.device, dtype=parameter.dtype)
-    variant.load_state_dict({**variant.state_dict(), **policy.state_dict()}, strict=True)
+    weights = {name: value.detach().clone() for name, value in variant.state_dict().items()}
+    weights.update({name: value.detach().clone() for name, value in policy.state_dict().items()})
+    variant.load_state_dict(weights, strict=True, assign=True)
     parameters = dict(variant.named_parameters())
     for name, old in policy.named_parameters():
         parameters[name].requires_grad_(old.requires_grad)

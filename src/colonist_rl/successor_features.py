@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from functools import cache
 
 import torch
 
@@ -15,7 +16,7 @@ from .consequences import PUBLIC_BUILD_COSTS
 from .contracts import RESOURCES, Action, Building, Observation, PublicPlayer, Road
 from .settlement_sites import connected_settlement_sites
 
-SUCCESSOR_SCHEMA = "public-candidate-successor-v1"
+SUCCESSOR_SCHEMA = "public-candidate-successor-v2"
 _SCALARS = (
     "hand_known", "uncertain_resource_result", "unknown_dev_draw",
     "known_point_gain", "wins_now", "road_pieces_after",
@@ -34,7 +35,7 @@ SUCCESSOR_COLUMNS = _SCALARS + tuple(
 )
 SUCCESSOR_DIM = len(SUCCESSOR_COLUMNS)
 _RECIPES = tuple(zip(("road", "settlement", "city", "card"), PUBLIC_BUILD_COSTS.values()))
-_UNKNOWN_HAND = frozenset(("ROLL", "MOVE_ROBBER", "PLAY_MONOPOLY", "DISCARD"))
+_UNKNOWN_HAND = frozenset(("ROLL", "PLAY_MONOPOLY", "DISCARD"))
 _KNOWN_UNCHANGED = frozenset(
     ("END_TURN", "REJECT_TRADE", "PLAY_KNIGHT_CARD", "PLAY_ROAD_BUILDING")
 )
@@ -126,6 +127,8 @@ def _hand_after(view: Observation, action: Action) -> tuple[int, ...] | None:
     kind = action.kind
     if kind in _UNKNOWN_HAND:
         return None
+    if kind == "MOVE_ROBBER":
+        return view.hand if action.partner is None else None
     if kind == "MARITIME_TRADE":
         give, receive = action.give, action.receive
     elif kind == "ACCEPT_TRADE":
@@ -158,11 +161,13 @@ def _hand_after(view: Observation, action: Action) -> tuple[int, ...] | None:
         give = tuple(int(resource == action.resource) for resource in RESOURCES)
         receive = _ZERO
     elif kind == "PLAY_YEAR_OF_PLENTY":
-        if action.resource not in RESOURCES or action.second_resource not in RESOURCES:
+        if action.resource not in RESOURCES:
             return None
         give = _ZERO
         receive = tuple(
-            int(resource == action.resource) + int(resource == action.second_resource)
+            int(resource == action.resource) + int(
+                action.second_resource in RESOURCES and resource == action.second_resource
+            )
             for resource in RESOURCES
         )
     elif kind in _KNOWN_UNCHANGED:
@@ -173,6 +178,57 @@ def _hand_after(view: Observation, action: Action) -> tuple[int, ...] | None:
     if any(count < 0 for count in hand):
         raise ValueError("a legal action cannot spend more than the observed hand")
     return hand
+
+
+def _largest_army_gain(view: Observation, own: PublicPlayer) -> int:
+    if own.has_largest_army or own.played_knights + 1 < 3:
+        return 0
+    holder = next((p for p in view.players if p.has_largest_army), None)
+    return 2 if holder is None or own.played_knights + 1 > holder.played_knights else 0
+
+
+def _longest_road_gain(view: Observation, own: PublicPlayer, target: int) -> int:
+    """Public edge-trail length in the component changed by this road placement."""
+    if (own.has_longest_road or own.roads_left > 11 or
+            view.context.kind in ("BUILD_INITIAL_ROAD", "SETUP_ROAD")):
+        return 0
+    holder = next((p for p in view.players if p.has_longest_road), None)
+    threshold = max(5, (holder.longest_road + 1) if holder is not None else 5)
+    enemy_vertices = {b.vertex for b in view.buildings if b.owner != view.player_id}
+    edges = [road.edge for road in view.roads if road.owner == view.player_id]
+    edges.append(target)
+    neighbors: dict[int, list[tuple[int, int]]] = {}
+    for edge_id in edges:
+        a, b = view.board.edges[edge_id]
+        bit = 1 << edge_id
+        neighbors.setdefault(a, []).append((b, bit))
+        neighbors.setdefault(b, []).append((a, bit))
+    # Enemy buildings terminate a road. They can be endpoints of a path but
+    # cannot connect two components across the occupied vertex.
+    component = set()
+    stack = [v for v in view.board.edges[target] if v not in enemy_vertices]
+    while stack:
+        vertex = stack.pop()
+        if vertex in component:
+            continue
+        component.add(vertex)
+        for neighbor, _ in neighbors.get(vertex, ()):
+            if neighbor in enemy_vertices:
+                component.add(neighbor)
+            else:
+                stack.append(neighbor)
+
+    @cache
+    def longest_from(vertex: int, used: int) -> int:
+        if used and vertex in enemy_vertices:
+            return 0
+        return max(
+            (1 + longest_from(neighbor, used | bit)
+             for neighbor, bit in neighbors.get(vertex, ()) if not used & bit),
+            default=0,
+        )
+
+    return 2 if any(longest_from(vertex, 0) >= threshold for vertex in component) else 0
 
 
 def _after_geometry(prepared: _Prepared, action: Action):
@@ -188,6 +244,8 @@ def _after_geometry(prepared: _Prepared, action: Action):
     if action.kind in _ROAD and action.target is not None:
         roads = roads + (Road(action.target, view.player_id),)
         roads_left -= 1
+        if action.kind == "BUILD_ROAD":
+            point_gain = _longest_road_gain(view, own, action.target)
     elif action.kind in _SETTLEMENT and action.target is not None:
         buildings = buildings + (Building(action.target, view.player_id),)
         settlements_left -= 1
@@ -210,6 +268,8 @@ def _after_geometry(prepared: _Prepared, action: Action):
         point_gain = 1
         nominal_delta = list(prepared.vertex_pips[action.target])
         unblocked_delta = list(prepared.vertex_unblocked_pips[action.target])
+    elif action.kind == "PLAY_KNIGHT_CARD":
+        point_gain = _largest_army_gain(view, own)
     elif action.kind == "MOVE_ROBBER" and action.target is not None:
         if action.target != view.robber_tile:
             for tile in view.board.tiles:

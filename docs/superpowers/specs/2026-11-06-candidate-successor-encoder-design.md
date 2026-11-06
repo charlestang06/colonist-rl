@@ -29,12 +29,20 @@ Current maritime trades and development purchases have exact immediate hand
 arithmetic; a card purchase marks its draw as unknown. The second setup
 settlement gains one resource from each adjacent producing hex when public bank
 stock or the standard setup stock bound guarantees delivery. Otherwise its
-after-hand is masked unknown. Other uncertain actions
-carry explicit unknown masks rather than invented resource gains. The encoder
-does not claim a future bank receipt, card identity, robber steal, Longest Road
-award, or later legal menu.
+after-hand is masked unknown. A robber move without a victim preserves the
+known hand; a move with a victim masks the unknown steal. A one-resource Year
+of Plenty option adds that named resource. Playing a knight can award Largest
+Army, and building a road can award Longest Road; those awards and an immediate
+win are computed from public counts, holders, buildings and road geometry.
+Other uncertain actions carry explicit masks rather than invented resource
+gains. The encoder does not claim a future card identity, robber steal, or
+later legal menu.
 
 The feature names and order form a versioned schema. All rows are finite.
+The corrected award and resource semantics use
+`public-candidate-successor-v2` and a distinct `graph_candidate_successor_v2`
+checkpoint identity, so an earlier experimental v1 checkpoint cannot load
+silently with changed feature meanings.
 Building and port geometry are computed once per observation where possible,
 then only the affected public placement is updated for each build action.
 
@@ -61,8 +69,10 @@ this branch changes representation alone.
 ## Verification
 
 Tests check exact legal-action identity; trade/build/BUY/END hand arithmetic;
-site, production and port effects; free road/setup cost; unknown-outcome masks;
+site, production and port effects; free road/setup cost; no-victim robber and
+one-resource Plenty; public road and army awards; unknown-outcome masks;
 full-menu/single-action parity; immutable observations; finite rows; zero-start
-parent/RNG equality; nonzero useful gradients; and strict checkpoint roundtrip.
+parent/RNG equality across CPU, MPS and ambient meta construction; mixed dtype
+parent preservation; nonzero useful gradients; and strict checkpoint roundtrip.
 Time the incremental encoder on representative legal menus before proposing a
 gameplay comparison.

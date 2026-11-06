@@ -1,0 +1,76 @@
+{
+  "history_sha256": "d8c89fa156595b373aff0b675857d4bd331dc9e6ea32f3b75cffd161aefdece2",
+  "repeats": 32,
+  "rows": [
+    {
+      "action_kinds": [
+        "BUILD_ROAD",
+        "BUILD_SETTLEMENT",
+        "BUY_DEVELOPMENT_CARD",
+        "END_TURN"
+      ],
+      "candidate": {
+        "p50_ms": 0.9053960000000001,
+        "p95_ms": 1.0557231
+      },
+      "encoder_only": {
+        "p50_ms": 0.2094165,
+        "p95_ms": 0.24055245
+      },
+      "menu_size": 10,
+      "parent": {
+        "p50_ms": 0.6538545,
+        "p95_ms": 0.6702874999999999
+      },
+      "phase": "PLAY_TURN",
+      "row": "0:19"
+    },
+    {
+      "action_kinds": [
+        "BUILD_ROAD",
+        "END_TURN",
+        "MARITIME_TRADE"
+      ],
+      "candidate": {
+        "p50_ms": 1.3363749999999999,
+        "p95_ms": 1.6046334
+      },
+      "encoder_only": {
+        "p50_ms": 0.358583,
+        "p95_ms": 0.6369038
+      },
+      "menu_size": 13,
+      "parent": {
+        "p50_ms": 0.9065209999999999,
+        "p95_ms": 0.952925
+      },
+      "phase": "PLAY_TURN",
+      "row": "0:78"
+    },
+    {
+      "action_kinds": [
+        "BUILD_ROAD",
+        "BUILD_SETTLEMENT",
+        "END_TURN",
+        "MARITIME_TRADE"
+      ],
+      "candidate": {
+        "p50_ms": 1.2843335,
+        "p95_ms": 1.61605015
+      },
+      "encoder_only": {
+        "p50_ms": 0.3603745,
+        "p95_ms": 0.69199155
+      },
+      "menu_size": 14,
+      "parent": {
+        "p50_ms": 0.8566875,
+        "p95_ms": 0.9089269
+      },
+      "phase": "PLAY_TURN",
+      "row": "3:26"
+    }
+  ],
+  "schema": "candidate-successor-benchmark-v1",
+  "torch_threads": 1
+}

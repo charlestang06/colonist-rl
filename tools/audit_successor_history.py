@@ -36,7 +36,7 @@ def main() -> None:
     phases: Counter[str] = Counter()
     mismatches: list[tuple] = []
     sources = {}
-    rows = known = masked = piece_checks = 0
+    rows = known = masked = piece_checks = point_checks = winning_checks = 0
     for path in files:
         raw = path.read_bytes()
         sources[path.parent.name] = hashlib.sha256(raw).hexdigest()
@@ -68,6 +68,20 @@ def main() -> None:
                         mismatches.append((*label, "hand", predicted, after.hand))
                 else:
                     masked += 1
+                if action.kind != "BUY_DEVELOPMENT_CARD":
+                    # Buying from a hidden deck may reveal a private VP card.
+                    point_checks += 1
+                    actual_gain = after.own_victory_points - before.own_victory_points
+                    if values["known_point_gain"] != actual_gain:
+                        mismatches.append((
+                            *label, "known_point_gain", values["known_point_gain"], actual_gain
+                        ))
+                    winning_checks += 1
+                    actual_win = int(
+                        actual_gain > 0 and after.own_victory_points >= before.rules.victory_points
+                    )
+                    if values["wins_now"] != actual_win:
+                        mismatches.append((*label, "wins_now", values["wins_now"], actual_win))
                 if action.kind not in ("BUILD_ROAD", "BUILD_SETTLEMENT", "BUILD_CITY"):
                     continue
                 own = next(player for player in after.players if player.player_id == before.player_id)
@@ -90,13 +104,15 @@ def main() -> None:
                     if expected not in after.buildings:
                         mismatches.append((*label, "building_placement"))
     report = {
-        "schema": "candidate-successor-train-transition-audit-v1",
+        "schema": "candidate-successor-train-transition-audit-v2",
         "board_count": len(files),
         "episode_count": len(files) * 4,
         "rows": rows,
         "known_hand_checks": known,
         "masked_hand_rows": masked,
         "piece_checks": piece_checks,
+        "point_checks": point_checks,
+        "winning_checks": winning_checks,
         "mismatch_count": len(mismatches),
         "mismatches": mismatches[:30],
         "executed_action_kinds": dict(kinds),

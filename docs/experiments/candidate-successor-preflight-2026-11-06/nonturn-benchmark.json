@@ -1,0 +1,68 @@
+{
+  "history_sha256": "d8c89fa156595b373aff0b675857d4bd331dc9e6ea32f3b75cffd161aefdece2",
+  "repeats": 32,
+  "rows": [
+    {
+      "action_kinds": [
+        "BUILD_SETTLEMENT"
+      ],
+      "candidate": {
+        "p50_ms": 2.794521,
+        "p95_ms": 3.685316549999999
+      },
+      "encoder_only": {
+        "p50_ms": 0.9672495,
+        "p95_ms": 1.2617664499999997
+      },
+      "menu_size": 54,
+      "parent": {
+        "p50_ms": 1.6779585,
+        "p95_ms": 1.8579332999999998
+      },
+      "phase": "BUILD_INITIAL_SETTLEMENT",
+      "row": "0:0"
+    },
+    {
+      "action_kinds": [
+        "BUILD_SETTLEMENT"
+      ],
+      "candidate": {
+        "p50_ms": 1.8999375,
+        "p95_ms": 2.3994125
+      },
+      "encoder_only": {
+        "p50_ms": 0.7292505,
+        "p95_ms": 0.9070436000000001
+      },
+      "menu_size": 28,
+      "parent": {
+        "p50_ms": 1.088562,
+        "p95_ms": 1.19488315
+      },
+      "phase": "BUILD_INITIAL_SETTLEMENT",
+      "row": "0:2"
+    },
+    {
+      "action_kinds": [
+        "MOVE_ROBBER"
+      ],
+      "candidate": {
+        "p50_ms": 1.4318955,
+        "p95_ms": 1.6345436
+      },
+      "encoder_only": {
+        "p50_ms": 0.3037915,
+        "p95_ms": 0.3443061
+      },
+      "menu_size": 22,
+      "parent": {
+        "p50_ms": 1.067854,
+        "p95_ms": 1.3259100499999998
+      },
+      "phase": "MOVE_ROBBER",
+      "row": "0:70"
+    }
+  ],
+  "schema": "candidate-successor-benchmark-v1",
+  "torch_threads": 1
+}

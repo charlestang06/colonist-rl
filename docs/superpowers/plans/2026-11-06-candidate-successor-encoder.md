@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Read only the shared immutable `Observation` and its original legal `Action` objects; no engine state or opponent private hand.
-- Do not imply a future legal menu, development-card identity, robber steal, bank receipt or Longest Road award.
+- Do not imply a future legal menu, development-card identity or robber steal. Encode immediate public road and army awards from known state.
 - Keep current policy classes, checkpoints and default behavior exact.
 - Use `hand_recipe` as the only upgrade parent and a distinct strict architecture identity.
 - No fresh games or model-strength claim in this representation task.
@@ -49,3 +49,12 @@
 - [x] Run full-menu warm timing on several genuine public TURN menus, recording parent and variant p50/p95, and check all new feature rows are finite.
 - [x] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_features.py tests/test_successor_policy.py tests/test_policy.py tests/test_consequences.py tests/test_checkpoint_migration.py -q` plus touched-file Ruff.
 - [x] Write the measured preflight and limitations. Report the branch to the broad-distillation coordinator for a separately frozen matched training comparison. Commit the report.
+
+### Task 4: Review repair and semantic versioning
+
+**Files:** Update the encoder, upgrade helper, tests, audit and preflight.
+
+- [x] Reproduce the review findings in red tests: no-victim robber, one-resource Plenty, public Largest Army and Longest Road, mixed parent dtypes and ambient device RNG.
+- [x] Encode the deterministic effects and preserve every inherited tensor's exact dtype and value. Bump the representation and checkpoint identity to v2.
+- [x] Expand the TRAIN transition audit to deterministic point changes and winning indicators, and add endpoint-blocking road geometry coverage.
+- [ ] Rerun the full suite, lint, late-road latency and fresh read-only review before integration.

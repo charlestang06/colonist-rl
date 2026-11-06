@@ -79,6 +79,49 @@ def test_candidate_features_receive_first_update_gradients_while_value_stays_inh
     assert child.value.weight.grad is None
 
 
+def test_conversion_preserves_mixed_parent_dtypes_and_exact_logits():
+    from colonist_rl.policy import candidate_successor_from_consequence
+
+    parent = _parent()
+    parent.consequence.double()
+    child = candidate_successor_from_consequence(parent, seed=41)
+    for name, parameter in parent.named_parameters():
+        copied = dict(child.named_parameters())[name]
+        assert copied.dtype == parameter.dtype
+        assert torch.equal(copied, parameter)
+        assert copied.data_ptr() != parameter.data_ptr()
+    observation = _view()
+    before, after = parent(observation), child(observation)
+    for field in ("logits", "memory", "value"):
+        assert torch.equal(getattr(before, field), getattr(after, field))
+
+
+def test_conversion_constructs_on_cpu_under_ambient_meta_default():
+    from colonist_rl.policy import candidate_successor_from_consequence
+
+    parent = _parent()
+    with torch.device("meta"):
+        first = candidate_successor_from_consequence(parent, seed=47)
+        second = candidate_successor_from_consequence(parent, seed=47)
+    assert all(parameter.device.type == "cpu" for parameter in first.parameters())
+    assert torch.equal(first.successor_hidden.weight, second.successor_hidden.weight)
+    assert torch.equal(parent(_view()).logits, first(_view()).logits)
+
+
+@pytest.mark.skipif(not torch.backends.mps.is_available(), reason="MPS unavailable")
+def test_conversion_does_not_advance_ambient_mps_rng():
+    from colonist_rl.policy import candidate_successor_from_consequence
+
+    parent = _parent()
+    before = torch.mps.get_rng_state().clone()
+    with torch.device("mps"):
+        first = candidate_successor_from_consequence(parent, seed=53)
+        second = candidate_successor_from_consequence(parent, seed=53)
+    assert torch.equal(torch.mps.get_rng_state(), before)
+    assert torch.equal(first.successor_hidden.weight, second.successor_hidden.weight)
+    assert torch.equal(parent(_view()).logits, first(_view()).logits)
+
+
 def test_new_checkpoint_has_strict_identity_and_roundtrips(tmp_path):
     from colonist_rl.policy import (
         CandidateSuccessorPolicy,
@@ -90,7 +133,7 @@ def test_new_checkpoint_has_strict_identity_and_roundtrips(tmp_path):
     child = candidate_successor_from_consequence(_parent())
     architecture = policy_architecture(child)
     assert architecture == {
-        "kind": "graph_candidate_successor_v1",
+        "kind": "graph_candidate_successor_v2",
         "hidden_size": 16,
         "feature_schema": "public-consequence-v1",
         "feature_set": "hand_recipe",
@@ -107,6 +150,7 @@ def test_new_checkpoint_has_strict_identity_and_roundtrips(tmp_path):
     assert state["steps"] == 4
     assert all(torch.equal(t, loaded.state_dict()[name]) for name, t in child.state_dict().items())
     for wrong in (
+        {**architecture, "kind": "graph_candidate_successor_v1"},
         {**architecture, "successor_schema": "future"},
         {**architecture, "successor_dim": SUCCESSOR_DIM + 1},
         {**architecture, "feature_set": "hand_recipe_and_connectivity"},

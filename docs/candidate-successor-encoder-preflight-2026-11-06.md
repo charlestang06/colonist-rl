@@ -2,7 +2,9 @@
 
 This is an **opt-in representation**, not a stronger-agent result. It adds a
 67-column public current-action row for trade, build, card purchase, production,
-port and piece consequences. `CandidateSuccessorPolicy` copies a
+port, piece and public award consequences. The corrected row is schema
+`public-candidate-successor-v2`, with checkpoint kind
+`graph_candidate_successor_v2`. `CandidateSuccessorPolicy` copies a
 `ConsequenceGraphPolicy(hand_recipe)` parent with zero new output weights. Its
 initial logits, memory and value must remain exact. The branch does not read
 opponent private resources, a development draw, a robber steal, or a future
@@ -10,66 +12,69 @@ legal menu.
 
 ## Verification on current-engine student history
 
-Source: `train-157410000/history.json.gz` from the broad raw-ranking pilot,
-SHA-256 `d8c89fa156595b373aff0b675857d4bd331dc9e6ea32f3b75cffd161aefdece2`.
-Only the public observation and its recorded immediate after-observation were
-read. This board contains four complete student games, 390 decisions, 11
-executed action kinds, and a largest menu of 54 actions. Every menu yielded
-finite `menu_size × 67` features. Across all 390 rows, parent and new-policy
-logits, value and recurrent memory were tensor-equal before training.
+`tools/audit_successor_history.py` reads only the public observations and
+recorded immediate after-observations from the broad pilot's 16 sealed TRAIN
+histories. It does not read labelVAL, teacher overlays, opponent private state
+or outcomes. Its [saved report](experiments/candidate-successor-preflight-2026-11-06/train-transition-audit-v2.json)
+records each source SHA-256 and covers 64 games, 6,215 decisions and 13
+executed action kinds. Every legal menu yielded finite `menu_size × 67` rows.
+The **4,181** known after-hand predictions, **2,151** direct-build piece checks,
+**5,917** deterministic point-change checks and **5,917** immediate-win checks
+matched the next public observation. **2,034** resource outcomes were masked;
+the final audit has **zero mismatches**.
 
-For the action the student actually executed, 265 rows had a known resulting
-hand and all 265 matched the next observation. The remaining 125 rows carried
-an unknown-hand mask. Road, settlement and city piece counts matched on all
-141 checks across 47 direct builds. The sweep first found four mismatches:
-each was a player's second initial settlement granting public adjacent
-resources. A red regression test and the setup grant fix reduced them to zero.
+The first audit checked hands and pieces only. Fresh review found an actual
+winning knight whose public Largest Army award was missing, plus deterministic
+no-victim robber and one-resource Year of Plenty candidates that were masked.
+Adding point checks exposed two Longest Road awards that a road graph initially
+missed because an opponent settlement can end a road while blocking passage
+through that vertex. These cases now have red-first regression tests, and the
+full TRAIN point audit passes. The encoder uses public award holders, played
+knights and the current road graph; it does not infer opponent hands.
 
-The reproducible `tools/audit_successor_history.py` then swept all 16 sealed
-TRAIN boards, without reading labelVAL histories, teacher overlays, or outcomes:
-64 games, 6,215 decisions and 13 executed action kinds including Year of
-Plenty and Road Building. All full-menu rows were finite. **4,181** known-hand
-transitions, **2,151** direct-build piece checks and every direct placement
-matched the next public observation; **2,034** resource outcomes were masked.
-The saved TRAIN-only audit has zero mismatches and a SHA-256 for each history.
-
-The focused policy, consequence, migration and successor suite passed **80
-tests**. The full repository suite passed **1,832 tests**, with 2 skipped and
-48 subtests passed. Ruff passed on all touched Python files. This is a
-transition audit, not a proof of sound strategic choices or every possible
-card sequence.
+Conversion tests check exact parent logits, value and recurrent memory,
+including a mixed float64/float32 parent. Construction under an ambient MPS or
+meta default preserves CPU and MPS RNG and yields repeatable new weights.
+Checkpoint semantics moved to v2 so an earlier experimental v1 checkpoint
+cannot silently reuse the changed feature meanings. The full repository suite
+passed **1,837 tests**, with 2 skipped and 48 subtests passed. Ruff passed on
+all touched Python files. This checks executed transitions and focused
+unchosen candidates; it is not evidence of better strategic decisions or
+every possible card sequence.
 
 ## Inference cost
 
-`tools/benchmark_successor.py` reconstructs selected public observations from
-the same captured history, checks exact parent parity, then times 32 warm
-single-thread CPU calls with `torch.no_grad()`. The parent is a 64-hidden-unit
-graph consequence policy; the candidate is its zero-start copy. The broad
-capture was using the CPU concurrently, so p95 values include contention.
+`tools/benchmark_successor.py` reconstructs selected public TRAIN observations,
+checks exact parent parity, then times 32 warm single-thread CPU calls with
+`torch.no_grad()`. The parent is a 64-hidden-unit graph consequence policy; the
+candidate is its zero-start copy. The saved [TURN](experiments/candidate-successor-preflight-2026-11-06/turn-benchmark.json),
+[award road](experiments/candidate-successor-preflight-2026-11-06/award-road-benchmark.json)
+and [non-TURN](experiments/candidate-successor-preflight-2026-11-06/nonturn-benchmark.json)
+reports retain source hashes and the raw timings.
 
 | Public menu | Actions | Parent p50 | Candidate p50 / p95 | Encoder-only p50 / p95 |
 | --- | ---: | ---: | ---: | ---: |
-| TURN road, settlement, buy, pass (`0:19`) | 10 | 1.80 ms | 2.46 / 2.56 ms | 0.57 / 0.59 ms |
-| TURN road, bank trade, pass (`0:78`) | 13 | 2.54 ms | 3.32 / 3.89 ms | 0.66 / 0.73 ms |
-| TURN Monopoly, pass (`1:45`) | 6 | 1.62 ms | 1.95 / 2.21 ms | 0.25 / 0.38 ms |
-| TURN road, settlement, bank trade, pass (`3:26`) | 14 | 2.58 ms | 3.72 / 4.79 ms | 0.77 / 0.91 ms |
-| First setup settlement (`0:0`) | 54 | 5.36 ms | 8.76 / 18.01 ms | 2.93 / 3.36 ms |
-| Second setup settlement (`0:2`) | 28 | 2.36 ms | 5.52 / 8.62 ms | 1.64 / 1.75 ms |
-| Move robber (`0:70`) | 22 | 3.63 ms | 4.44 / 5.50 ms | 0.87 / 1.10 ms |
+| TURN road, settlement, buy, pass (`0:19`) | 10 | 0.654 ms | 0.905 / 1.056 ms | 0.209 / 0.241 ms |
+| TURN road, bank trade, pass (`0:78`) | 13 | 0.907 ms | 1.336 / 1.605 ms | 0.359 / 0.637 ms |
+| TURN road, settlement, bank trade, pass (`3:26`) | 14 | 0.857 ms | 1.284 / 1.616 ms | 0.360 / 0.692 ms |
+| TURN awarding Longest Road (`1:29`, board `157410002`) | 12 | 0.873 ms | 1.274 / 1.518 ms | 0.329 / 0.635 ms |
+| First setup settlement (`0:0`) | 54 | 1.678 ms | 2.795 / 3.685 ms | 0.967 / 1.262 ms |
+| Second setup settlement (`0:2`) | 28 | 1.089 ms | 1.900 / 2.399 ms | 0.729 / 0.907 ms |
+| Move robber (`0:70`) | 22 | 1.068 ms | 1.432 / 1.635 ms | 0.304 / 0.344 ms |
 
 An initial profile found that menu encoding recomputed each action's entire
 feature dictionary once per column, 67 times. A call-count regression test
 failed at 268 calls for four actions; after the fix it makes four. Before the
-fix, encoder p50 was 10–45 ms on the TURN menus above. The table is from after
-that fix. The setup grant was added after the TURN and first-setup timing runs;
-the second-setup timing includes it. Raw local timing JSON lives in the ignored
-`runs/candidate-successor-*-preflight-2026-11-06.json` files.
+fix, encoder p50 was 10–45 ms on TURN menus. The table above was rerun after
+the award and card fixes. Timings are local measurements, not a deployment
+service-level claim.
 
 ## Decision
 
-The mechanics and latency are sufficient to **cross this representation with a
-separately frozen broad learning objective**. Keep the broad CE versus pairwise
-pilot untouched. A crossing must start from the exact same parent weights and
+The mechanics and latency support **crossing this representation with a
+separately frozen broad learning objective after independent review**. Keep the
+broad CE versus pairwise pilot untouched. A crossing must start from the exact
+same parent weights and
 student TRAIN observations, use matched fit budgets, reserve a fresh label
 validation panel, and require changed beneficial choices plus fresh paired
 games before any strength claim. The representation has no default effect and
