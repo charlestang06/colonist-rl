@@ -128,6 +128,13 @@ audited 15 TRAIN and seven label-validation student-reached cases, then
 completed two matched 60-update fits. The audited arm failed held-out CE and
 accepted-hit gates; the parent already hit six of seven accepted sets, making
 the frozen plus-two hit gate impossible. No game ran or checkpoint was promoted.
+The subsequent [point-affordance feature study](point-affordance-results-2026-11-06.md)
+passed its independent label/headroom prefit gate, but its matched 48-update
+feature and no-feature arms chose identical roots on all 2,000 nonforced
+label-validation rows. It made zero accepted bank-trade rescues and stopped
+before games. Pursue broad action ranking from a qualified public teacher,
+with actual trade/pass/BUY and opponent-strength gates, rather than extending
+this scalar treatment.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -237,7 +244,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
 | Complete | [Audit student-reached trade/pass/BUY states](student-dagger-audit-results-2026-11-06.md): 20 TRAIN/five label-validation supported sets; only three TRAIN sets excluded H against the frozen minimum four. | Stop before fitting; preserve ambiguous cases and exact audit. |
 | Complete | [Planner point-route sparse fit](planner-point-pilot-results-2026-11-06.md): 15 TRAIN/seven label-validation anchors, two 60-update arms; audited CE 0.528851 versus parent 0.525773/H arm 0.520527, identical 6/7 accepted hits and zero actual trade choices. | Stop before games; future acquisition needs baseline headroom and fact-checked alternative roots. |
-| Active acquisition | [Point-affordance feature study](point-affordance-feature-protocol-2026-11-06.md): an opt-in zero-start public bank-trade gap feature, fresh disjoint student cohorts, parent-nontrade challenge cases and blind factual review. | Check approved-label yield and parent headroom before any matched fit; measure actual accepted bank-trade rescues and retention before games. |
+| Stopped before games | [Point-affordance feature study](point-affordance-results-2026-11-06.md): 24 TRAIN/12 label-validation cases passed independent review and prefit gates; matched 48-update arms made identical validation choices, 4/12 accepted hits and zero feature trade rescues. | Retire this scalar treatment under its frozen screen; qualify a stronger public teacher and test broad action ranking on new data. |
 | Stopped before games | [Exact batched public forecast v2](public-one-round-throughput-v2-results-2026-11-06.md): 129/129 archived public-view decisions identical to v1; 30 changed TRAIN decisions across eight new boards; incremental p95 28.670 ms exceeded the unchanged 25 ms gate. | Preserve isolated source/evidence; require a distinct credible throughput mechanism before another prospective screen. |
 | Complete, not promoted | [Exact resource-wise forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md): 268 archived public views matched v1/v2, fresh incremental p95 3.801 ms, 29 TRAIN changes, then 96 development games with raw/static/forecast all 11/32 wins. | Frozen plus-three-win gate failed; keep optional and test delayed-trade option value as a separate hypothesis. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |

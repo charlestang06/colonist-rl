@@ -75,12 +75,13 @@ archived and unpromoted. A posthoc review identified unverified conditions on
 some accepted alternatives. Future designs must check baseline headroom and
 fact-check accepted alternatives before fit.
 
-The separately frozen [point-affordance feature study](point-affordance-feature-protocol-2026-11-06.md)
-has frozen a fresh student-state acquisition plan. Its opt-in source is isolated on
-branch `cytang/learning-point-affordance`; the unchanged seed-11 parent has
-bitwise-identical zero-start outputs. The study requires baseline headroom,
-factual checks of accepted alternatives, and actual accepted bank-trade choices
-before any gameplay. No fit or strength claim follows from the feature tests.
+The separately frozen [point-affordance feature study](point-affordance-results-2026-11-06.md)
+passed blind factual review and parent-headroom gates on fresh student states,
+then completed two matched 48-update sparse fits. The feature changed none of
+the 2,000 nonforced label-validation choices relative to its no-feature control,
+made zero accepted bank-trade rescues and missed its cross-entropy gain gate.
+It stopped before games; neither checkpoint was promoted. The full local archive
+is linked from the result note.
 
 An isolated [fit-local raw graph-input cache probe](fit-local-graph-cache-negative-2026-11-06.md)
 retained bitwise-identical parameters, optimizer states and 60-update loss, but
