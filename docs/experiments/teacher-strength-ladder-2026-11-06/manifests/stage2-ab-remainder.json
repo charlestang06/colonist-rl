@@ -1,0 +1,49 @@
+{
+  "format": "colonist-rl.paired-experiment",
+  "version": 1,
+  "role": "validation",
+  "reference_arm": "raw",
+  "board_seeds": [
+    157540024,
+    157540025,
+    157540026,
+    157540027,
+    157540028,
+    157540029,
+    157540030,
+    157540031
+  ],
+  "arms": {
+    "raw": {
+      "kind": "public_planner",
+      "config": {
+        "max_depth": 6,
+        "max_nodes": 2048,
+        "beam_width": 24,
+        "max_geometry_visits": 100000,
+        "seed": 11,
+        "prune_invalid_future": true
+      },
+      "gain_margin_micro": 10000
+    },
+    "parent": {
+      "kind": "graph_checkpoint",
+      "checkpoint": "/Users/charlestang06/Documents/CS/colonist-rl/runs/swarm-2026-11-04/ppo-strength-preparation/seed-11-frozen-bc-3_3-start.pt",
+      "checkpoint_sha256": "b3aae32ac36dc55f8ae26ec4676cc289243a6c540b959e1f8aa9786e5ddd0258"
+    }
+  },
+  "opponent_lineup": [
+    "native_ab2_82aae93",
+    "heuristic",
+    "heuristic"
+  ],
+  "no_offers": true,
+  "max_game_steps": 20000,
+  "wall_seconds": 1800,
+  "capture_candidate_steps": true,
+  "full_observation_arms": [
+    "raw"
+  ],
+  "expected_source_sha256": "eb7dd60c93a89ad7f30d715bb91041a4be9c01c22822d3f8e5b17ad2bb261dee",
+  "expected_versions_sha256": "90789ec1a608f8ad24e5f6a17352c4ef6349da84e89477f99875daea738b6493"
+}

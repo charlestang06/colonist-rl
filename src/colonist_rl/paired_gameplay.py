@@ -14,6 +14,8 @@ from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 
 from .evaluation import CandidatePublicStep, evaluate_blocks
+from .greedy_no_trade import GreedyNoTrade
+from .opponents import HeuristicPolicy
 
 _CHANGED_DETAIL_LIMIT = 64
 _SEARCH_DIAGNOSTIC_COUNT_FIELDS = (
@@ -35,6 +37,45 @@ class PairedCandidateStep:
     arm: str
     board_seed: int
     step: CandidatePublicStep
+
+
+@dataclass(frozen=True)
+class BaselineFocalSpec:
+    """Select an existing public baseline as a paired focal arm."""
+
+    kind: str
+
+    def __post_init__(self):
+        if self.kind not in ("heuristic", "greedy_no_trade"):
+            raise ValueError("unknown public baseline focal kind")
+
+
+class _SeededBaseline:
+    """Keep one public baseline instance per focal game and original seed rule."""
+
+    def __init__(self, kind, board_seed):
+        self.kind, self.board_seed = kind, board_seed
+        self._actors = {}
+
+    def eval(self):
+        return self
+
+    def modules(self):
+        return ()
+
+    def act(self, view, memory=None, *, deterministic=True):
+        seat = view.player_id
+        if seat not in self._actors:
+            self._actors[seat] = (
+                HeuristicPolicy(self.board_seed + 31 + seat)
+                if self.kind == "heuristic" else GreedyNoTrade()
+            )
+        actor = self._actors[seat]
+        action = (
+            actor.act(view) if self.kind == "heuristic"
+            else actor.select_action(view)
+        )
+        return action, None
 
 
 def _json_copy(value):
@@ -497,12 +538,14 @@ def run_paired_panel(
                 boards[name].append(_not_run_board(seed, stop_reason))
                 continue
             policy = factory()
-            if callable(getattr(policy, "plan", None)):
+            if isinstance(policy, BaselineFocalSpec):
+                adapter = _GraphPolicyAdapter(_SeededBaseline(policy.kind, seed), seed)
+            elif callable(getattr(policy, "plan", None)):
                 adapter = _PlannedPolicyAdapter(policy, seed)
             elif all(callable(getattr(policy, name, None)) for name in ("act", "modules", "eval")):
                 adapter = _GraphPolicyAdapter(policy, seed)
             else:
-                raise TypeError("arm factory must return a planner or graph policy")
+                raise TypeError("arm factory must return a planner, graph policy, or public baseline")
 
             def game_end(row, *, arm=name):
                 on_game_end({"arm": arm, **row})

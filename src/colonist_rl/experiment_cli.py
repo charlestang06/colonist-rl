@@ -107,7 +107,8 @@ def _validate_manifest(raw, *, base):
     _keys(raw,
           ("format", "version", "role", "reference_arm", "board_seeds", "arms", "no_offers",
            "max_game_steps", "wall_seconds"),
-          ("opponent_lineup", "capture_candidate_steps", "expected_source_sha256",
+          ("opponent_lineup", "capture_candidate_steps", "full_observation_arms",
+           "expected_source_sha256",
            "expected_versions_sha256"), label="manifest")
     if raw["format"] != _FORMAT or type(raw["version"]) is not int or raw["version"] != _VERSION:
         raise ValueError("unsupported experiment manifest format/version")
@@ -129,6 +130,13 @@ def _validate_manifest(raw, *, base):
     capture = raw.get("capture_candidate_steps", False)
     if type(capture) is not bool:
         raise ValueError("capture_candidate_steps must be a boolean")
+    full_observation_arms = raw.get("full_observation_arms", [])
+    if (type(full_observation_arms) is not list
+            or any(type(name) is not str for name in full_observation_arms)
+            or len(set(full_observation_arms)) != len(full_observation_arms)):
+        raise ValueError("full_observation_arms must be a unique list of arm names")
+    if full_observation_arms and not capture:
+        raise ValueError("full_observation_arms requires capture_candidate_steps=true")
     lineup_input = raw.get("opponent_lineup", ["heuristic"] * 3)
     if type(lineup_input) is not list or len(lineup_input) != 3:
         raise ValueError("opponent_lineup must be exactly three names")
@@ -150,11 +158,14 @@ def _validate_manifest(raw, *, base):
             raise ValueError("arm names must be nonempty printable labels up to 64 chars")
         if type(spec) is not dict or spec.get("kind") not in (
             "public_planner", "city_before_purchase", "public_option_purchase",
-            "graph_checkpoint"
+            "graph_checkpoint", "heuristic", "greedy_no_trade"
         ):
             raise ValueError(f"unsupported arm kind: {name}")
         kind = spec["kind"]
-        if kind in ("public_planner", "city_before_purchase", "public_option_purchase"):
+        if kind in ("heuristic", "greedy_no_trade"):
+            _keys(spec, ("kind",), label=f"arm {name}")
+            arms[name] = {"kind": kind}
+        elif kind in ("public_planner", "city_before_purchase", "public_option_purchase"):
             _keys(spec, ("kind",), ("config", "gain_margin_micro"), label=f"arm {name}")
             config_input = spec.get("config", {})
             if type(config_input) is not dict:
@@ -190,6 +201,8 @@ def _validate_manifest(raw, *, base):
     reference = raw["reference_arm"]
     if type(reference) is not str or reference not in arms:
         raise ValueError("reference_arm must name a declared arm")
+    if any(name not in arms for name in full_observation_arms):
+        raise ValueError("full_observation_arms must name declared arms")
     arms = {reference: arms[reference], **{name: spec for name, spec in arms.items()
                                          if name != reference}}
 
@@ -199,6 +212,7 @@ def _validate_manifest(raw, *, base):
         "arms": arms, "opponent_lineup": list(lineup),
         "no_offers": True, "max_game_steps": steps, "wall_seconds": float(wall),
         "capture_candidate_steps": capture,
+        "full_observation_arms": full_observation_arms,
     }
     for key in ("expected_source_sha256", "expected_versions_sha256"):
         if key in raw:
@@ -228,13 +242,16 @@ def _load_graph_policy(path):
 
 def _factories(validated):
     from .city_before_purchase import CityBeforePurchasePolicy
+    from .paired_gameplay import BaselineFocalSpec
     from .public_option_purchase import PublicOptionPurchasePolicy
     from .public_turn_planner import PublicTurnPlannerPolicy, TurnPlannerConfig
 
     result = {}
     for name, spec in validated["arms"].items():
         kind = spec["kind"]
-        if kind == "graph_checkpoint":
+        if kind in ("heuristic", "greedy_no_trade"):
+            result[name] = lambda kind=kind: BaselineFocalSpec(kind)
+        elif kind == "graph_checkpoint":
             path = Path(spec["checkpoint"])
             template = _load_graph_policy(path)
             if _file_sha256(path) != spec["checkpoint_sha256"]:
@@ -284,13 +301,13 @@ def _line_count(path):
         return sum(1 for _ in source)
 
 
-def _candidate_step_record(event):
+def _candidate_step_record(event, *, include_full_observation=False):
     step = event.step
     before, after, action = step.before, step.after, step.action
     target_level = next((building.level for building in after.buildings
                          if building.owner == before.player_id
                          and building.vertex == action.target), None)
-    return {
+    record = {
         "arm": event.arm,
         "board_seed": event.board_seed,
         "seat": before.player_id,
@@ -313,6 +330,11 @@ def _candidate_step_record(event):
         "terminated": bool(step.terminated),
         "truncated": bool(step.truncated),
     }
+    if include_full_observation:
+        from .adapters.observation_io import observation_to_dict
+
+        record["before_observation"] = observation_to_dict(before)
+    return record
 
 
 def _journal_valid(result, journal):
@@ -402,7 +424,12 @@ def run_manifest(manifest_path, output_root):
                     os.fsync(game_file.fileno())
 
                 def candidate_step(event):
-                    step_file.write(_json_line(_candidate_step_record(event)))
+                    step_file.write(_json_line(_candidate_step_record(
+                        event,
+                        include_full_observation=(
+                            event.arm in validated["full_observation_arms"]
+                        ),
+                    )))
 
                 result = run_paired_panel(
                     factories,

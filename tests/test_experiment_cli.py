@@ -122,6 +122,55 @@ def test_public_option_arm_validates_and_factory_wraps_fresh_raw_parent(tmp_path
     assert type(factories["raw"]()) is PublicTurnPlannerPolicy
 
 
+def test_public_baseline_focal_arms_and_raw_observation_capture_are_manifest_bound(tmp_path):
+    from colonist_rl.paired_gameplay import BaselineFocalSpec
+
+    manifest = _manifest()
+    manifest["arms"] = {
+        "raw": manifest["arms"]["raw"],
+        "H": {"kind": "heuristic"},
+        "GNT": {"kind": "greedy_no_trade"},
+    }
+    manifest["full_observation_arms"] = ["raw"]
+    validated, checkpoints = cli._validate_manifest(manifest, base=tmp_path)
+
+    assert checkpoints == {}
+    assert validated["full_observation_arms"] == ["raw"]
+    assert validated["arms"]["H"] == {"kind": "heuristic"}
+    assert validated["arms"]["GNT"] == {"kind": "greedy_no_trade"}
+    factories = cli._factories(validated)
+    assert factories["H"]() == BaselineFocalSpec("heuristic")
+    assert factories["GNT"]() == BaselineFocalSpec("greedy_no_trade")
+
+    manifest["capture_candidate_steps"] = False
+    with pytest.raises(ValueError, match="full_observation_arms requires"):
+        cli._validate_manifest(manifest, base=tmp_path)
+    manifest["capture_candidate_steps"] = True
+    manifest["full_observation_arms"] = ["not_an_arm"]
+    with pytest.raises(ValueError, match="full_observation_arms"):
+        cli._validate_manifest(manifest, base=tmp_path)
+
+
+def test_full_candidate_observation_is_public_and_only_on_selected_arm():
+    from colonist_rl.adapters.observation_io import observation_to_dict
+    from colonist_rl.simulator import FourPlayerGame
+
+    view = FourPlayerGame().reset(seed=880001)
+    event = NS(
+        arm="raw", board_seed=880001,
+        step=NS(before=view, after=view, action=view.legal_actions[0],
+                terminated=False, truncated=False),
+    )
+
+    compact = cli._candidate_step_record(event)
+    full = cli._candidate_step_record(event, include_full_observation=True)
+
+    assert "before_observation" not in compact
+    assert full["before_observation"] == observation_to_dict(view)
+    normalized_action = json.loads(json.dumps(full["action"]))
+    assert normalized_action in full["before_observation"]["observation"]["legal_actions"]
+
+
 def test_one_board_two_arm_smoke_writes_fresh_validated_artifacts(tmp_path, monkeypatch, capsys):
     _patch_runtime(monkeypatch)
     manifest_path = tmp_path / "smoke.json"

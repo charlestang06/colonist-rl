@@ -134,6 +134,60 @@ def test_fresh_policy_per_arm_board_and_complete_four_seat_accounting(monkeypatc
     json.dumps(result, allow_nan=False)
 
 
+def test_public_baseline_focal_arms_keep_heuristic_seed_per_game_and_capture_steps(monkeypatch):
+    seeds_seen, actions_seen, steps_seen = [], [], []
+
+    class SeededHeuristic:
+        def __init__(self, seed):
+            self.seed = seed
+            seeds_seen.append(seed)
+
+        def act(self, view):
+            return view.legal_actions[self.seed % 2]
+
+    def evaluate(policy, **kwargs):
+        assert kwargs["candidate"] == "graph"
+        assert kwargs["opponent_lineup"] == ("heuristic",) * 3
+        seed = kwargs["board_seeds"][0]
+        rows = []
+        for seat in range(4):
+            view = _view(seat, seat, (Action("ROLL"), Action("END_TURN")))
+            action, memory = policy.act(view, deterministic=True)
+            assert memory is None
+            actions_seen.append((policy.policy.kind, seat, action.kind))
+            kwargs["on_candidate_step"](NS(
+                before=view, after=view, action=action,
+                terminated=False, truncated=False,
+            ))
+            row = _row(seed, seat, {action.kind: 1}, won=seat == 0)
+            kwargs["on_game_end"](deepcopy(row))
+            rows.append(row)
+        return {"status": "complete", "incomplete_reason": None, "outcomes": rows,
+                "partial_outcomes": [], "interrupted_game": None}
+
+    monkeypatch.setattr(paired, "HeuristicPolicy", SeededHeuristic, raising=False)
+    monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
+    result = paired.run_paired_panel(
+        {"H": lambda: paired.BaselineFocalSpec("heuristic"),
+         "GNT": lambda: paired.BaselineFocalSpec("greedy_no_trade")},
+        board_seeds=[47], on_game_end=lambda row: None,
+        on_candidate_step=steps_seen.append,
+    )
+
+    assert seeds_seen == [78, 79, 80, 81]
+    assert actions_seen == [
+        ("heuristic", 0, "ROLL"), ("heuristic", 1, "END_TURN"),
+        ("heuristic", 2, "ROLL"), ("heuristic", 3, "END_TURN"),
+        ("greedy_no_trade", 0, "ROLL"), ("greedy_no_trade", 1, "ROLL"),
+        ("greedy_no_trade", 2, "ROLL"), ("greedy_no_trade", 3, "ROLL"),
+    ]
+    assert len(steps_seen) == 8
+    assert all(isinstance(item, paired.PairedCandidateStep) for item in steps_seen)
+    assert result["paired_resolved_board_seeds"] == [47]
+    assert result["arms"]["H"]["selection_latency_ms"]["count"] == 4
+    assert result["arms"]["GNT"]["selection_latency_ms"]["count"] == 4
+
+
 def test_partial_block_is_reported_without_claiming_a_paired_board(monkeypatch):
     persisted = []
 
