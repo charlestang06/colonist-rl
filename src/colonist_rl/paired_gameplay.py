@@ -1,6 +1,6 @@
-"""Small paired-gameplay runner for policies that plan from public observations.
+"""Small paired-gameplay runner for policies using public observations.
 
-Each arm/board job owns a fresh planner. The existing block evaluator owns all
+Each arm/board job owns a fresh policy. The existing block evaluator owns all
 gameplay, seat rotation, RNG restoration, deadlines, and final game rows.
 """
 
@@ -11,12 +11,30 @@ import math
 import time
 from collections import Counter
 from collections.abc import Mapping
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 
-from .evaluation import evaluate_blocks
+from .evaluation import CandidatePublicStep, evaluate_blocks
 
 
 _CHANGED_DETAIL_LIMIT = 64
+_SEARCH_DIAGNOSTIC_COUNT_FIELDS = (
+    "root_attempts",
+    "future_attempts",
+    "feasible_transitions",
+    "invalid_transitions",
+    "unique_successors",
+    "duplicate_successors",
+    "beam_truncations",
+)
+
+
+@dataclass(frozen=True)
+class PairedCandidateStep:
+    """A public candidate transition labeled with its arm and board."""
+
+    arm: str
+    board_seed: int
+    step: CandidatePublicStep
 
 
 def _json_copy(value):
@@ -44,8 +62,6 @@ class _PlannedPolicyAdapter:
     """Expose the evaluator's graph-policy surface without a model forward."""
 
     def __init__(self, policy, board_seed):
-        if not callable(getattr(policy, "plan", None)):
-            raise TypeError("arm factory must return a policy with plan(view)")
         self.policy = policy
         self.board_seed = board_seed
         self.records = []
@@ -74,6 +90,10 @@ class _PlannedPolicyAdapter:
         latency_ms = (time.perf_counter() - start) * 1000
         diagnostics = getattr(self.policy, "last_diagnostics", None)
         diagnostics = _json_copy(diagnostics) if diagnostics is not None else None
+        search_diagnostics = getattr(plan, "search_diagnostics", None)
+        search_diagnostics = (
+            _json_copy(asdict(search_diagnostics)) if search_diagnostics is not None else None
+        )
         changed = bool(
             isinstance(diagnostics, dict)
             and diagnostics.get("parent_root_index") is not None
@@ -91,6 +111,7 @@ class _PlannedPolicyAdapter:
             "geometry_visits": plan.geometry_visits,
             "selection_latency_ms": latency_ms,
             "wrapper_diagnostics": diagnostics,
+            "search_diagnostics": search_diagnostics,
             "wrapper_changed": changed,
         }
         previous = self._pending_changed.pop(view.player_id, None)
@@ -160,10 +181,87 @@ class _PlannedPolicyAdapter:
             )
 
 
-def _metrics(rows, records):
+class _GraphPolicyAdapter(_PlannedPolicyAdapter):
+    """Preserve graph-policy mode and recurrent memory semantics."""
+
+    def eval(self):
+        self.policy.eval()
+        return self
+
+    def modules(self):
+        return self.policy.modules()
+
+    def act(self, view, memory=None, deterministic=True):
+        start = time.perf_counter()
+        action, next_memory = self.policy.act(view, memory, deterministic=deterministic)
+        if not any(action is legal for legal in view.legal_actions):
+            raise ValueError("graph policy must return an original legal action")
+        record = {
+            "seat": view.player_id,
+            "input_version": view.context.version,
+            "action_kind": action.kind,
+            "plan_reason": None,
+            "search_stop": None,
+            "nodes": 0,
+            "geometry_visits": 0,
+            "selection_latency_ms": (time.perf_counter() - start) * 1000,
+            "wrapper_diagnostics": None,
+            "search_diagnostics": None,
+            "wrapper_changed": False,
+        }
+        self.records.append(record)
+        self._last_record = record
+        self._last_action = action
+        return action, next_memory
+
+
+def _search_diagnostic_metrics(records):
+    """Aggregate only attempted selections that supplied planner diagnostics."""
+    total_fields = (
+        "attempted_transitions", *_SEARCH_DIAGNOSTIC_COUNT_FIELDS,
+        "selected_plan_depth_sum", "max_feasible_depth_sum",
+    )
+    totals = dict.fromkeys(total_fields, 0)
+    selected_depths = Counter()
+    max_depths = Counter()
+    available = 0
+    for record in records:
+        diagnostics = record["search_diagnostics"]
+        if diagnostics is None:
+            continue
+        available += 1
+        totals["attempted_transitions"] += record["nodes"]
+        for field in _SEARCH_DIAGNOSTIC_COUNT_FIELDS:
+            totals[field] += diagnostics[field]
+        selected_depth = diagnostics["selected_plan_depth"]
+        max_depth = diagnostics["max_feasible_depth"]
+        totals["selected_plan_depth_sum"] += selected_depth
+        totals["max_feasible_depth_sum"] += max_depth
+        selected_depths[selected_depth] += 1
+        max_depths[max_depth] += 1
+    return {
+        "search_diagnostics_scope": "attempted_policy_selections_with_search_diagnostics",
+        "search_diagnostics_record_count": available,
+        "search_diagnostics_unavailable_count": len(records) - available,
+        "search_diagnostics_totals": totals,
+        "search_diagnostics_depth_histograms": {
+            "selected_plan_depth": {
+                str(depth): count for depth, count in sorted(selected_depths.items())
+            },
+            "max_feasible_depth": {
+                str(depth): count for depth, count in sorted(max_depths.items())
+            },
+        },
+    }
+
+
+def _metrics(rows, records, partial_rows=()):
     actions = Counter()
     for row in rows:
         actions.update(row.get("action_kind_counts", {}))
+    partial_actions = Counter()
+    for row in partial_rows:
+        partial_actions.update(row.get("action_kind_counts", {}))
     wrapper_diagnostics = [record["wrapper_diagnostics"] for record in records
                            if isinstance(record["wrapper_diagnostics"], dict)]
     statuses = Counter(
@@ -171,12 +269,21 @@ def _metrics(rows, records):
         if diagnostics.get("status") is not None
     )
     return {
+        "game_metrics_scope": "complete_four_seat_blocks",
+        "action_kind_counts_scope": "complete_four_seat_blocks",
+        "partial_action_kind_counts_scope": "finished_games_in_incomplete_blocks",
+        "planning_metrics_scope": "attempted_policy_selections",
         "wins": sum(row.get("won") is True for row in rows),
         "resolved_games": sum(type(row.get("won")) is bool for row in rows),
         "truncated_games": sum(bool(row.get("truncated")) for row in rows),
         "action_kind_counts": dict(actions),
-        "plan_reason_counts": dict(Counter(record["plan_reason"] for record in records)),
-        "search_stop_counts": dict(Counter(record["search_stop"] for record in records)),
+        "partial_action_kind_counts": dict(partial_actions),
+        "attempted_action_kind_counts": dict(Counter(record["action_kind"]
+                                                     for record in records)),
+        "plan_reason_counts": dict(Counter(record["plan_reason"] for record in records
+                                           if record["plan_reason"] is not None)),
+        "search_stop_counts": dict(Counter(record["search_stop"] for record in records
+                                           if record["search_stop"] is not None)),
         "wrapper_status_counts": dict(statuses),
         "wrapper_changed_count": sum(record["wrapper_changed"] for record in records),
         "plan_nodes": sum(record["nodes"] for record in records),
@@ -185,6 +292,7 @@ def _metrics(rows, records):
                              for diagnostics in wrapper_diagnostics),
         "wrapper_geometry_visits": sum(diagnostics.get("geometry_visits") or 0
                                        for diagnostics in wrapper_diagnostics),
+        **_search_diagnostic_metrics(records),
         "selection_latency_ms": _latency_summary(records),
     }
 
@@ -221,8 +329,7 @@ def _board_report(seed, result, adapter):
         "interrupted_game": interrupted,
         "games": len(rows),
         "finished_games": len(rows) + len(partial),
-        "decision_metrics_scope": "attempted_selections",
-        **_metrics(rows, adapter.records),
+        **_metrics(rows, adapter.records, partial),
         "changed_decision_details": adapter.changed_details,
         "changed_detail_omitted_count": adapter.changed_detail_omitted_count,
     }
@@ -238,10 +345,54 @@ def _not_run_board(seed, reason):
         "interrupted_game": None,
         "games": 0,
         "finished_games": 0,
-        "decision_metrics_scope": "attempted_selections",
         **_metrics([], []),
         "changed_decision_details": [],
         "changed_detail_omitted_count": 0,
+    }
+
+
+def _paired_summary(boards, factories, seeds, paired, resolved):
+    """Keep paired comparisons separate from descriptive per-arm totals."""
+    matched = set(paired)
+    complete_panel = len(paired) == len(seeds)
+    paired_resolved = complete_panel and len(resolved) == len(seeds)
+    per_arm = {}
+    for name, _ in factories:
+        rows = [row for board in boards[name] if board["board_seed"] in matched
+                for row in board["rows"]]
+        games = len(rows)
+        wins = sum(row.get("won") is True for row in rows)
+        per_arm[name] = {
+            "games": games,
+            "wins": wins,
+            "resolved_games": sum(type(row.get("won")) is bool for row in rows),
+            "truncated_games": sum(bool(row.get("truncated")) for row in rows),
+            "win_rate": wins / games if paired_resolved else None,
+            "mean_victory_points": (
+                sum(row["victory_points"] for row in rows) / games if games else None
+            ),
+        }
+    reference = factories[0][0]
+    contrasts = None
+    if paired_resolved:
+        contrasts = {
+            name: {
+                "win_rate_difference": per_arm[name]["win_rate"] - per_arm[reference]["win_rate"],
+                "mean_victory_points_difference": (
+                    per_arm[name]["mean_victory_points"]
+                    - per_arm[reference]["mean_victory_points"]
+                ),
+            }
+            for name, _ in factories if name != reference
+        }
+    return {
+        "scope": "matched_four_seat_boards_only",
+        "status": "complete" if complete_panel else "incomplete",
+        "board_seeds": paired,
+        "reference_arm": reference,
+        "arms": per_arm,
+        "paired_resolved": paired_resolved,
+        "contrast_vs_reference": contrasts,
     }
 
 
@@ -256,13 +407,14 @@ def run_paired_panel(
     on_game_end=None,
     on_candidate_step=None,
 ):
-    """Run matching four-seat boards for each public planner arm.
+    """Run matching four-seat boards for each public policy arm.
 
     ``deadline`` is absolute monotonic time. Completed protocol games that
     reach the step cap remain in ``rows`` with unresolved wins. Incomplete
     blocks keep finished rows in ``partial_rows`` and never count as paired.
     Candidate-step capture is opt-in because it requests an extra public after
-    observation from the evaluator for every executed candidate action.
+    observation from the evaluator for every executed candidate action. The
+    callback receives ``PairedCandidateStep(arm, board_seed, step)``.
     """
     if not isinstance(arm_factories, Mapping) or not arm_factories:
         raise ValueError("arm_factories must be a nonempty mapping")
@@ -302,14 +454,20 @@ def run_paired_panel(
             if stop_reason is not None:
                 boards[name].append(_not_run_board(seed, stop_reason))
                 continue
-            adapter = _PlannedPolicyAdapter(factory(), seed)
+            policy = factory()
+            if callable(getattr(policy, "plan", None)):
+                adapter = _PlannedPolicyAdapter(policy, seed)
+            elif all(callable(getattr(policy, name, None)) for name in ("act", "modules", "eval")):
+                adapter = _GraphPolicyAdapter(policy, seed)
+            else:
+                raise TypeError("arm factory must return a planner or graph policy")
 
             def game_end(row, *, arm=name):
                 on_game_end({"arm": arm, **row})
 
-            def candidate_step(step, *, current=adapter):
+            def candidate_step(step, *, current=adapter, arm=name, board_seed=seed):
                 current.record_candidate_step(step)
-                on_candidate_step(step)
+                on_candidate_step(PairedCandidateStep(arm, board_seed, step))
 
             result = evaluate_blocks(
                 adapter,
@@ -336,13 +494,15 @@ def run_paired_panel(
         arms[name] = {
             "status": "complete" if all(board["status"] == "complete"
                                         for board in boards[name]) else "incomplete",
+            "totals_scope": "descriptive_completed_arm_boards",
             "completed_board_seeds": [board["board_seed"] for board in boards[name]
                                       if board["status"] == "complete"],
             "boards": boards[name],
             "games": len(complete_rows),
             "finished_games": sum(board["finished_games"] for board in boards[name]),
-            "decision_metrics_scope": "attempted_selections",
-            **_metrics(complete_rows, records[name]),
+            **_metrics(complete_rows, records[name], [
+                row for board in boards[name] for row in board["partial_rows"]
+            ]),
         }
     paired = [seed for index, seed in enumerate(seeds) if all(
         boards[name][index]["status"] == "complete" for name, _ in factories
@@ -357,6 +517,7 @@ def run_paired_panel(
         "requested_board_seeds": seeds,
         "paired_complete_board_seeds": paired,
         "paired_resolved_board_seeds": resolved,
+        "paired_summary": _paired_summary(boards, factories, seeds, paired, resolved),
         "opponent_lineup": list(lineup),
         "max_game_steps": max_game_steps,
         "deadline": deadline,

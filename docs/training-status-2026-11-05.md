@@ -18,9 +18,11 @@ verified one exact city route and an adverse buy-then-city continuation, then
 completed a fresh 96-game paired screen. The wrapper built 12/12 intended
 cities but won 11/48 versus raw's 13/48; it remains off by default. The
 [shared runner](../src/colonist_rl/paired_gameplay.py) and
-[capability audit](capability-audit-2026-11-06.md) are available. No new fit
-has started.
-The current strategy permits one bounded parallel learning investigation; extensive
+[capability audit](capability-audit-2026-11-06.md) are available. The separate
+[trainable public-history critic](shadow-critic-results-2026-11-06.md) then fit
+actual terminal outcomes in 9.14 seconds. Its development Brier and state
+ranking failed the simple public-feature control, so no policy changed.
+The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.
 All results below retain their original experimental scope and gates.

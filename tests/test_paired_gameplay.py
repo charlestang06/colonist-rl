@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
+from dataclasses import asdict
 from types import SimpleNamespace as NS
 
 import pytest
 
 from colonist_rl.contracts import Action
 from colonist_rl import paired_gameplay as paired
+from colonist_rl.public_turn_planner import PlannedStep, SearchDiagnostics, TurnPlan
 
 
 def _view(seat, version, actions, *, hand=(1, 2, 3, 4, 5), buildings=()):
@@ -105,6 +107,11 @@ def test_fresh_policy_per_arm_board_and_complete_four_seat_accounting(monkeypatc
     assert result["status"] == "complete"
     assert result["paired_complete_board_seeds"] == [31, 47]
     assert result["paired_resolved_board_seeds"] == [31, 47]
+    assert result["paired_summary"]["paired_resolved"] is True
+    assert result["paired_summary"]["arms"]["plain"]["games"] == 8
+    assert result["paired_summary"]["arms"]["road"]["wins"] == 2
+    assert result["paired_summary"]["contrast_vs_reference"]["road"] == {
+        "win_rate_difference": 0.0, "mean_victory_points_difference": 0.0}
     assert len(instances) == len(calls) == 4
     assert all(policy.calls == 4 for policy in instances)
     for arm, kind in (("plain", "END_TURN"), ("road", "BUILD_ROAD")):
@@ -132,35 +139,84 @@ def test_partial_block_is_reported_without_claiming_a_paired_board(monkeypatch):
 
     def evaluate(policy, **kwargs):
         seed = kwargs["board_seeds"][0]
-        if policy.policy.action_kind == "BUILD_ROAD":
+        if seed == 47 and policy.policy.action_kind == "BUILD_ROAD":
+            for seat in (0, 1):
+                policy.act(_view(seat, seat, (Action("BUILD_ROAD", target=9),)))
             row = _row(seed, 0, {"BUILD_ROAD": 1}, won=True)
             kwargs["on_game_end"](deepcopy(row))
             return {"status": "incomplete", "incomplete_reason": "deadline",
                     "outcomes": [], "partial_outcomes": [row],
                     "interrupted_game": {"board_seed": seed, "seat": 1, "steps": 3}}
-        rows = [_row(seed, seat, {"END_TURN": 1}, won=seat == 0) for seat in range(4)]
-        for row in rows:
+        kind = policy.policy.action_kind
+        rows = []
+        for seat in range(4):
+            policy.act(_view(seat, seat, (Action(kind, target=9 if kind == "BUILD_ROAD" else None),)))
+            row = _row(seed, seat, {kind: 1}, won=seat == 0)
             kwargs["on_game_end"](deepcopy(row))
+            rows.append(row)
         return {"status": "complete", "incomplete_reason": None, "outcomes": rows,
                 "partial_outcomes": [], "interrupted_game": None}
 
     monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
     result = paired.run_paired_panel(
         {"plain": lambda: Planner("END_TURN"), "road": lambda: Planner("BUILD_ROAD")},
-        board_seeds=[31, 47], on_game_end=persisted.append,
+        board_seeds=[31, 47, 59], on_game_end=persisted.append,
     )
     assert result["status"] == "incomplete" and result["incomplete_reason"] == "deadline"
-    assert result["paired_complete_board_seeds"] == []
+    assert result["paired_complete_board_seeds"] == [31]
     assert [b["status"] for b in result["arms"]["plain"]["boards"]] == [
-        "complete", "not_run"]
+        "complete", "complete", "not_run"]
     assert [b["status"] for b in result["arms"]["road"]["boards"]] == [
-        "incomplete", "not_run"]
-    partial = result["arms"]["road"]["boards"][0]
+        "complete", "incomplete", "not_run"]
+    partial = result["arms"]["road"]["boards"][1]
     assert partial["rows"] == [] and [r["seat"] for r in partial["partial_rows"]] == [0]
     assert partial["interrupted_game"]["seat"] == 1
-    assert result["arms"]["road"]["games"] == 0
-    assert result["arms"]["road"]["finished_games"] == 1
-    assert len(persisted) == 5
+    assert partial["action_kind_counts"] == {}
+    assert partial["partial_action_kind_counts"] == {"BUILD_ROAD": 1}
+    assert partial["attempted_action_kind_counts"] == {"BUILD_ROAD": 2}
+    assert partial["plan_reason_counts"] == {"planned": 2}
+    assert partial["selection_latency_ms"]["count"] == 2
+    assert partial["action_kind_counts_scope"] == "complete_four_seat_blocks"
+    assert partial["planning_metrics_scope"] == "attempted_policy_selections"
+    assert result["arms"]["plain"]["games"] == 8
+    assert result["arms"]["plain"]["wins"] == 2
+    assert result["arms"]["plain"]["totals_scope"] == "descriptive_completed_arm_boards"
+    assert result["arms"]["road"]["games"] == 4
+    assert result["arms"]["road"]["finished_games"] == 5
+    assert result["arms"]["road"]["partial_action_kind_counts"] == {"BUILD_ROAD": 1}
+    matched = result["paired_summary"]
+    assert matched["board_seeds"] == [31]
+    assert matched["arms"]["plain"]["games"] == matched["arms"]["road"]["games"] == 4
+    assert matched["arms"]["plain"]["wins"] == matched["arms"]["road"]["wins"] == 1
+    assert matched["paired_resolved"] is False and matched["contrast_vs_reference"] is None
+    assert len(persisted) == 13
+
+
+def test_candidate_step_callback_identifies_arm_and_board_in_multiarm_panel(monkeypatch):
+    raw_steps, received = [], []
+
+    def evaluate(adapter, **kwargs):
+        rows = []
+        for seat in range(4):
+            view = _view(seat, seat, (Action("END_TURN"), Action("BUILD_ROAD", target=9)))
+            action, _ = adapter.act(view)
+            step = NS(before=view, action=action,
+                      after=_view(seat, seat + 1, (Action("END_TURN"),)),
+                      terminated=True, truncated=False)
+            raw_steps.append(step)
+            kwargs["on_candidate_step"](step)
+            rows.append(_row(31, seat, {action.kind: 1}, won=seat == 0))
+        return {"status": "complete", "outcomes": rows, "partial_outcomes": [],
+                "interrupted_game": None}
+
+    monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
+    paired.run_paired_panel(
+        {"plain": lambda: Planner("END_TURN"), "road": lambda: Planner("BUILD_ROAD")},
+        board_seeds=[31], on_candidate_step=received.append,
+    )
+    assert [(event.arm, event.board_seed) for event in received] == [
+        ("plain", 31)] * 4 + [("road", 31)] * 4
+    assert all(event.step is raw for event, raw in zip(received, raw_steps))
 
 
 class CityPlanner:
@@ -239,8 +295,14 @@ def test_changed_city_detail_tracks_next_executed_city_via_optional_step_callbac
     board = result["arms"]["city"]["boards"][0]
     assert instances[0].calls == 5
     assert len(forwarded) == 5
+    assert all(isinstance(event, paired.PairedCandidateStep) and event.arm == "city"
+               and event.board_seed == 31 for event in forwarded)
+    assert [event.step.action.kind for event in forwarded[:2]] == [
+        "MARITIME_TRADE", "BUILD_CITY"]
     assert board["wrapper_status_counts"] == {"city_before_purchase": 1,
                                                "no_maritime_trade": 4}
+    assert board["search_diagnostics_record_count"] == 0
+    assert board["search_diagnostics_unavailable_count"] == 5
     assert board["wrapper_changed_count"] == 1
     assert board["plan_reason_counts"] == {"city_before_purchase": 1, "planned": 4}
     assert board["action_kind_counts"] == {"MARITIME_TRADE": 1, "BUILD_CITY": 1,
@@ -295,6 +357,192 @@ def test_wrapper_projection_work_is_counted_when_fallback_returns_parent_plan(mo
     assert board["wrapper_geometry_visits"] == 36
     assert board["wrapper_status_counts"] == {"insufficient_gain": 4}
     assert board["wrapper_changed_count"] == 0
+
+
+def test_graph_policy_path_delegates_mode_and_memory_without_planner_calls(monkeypatch):
+    class Graph:
+        def __init__(self):
+            self.training = True
+            self.head = NS(training=True)
+            self.memories = []
+            self.calls = 0
+            self.clone_action = False
+
+        def modules(self):
+            return (self, self.head)
+
+        def eval(self):
+            self.training = self.head.training = False
+            return self
+
+        def act(self, view, memory=None, *, deterministic=False):
+            assert not self.training and not self.head.training
+            assert deterministic is True
+            self.calls += 1
+            self.memories.append(memory)
+            action = Action("END_TURN") if self.clone_action else view.legal_actions[0]
+            return action, (memory or 0) + 1
+
+    graph = Graph()
+
+    def evaluate(adapter, **kwargs):
+        modes = [(module, module.training) for module in adapter.modules()]
+        adapter.eval()
+        try:
+            rows = []
+            for seat in range(4):
+                memory = None
+                for version in (0, 1):
+                    action = Action("END_TURN")
+                    selected, memory = adapter.act(_view(seat, version, (action,)), memory,
+                                                   deterministic=True)
+                    assert selected is action
+                rows.append(_row(31, seat, {"END_TURN": 2}, won=seat == 0))
+            return {"status": "complete", "outcomes": rows, "partial_outcomes": [],
+                    "interrupted_game": None}
+        finally:
+            for module, training in modes:
+                module.training = training
+
+    monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
+    result = paired.run_paired_panel({"graph": lambda: graph}, board_seeds=[31])
+    board = result["arms"]["graph"]["boards"][0]
+    assert graph.calls == 8 and graph.memories == [None, 1] * 4
+    assert graph.training and graph.head.training
+    assert board["action_kind_counts"] == board["attempted_action_kind_counts"] == {
+        "END_TURN": 8}
+    assert board["plan_reason_counts"] == board["search_stop_counts"] == {}
+    assert board["selection_latency_ms"]["count"] == 8
+    assert board["search_diagnostics_record_count"] == 0
+    assert board["search_diagnostics_unavailable_count"] == 8
+    assert board["search_diagnostics_totals"]["attempted_transitions"] == 0
+    assert board["search_diagnostics_depth_histograms"] == {
+        "selected_plan_depth": {}, "max_feasible_depth": {}}
+    graph.clone_action = True
+    with pytest.raises(ValueError, match="original legal action"):
+        paired.run_paired_panel({"graph": lambda: graph}, board_seeds=[31])
+    assert graph.training and graph.head.training
+
+
+def test_search_diagnostics_capture_and_aggregate_attempted_selections(monkeypatch):
+    diagnostics = {
+        310: SearchDiagnostics(
+            root_attempts=1, future_attempts=4, feasible_transitions=5,
+            unique_successors=4, duplicate_successors=1, max_feasible_depth=3,
+            selected_plan_depth=2, beam_truncations=1,
+        ),
+        311: SearchDiagnostics(
+            root_attempts=2, feasible_transitions=1, invalid_transitions=1,
+            unique_successors=1, max_feasible_depth=1,
+        ),
+        313: SearchDiagnostics(),
+        470: SearchDiagnostics(
+            root_attempts=1, future_attempts=2, feasible_transitions=2,
+            invalid_transitions=1, unique_successors=2, max_feasible_depth=2,
+            selected_plan_depth=1,
+        ),
+    }
+    missing_nodes = {312: 7, 471: 9}
+
+    class InstrumentedPlanner:
+        def plan(self, view):
+            info = diagnostics.get(view.context.version)
+            nodes = (
+                info.root_attempts + info.future_attempts
+                if info is not None else missing_nodes[view.context.version]
+            )
+            steps = () if info is None else (
+                PlannedStep("BUILD_ROAD", 9), PlannedStep("BUILD_CITY", 0)
+            )[:info.selected_plan_depth]
+            return TurnPlan(
+                view.legal_actions[0], 0, steps, 0, 0, nodes, 0,
+                "planned" if steps else "insufficient_gain", "complete",
+                search_diagnostics=info,
+            )
+
+    def evaluate(adapter, **kwargs):
+        seed = kwargs["board_seeds"][0]
+        seats = range(4) if seed == 31 else (0, 1)
+        rows = []
+        for seat in seats:
+            version = seed * 10 + seat
+            action = Action("BUILD_ROAD", target=9)
+            selected, _ = adapter.act(_view(seat, version, (action,)))
+            assert selected is action
+            captured = adapter.records[-1]["search_diagnostics"]
+            assert captured == (asdict(diagnostics[version]) if version in diagnostics else None)
+            rows.append(_row(seed, seat, {"BUILD_ROAD": 1}, won=seat == 0))
+        if seed == 31:
+            return {"status": "complete", "outcomes": rows, "partial_outcomes": [],
+                    "interrupted_game": None}
+        return {"status": "incomplete", "incomplete_reason": "deadline",
+                "outcomes": [], "partial_outcomes": rows[:1],
+                "interrupted_game": {"board_seed": seed, "seat": 1, "steps": 1}}
+
+    monkeypatch.setattr(paired, "evaluate_blocks", evaluate)
+    result = paired.run_paired_panel({"instrumented": InstrumentedPlanner},
+                                     board_seeds=[31, 47])
+    board31, board47 = result["arms"]["instrumented"]["boards"]
+    arm = result["arms"]["instrumented"]
+    assert board31["search_diagnostics_scope"] == (
+        "attempted_policy_selections_with_search_diagnostics")
+    assert (board31["search_diagnostics_record_count"],
+            board31["search_diagnostics_unavailable_count"]) == (3, 1)
+    assert board31["plan_nodes"] == 14
+    assert board31["search_diagnostics_totals"] == {
+        "attempted_transitions": 7,
+        "root_attempts": 3,
+        "future_attempts": 4,
+        "feasible_transitions": 6,
+        "invalid_transitions": 1,
+        "unique_successors": 5,
+        "duplicate_successors": 1,
+        "selected_plan_depth_sum": 2,
+        "max_feasible_depth_sum": 4,
+        "beam_truncations": 1,
+    }
+    assert board31["search_diagnostics_depth_histograms"] == {
+        "selected_plan_depth": {"0": 2, "2": 1},
+        "max_feasible_depth": {"0": 1, "1": 1, "3": 1},
+    }
+    assert board47["status"] == "incomplete"
+    assert (board47["search_diagnostics_record_count"],
+            board47["search_diagnostics_unavailable_count"]) == (1, 1)
+    assert board47["plan_nodes"] == 12
+    assert board47["search_diagnostics_totals"] == {
+        "attempted_transitions": 3,
+        "root_attempts": 1,
+        "future_attempts": 2,
+        "feasible_transitions": 2,
+        "invalid_transitions": 1,
+        "unique_successors": 2,
+        "duplicate_successors": 0,
+        "selected_plan_depth_sum": 1,
+        "max_feasible_depth_sum": 2,
+        "beam_truncations": 0,
+    }
+    assert board47["search_diagnostics_depth_histograms"] == {
+        "selected_plan_depth": {"1": 1}, "max_feasible_depth": {"2": 1}}
+    assert (arm["search_diagnostics_record_count"],
+            arm["search_diagnostics_unavailable_count"]) == (4, 2)
+    assert arm["plan_nodes"] == 26
+    assert arm["search_diagnostics_totals"] == {
+        "attempted_transitions": 10,
+        "root_attempts": 4,
+        "future_attempts": 6,
+        "feasible_transitions": 8,
+        "invalid_transitions": 2,
+        "unique_successors": 7,
+        "duplicate_successors": 1,
+        "selected_plan_depth_sum": 3,
+        "max_feasible_depth_sum": 6,
+        "beam_truncations": 1,
+    }
+    assert arm["search_diagnostics_depth_histograms"] == {
+        "selected_plan_depth": {"0": 2, "1": 1, "2": 1},
+        "max_feasible_depth": {"0": 1, "1": 1, "2": 1, "3": 1},
+    }
+    json.dumps(result, allow_nan=False)
 
 
 @pytest.mark.parametrize("arms,seeds,no_offers", [

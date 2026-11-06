@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from collections import deque
 from collections.abc import Callable
-from dataclasses import asdict, dataclass, replace
+from dataclasses import asdict, dataclass, field, replace
 from hashlib import sha256
 from time import perf_counter_ns
 
@@ -97,6 +97,32 @@ class PlannedStep:
 
 
 @dataclass(frozen=True)
+class SearchDiagnostics:
+    """Exact counts for one ``plan_turn`` search, including partial searches.
+
+    ``TurnPlan.nodes`` counts attempts and equals ``root_attempts +
+    future_attempts`` and ``feasible_transitions + invalid_transitions``.
+    A feasible transition has a non-None projection, even if geometry work
+    subsequently hits its cap. ``feasible_transitions`` equals
+    ``unique_successors + duplicate_successors``; the key is ``(state, root)``
+    within each depth. The terminal END_TURN root is one unique depth-one
+    projection. ``max_feasible_depth`` includes projections stopped by a later
+    geometry cap. ``beam_truncations`` counts successors actually dropped by
+    beam slicing. The selected depth is zero for the fallback action.
+    """
+
+    root_attempts: int = 0
+    future_attempts: int = 0
+    feasible_transitions: int = 0
+    invalid_transitions: int = 0
+    unique_successors: int = 0
+    duplicate_successors: int = 0
+    max_feasible_depth: int = 0
+    selected_plan_depth: int = 0
+    beam_truncations: int = 0
+
+
+@dataclass(frozen=True)
 class TurnPlan:
     first_action: Action
     root_index: int
@@ -109,6 +135,7 @@ class TurnPlan:
     search_stop: str
     evaluator_calls: int = 0
     evaluator_time_ns: int = 0
+    search_diagnostics: SearchDiagnostics | None = field(default=None, compare=False)
 
 
 def _seed(view: Observation, seed: int, domain: str) -> int:
@@ -566,6 +593,9 @@ def plan_turn(
     best = None
     roots_validated = False
     evaluator_calls = evaluator_time_ns = 0
+    root_attempts = future_attempts = 0
+    feasible_transitions = unique_successors = duplicate_successors = 0
+    max_feasible_depth = beam_truncations = 0
 
     def evaluate(state, shape):
         nonlocal evaluator_calls, evaluator_time_ns
@@ -596,6 +626,17 @@ def plan_turn(
             stop,
             evaluator_calls,
             evaluator_time_ns,
+            search_diagnostics=SearchDiagnostics(
+                root_attempts=root_attempts,
+                future_attempts=future_attempts,
+                feasible_transitions=feasible_transitions,
+                invalid_transitions=work.nodes - feasible_transitions,
+                unique_successors=unique_successors,
+                duplicate_successors=duplicate_successors,
+                max_feasible_depth=max_feasible_depth,
+                selected_plan_depth=len(node.steps) if node is not None else 0,
+                beam_truncations=beam_truncations,
+            ),
         )
 
     if not _context_supported(view):
@@ -623,7 +664,17 @@ def plan_turn(
         beam = []
         stopped = "depth_limit"
 
-        def child(parent_state, parent_shape, step, root, steps, action=None):
+        def record_feasible(projected, root, depth, existing=None):
+            nonlocal feasible_transitions, unique_successors, duplicate_successors
+            nonlocal max_feasible_depth
+            feasible_transitions += 1
+            max_feasible_depth = max(max_feasible_depth, depth)
+            if existing is not None and (projected, root) in existing:
+                duplicate_successors += 1
+            else:
+                unique_successors += 1
+
+        def child(parent_state, parent_shape, step, root, steps, action=None, existing=None):
             projected = (
                 _root_transition(view, parent_state, action, parent_shape)
                 if action is not None
@@ -631,6 +682,7 @@ def plan_turn(
             )
             if projected is None:
                 return None
+            record_feasible(projected, root, len(steps) + 1, existing)
             projected_shape = geometry.describe(projected)
             return _Node(
                 projected,
@@ -660,9 +712,12 @@ def plan_turn(
                 return result("root_validation_limit", "node_limit")
             # Count the attempt even when its shape is rejected.
             work.nodes += 1
+            root_attempts += 1
             if action.kind == "END_TURN":
-                if _root_transition(view, state, action, shape) is None:
+                projected = _root_transition(view, state, action, shape)
+                if projected is None:
                     return result("public_contract_mismatch")
+                record_feasible(projected, index, 1)
                 continue
             step = PlannedStep(action.kind, action.target, action.give, action.receive)
             node = child(state, shape, step, index, (), action)
@@ -683,6 +738,7 @@ def plan_turn(
         ):
             return result("insufficient_gain", stopped)
         roots_validated = True
+        beam_truncations += max(0, len(beam) - config.beam_width)
         beam = sorted(beam, key=lambda n: n.order())[: config.beam_width]
         for _depth in range(1, config.max_depth):
             children = {}
@@ -694,7 +750,11 @@ def plan_turn(
                         break
                     # Invalid and duplicate future intentions also consume a node.
                     work.nodes += 1
-                    node = child(parent.state, parent.shape, step, parent.root, parent.steps)
+                    future_attempts += 1
+                    node = child(
+                        parent.state, parent.shape, step, parent.root, parent.steps,
+                        existing=children,
+                    )
                     if node is None:
                         continue
                     if best is None or node.order() < best.order():
@@ -706,6 +766,7 @@ def plan_turn(
                     break
             if exhausted:
                 break
+            beam_truncations += max(0, len(children) - config.beam_width)
             beam = sorted(children.values(), key=lambda n: n.order())[: config.beam_width]
             if not beam:
                 stopped = "empty_beam"

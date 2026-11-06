@@ -21,8 +21,11 @@ raw 32/128, VF 19/128, AB 26/128; its superiority gate failed. The
 12 intended cities but won 11/48 games versus raw's 13/48, so the wrapper stays
 optional. The [paired runner](src/colonist_rl/paired_gameplay.py) and
 [capability audit](docs/capability-audit-2026-11-06.md) shorten the next loop:
-measure search coverage, then test a card-aware economic decision. No superiority
-or model promotion is claimed.
+measure search coverage, then test a card-aware economic decision. The
+[trainable public-history critic](docs/shadow-critic-results-2026-11-06.md)
+failed its development nomination gate, so no learned score was inserted into
+the player. A manifest-driven paired command is next. No superiority or model
+promotion is claimed.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

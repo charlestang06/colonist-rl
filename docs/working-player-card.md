@@ -109,7 +109,8 @@ The [city-funding experiment](city-before-purchase-results-2026-11-06.md)
 confirmed an executable trade-to-city route, but its fresh paired screen won
 11/48 versus raw's 13/48; no default change follows. Future work follows the
 [canonical queue](agent-research-roadmap.md#immediate-work-and-ownership):
-search coverage/cost and a unified card-versus-build choice, with one bounded
-learning investigation in parallel. This card records the historical selection,
+search coverage/cost and a unified card-versus-build choice. The distinct
+[trainable public-history critic](shadow-critic-results-2026-11-06.md) failed its
+development gate against the public-63 baseline. This card records the historical selection,
 not a second active plan. Broad competence and VF/AB superiority remain
 unestablished; final boards remain untouched.

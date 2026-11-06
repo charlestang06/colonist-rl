@@ -44,6 +44,12 @@ failed their representation/data-benefit gates, not every possible value-learnin
 hypothesis. Narrow road and winning-prefix interventions did not advance. Preserve
 these results; do not repeat unchanged treatments with more updates or games.
 
+The distinct [trainable public-history critic](shadow-critic-results-2026-11-06.md)
+fit actual terminal outcomes in 9.14 seconds, but its development Brier was
+0.15100 versus 0.15077 for the simpler public-63 control, and its within-board
+winner ranking was worse. The predeclared nomination gate failed. This closes
+that treatment without suggesting that all learned estimates are ineffective.
+
 TRAIN diagnosis found 18 public one-bank city-funding opportunities across 15
 episodes before purchase. The [opt-in wrapper screen](city-before-purchase-results-2026-11-06.md)
 confirmed a real city route and all 12 fresh overrides built the intended city,
@@ -90,13 +96,11 @@ repair. Choose one hypothesis rather than automatically building this whole list
   share a phase. Teachers are fallible candidate generators, not optimal oracles.
 - **Consequence features:** separately test resources missing after a trade and
   connected-settlement affordability, with the same learner/data as control.
-- **Shadow critic:** predict actual returns under a declared continuation policy
-  and opponent regime. Review prior failures and use a materially different
-  hypothesis, such as a trainable encoder on current-student histories rather
-  than the failed frozen representation. Compare held-out calibration and useful
-  ranking with constant and simple public-feature controls before steering play.
-  Teacher scores are not win probabilities. State prediction alone does not
-  certify action ranking or values on synthetic planning leaves.
+- **Shadow critic:** the bounded trainable-GRU test is now closed after failing
+  its simple public-feature control. Future value-learning work needs a new,
+  decision-relevant hypothesis and independent data. Teacher scores are not win
+  probabilities. State prediction alone does not certify action ranking or
+  values on synthetic planning leaves.
 - **Policy improvement:** allow a small actor-critic-plus-imitation test against
   imitation-only and no-update controls when justified. Stochastic on-policy
   updates need policy-matched experience and recorded behavior probabilities;
@@ -170,8 +174,9 @@ and six-player learning follow reliable standard four-player play.
 |---|---|---|
 | Complete | [City replay and paired screen](city-before-purchase-results-2026-11-06.md): executable route, 12/12 follow-through, raw 13/48 versus wrapper 11/48. | Keep wrapper optional; no promotion or unchanged extension. |
 | Complete | [Reusable paired runner](../src/colonist_rl/paired_gameplay.py) and [broad capability audit](capability-audit-2026-11-06.md). | Use the same fast gameplay path across mechanisms. |
-| Parallel | One distinct outcome-trained shadow critic experiment using accepted TRAIN data and a declared development screen. | No actor promotion from prediction alone. |
-| Next | Search attempted/feasible/unique/depth diagnostics, then targeted efficiency and fixed-depth/beam 2,048-versus-8,192-node comparison if useful. | Measure actual changed decisions and cost before increasing search. |
+| Complete | [Trainable public-history critic](shadow-critic-results-2026-11-06.md) fit and development screen. | Gate failed against public-63; no policy change or unchanged extension. |
+| In progress | Search attempted/feasible/unique/depth diagnostics and a manifest-driven paired experiment command. | Measure actual changed decisions and cost before increasing search. |
+| Next | Fixed-depth/beam 2,048-versus-8,192-node exploratory comparison if diagnostics justify it. | A fast complete-game screen can reject a budget increase; keep learning and planner controls separate. |
 | Following | Unified card purchase versus certain trade/build/pass evaluation. | Compare uncertain option value with exact public consequences. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
