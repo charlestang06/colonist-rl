@@ -92,6 +92,29 @@ def test_free_or_setup_road_uses_a_piece_without_spending_hand(phase):
     assert got["road_pieces_after"] == pytest.approx(14 / 15)
 
 
+def test_second_setup_settlement_grants_its_public_adjacent_starting_resources():
+    board = BoardSpec.from_hexes(((0, 0), (2, 0)), ("WHEAT", "BRICK"), (6, 5))
+    target = board.tile_vertices[0][0]
+    first_vertex = board.tile_vertices[1][0]
+    context = DecisionContext("BUILD_INITIAL_SETTLEMENT", 10, 10, 1)
+    first = replace(
+        view(hand=(0, 0, 0, 0, 0), buildings=(), roads=(), context=context,
+             actions=(Action("BUILD_SETTLEMENT", target=target),)),
+        board=board,
+        players=(PublicPlayer(10, 0, 0, 0), *(PublicPlayer(i, 0, 0, 0) for i in (20, 30, 40))),
+    )
+    second = replace(
+        first, buildings=(Building(first_vertex, 10),),
+        players=(PublicPlayer(10, 1, 0, 0), *(PublicPlayer(i, 0, 0, 0) for i in (20, 30, 40))),
+    )
+    first_features = successor_feature_values(first, first.legal_actions[0])
+    second_features = successor_feature_values(second, second.legal_actions[0])
+    assert first_features["hand_after_WHEAT"] == 0
+    assert second_features["hand_known"] == 1
+    assert second_features["hand_after_WHEAT"] == 0.1
+    assert second_features["hand_after_BRICK"] == 0
+
+
 def test_uncertain_robber_result_has_an_explicit_mask_without_invented_hand():
     observation = view(context=DecisionContext("MOVE_ROBBER", 10, 10, 2),
                        actions=(Action("MOVE_ROBBER", target=0),))
@@ -142,3 +165,19 @@ def test_exact_legal_identity_menu_parity_finite_values_and_no_mutation():
         expected = successor_feature_values(observation, action)
         torch.testing.assert_close(rows[i], torch.tensor([expected[key] for key in SUCCESSOR_COLUMNS]))
     assert observation == original
+
+
+def test_full_menu_computes_each_candidate_once(monkeypatch):
+    from colonist_rl import successor_features as module
+
+    observation = view()
+    original = module._values
+    calls = []
+
+    def record(prepared, action):
+        calls.append(action)
+        return original(prepared, action)
+
+    monkeypatch.setattr(module, "_values", record)
+    module.successor_features_for_menu(observation)
+    assert len(calls) == len(observation.legal_actions)

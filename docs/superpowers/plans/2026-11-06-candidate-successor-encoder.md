@@ -26,10 +26,10 @@
 
 **Interfaces:** `SUCCESSOR_SCHEMA: str`, `SUCCESSOR_COLUMNS: tuple[str, ...]`, `SUCCESSOR_DIM: int`, `successor_feature_values(view: Observation, action: Action) -> dict[str, float]`, and `successor_features_for_menu(view: Observation, *, device="cpu") -> torch.Tensor`.
 
-- [ ] Write failing tests for exact action identity, deterministic hand changes, zero-cost free/setup road, development purchase's unknown draw, END, production/port effects of a new settlement or city, unknown-result masks, full-menu parity and observation immutability.
-- [ ] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_features.py -q` and observe missing API or incorrect behavior.
-- [ ] Implement the named schema. Scalars are hand-known/uncertainty masks, point and win effects, piece counts, before/after connected sites and city sites, before/after eligible point gaps, trade ratio and own VP. Five-resource blocks are before/after/delta hand, four recipe deficits, nominal/unblocked production gain and after-action port ratios. Normalize counts to bounded scales; unknown after-hand and dependent deficits are zero with their mask off.
-- [ ] Run focused tests and Ruff, refactor only while green, then commit the encoder/test.
+- [x] Write failing tests for exact action identity, deterministic hand changes, zero-cost free/setup road, development purchase's unknown draw, END, production/port effects of a new settlement or city, unknown-result masks, full-menu parity and observation immutability.
+- [x] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_features.py -q` and observe missing API or incorrect behavior.
+- [x] Implement the named schema. Scalars are hand-known/uncertainty masks, point and win effects, piece counts, before/after connected sites and city sites, before/after eligible point gaps, trade ratio and own VP. Five-resource blocks are before/after/delta hand, four recipe deficits, nominal/unblocked production gain and after-action port ratios. Normalize counts to bounded scales; unknown after-hand and dependent deficits are zero with their mask off.
+- [x] Run focused tests and Ruff, refactor only while green, then commit the encoder/test.
 
 ### Task 2: Zero-start opt-in policy and strict checkpoint identity
 
@@ -37,15 +37,15 @@
 
 **Interfaces:** `CandidateSuccessorPolicy(ConsequenceGraphPolicy)`, `candidate_successor_from_consequence(parent, *, seed=0)`, strict `policy_architecture` and `policy_from_architecture` cases.
 
-- [ ] Write failing tests for exact parent logits/memory/value and RNG state, distinct feature schema and strict metadata rejection, inherited parameter copying/mode/trainability, nonzero loss gradient on the new linear/out weights, and save/load roundtrip.
-- [ ] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_policy.py -q` and observe the expected missing class/identity failures.
-- [ ] Add one zero-initialized linear feature branch and one hidden-state plus feature MLP whose output weight starts at zero; sum their candidate logits with the inherited policy. Implement strict parent upgrade and checkpoint metadata.
-- [ ] Run focused existing policy/consequence/checkpoint tests plus new tests and Ruff, then commit.
+- [x] Write failing tests for exact parent logits/memory/value and RNG state, distinct feature schema and strict metadata rejection, inherited parameter copying/mode/trainability, nonzero loss gradient on the new linear/out weights, and save/load roundtrip.
+- [x] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_policy.py -q` and observe the expected missing class/identity failures.
+- [x] Add one zero-initialized linear feature branch and one hidden-state plus feature MLP whose output weight starts at zero; sum their candidate logits with the inherited policy. Implement strict parent upgrade and checkpoint metadata.
+- [x] Run focused existing policy/consequence/checkpoint tests plus new tests and Ruff, then commit.
 
 ### Task 3: Decide whether representation is cheap enough to cross with broad learning
 
 **Files:** Create `docs/candidate-successor-encoder-preflight-2026-11-06.md`; add one timing test script only if a repeatable bench is needed.
 
-- [ ] Run full-menu warm timing on several genuine public TURN menus, recording parent and variant p50/p95, and check all new feature rows are finite.
-- [ ] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_features.py tests/test_successor_policy.py tests/test_policy.py tests/test_consequences.py tests/test_checkpoint_migration.py -q` plus touched-file Ruff.
-- [ ] Write the measured preflight and limitations. Report the branch to the broad-distillation coordinator for a separately frozen matched training comparison. Commit the report.
+- [x] Run full-menu warm timing on several genuine public TURN menus, recording parent and variant p50/p95, and check all new feature rows are finite.
+- [x] Run `PYTHONPATH=src .venv/bin/python -m pytest tests/test_successor_features.py tests/test_successor_policy.py tests/test_policy.py tests/test_consequences.py tests/test_checkpoint_migration.py -q` plus touched-file Ruff.
+- [x] Write the measured preflight and limitations. Report the branch to the broad-distillation coordinator for a separately frozen matched training comparison. Commit the report.

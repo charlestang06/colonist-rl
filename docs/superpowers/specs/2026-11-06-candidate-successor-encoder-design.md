@@ -26,7 +26,10 @@ currently unblocked production gain by resource, and own port ratios after a
 new settlement. Road and settlement geometry after a build may be computed
 from the public board. Setup placement and free roads have zero resource cost.
 Current maritime trades and development purchases have exact immediate hand
-arithmetic; a card purchase marks its draw as unknown. Other uncertain actions
+arithmetic; a card purchase marks its draw as unknown. The second setup
+settlement gains one resource from each adjacent producing hex when public bank
+stock or the standard setup stock bound guarantees delivery. Otherwise its
+after-hand is masked unknown. Other uncertain actions
 carry explicit unknown masks rather than invented resource gains. The encoder
 does not claim a future bank receipt, card identity, robber steal, Longest Road
 award, or later legal menu.

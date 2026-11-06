@@ -101,6 +101,27 @@ def _prepare(view: Observation) -> _Prepared:
     )
 
 
+def _second_setup_grant(view: Observation, target: int | None) -> tuple[int, ...] | None:
+    """Starting resources are public when standard setup stock guarantees them."""
+    if target is None:
+        return None
+    receive = tuple(
+        sum(tile.resource == resource and target in vertices
+            for tile, vertices in zip(view.board.tiles, view.board.tile_vertices, strict=True))
+        for resource in RESOURCES
+    )
+    for index, count in enumerate(receive):
+        if not count:
+            continue
+        if view.bank is not None:
+            if view.bank[index] < count:
+                return None
+        elif view.rules.bank_resources[index] < 3 * view.rules.player_count:
+            # Earlier second settlements could have taken three of this resource each.
+            return None
+    return receive
+
+
 def _hand_after(view: Observation, action: Action) -> tuple[int, ...] | None:
     kind = action.kind
     if kind in _UNKNOWN_HAND:
@@ -120,8 +141,17 @@ def _hand_after(view: Observation, action: Action) -> tuple[int, ...] | None:
             view.context.kind in ("BUILD_INITIAL_SETTLEMENT", "SETUP_SETTLEMENT")
         )
         give, receive = (_ZERO if setup else PUBLIC_BUILD_COSTS[kind]), _ZERO
+        if (setup and kind == "BUILD_SETTLEMENT" and
+                any(b.owner == view.player_id for b in view.buildings)):
+            receive = _second_setup_grant(view, action.target)
+            if receive is None:
+                return None
     elif kind in _ROAD | _SETTLEMENT:
         give, receive = _ZERO, _ZERO
+        if kind in _SETTLEMENT and any(b.owner == view.player_id for b in view.buildings):
+            receive = _second_setup_grant(view, action.target)
+            if receive is None:
+                return None
     elif kind == "DISCARD_RESOURCE":
         if action.resource not in RESOURCES:
             raise ValueError("a legal discard requires a named resource")
@@ -259,6 +289,8 @@ def successor_features_for_menu(view: Observation, *, device="cpu") -> torch.Ten
     if not view.legal_actions:
         return torch.empty((0, SUCCESSOR_DIM), device=device)
     prepared = _prepare(view)
-    rows = [[_values(prepared, action)[key] for key in SUCCESSOR_COLUMNS]
-            for action in view.legal_actions]
+    rows = []
+    for action in view.legal_actions:
+        values = _values(prepared, action)
+        rows.append([values[key] for key in SUCCESSOR_COLUMNS])
     return torch.tensor(rows, device=device, dtype=torch.float32)
