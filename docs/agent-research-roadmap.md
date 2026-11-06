@@ -182,15 +182,30 @@ stopped on its first frozen state before any complete continuation or teacher
 label. Its sampler allowed resource hands that satisfied each focal marginal
 belief and the finite bank but contradicted the joint public-event history;
 the first visible trade then failed an observer ledger. Preserve the zero-game
-negative artifact. A repaired event-consistent joint sampler needs synthetic
-mechanical proof and fresh roles before another outcome probe.
+negative artifact. A repaired event-consistent joint sampler required synthetic
+mechanical proof and fresh roles before another outcome probe; those checks
+were completed for the separate repaired study below.
+
+The repaired [joint-world midgame probe](experiments/midgame-public-world-joint-probe-negative-2026-11-06/README.md)
+passed its mechanics and resolved 552/552 paired continuations. Candidate
+outcomes showed both win and VP variation, but its predeclared requirement
+that one root dominate every alternative changed only one of 25 accepted
+states, below the eight-change gate. Stop that protocol; do not retune its
+ranking on the same panel.
 
 The next [large learning program](large-jump-learning-program-2026-11-06.md)
 runs two independent mechanisms: terminal-outcome training for public second
-settlement choices and joint-world midgame counterfactual search. The opening
+settlement choices and
+[real-state paired midgame action-value learning](experiments/real-state-action-value-2026-11-06/PROTOCOL.md).
+The latter collects states reached by raw and frozen recurrent actors, branches
+exact real engine states for outcome labels, and fits two matched public-input
+actors under separate TRAIN-FIT, TRAIN-SELECT, labelVAL and gameplay roles.
+Its roles remain unopened while public-view and replay checks are implemented.
+The opening
 [prospective protocol](experiments/second-settlement-outcome-2026-11-06/PROTOCOL.md)
-uses a 640-continuation feasibility screen before a larger TRAIN fit, fresh
-label validation, and a 96-board H confirmation. Policy iteration and PPO
+passed its 640-continuation feasibility screen and is collecting a larger TRAIN
+fit, then requires fresh label validation and a 96-board H confirmation.
+Policy iteration and PPO
 remain conditional on a source that first improves actual game outcomes.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
