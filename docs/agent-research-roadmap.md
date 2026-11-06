@@ -185,6 +185,14 @@ the first visible trade then failed an observer ledger. Preserve the zero-game
 negative artifact. A repaired event-consistent joint sampler needs synthetic
 mechanical proof and fresh roles before another outcome probe.
 
+The next [large learning program](large-jump-learning-program-2026-11-06.md)
+runs two independent mechanisms: terminal-outcome training for public second
+settlement choices and joint-world midgame counterfactual search. The opening
+[prospective protocol](experiments/second-settlement-outcome-2026-11-06/PROTOCOL.md)
+uses a 640-continuation feasibility screen before a larger TRAIN fit, fresh
+label validation, and a 96-board H confirmation. Policy iteration and PPO
+remain conditional on a source that first improves actual game outcomes.
+
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
   student reaches, preserving acceptable alternatives and ambiguity. Aggregate
