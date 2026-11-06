@@ -138,15 +138,23 @@ class PublicTurnPlannerPolicy:
         *,
         evaluator: PositionEvaluator | None = None,
         gain_margin_micro: int = _GAIN_MICRO,
+        search_build_win_before_buy: bool = False,
     ):
         _validate_gain_margin(gain_margin_micro)
+        if type(search_build_win_before_buy) is not bool:
+            raise ValueError("search_build_win_before_buy must be a bool")
         self.config = config
         self.evaluator = evaluator
         self.gain_margin_micro = gain_margin_micro
+        self.search_build_win_before_buy = search_build_win_before_buy
 
     def plan(self, view: Observation) -> TurnPlan:
         return plan_turn(
-            view, self.config, evaluator=self.evaluator, gain_margin_micro=self.gain_margin_micro
+            view,
+            self.config,
+            evaluator=self.evaluator,
+            gain_margin_micro=self.gain_margin_micro,
+            search_build_win_before_buy=self.search_build_win_before_buy,
         )
 
     def act(self, view: Observation) -> Action:
@@ -540,6 +548,7 @@ def plan_turn(
     *,
     evaluator: PositionEvaluator | None = None,
     gain_margin_micro: int = _GAIN_MICRO,
+    search_build_win_before_buy: bool = False,
 ) -> TurnPlan:
     """Pure bounded search; actual execution must reobserve after the first action.
 
@@ -548,6 +557,8 @@ def plan_turn(
     No projected state is promoted to an Observation or a certified future menu.
     """
     _validate_gain_margin(gain_margin_micro)
+    if type(search_build_win_before_buy) is not bool:
+        raise ValueError("search_build_win_before_buy must be a bool")
     fallback = HeuristicViewPolicy(config.seed).act(view)
     fallback_index = next(i for i, action in enumerate(view.legal_actions) if action is fallback)
     work = _Work(config)
@@ -591,7 +602,12 @@ def plan_turn(
         return result("unsupported_context")
     if view.rules != RulesConfig.standard():
         return result("unsupported_rules")
-    if fallback.kind not in _SUPPORTED:
+    buy_win_search = (
+        search_build_win_before_buy
+        and fallback.kind == "BUY_DEVELOPMENT_CARD"
+        and view.own_victory_points >= view.rules.victory_points - 1
+    )
+    if fallback.kind not in _SUPPORTED and not buy_win_search:
         return result("unsupported_heuristic_action")
     if any(
         port.ratio not in (2, 3, 4) or port.resource not in (None, *RESOURCES)
@@ -658,8 +674,13 @@ def plan_turn(
                 beam.append(node)
                 if best is None or node.order() < best.order():
                     best = node
-        # Missing H baseline under a tiny node budget cannot justify overriding H.
-        if fallback.kind != "END_TURN" and not any(n.root == fallback_index for n in beam):
+        # BUY has no projected baseline; its opt-in search accepts only a known win.
+        # Other missing H baselines cannot justify overriding H.
+        if (
+            not buy_win_search
+            and fallback.kind != "END_TURN"
+            and not any(n.root == fallback_index for n in beam)
+        ):
             return result("insufficient_gain", stopped)
         roots_validated = True
         beam = sorted(beam, key=lambda n: n.order())[: config.beam_width]
@@ -692,7 +713,13 @@ def plan_turn(
         if (
             best is not None
             and any(s.kind.startswith("BUILD_") for s in best.steps)
-            and (best.winning or best.score > max(before, baseline) + gain_margin_micro)
+            and (
+                best.winning
+                or (
+                    not buy_win_search
+                    and best.score > max(before, baseline) + gain_margin_micro
+                )
+            )
         ):
             return result("planned", stopped, best)
         return result("insufficient_gain", stopped)
