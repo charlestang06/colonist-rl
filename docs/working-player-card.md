@@ -105,10 +105,10 @@ now completed 384 games: raw 32/128, VF 19/128, AB 26/128. Both primary interval
 cross zero and the qualification gate failed. No confirmation, extension or model
 promotion follows. This does not change the earlier screen's frozen selection.
 
-Next: exact TRAIN engine factcheck and a bounded city-funding-trade-before-purchase
-experiment, motivated by 18 resource-completion opportunities across 15 TRAIN
-episodes. These are alternatives, not optimality labels; preserve the later-city
-and other adverse controls. The parent/default behavior remains unchanged until
-fresh gameplay justifies advancement. No automatic neural training, shaping or
-value-head deployment follows. Broad competence and VF/AB superiority remain
+Future work follows the [canonical queue](agent-research-roadmap.md#immediate-work-and-ownership):
+finish the bounded city-funding experiment, diagnose search coverage/cost and
+compare budgets, with one independent learning investigation in parallel. The
+18 TRAIN resource-completion opportunities across 15 episodes are alternatives,
+not optimality labels; preserve adverse controls. This card records the historical
+selection, not a second active plan. Broad competence and VF/AB superiority remain
 unestablished; final boards remain untouched.

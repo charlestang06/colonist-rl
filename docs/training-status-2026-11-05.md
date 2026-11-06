@@ -14,7 +14,8 @@ TRAIN labels or model promotion occurred. The separate
 intervals cross zero. There is no automatic extension, confirmation or promotion.
 Relevant TRAIN diagnosis now identifies a purchase-before-trade/build planning
 gap for bounded engine factcheck and intervention testing; no fit has started.
-BC is optional; PPO remains deferred. No broad heuristic-competence claim,
+The current strategy permits one bounded parallel learning investigation; extensive
+PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.
 All results below retain their original experimental scope and gates.
 

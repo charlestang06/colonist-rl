@@ -2,23 +2,24 @@
 
 A public-information Catan player for simulator and Colonist adapters.
 
-The goal is one usable player with coherent trades, builds, passes and tactical
-choices, followed by reproducible superiority to authentic VF and AB and faithful
-complete live-game execution. The [revised roadmap](docs/agent-research-roadmap.md)
-separates those three claims. The first matched comparison completed 96 games:
-raw 15/32 wins, persistent H 5/32, neural parent 2/32. The [working-player card](docs/working-player-card.md) keeps H
-as provisional control under the fixed fallback and raw as the leading unpromoted
-challenger. The separate [native comparison](docs/native-reference-results-2026-11-06.md)
-completed 384 games: raw 32/128, VF 19/128, AB 26/128. Its superiority-qualification
-gate failed. Next certify and test a targeted city-funding trade before purchase
-from relevant TRAIN evidence; no automatic extension or training run follows.
+Build one usable player with coherent economic and tactical decisions, then
+establish reproducible superiority to authentic VF and AB and faithful complete
+live-game execution. The [canonical roadmap](docs/agent-research-roadmap.md)
+separates these claims and defines the next work.
 
-Heuristics, bounded planning and learned components can cooperate. BC and PPO
-are optional tools; PPO remains deferred until competence and an identified
-strategic need justify it. No automatic training scale-up, value-learning lane or
-reward-shaping campaign is scheduled. The
-[immediate execution plan](docs/superpowers/plans/2026-11-06-decision-first-roadmap.md)
-records the completed three-arm screen and its evidence-led handoff; no new fit is queued.
+The main track improves the public planner's trading, building, buying and passing.
+A bounded parallel learning track tests relevant student-state supervision and
+outcome estimates. Rules, search and learned components can cooperate; extensive
+PPO follows a demonstrated strategic need rather than a fixed algorithm schedule.
+Both tracks should share evaluation facilities and reach fresh gameplay quickly.
+
+The [working-player card](docs/working-player-card.md) retains H as provisional
+control and raw as the leading unpromoted challenger. The direct
+[native comparison](docs/native-reference-results-2026-11-06.md) completed 384 games:
+raw 32/128, VF 19/128, AB 26/128; its superiority gate failed. Next finish the
+city-funding-trade-before-purchase test, instrument search coverage and cost, then
+compare search budgets with other settings fixed. No superiority or model
+promotion is claimed.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

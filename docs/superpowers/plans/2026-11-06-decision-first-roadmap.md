@@ -1,5 +1,10 @@
 # Working-player nomination implementation plan
 
+Historical bounded execution plan. Its frozen studies retain their constraints;
+new priorities and parallel learning follow the
+[canonical roadmap](../../agent-research-roadmap.md). This is not the current
+full-project execution order.
+
 > **For agentic workers:** Use superpowers:subagent-driven-development or superpowers:executing-plans to execute this plan task by task. Root coordinates runtime; source-only work can be delegated.
 
 **Goal:** Nominate one public-information working player and publish an honest policy card before choosing the next improvement experiment.

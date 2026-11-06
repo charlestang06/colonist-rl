@@ -1,220 +1,181 @@
-# Build a strong, understandable Catan player
+# Goal: a strong, usable Catan decision maker
 
-Revised 2026-11-06 following the user's request to reset the full project goal.
-This is the canonical strategy and next-work order. It supersedes algorithm-first
-sequences and the previously proposed five-arm incumbent screen. It does not
-rewrite completed experiments or authorize changes to their frozen methods.
-The [previous strategy](agent-research-roadmap-before-product-reset-2026-11-06.md),
-[user roadmap](roadmap.md) and [measured status](training-status-2026-11-05.md)
-remain available.
+Revised 2026-11-06. This is the authoritative direction for new work. Older
+roadmaps and execution plans are historical where they disagree. Frozen studies
+retain their original methods, limits, data roles and failed gates.
 
-## The outcome we are building
+## The outcome
 
-Build one Catan player that makes coherent economic and tactical decisions from
-its own permitted observations, completes games reliably, and becomes
-reproducibly stronger than authentic VF and AB under declared benchmark conditions.
-Run that same decision maker through simulator and Colonist adapters; physical
-board input comes later.
+Build one player that makes coherent economic and tactical decisions from its
+own permitted information, reliably completes games within a declared compute
+budget, and reproducibly outperforms authentic pinned VF and AB references.
+Execute that same decision maker through simulator and Colonist adapters;
+physical-board input comes later.
 
-The first useful product is a versioned working player with a documented action
-scope, decision-time budget, complete-game results and inspectable decisions.
-A trade should have an identifiable benefit or strategic purpose; a pass should
-be sensible when spending is worse; a build or card play should advance a
-credible plan. Its trace records actual inputs, alternatives examined, scores or
-rules used, intended follow-up and uncertainty where available. These are records
-of how it chose, not explanations invented afterward. A neural policy need not
-have a fictitious verbal plan; report its actual scores and known limits.
+The product is the complete decision system, not a particular neural checkpoint.
+Rules, exact consequences, search, beliefs and learned estimates may cooperate.
+A stronger simple player is progress. Teacher agreement, prediction accuracy,
+training volume and legal clicks are intermediate measurements, not success.
 
-Success has three separate requirements:
-
-- **Competence:** recognizably sound decisions and reliable complete games.
-- **Strength:** reproducible complete-game superiority to both pinned references.
-- **Deployment:** faithful execution of the same policy in a complete live game.
-
-Tests, labels, fitted updates, prediction accuracy and legal screen clicks are
-supporting evidence. They cannot substitute for these outcomes. The long-term
-VF/AB objective remains active and unmet; neither broad competence nor a new
-strongest policy is established by the evidence so far.
-
-## Strategy: improve the player we can actually use
-
-Start from the strongest credible existing decision system. A heuristic, bounded
-planner, learned policy or combination can be the product. The neural parent has
-no preferred status. Keep the core observation/action contract independent of
-Catanatron and the screen; adapter conformity does not imply access to privileged
-engine state.
-
-Choose methods by the weakness they address:
-
-| Demonstrated problem | First experiment to consider |
+| Claim | Evidence required |
 |---|---|
-| Wrong legal action, encoding or target | Correct that defect and verify its affected path. |
-| Trade/build/pass arithmetic or short sequence | Explicit consequence calculation or bounded planning. |
-| Bad supervision or off-distribution behavior | Audit acceptable alternatives on relevant reached states; targeted BC or student-state aggregation. |
-| Poor ranking of uncertain future outcomes | Test a public value estimate or sampled planning against matched simpler scoring. |
-| A trainable component fails to use sound targets | Inspect gradients, optimization and sequence handling; profile before scaling. |
-| Competent local choices but weak longer-term strategy | Compare deeper public planning, policy improvement or RL; PPO is one option. |
+| Decision competence | Sound choices across covered action families, reliable completion, no unresolved verified destructive loops or missed immediate wins, and a predeclared practical comparison with trading H. Missing coverage remains unknown. |
+| Playing strength | Fresh matched complete games against both authentic references under declared rules/budgets, meaningful board-level uncertainty, and independent fresh-board confirmation of the frozen candidate. |
+| Deployment | A complete live game through the same policy/adapter contract, recording extraction, execution and recovery failures. |
 
-Targeted learning can help reach heuristic competence. PPO is deferred until
-competence and a specific strategic need justify it. No particular algorithm,
-model size or number of updates is a required milestone.
+These claims are separate and remain unmet. No-offer studies cannot establish
+negotiation competence. Native references are privileged evaluation opponents;
+the public planner and learner never receive their hidden inputs or labels.
 
-## Stage 1: nominate one working player
+## What the results tell us
 
-The first screen completed 96 games: persistent H 5/32, raw 15/32 and neural 2/32.
-The frozen conservative gate established no unique stronger arm; eligible H is
-the provisional comparison control and raw the leading unpromoted challenger.
-See the [working-player card](working-player-card.md) for decisions, identities,
-uncertainty and evidence. The separately frozen study compared persistent H, the
-unchanged raw public planner and the exact frozen neural parent. It used eight
-fresh boards, all four seats, three persistent H backgrounds and no domestic
-offers: **96 completed games**. Maritime trades stayed legal. Source, parent,
-search budgets, schedule, limits, contrasts and selection rule were frozen before
-execution. The study reused the existing harness and replaced the unexecuted
-five-arm proposal; no completed study was rewritten.
+The [working-player screen](working-player-card.md) completed 96 games: raw
+15/32 wins, H 5/32, frozen neural parent 2/32. Its frozen rule retained H as the
+provisional control and raw as the leading unpromoted challenger. The
+[native comparison](native-reference-results-2026-11-06.md) completed 384 games:
+raw 32/128, VF 19/128, AB 26/128; its qualification gate failed. These point
+estimates do not establish superiority. Raw is nevertheless the main development
+candidate; the historical fallback does not require treating H as strongest.
 
-Compare complete-game wins, critical decision failures, completion and latency.
-Inspect representative public decisions from each policy without creating TRAIN
-labels from these EVAL records. Respect board clustering and report uncertainty;
-eight boards are a development screen, not reliable proof of a universal ranking.
-If no policy has supported superiority, retain that uncertainty and name a
-**provisional operational control** using predeclared reliability, latency and
-simplicity criteria. Do not call the largest point estimate the strongest player.
-H itself can be the working player. Do not add native arms or expand this screen
-merely to seek significance; VF/AB belong in their dedicated strength comparison.
+Targeted BC improved agreement without establishing reliable gameplay gains.
+The student-state study stopped before fitting for insufficient approved coverage;
+this does not show BC cannot work. [Fixed outcome heads](fixed-value-head-results-2026-11-06.md)
+failed their representation/data-benefit gates, not every possible value-learning
+hypothesis. Narrow road and winning-prefix interventions did not advance. Preserve
+these results; do not repeat unchanged treatments with more updates or games.
 
-Deliver a small policy card: exact identity/configuration, supported action scope,
-information boundary, actual work/results, limits, and why this is the working
-control. Raw planning and neural inference can remain research alternatives.
+TRAIN diagnosis found 18 public one-bank city-funding opportunities across 15
+episodes before purchase. These are hypotheses, not optimality labels: buying a
+card may be better. The opt-in city-before-purchase wrapper passed 64 targeted
+tests; exact engine continuation and fresh gameplay remain pending.
 
-## Stage 2: close the decision-to-gameplay loop
+## Track 1: improve the working public player
 
-Study TRAIN histories from that working player. Existing histories are useful
-only when they diagnose the same mechanism in that player. Prioritize errors by
-frequency, likely game impact and confidence in the diagnosis. A rare provable
-missed win merits correctness repair, but its existence does not make it the best
-next strength experiment.
+Finish the already implemented bounded city-funding experiment, including adverse
+cases where purchasing first is reasonable. Keep it optional until changed choices
+and fresh games support retention. A legal executable sequence is not necessarily
+a good strategic choice.
 
-Each iteration has five outputs:
+Next diagnose search before increasing compute. Record attempted transitions,
+feasible transitions, unique states, depth reached, chosen sequence, stop reason
+and latency. Define uniqueness explicitly, including whether root-action identity
+is part of the key. Reduce invalid and duplicate work while preserving legal
+semantics, deterministic ordering and honest budget accounting.
 
-1. A concrete failure with legal alternatives, public information and a plausible
-   cost. Include cases where passing or declining a trade/card is reasonable.
-2. A causal diagnosis: targets, reached-state coverage, information, consequence
-   calculation, search horizon or optimization. Check labels/encoding/gradients
-   when relevant rather than assuming more data is the answer.
-3. One minimal change and its adverse cases. Reuse the existing tests and harness.
-4. A conceptual check of the actual changed choices and, where claimed, executable
-   follow-ups. Separate certain facts from uncertain strategic judgments.
-5. Fresh paired complete-game results against the incumbent under a frozen
-   budget and advance/stop rule. Retain, revise or retire the change explicitly.
+Then compare 2,048 versus 8,192 nodes at depth 6 and beam 24, keeping scoring,
+gain margin, fallbacks, geometry budget, seeds and opponents fixed. Both budget arms must use the same implementation. Assess efficiency changes
+against the original planner separately, so implementation and budget effects
+are not conflated. Measure useful coverage and actual changed actions as well as
+wins. Change beam/depth separately
+only when diagnostics justify it.
 
-Only a retained improvement becomes the next incumbent. A correct narrow repair
-may remain optional without a strength promotion. Do not promote on training
-loss, agreement, VP or a secondary panel after the primary strength rule fails.
-Do not repeat an unchanged failed treatment with more updates or a larger sample.
+Move toward unified trading, building, purchasing and passing. Deterministic public
+consequences should be exact. Card purchase needs uncertainty-aware future value,
+never its actual hidden draw. A better public score alone does not establish
+superiority to buying or passing. Extend useful coverage to Year of Plenty pairs,
+connected Road Building, then uncertain Monopoly/robber/Knight choices and award
+races. Execute one legal root action, reobserve and replan.
 
-Begin with consequential trade/build/pass weaknesses if observed. Extend coverage
-to placement; robber/discard; development-card purchase; Knight, Monopoly, Road
-Building and Year of Plenty; longest-road/largest-army races; and VP/endgame.
-Domestic offers/responses require their own evidence: no-offer games cannot
-establish negotiation competence. Bank trades are legal whenever the rules permit
-and must not be masked to make decisions easier. GreedyNoTrade intentionally
-abstains and remains a diagnostic control, separate from trading H.
+## Track 2: bounded learning alongside planning
 
-Before claiming broad heuristic competence, freeze a fresh eight-group audit
-(placement, bank/build/pass, domestic responses, robber/discard, card purchase,
-card play, awards, endgame), coverage counts, judgment thresholds and critical-error
-rules. Keep acceptable alternatives and ambiguous cases explicit. Require reliable
-completion within budget, no unresolved verified destructive loops or missed
-immediate wins in that audit, and a predeclared practical noninferiority comparison
-with H using board-level uncertainty; retain GNT as a diagnostic panel. Missing
-coverage stays unknown. A nonsignificant difference or 25% win rate is not parity.
-This broad claim gate does not block an earlier narrow repair experiment.
+Run one independent teacher-assisted learning investigation in parallel. It shares
+the observation contract and evaluation path and need not wait for every planner
+repair. Choose one hypothesis rather than automatically building this whole list.
 
-## Stage 3: improve strategy and establish strength
+- **Relevant supervision:** check labels, candidate encoding, gradients and
+  recurrent sequence handling before scaling BC. Audit consequential states the
+  student reaches, preserving acceptable alternatives and ambiguity. Aggregate
+  informative TRAIN labels with coverage suited to the experiment, rather than a
+  universal quota. Phase balancing alone misses trade/pass confusion because both
+  share a phase. Teachers are fallible candidate generators, not optimal oracles.
+- **Consequence features:** separately test resources missing after a trade and
+  connected-settlement affordability, with the same learner/data as control.
+- **Shadow critic:** predict actual returns under a declared continuation policy
+  and opponent regime. Review prior failures and use a materially different
+  hypothesis, such as a trainable encoder on current-student histories rather
+  than the failed frozen representation. Compare held-out calibration and useful
+  ranking with constant and simple public-feature controls before steering play.
+  Teacher scores are not win probabilities. State prediction alone does not
+  certify action ranking or values on synthetic planning leaves.
+- **Policy improvement:** allow a small actor-critic-plus-imitation test against
+  imitation-only and no-update controls when justified. Stochastic on-policy
+  updates need policy-matched experience and recorded behavior probabilities;
+  teacher and greedy trajectories are not automatically on-policy actor-critic
+  data. Reduce teacher influence only when fresh gameplay supports doing so.
 
-Once local decisions are credible, identify the next strategic limitation:
-production balance, development-card investment, contested expansion, award races,
-opponent threat, uncertainty or negotiation. Test one mechanism against the current
-incumbent. Resource scarcity and trade values are contextual priors to test,
-conditioned on board, hand, ports, stage and opponents; no universal fixed values
-or shaping rewards are assumed.
+Extensive PPO and broad self-play are deferred until a specific strategic need
+and effective comparison justify the cost. Small learning experiments may help
+reach competence; PPO is neither a mandatory next stage nor a prerequisite for
+progress. Use terminal winning initially in new studies. Test any reward shaping
+separately against the unchanged objective, checking loops and actual wins.
+Resource scarcity is contextual information to test, not a universal reward table.
 
-Use progressively harder opponents where they test the current weakness. Retain a
-fixed evaluation panel and check earlier competence for regressions. Stop spending
-on random opponents when they cease to be informative. Keep TRAIN, development,
-validation and final roles separate; EVAL decisions never become training labels.
-Public logs constrain beliefs about opponents' resources; hidden steals and cards
-prevent perfect knowledge. Simulated branches use permitted beliefs and independent
-future randomness, never the real hidden Game, deck or future RNG.
+## Make experiments faster and more useful
 
-For the strength claim, compare the frozen candidate directly with focal authentic
-VF and focal authentic AB on matched fresh boards and all seats, with identical
-backgrounds and declared trade rules. Freeze board count, practical superiority
-margin, both-comparison uncertainty rule and censoring rules before execution.
-Both candidate-minus-reference lower bounds must exceed the declared margin.
-Replicate on disjoint fresh boards before claiming reproducible superiority.
-A three-native stress panel answers a separate question. No-offer success supports
-only that regime; broader negotiation strength needs a separate test.
+The loop is: diagnosed weakness → one mechanism → inspect changed decisions and
+adverse cases → fresh paired complete games → retain, revise or retire.
 
-PPO, broader self-play, learned values, more data and larger models each need a
-specific decision hypothesis, a simpler control and a bounded initial experiment.
-No standing background data collection or value-learning lane is scheduled.
-Terminal winning remains the initial new-study objective. New shaping needs an
-isolated test of a diagnosed problem and checks against loops or displacement of
-winning. Existing experimental PPO rewards are not automatically adopted.
+Use modest exploratory panels to reject weak mechanisms cheaply. Report effect,
+uncertainty, intervention frequency, completion and latency. A promising result
+earns a separately frozen confirmation; it is not proof of superiority. Do not
+repeat small panels under a rule incapable of resolving the meaningful effect.
+Plan confirmation against a practical effect and say when the affordable design
+is inconclusive. Never rescue a failed frozen gate by changing its metric or
+extending its sample automatically.
 
-## Stage 4: deliver the same player through adapters
+Reuse evaluation APIs and guards behind one lightweight runner path for planner
+and learning comparisons. Standardize policy configs, paired boards/seats, source
+identity, data roles, resource budgets, work counters and result summaries. Existing
+experiments.py is a broader training workflow; extend only the facilities the
+next comparison actually needs. Avoid another study-specific framework. Bind a
+frozen source/dependency snapshot once per study, not the same installation per
+job. Scale review to the change and claim; routine exploration needs affected
+checks, not another exhaustive archival campaign.
 
-Maintain a thin adapter lane while improving the core. Separate observation
-extraction, belief updates, legal action translation, stale-state rejection and
-visible-effect confirmation. Preserve [control observations](colonist-controls.md)
-and [walkthrough evidence](browser-walkthrough-status.md). Add a capability when
-the working policy needs it; do not fork strategy into adapter-specific policies.
+Bound concurrency, CPU, RSS and wall time; record actual utilization and thread
+counts. Preserve old strict thread protocols. Future limits should distinguish
+idle OS threads from active compute. Report hypothesis-to-first-gameplay time,
+setup/review versus compute time, and candidates actually compared. Those are
+iteration diagnostics, not strength metrics.
 
-A complete live-game acceptance run must exercise the supported policy scope,
-record extraction/action failures and confirm visible outcomes. Multi-step card
-resolution, robber movement, awards and private own VP need faithful semantics.
-Initiating/countering domestic offers needs its own contract and tests. Mark
-unsupported actions explicitly. Simulator success alone cannot establish a capable
-Colonist player. Physical recognition and six-player learning follow reliable
-four-player play.
+Keep TRAIN, development, validation and final roles explicit. EVAL decisions may
+explain results but never become training labels. Retain failed attempts, losses,
+censoring and adverse cases. Bank trades remain legal whenever rules permit;
+GreedyNoTrade deliberately abstains as a separate diagnostic baseline. Public
+logs constrain resource beliefs; hidden steals/cards prevent perfect knowledge.
+The working player, learner, teachers and public-planning branches may not
+inspect real hidden engine state, deck or future RNG. Privileged native evaluation
+references retain their explicitly disclosed exception.
 
-## Immediate queue and ownership
+## Adapter scope
 
-| Order | Deliverable | Boundary |
+The core owns strategy, permitted history, beliefs and legal decision semantics.
+Adapters own extraction, action translation, stale-state rejection, staged
+execution and visible-effect confirmation. Catanatron compatibility helps simulator
+integration but does not replace the shared information boundary. Keep Colonist
+transport under adapters/colonist and physical input under adapters/physical;
+do not fork strategy into a screen-specific policy.
+
+Make one bounded action-family inventory: setup; bank/build/pass; purchase/cards;
+robber/discard/steal; domestic offers/responses; awards; VP/endgame. Record legal
+representation, exact versus uncertain consequences, execution support and decision
+evidence. This is a map of gaps, not an exhaustive-state prerequisite. Extend
+adapters when the working player needs the capability. Preserve [observed controls](colonist-controls.md);
+manual walkthroughs are not autonomous play. Negotiation, physical recognition
+and six-player learning follow reliable standard four-player play.
+
+## Immediate work and ownership
+
+| Order | Concrete output | Decision |
 |---|---|---|
-| Complete | Three-arm screen and [policy card](working-player-card.md). |96completegames; H 5/raw 15/NN 2; no unique stronger arm, no neural promotion. |
-| Complete | [Dedicated native comparison](native-reference-results-2026-11-06.md): 384 games, 32 fresh boards/all seats, raw 32/128, VF 19/128, AB 26/128. | Gate failed; both intervals cross zero. No confirmation, automatic extension or model promotion. |
-| Next | Certify a TRAIN bank-trade/city continuation, then test a bounded city-funding-trade-before-purchase intervention. | Eighteen public opportunities across 15 TRAIN episodes, not optimality labels. Preserve adverse controls, defaults and fresh-game advancement rules. |
-| Following diagnosed need | Confirm consequential weaknesses in relevant TRAIN decisions, then test one remedy. | EVAL concerns remain explanatory; affected-path checks, actual choices and fresh gameplay decide retention. No arbitrary universal label quota or automatic fit. |
-| 4 | Broader competence, strategic improvement and direct VF/AB confirmation as evidence warrants. | No automatic jump to PPO or large data generation. |
+| 1 | Positive/adverse TRAIN engine continuations, affected wrapper checks and fresh paired city-before-purchase gameplay. | Retain optional, revise or retire using actual decisions and games. |
+| Parallel | Review learning failures and prepare one distinct student-state/critic hypothesis with controls and data provenance. | Run a bounded experiment if justified; otherwise identify the specific missing evidence. |
+| 2 | Common runner path, search diagnostics and bounded action-family inventory. | Remove the next measured bottleneck; avoid new framework work. |
+| 3 | Search-efficiency changes, then fixed-depth/beam 2,048-versus-8,192-node comparison. | Broader action models follow the observed bottleneck. |
+| As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
-The decision/learning coordinator owns this loop. The adapter coordinator owns
-faithful transfer and only the capabilities needed next. An independent reviewer
-challenges causal explanations and claims. One primary improvement experiment is
-active at a time; parallel work must answer an independent, bounded question or
-remove a specific blocker. Keep existing process/deadline guards, at most two
-heavy workers and the declared CPU/thread/RSS limits. Avoid new governance,
-reporting or benchmark infrastructure unless the next comparison needs it.
-
-The old eligibility, road, winning-prefix and fixed value-head studies are closed
-without strength advancement. Preserve their results, failures and exact gates.
-The audited-target study ran no fit because coverage was insufficient; this is
-not proof that BC fails. See [status](training-status-2026-11-05.md),
-[road results](road-continuation-experiment-2026-11-06.md),
-[winning-prefix results](winning-prefix-experiment-2026-11-06.md) and
-[value results](fixed-value-head-results-2026-11-06.md). Do not reopen these unchanged
-studies or treat their sunk implementation cost as a reason for continuation.
-
-Keep pinned Catanatron `3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8`.
-Native VF defaults and AB depth 2 with `prunning=False` remain privileged,
-evaluation-only references. Disclose their information advantage, synthetic
-rejection and `+atomic_discard_reject_trade_v1`, no-offer conditions, chance mismatch
-and `full_rule_equivalence=false`. Their hidden choices never become learner or
-teacher inputs. Final boards `123100000..123100063` and legacy finals remain
-untouched until confirmation is frozen.
-
-Report brief progress as **what decision we improved, what evidence changed our
-view, and what we will test next**. Separate engineering success, decision quality,
-playing strength and live execution every time.
+One coordinator integrates results and owns the incumbent. Learning and adapter
+leads own their boundaries; scoped agents handle independent tasks. A planning/
+review agent identifies the next bottleneck from results rather than continually
+expanding the backlog. Prefer a meaningful change tested in games to more process
+documents.
