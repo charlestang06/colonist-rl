@@ -56,24 +56,30 @@ confirmed a real city route and all 12 fresh overrides built the intended city,
 yet it won 11/48 games versus raw's 13/48. It remains off by default. The
 purchase comparison needs card option value, not another unchanged wrapper run.
 
+The [fast search-budget screen](search-budget-results-2026-11-06.md) completed
+32 fresh paired games. Raising the node limit from 2,048 to 8,192 made all
+16 matched seat traces and outcomes identical, while spending 3,341 more
+attempts with no extra feasible or unique successor. Retire that unchanged
+increase. Publicly impossible future candidates, not the budget number, are
+the next search-work target.
+
 ## Track 1: improve the working public player
 
 The city-funding experiment is complete as a mechanical test and adverse gameplay
 screen. Keep it optional. Its changed raw winning seats and the exact adverse
 buy-then-city replay make uncertain card value the next economic decision gap.
 
-Next diagnose search before increasing compute. Record attempted transitions,
-feasible transitions, unique states, depth reached, chosen sequence, stop reason
-and latency. Define uniqueness explicitly, including whether root-action identity
-is part of the key. Reduce invalid and duplicate work while preserving legal
-semantics, deterministic ordering and honest budget accounting.
-
-Then compare 2,048 versus 8,192 nodes at depth 6 and beam 24, keeping scoring,
-gain margin, fallbacks, geometry budget, seeds and opponents fixed. Both budget
-arms use the same implementation; assess efficiency changes against the original
-planner separately. The archived raw panel hit the node cap in only 103 of 4,896
-searched decisions, so first verify that the larger budget reaches useful states.
-Change beam and depth separately only when diagnostics justify it.
+Attempted, feasible, unique, duplicate, depth, stop and latency diagnostics are
+now in the shared runner. A public affordability filter for **future** build
+and maritime intentions is the next bounded search experiment. Necessary
+conditions from the projected hand and conservative bank lower bound can skip
+provably impossible candidates while leaving authoritative root validation and
+final transitions unchanged. Separate a behavior-preserving latency gain on
+non-capped inputs from newly reachable states/actions on capped inputs. Record
+skipped-invalid work separately; never disguise it as attempted transitions.
+The 2,048-versus-8,192-node screen found no new state or action, so do not
+repeat that unchanged budget comparison. Change beam and depth separately only
+when diagnostics justify them.
 
 Move toward unified trading, building, purchasing and passing. Deterministic public
 consequences should be exact. Card purchase needs uncertainty-aware future value,
@@ -127,13 +133,14 @@ Plan confirmation against a practical effect and say when the affordable design
 is inconclusive. Never rescue a failed frozen gate by changing its metric or
 extending its sample automatically.
 
-Reuse evaluation APIs and guards behind one lightweight runner path for planner
-and learning comparisons. Standardize policy configs, paired boards/seats, source
-identity, data roles, resource budgets, work counters and result summaries. Existing
-experiments.py is a broader training workflow; extend only the facilities the
-next comparison actually needs. Avoid another study-specific framework. Bind a
-frozen source/dependency snapshot once per study, not the same installation per
-job. Scale review to the change and claim; routine exploration needs affected
+Use the [manifest-driven paired runner and analyzer](experiment-quickstart.md)
+for planner and graph-checkpoint comparisons. It records configs, explicit
+reference arm, paired boards/seats, source and checkpoint identities, data role,
+work counters, per-game journals, optional public step traces, and bounded
+result summaries. Existing experiments.py is a broader training workflow;
+extend only the facilities the next comparison actually needs. Bind a frozen
+source/dependency snapshot once per study, not the same installation per job.
+Scale review to the change and claim; routine exploration needs affected
 checks, not another exhaustive archival campaign.
 
 Bound concurrency, CPU, RSS and wall time; record actual utilization and thread
@@ -173,11 +180,11 @@ and six-player learning follow reliable standard four-player play.
 | Order | Concrete output | Decision |
 |---|---|---|
 | Complete | [City replay and paired screen](city-before-purchase-results-2026-11-06.md): executable route, 12/12 follow-through, raw 13/48 versus wrapper 11/48. | Keep wrapper optional; no promotion or unchanged extension. |
-| Complete | [Reusable paired runner](../src/colonist_rl/paired_gameplay.py) and [broad capability audit](capability-audit-2026-11-06.md). | Use the same fast gameplay path across mechanisms. |
+| Complete | [Reusable paired commands](experiment-quickstart.md) and [broad capability audit](capability-audit-2026-11-06.md). | One manifest, source-bound game journals, fast read-only comparison for planner and graph arms. |
 | Complete | [Trainable public-history critic](shadow-critic-results-2026-11-06.md) fit and development screen. | Gate failed against public-63; no policy change or unchanged extension. |
-| In progress | Search attempted/feasible/unique/depth diagnostics and a manifest-driven paired experiment command. | Measure actual changed decisions and cost before increasing search. |
-| Next | Fixed-depth/beam 2,048-versus-8,192-node exploratory comparison if diagnostics justify it. | A fast complete-game screen can reject a budget increase; keep learning and planner controls separate. |
-| Following | Unified card purchase versus certain trade/build/pass evaluation. | Compare uncertain option value with exact public consequences. |
+| Complete | [2,048-versus-8,192 search-budget screen](search-budget-results-2026-11-06.md): 32 resolved games, 16/16 same traces, 3,341 extra invalid attempts. | Retire unchanged budget increase. |
+| Parallel | Necessary-condition pruning of invalid future intentions, with old/new differential and a small paired screen if safe. | Preserve non-capped behavior; distinguish speed from effective coverage. |
+| Parallel | Opt-in card purchase versus certain trade/build/pass comparison with a fixed public option credit. | Compare uncertain option value without hidden draws; test changed decisions and outcomes on fresh boards. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter

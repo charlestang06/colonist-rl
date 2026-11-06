@@ -24,8 +24,9 @@ optional. The [paired runner](src/colonist_rl/paired_gameplay.py) and
 measure search coverage, then test a card-aware economic decision. The
 [trainable public-history critic](docs/shadow-critic-results-2026-11-06.md)
 failed its development nomination gate, so no learned score was inserted into
-the player. A manifest-driven paired command is next. No superiority or model
-promotion is claimed.
+the player. The [paired experiment commands](docs/experiment-quickstart.md)
+and [search-budget result](docs/search-budget-results-2026-11-06.md) now close
+the first fast feedback loop. No superiority or model promotion is claimed.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its

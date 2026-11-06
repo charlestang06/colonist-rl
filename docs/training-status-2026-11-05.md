@@ -22,6 +22,11 @@ cities but won 11/48 versus raw's 13/48; it remains off by default. The
 [trainable public-history critic](shadow-critic-results-2026-11-06.md) then fit
 actual terminal outcomes in 9.14 seconds. Its development Brier and state
 ranking failed the simple public-feature control, so no policy changed.
+The [search-budget screen](search-budget-results-2026-11-06.md) then completed
+32 paired games. Raising the node limit to 8,192 added 3,341 invalid search
+attempts and no feasible state, action or game change; that budget increase
+was retired. The [paired commands](experiment-quickstart.md) and public trace
+analyzer were verified on planner and neural-checkpoint smoke runs.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.
