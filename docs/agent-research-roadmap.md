@@ -150,9 +150,14 @@ then captured 96 games and 9,291 student observations, verified 36 selected
 public point routes, and obtained 24 TRAIN/12 label-validation blind judgments.
 It stopped **before fitting** because the 13 TRAIN raw-only judgments covered
 only END and one bank-trade parent root, short of the frozen three-kind gate.
-No pairwise or gameplay claim follows. The next distinct learning study uses
-the 6,215 TRAIN student observations and raw-planner root labels for full-actor
-cloning, with fresh validation and game boards and a game-strength gate.
+No pairwise or gameplay claim follows. The subsequent
+[large student-state cloning study](large-student-bc-results-2026-11-06.md)
+fit 3,809 raw-planner TRAIN roots in 832 updates, but fresh raw-root CE worsened,
+macro agreement rose only 0.00345 and 100 bank choices changed to END. It
+stopped before fitted gameplay. Qualify the unchanged raw teacher against H/GNT
+and native opponents before more cloning. A reviewed, factorized family/within-
+family action policy is a prospective representation study on new roles if the
+teacher qualifies; otherwise build a stronger public-information teacher.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -270,7 +275,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete, not promoted | [Exact resource-wise forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md): 268 archived public views matched v1/v2, fresh incremental p95 3.801 ms, 29 TRAIN changes, then 96 development games with raw/static/forecast all 11/32 wins. | Frozen plus-three-win gate failed; keep optional and test delayed-trade option value as a separate hypothesis. |
 | Stopped before fresh games | [Unified public continuation v2](experiments/unified-public-continuation-v2-2026-11-06/RESULT.md): exact-root parity 334/334 and p95 13.315 ms, but only two changed BUY→bank→city choices on two reused TRAIN boards versus required eight/four. | Preserve fact-verified routes; no teacher nomination or same-panel retuning. |
 | Stopped before fitting | [Broad raw-ranking pilot](broad-raw-ranking-pilot-results-2026-11-06.md): 96 games, 9,291 student observations, 36 engine-feasible blind pairs; TRAIN raw-only 13/10 boards but only two parent kinds versus required three. | Preserve sealed judgments; do not fit under that pilot. |
-| In progress | Full-actor raw-planner cloning on 6,215 TRAIN student observations, with fresh validation and complete-game evaluation. | Require actual choice improvement and opponent performance before any promotion; defer PPO. |
+| Stopped before fitted games | [Large student-state cloning](large-student-bc-results-2026-11-06.md): 832 updates on 3,809 raw-planner TRAIN roots; fresh CE worsened and bank→END dominated changed choices. | No promotion or same-panel retuning. Run the frozen raw-teacher strength ladder; condition new factorized-policy learning on teacher quality and fresh validation roles. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
