@@ -159,6 +159,17 @@ and native opponents before more cloning. A reviewed, factorized family/within-
 family action policy is a prospective representation study on new roles if the
 teacher qualifies; otherwise build a stronger public-information teacher.
 
+The [frozen raw-teacher Stage 1](experiments/teacher-strength-ladder-2026-11-06/RESULT.md)
+resolved all 192 H/GNT games but failed the required H margin: raw won 9/32,
+H won 7/32 and the required gain was four wins. Raw cleared the no-trade
+panel, but the joint gate stopped before native opponents. Do not use its
+unreviewed trade roots as a stronger-teacher target. The next prospective
+learning experiment ranks midgame trade/pass/BUY/card roots with paired
+complete continuations across public-consistent sampled worlds, abstaining
+when the evidence is unstable. A separate opening track searches the snake
+draft of placements. Both require fresh seeds and matched complete-game gates.
+The factorized actor remains isolated until a teacher qualifies.
+
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
   student reaches, preserving acceptable alternatives and ambiguity. Aggregate
@@ -166,10 +177,12 @@ teacher qualifies; otherwise build a stronger public-information teacher.
   universal quota. Phase balancing alone misses trade/pass confusion because both
   share a phase. Teachers are fallible candidate generators, not optimal oracles.
 - **Consequence features:** the small point-affordance treatment failed its
-  controlled learning screen. A separate 67-column public candidate-successor
-  branch passed mechanical TRAIN transition and exact-parent preflight, but has
-  no gameplay or learning benefit yet. Cross it with a qualified full-actor
-  objective only in a fresh, matched representation comparison.
+  controlled learning screen. The reviewed 68-column v3 public
+  [candidate-successor encoder](candidate-successor-encoder-preflight-2026-11-06.md)
+  passed mechanical TRAIN transition and exact-parent preflight, including
+  conservative road-award bounds, but has no gameplay or learning benefit yet.
+  Cross it with a qualified full-actor objective only in a fresh, matched
+  representation comparison.
 - **Shadow critic:** the bounded trainable-GRU test is now closed after failing
   its simple public-feature control. Future value-learning work needs a new,
   decision-relevant hypothesis and independent data. Teacher scores are not win
@@ -275,7 +288,9 @@ and six-player learning follow reliable standard four-player play.
 | Complete, not promoted | [Exact resource-wise forecast v3](public-one-round-resourcewise-v3-results-2026-11-06.md): 268 archived public views matched v1/v2, fresh incremental p95 3.801 ms, 29 TRAIN changes, then 96 development games with raw/static/forecast all 11/32 wins. | Frozen plus-three-win gate failed; keep optional and test delayed-trade option value as a separate hypothesis. |
 | Stopped before fresh games | [Unified public continuation v2](experiments/unified-public-continuation-v2-2026-11-06/RESULT.md): exact-root parity 334/334 and p95 13.315 ms, but only two changed BUY→bank→city choices on two reused TRAIN boards versus required eight/four. | Preserve fact-verified routes; no teacher nomination or same-panel retuning. |
 | Stopped before fitting | [Broad raw-ranking pilot](broad-raw-ranking-pilot-results-2026-11-06.md): 96 games, 9,291 student observations, 36 engine-feasible blind pairs; TRAIN raw-only 13/10 boards but only two parent kinds versus required three. | Preserve sealed judgments; do not fit under that pilot. |
-| Stopped before fitted games | [Large student-state cloning](large-student-bc-results-2026-11-06.md): 832 updates on 3,809 raw-planner TRAIN roots; fresh CE worsened and bank→END dominated changed choices. | No promotion or same-panel retuning. Run the frozen raw-teacher strength ladder; condition new factorized-policy learning on teacher quality and fresh validation roles. |
+| Stopped before fitted games | [Large student-state cloning](large-student-bc-results-2026-11-06.md): 832 updates on 3,809 raw-planner TRAIN roots; fresh CE worsened and bank→END dominated changed choices. | No promotion or same-panel retuning. |
+| Stopped before native games | [Raw-teacher Stage 1](experiments/teacher-strength-ladder-2026-11-06/RESULT.md): 192 resolved games; raw won 9/32 against H versus H's 7/32, below the frozen four-win margin, while clearing no-trade. | Build a stronger public-consistent counterfactual teacher and independently test opening search. No raw-label BC scale-up. |
+| Mechanical preflight, not trained | [68-column public successor v3](candidate-successor-encoder-preflight-2026-11-06.md): exact parent behavior, reviewed road-award bounds, 6,215 executed TRAIN lower-bound/guaranteed-win checks with zero mismatches. | Retain as an opt-in representation for a separately qualified teacher; no playing-strength claim. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
