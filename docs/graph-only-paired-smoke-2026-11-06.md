@@ -1,0 +1,7 @@
+# Neural-only paired runner: engine smoke
+
+The paired CLI now accepts a declared neural checkpoint as its reference without requiring a planner arm. An engine smoke used two independent policy copies loaded from the same seed-11 parent checkpoint (SHA-256 `b3aae32ac36dc55f8ae26ec4676cc289243a6c540b959e1f8aa9786e5ddd0258`) on fresh engineering board `159970001`, all four focal seats, against three H opponents, with no domestic offers and a 20,000-step cap. The input bound source SHA-256 `0eecf1850846cd16ac2f96f3a3f57ff8f231f4caa9784dfc2c40c9dbab0b481d` and runtime digest `90789ec1a608f8ad24e5f6a17352c4ef6349da84e89477f99875daea738b6493`.
+
+All eight games resolved in 6.53 seconds. The [saved analyzer result](../runs/engineering-graph-only-smoke-2026-11-06/outputs/paired-20261106T185322Z-a70ab5c8/analysis.json) verified the artifact digests, matched all four seat pairs, and found four identical public action traces across 826 captured candidate steps. Win and final VP differences were zero. This verifies checkpoint loading, independent recurrent policy copies, legal action execution, journaling, and neural-only analysis on this board. It is an engineering identity smoke, not a strength estimate.
+
+The input manifest, game journal, complete public step traces, run manifest, summary and analysis are copied into both local repositories. The ignored artifact [manifest](../runs/engineering-graph-only-smoke-2026-11-06/ARCHIVE-MANIFEST.json) binds six files / 415,703 bytes, SHA-256 `f822813b66ac0b2d567223015dfd4a711d7063490320371497423edcecb37bac`.

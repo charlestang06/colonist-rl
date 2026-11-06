@@ -27,7 +27,9 @@ no historical-policy pool.
 
 The control can itself be a `graph_checkpoint`: matched parent and trained
 checkpoints can run as a neural-only panel. The declared `reference_arm` runs
-first, and every checkpoint keeps its own exact SHA-256 binding.
+first, and every checkpoint keeps its own exact SHA-256 binding. A
+[one-board engine smoke](graph-only-paired-smoke-2026-11-06.md) verified this
+path with two identical parent checkpoint arms and matching public traces.
 
 Keep the hypothesis, changed configuration field, control, and stop rule in a
 small protocol before running. Begin with one excluded smoke board, then a
