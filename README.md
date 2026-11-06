@@ -19,11 +19,14 @@ primary advancement rule: every candidate won 2/16 against trading H. The requir
 new audited-data test remains next. The stable sparse-target fitter passed 43
 focused and 11 legacy checks plus independent source review. The complete-history
 cache repair passed engineering review on four saved
-games/361 inputs; main value collection and fitting remain unstarted.
+games/361 inputs. Main value collection stopped after 208 completed TRAIN games
+on a guard-registration failure; its 320-game cohort is incomplete and no fitting follows.
 The student collector recorded all 48 planned games and 4,729 own inputs, but its
 Root controller failed during final output accounting. Independent audit found
-the histories intact; a separate zero-query recovery remains pending. No new
-targets are approved for training.
+the histories intact; a separate zero-query recovery and independent metadata
+audit now pass for all 48 episodes / 9,458 strict envelope pairs. Fixed sampling
+selected 88 cases and retained eight empty slots; independent judging is starting.
+No new targets are approved for training.
 Earlier residual and placement studies found no reliable gain;
 the latest native focal pilot scored raw/VF/AB2 3/0/4 per 16.
 

@@ -22,9 +22,11 @@ all frozen experiment commitments and the user's separate [roadmap](roadmap.md).
    Keep adapter extraction, beliefs, action mapping and visible execution separate.
    Live Colonist capability and simulator strength require their own evidence.
 
-Next primary work is strict zero-query recovery of the 48 recorded student games,
-then the prepared independent case audit and frozen added-data-only comparison.
-The independent bounded lane completes the 320-game terminal-history study.
+Next primary work is the two-panel audit of 88 selected cases from the 48
+histories now accepted through separate zero-query recovery, then the frozen
+added-data-only comparison. All 96 selected-or-empty slots remain fixed. The independent terminal-history lane stopped after 208 TRAIN games
+on a guard-registration failure; assess that incomplete attempt before declaring
+any successor. No automatic retry or fitting follows.
 Rank fresh TRAIN failures to choose the following tactical/planning remedy. No
 new broad training run, model expansion or shaping is the default next step.
 
@@ -32,9 +34,10 @@ No candidate is promoted. The 384-game eligibility treatment failed its primary
 rule; each candidate won 2/16 against trading H. The focal raw/VF/AB2 pilot scored
 3/0/4 per 16 and establishes no superiority over both references. The limited
 17-reasonable/two-ambiguous audit cannot establish broad competence. All 48 student
-histories/4,729 own inputs survive a failed controller finalization; recovery,
-approved labels and data benefit remain unestablished. Main value collection and
-fitting remain unstarted. Engineering checks establish mechanisms, not strength.
+histories/4,729 own inputs survive a failed controller finalization. Separate
+recovery passed 9,458 strict pairs and independent metadata review; approved labels
+and data benefit remain unestablished. Main value collection is incomplete and
+fitting remains unstarted. Engineering checks establish mechanisms, not strength.
 See [current results](training-status-2026-11-05.md) for measured work and limits.
 
 Bank trades remain legal whenever the rules permit them. Strict GreedyNoTrade

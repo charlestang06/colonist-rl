@@ -42,12 +42,19 @@ trade counts and value prediction are supporting measurements.
   covered setup, bank/pass and robber only. It does not establish development-card,
   discard, domestic-response, race or endgame competence.
 - All 48 planned student games and 4,729 own inputs were saved. Finalization failed
-  on a controller temporary-file accounting race. Independent metadata checks
-  support recovery, but strict recovery, labels and the data-effect test remain
-  unfinished. Preserve the original failure.
+  on a controller temporary-file accounting race. A separate zero-query recovery
+  passed all 9,458 strict before/after pairs and independent metadata review. The
+  original failure remains. Fixed sampling selected 88 cases (59 TRAIN, 29 labelVAL)
+  and preserved eight empty slots. Independent first passes are starting; labels
+  and data benefit remain unestablished.
 - The sparse accepted-target fitter and the 361-input engineering cache repair
   passed their scoped checks. These are usable mechanisms, not evidence of a
   stronger player. No candidate is promoted.
+- The terminal-value collector produced 208 completed TRAIN games before block 53
+  failed its guard-registration handshake, before its game worker started. The
+  original 320-game cohort is rejected; no value fitting follows. Diagnose launch
+  accounting/timing and declare any successor separately, retaining the fixed
+  roles and original failure.
 
 ## Milestone 1: make the decisions recognizably good
 
@@ -195,9 +202,9 @@ path check and the existing harness suffice.
 
 | Priority | Next concrete deliverable | Advance or stop decision |
 |---|---|---|
-| Primary: use saved student experience | Finish strict zero-query recovery of all 48 histories; independently check it, then freeze the prepared 96 audit slots with isolated judge contexts. | Recovery grants no target approval. Audit targets and missing coverage before fitting. Never rerun gameplay merely to erase finalization failure. |
+| Primary: use saved student experience | Judge the 88 selected cases from the frozen 96-slot inventory in two independent panels, with isolated contexts and no choice/teacher reveal before both complete first passes. | Recovery grants no target approval. Audit targets and missing coverage before fitting. Never rerun gameplay merely to erase finalization failure. |
 | Primary: test better data | Complete the frozen added-data-only comparison with the reviewed sparse fitter, unchanged parent and equal-work old-data control. | Keep its original advancement rules. Report an insufficient target/coverage gate instead of replacing cases. A null result prompts diagnosis, not automatic scale-up. |
-| Independent: test longer consequences | Finish the value collector's narrow ownership/scanner corrections, then run the prepared 320-game study and frozen head comparisons within existing limits. | No main value games or fits are claimed yet. Prediction must pass before a separate policy deployment experiment. |
+| Independent: test longer consequences | Assess the stopped 320-game attempt and fix the demonstrated launch-timing bottleneck prospectively. Any successor must retain the fixed roles, account for all 320 games and preserve the original failure. | 208 completed TRAIN games are saved, not a complete accepted cohort. No automatic retry or fit. Prediction must pass before a separate policy deployment experiment. |
 | Next decision remedy | Rank fresh TRAIN errors by recurrence, strategic cost and confidence; choose one tactical repair or planning experiment. | Audit the action change and test fresh paired games. Preserve a negative result and change the hypothesis. |
 | After credible competence | Freeze the best candidate and run focal VF/AB comparisons and independent confirmation. | Promote only on the declared primary strength gates. PPO is not a prerequisite. |
 

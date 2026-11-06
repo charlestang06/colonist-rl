@@ -7,7 +7,7 @@ audited targets and isolated repairs, with bounded outcome-value work alongside 
 No authentic VF/AB superiority or new model promotion
 is established.
 
-## Latest preparation: cache repaired; sparse fitter verified
+## Student collection and accepted technical recovery
 
 The actual current-student collection recorded all 48 fixed games, but Root session
 15715 exited 125 after 106.952 seconds. Output accounting raced with removal of
@@ -23,11 +23,19 @@ histories and raw journals survive; only final overlay/evaluator/result packagin
 is missing. Global latency aggregates and its missing normal guard finish are
 not reconstructed as facts. Tensor/codec assertions remain producer-bound.
 
-A separately reviewed recovery will retain all 48 original episodes and roles,
-strictly decode/re-export 9,458 before/after envelopes, and derive the missing
-teacher overlay from durable journals. It permits zero new games, model loads,
-NN/teacher queries or fits. Recovery has not run; no slots, judgments or targets
-are approved. The original failure cannot become an original-protocol PASS.
+The separate guarded recovery completed with Root session 22555 exit 0 in 56.854 seconds.
+It strictly decoded and reexported all 9,458 before/after envelopes and derived the
+missing 579-call teacher overlay from durable journals. No new model load, NN
+forward, teacher query, game, fit or backward occurred. All 241 live samples met
+one OS thread and RSS below 2 GiB; peak RSS was 251,658,240 bytes. Independent
+saved-metadata audit passed all 48 roles/source pointers, 4,729 inputs, 1,719 forced
+steps, menus/actions/prefixes, completions, the original 1,294 records, 49 source
+files, 17,978 runtime hashes and the opaque parent.
+Strict decoding/tensor assertions remain producer-bound; the reviewer did not
+repeat them. Root accepted the separately named technical corpus. Original 125/-9
+remains failed; missing original finalization/latency remains unknown. No sampling,
+judgments, approved targets or new fits were granted by recovery.
+[Recovery empirical review](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/corpus-recovery-001/independent-empirical-audit-001/EMPIRICAL-REVIEW.md).
 [Failed-attempt assessment](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/independent-audit-001/failed-assessment-001/FAILED-ATTEMPT.md),
 [prospective recovery](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/independent-audit-001/failed-assessment-001/RECOVERY-PROTOCOL-PROPOSAL.md).
 
@@ -63,28 +71,53 @@ or strength games. No checkpoint query or real-data study fit occurred, and the
 historical strict-OS1 HOLD remains unchanged.
 [Root verification](../runs/swarm-2026-11-04/agent-research/approved-target-loss-integration-001/ROOT-VERIFICATION.json).
 
-The corrected current-student experiment design passed independent review; it
-still requires collection, label audit and its fixed added-data-only comparison.
-The separate 320-game terminal-history collector passed 17 isolated stdlib/stub
-tests in Root session 53863; no real project/model/engine was imported by that
-runner. Prelaunch review then identified a codec-readiness gap: serialization alone
-does not establish that saved inputs pass the later strict decoder. A minimal
-successor must verify decode/re-export identity while planning on the original
-view objects. The original core/evidence remain preserved; no actual collection
-or automatic continuation is authorized by those stub results.
+The corrected current-student design retains its fixed 96 slots, two independent
+blind first passes, explicit TRAIN/labelVAL target approvals and matched sparse
+fit/data-effect gates. Actual sampling session 23059 exited zero after 38.482
+seconds, with all 183 live samples at one OS thread and peak RSS 1,459,765,248
+bytes below 2 GiB. It reused strict validity from unchanged recovered histories
+without new codec, model, teacher or game queries. All 96 slots were frozen:
+59 TRAIN and 29 labelVAL cases selected, eight slots empty without replacement.
+Every stratum is represented; this is occupancy coverage, not sound decisions.
 
-Its fixed 64 TRAIN/16 VAL board reservation passed a scoped metadata review;
-the actual runtime master is still unfrozen, with no main games collected or
-value heads fit. The student collector and controller passed source review and
-isolated tests before the actual failed finalization reported above. These are
-preparation/data-readiness milestones, not
-evidence of better decisions.
-[Value collector handoff](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/implementation-001/ROOT-HANDOFF.md),
-[reservation scope](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/board-reservation-001/REPORT.md),
-[student collector design](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/SPEC.md).
-The [canonical roadmap](agent-research-roadmap.md) defines the
-new order: safe sparse learning, audited current-student data, targeted tactical
-repair and verified longer planning; PPO follows demonstrated competence.
+The 88 cases are published separately to 22 context reservations, 11 per panel,
+at most eight cases per context. Actual fresh judge contexts are starting.
+Both panels have not yet been committed together; no reveal, target approval
+or fit exists yet. Independent saved-
+metadata review passed all 96 slots and 352 public files.
+[Slot inventory](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/audit-sampling-001/Root-private-001/slots.json).
+Packet dispatch permits at most one anchor per episode per fresh context,
+with separate panels, preventing a later prefix from revealing an earlier choice.
+Both complete panels must be committed before any reveal. These preparation
+checks establish neither label quality nor broad decision competence.
+
+## Terminal-value collection: 208 saved games; cohort incomplete
+
+The reviewed core 002/controller 003 passed their scoped source checks and Root's
+27 isolated controller tests before actual collection. Metadata freeze initially
+rejected a still-writable task-owned capacity addendum before creating outputs;
+Root verified its accepted hash, removed write bits and recorded that rejection.
+The subsequent immutable freeze succeeded without changing study content.
+
+Actual Root session 90337 exited 1 after 418.261 seconds. The controller launched 53 blocks,
+validated 52 successful blocks / 208 completed TRAIN games, then stopped admission on
+TRAIN-053 guard 125. That guard failed its supervisor-registration handshake before
+starting a game worker; 27 later blocks were unstarted. All 320 games are required:
+no validation games were collected, the cohort remains rejected, and no cache,
+value head or fitting follows. Missing games stay null, never losses. Completed
+histories and the original failure are preserved.
+
+The last guard failure file precedes its registry publication by about 114 ms.
+The launch path performs cumulative evidence scans before and after spawning,
+with the registration deadline measured from an earlier timestamp. Independent
+closed-metadata profiling supports this timing mechanism: one accounting call
+took 1.211 seconds, including 1.142 seconds of repeated per-job classification
+and 0.069 seconds of tree scanning. This is a present closed-run sample, not
+exact historical instrumentation. A narrow prospective correction is in
+preparation; no continuation or replacement run has occurred. Any successor needs its own declared
+protocol and acceptance while preserving original roles and execution failure.
+[Original value terminal receipt](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/Root-terminal-run-001.json),
+[original summary](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/run-001/summary.json).
 
 ## Fixed-feature gameplay: execution accepted, primary advancement failed
 
