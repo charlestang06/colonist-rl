@@ -33,6 +33,12 @@ point that turn, but one chose a different city. It tied the old purchase
 option at 8/32 wins and lost 0.0625 mean VP on eight boards, so its frozen
 advancement rule retired the configuration. The source remains on a local
 isolated branch for reproduction, outside the working player.
+The [public one-round production option](public-one-round-production-results-2026-11-06.md)
+then produced 17 changed decisions across six boards in a 32-game TRAIN
+capture. Its incremental eligible-decision p95 was 51.843 ms against a frozen
+25 ms limit, so the study stopped before any smoke or fresh game screen. The
+exact public probe and choice-blind diagnostic are archived; the source remains
+on an isolated branch. A separate prospective batched-throughput study is active.
 The current strategy permits bounded parallel learning investigations; extensive
 PPO remains deferred pending a specific strategic need. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.

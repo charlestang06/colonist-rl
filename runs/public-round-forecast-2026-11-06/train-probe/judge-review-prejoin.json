@@ -1,0 +1,92 @@
+{
+  "role": "choice_blind_public_conceptual_review",
+  "packet_sha256": "6a73f07cf38cda6591b0aa21dad5de83e66c76298c85f04e3e760ace60d67c0a",
+  "cards_sha256": "724dd0b7f39c79f80806cea922851a9d3fa7150137d35bda5d35010f023e4cce",
+  "reviewer_scope": "Review used only the sealed public before views and exact legal menus; it did not view arm identities, selected roots, arm scores, probabilities, or later outcomes.",
+  "cases": [
+    {
+      "id": "69224227e482dbf7",
+      "preferred_indices": [1],
+      "also_plausible_indices": [0],
+      "assessment": "The city route needs wheat and ore; trading four ore for wheat shifts the remaining deficit to ore, which the visible board produces more often. END preserves ore for later cities. No connected settlement site is currently open.",
+      "confidence": "medium"
+    },
+    {
+      "id": "3f78ab8f64cb3144",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Brick is absent from both hand and visible own production, while sheep is the four-card surplus; sheep-for-brick is a coherent point route.",
+      "confidence": "high"
+    },
+    {
+      "id": "f41aa9053a48e869",
+      "preferred_indices": [3, 7],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists and brick is missing. Either wheat-for-brick or sheep-for-brick converts a four-card surplus into that missing resource; both traded resources are produced by current buildings.",
+      "confidence": "medium"
+    },
+    {
+      "id": "f8d9dc928f7ac4bc",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Sheep-for-brick addresses the only resource absent from the settlement recipe, and visible sheep production can replace the spent cards.",
+      "confidence": "high"
+    },
+    {
+      "id": "2c1b6d37b547c76d",
+      "preferred_indices": [4],
+      "also_plausible_indices": [0],
+      "assessment": "Two connected settlement sites exist. Wood is absent from hand and visible own production; brick-for-wood addresses the binding resource, with brick production visible on 10.",
+      "confidence": "high"
+    },
+    {
+      "id": "ed9781af715f4269",
+      "preferred_indices": [4],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Wood is absent from hand and own production; wheat-for-wood uses the four-card surplus, and wheat is replenished on 3 or 8.",
+      "confidence": "high"
+    },
+    {
+      "id": "673681630da9b160",
+      "preferred_indices": [4],
+      "also_plausible_indices": [0],
+      "assessment": "The same one-site wood shortage persists with an extra sheep. Wheat-for-wood keeps the settlement route open while visible wheat production can replace the spent cards.",
+      "confidence": "high"
+    },
+    {
+      "id": "36f691917b26f4ca",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Brick is absent from hand and own production. Wheat-for-brick can pair with visible wood and wheat production to reach a settlement.",
+      "confidence": "medium"
+    },
+    {
+      "id": "03d99ce4c82092d9",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists, wood is already held, and brick remains absent from visible own production. Wheat-for-brick is a coherent point route.",
+      "confidence": "high"
+    },
+    {
+      "id": "760f9bd7b795802a",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. With wood and sheep stocked but no brick production, wheat-for-brick addresses the settlement deficit.",
+      "confidence": "high"
+    },
+    {
+      "id": "5c8bac407ae34c00",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Brick can arrive on 4, but wheat is produced on 8 and 9; using a wheat surplus to secure brick now is plausible, while END is also defensible.",
+      "confidence": "medium"
+    },
+    {
+      "id": "ba8f5045c8ffb2c8",
+      "preferred_indices": [3],
+      "also_plausible_indices": [0],
+      "assessment": "A connected settlement site exists. Brick is absent from hand and own production, while sheep is the three-card surplus at a port ratio; sheep-for-brick supports a settlement after replenishing sheep.",
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "all_games_resolved": true,
+  "artifact_sha256": {
+    "blind-first12.json": "cfc43b55c3ee6d52d64fda73bbe36a3aea27e8156d7070f5ae0ded638c3ed31a",
+    "decision-audit.jsonl": "a49ed39e572b71f227f35ead5f94f0186ceb2217d15c476e305e0ac78212cb87",
+    "games.jsonl": "5407ffa96f949d82da43fc67d092f5c7f0faf5f6fb0bfbd944c0cdd4f532e11d",
+    "probe-manifest.json": "3bda9a5978d0b31aaa67bfe19376036b1774f9bf5b1b654d2f14b5000b50d227",
+    "raw-before.jsonl": "8c3dccc5fc2f474b03218c0e2779a2a7b5433cab22af99bd4e7bfcf1f68a3cd8"
+  },
+  "blind_review_gate_pending": true,
+  "board_reports": [
+    {
+      "board_seed": 138340000,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340001,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340002,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340003,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340004,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340005,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340006,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    },
+    {
+      "board_seed": 138340007,
+      "games": 4,
+      "resolved_games": 4,
+      "status": "complete",
+      "unresolved_games": 0
+    }
+  ],
+  "mechanical": {
+    "capture_count": 129,
+    "changed_board_count": 6,
+    "eligible_count": 127,
+    "eligible_incremental_p95_ms": 51.8427126,
+    "forecast_status_counts": {
+      "ambiguous_bank": 1,
+      "ineligible_parent": 2,
+      "insufficient_gain": 109,
+      "public_round_forecast_trade": 17
+    },
+    "forecast_vs_static_changes": 17,
+    "identity_loop_latency_gate_pass": false,
+    "max_anticipatory_trades_per_turn": 1,
+    "replay_mismatches": 0,
+    "root_identity_errors": 0,
+    "search_work_mismatches": 0,
+    "yield_gate_pass": true
+  },
+  "mechanical_gate_pass": false,
+  "role": "train_probe",
+  "source_after_sha256": "dfd89d5c0a6b190240f2889d3bce3368bb6383e5cd2a332ff580ee054d8921f4",
+  "source_before_sha256": "dfd89d5c0a6b190240f2889d3bce3368bb6383e5cd2a332ff580ee054d8921f4",
+  "source_unchanged": true
+}
