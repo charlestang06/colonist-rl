@@ -47,7 +47,8 @@ Catanatron 3.3.0+git.82aae93ab1f7c267218be0566df573ce477ec3d8.
   It consumes the shared player-observable contract, including its own private
   hand/cards and public resource beliefs, and returns an original legal action.
 - Raw: PublicTurnPlannerPolicy, depth 6/nodes 2048/beam 24/geometry 100000/seed 11,
-  evaluatorNone, explicit gain margin 10000, winning-prefix defaultfalse; existing
+  evaluator None and explicit gain margin 10000. Frozen source predates the later
+  optional winning-prefix helper; existing
   single-plan adapter. It uses H fallbacks for unsupported planning decisions.
 - NN: exact seed 11 frozen BC parent, hidden size 32 graph_consequence_v1/hand_recipe.
   Parent byte SHA256 b3aae32ac36dc55f8ae26ec4676cc289243a6c540b959e1f8aa9786e5ddd0258;
@@ -99,11 +100,15 @@ parent bytes and884 saved OS1 samples (peak741,277,696 bytes; maximum overlap2).
 Tensor/engine/live-object fidelity remains reviewed-source/producer evidence;
 independent audit did not reload tensors, replay games or query a codec/policy.
 
-Next: separately freeze a direct raw/VF/AB comparison on fresh boards, matching
-backgrounds and offer regime, with declared sample, effect, uncertainty and budget.
-Evaluate raw as a challenger without retrospectively passing this nomination gate.
-This answers the strength goal more directly than repairing H merely because it
-was the fixed fallback. Specific economic concerns need separate relevant TRAIN
-evidence before any treatment; EVAL packets never become targets. No automatic
-neural training, shaping or value-head deployment follows. VF/AB superiority and
-broad competence remain unestablished; final boards remain untouched.
+The separate [32-board native comparison](native-reference-results-2026-11-06.md)
+now completed 384 games: raw 32/128, VF 19/128, AB 26/128. Both primary intervals
+cross zero and the qualification gate failed. No confirmation, extension or model
+promotion follows. This does not change the earlier screen's frozen selection.
+
+Next: exact TRAIN engine factcheck and a bounded city-funding-trade-before-purchase
+experiment, motivated by 18 resource-completion opportunities across 15 TRAIN
+episodes. These are alternatives, not optimality labels; preserve the later-city
+and other adverse controls. The parent/default behavior remains unchanged until
+fresh gameplay justifies advancement. No automatic neural training, shaping or
+value-head deployment follows. Broad competence and VF/AB superiority remain
+unestablished; final boards remain untouched.

@@ -12,11 +12,17 @@ conservative rule. H remains the provisional operational comparison control unde
 the predeclared fallback; raw is the leading unpromoted strength challenger.
 [Policy card and decision review](working-player-card.md).
 
-1. Next, separately freeze a direct raw/VF/AB focal comparison on fresh boards,
-   all seats and identical three-H backgrounds/no-offer conditions. This targets
-   the actual strength goal. Do not expand the old screen or pretend its gate
-   passed. A separately confirmed superiority claim still requires both reference
-   contrasts and disjoint-board replication.
+The separate [native comparison](native-reference-results-2026-11-06.md) completed
+384 games on 32 fresh boards: raw 32/128, VF 19/128, AB 26/128. Independent review
+passed execution and saved records; both primary intervals cross zero. The gate
+failed, so no automatic extension, confirmation or model promotion follows.
+
+1. Next, certify a TRAIN bank-trade/city continuation and test one bounded
+   city-funding-trade-before-purchase intervention. Raw's unsupported BUY fallback
+   bypasses trade/build search. First-64-TRAIN diagnosis found 18 one-bank city
+   opportunities across 15 episodes; all known own VP <=8. These are not optimality
+   labels. Preserve the later-city adverse case and fresh paired gameplay before
+   any advancement. This is a distinct mechanism from the retired win-only path.
 2. Use relevant TRAIN evidence to diagnose weaknesses when the comparison or
    working-player behavior demonstrates a need. EVAL diagnostics flagged resource
    conversion, discard complementarity and Knight timing; they are explanatory

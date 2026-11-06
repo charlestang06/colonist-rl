@@ -8,8 +8,10 @@ complete live-game execution. The [revised roadmap](docs/agent-research-roadmap.
 separates those three claims. The first matched comparison completed 96 games:
 raw 15/32 wins, persistent H 5/32, neural parent 2/32. The [working-player card](docs/working-player-card.md) keeps H
 as provisional control under the fixed fallback and raw as the leading unpromoted
-challenger. Next compare raw directly with authentic VF/AB under a separate frozen
-protocol; diagnose weaknesses and test targeted changes using relevant TRAIN evidence.
+challenger. The separate [native comparison](docs/native-reference-results-2026-11-06.md)
+completed 384 games: raw 32/128, VF 19/128, AB 26/128. Its superiority-qualification
+gate failed. Next certify and test a targeted city-funding trade before purchase
+from relevant TRAIN evidence; no automatic extension or training run follows.
 
 Heuristics, bounded planning and learned components can cooperate. BC and PPO
 are optional tools; PPO remains deferred until competence and an identified

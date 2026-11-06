@@ -12,14 +12,19 @@
 
 ## Execution status, 2026-11-06
 
-Tasks 1 and 2 complete: 96 resolved games, 24 zero-exit guards, independent saved-record
-review and 55 frozen plus 3 posthoc diagnostic decisions. [Policy card](../../working-player-card.md)
-records H as provisional control and raw as unpromoted challenger. No unique arm
-passed the conservative gate. Task 3 is deferred: the next separate investment is a
-direct raw/VF/AB comparison, because the strong raw development signal should be
-tested against the actual strength objective before repairing the fallback H.
-No frozen protocol, role or advancement rule is changed. If that comparison is
-uninformative, it costs one bounded study before further TRAIN diagnosis.
+Tasks 1 and 2 complete: 96 resolved games, 24 zero-exit guards, independent saved
+review and 55 frozen plus 3 posthoc diagnostic decisions. The [policy card](../../working-player-card.md)
+keeps H as provisional control and raw as unpromoted challenger. The subsequent
+[native comparison](../../native-reference-results-2026-11-06.md) completed 384 games
+(raw 32/128, VF 19/128, AB 26/128), but failed its qualification gate. No automatic
+extension or confirmation follows.
+
+Task 3 is in progress on the raw challenger's mechanism: first-64-TRAIN diagnosis
+found 18 one-bank city-funding alternatives across 15 episodes before unsupported
+BUY fallbacks. Root checked eight public witnesses; no optimality targets or fit
+were produced. Exact engine factcheck, intervention and fresh gameplay remain.
+This follows the earlier ruling to investigate raw's strength signal before
+repairing H merely because it won the fixed operational fallback.
 
 ## Global constraints
 
@@ -72,12 +77,12 @@ uninformative, it costs one bounded study before further TRAIN diagnosis.
 
 **Create:** one bounded diagnosis note and a separate successor experiment protocol only after the mechanism is identified. No general annotation framework.
 
-**Consumes:** Task 2 working-control identity, legal alternatives and allowed TRAIN evidence.
+**Consumes:** Task 2 policy identities, the raw challenger selected for strength work, legal alternatives and permitted TRAIN evidence.
 
 **Produces:** one question of the form “changing this mechanism should improve these decisions because ...”, with a named control, affected cases, adverse cases, compute budget and fresh-game advance/stop rule.
 
-- [ ] Verify that existing TRAIN examples exercise the nominated player's mechanism; otherwise collect only the bounded histories needed for diagnosis under a separate declared budget.
-- [ ] Rank observed errors by confidence, frequency and likely game cost. Include reasonable passes, declined trades and uncertain choices. A single certain costly mechanism can justify a narrow repair; no arbitrary minimum label quota applies to every intervention.
+- [x] Verify that existing TRAIN examples exercise the selected raw challenger's mechanism; otherwise collect only the bounded histories needed for diagnosis under a separate declared budget.
+- [x] Rank observed opportunities by confidence, frequency and likely game cost. Include reasonable passes, declined trades and uncertain choices. A single certain costly mechanism can justify a narrow repair; no arbitrary minimum label quota applies to every intervention.
 - [ ] Inspect legality, encoding and labels first where implicated; inspect gradients only for a learned component. Choose a targeted rule, consequence feature, bounded search or audited learning intervention that addresses the actual cause.
 - [ ] Define meaningful affected-path regression and adverse cases, inspect the actual changed decisions, then run fresh paired gameplay under the successor's frozen rule.
 - [ ] Retain, revise or retire explicitly. Add no automatic larger fit, value lane, PPO run or data-generation queue.

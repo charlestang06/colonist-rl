@@ -4,13 +4,16 @@ The [canonical roadmap](agent-research-roadmap.md) was reset on 2026-11-06:
 nominate one working public-information player, improve consequential decisions,
 then establish reproducible VF/AB superiority and faithful live execution.
 The matched three-arm screen now completed 96 games: persistent H 5/32, raw 15/32,
-neural parent 2/32. All 24guarded jobs exited zero; independent saved-record review
-passed all 96 games and9,520 own inputs. No unique stronger arm passed the frozen
-conservative rule. H remains provisional control; raw is the next direct VF/AB
+neural parent 2/32. All 24 guarded jobs exited zero; independent saved-record review
+passed all 96 games and 9,520 own inputs. No unique stronger arm passed the frozen
+conservative rule. H remains provisional control; raw remains the unpromoted strength
 challenger. [Working-player card](working-player-card.md) records identities,
 latency, diagnostic judgments, missing coverage and uncertainty. No new fit,
-TRAIN labels or model promotion occurred. The separate native comparison is not
-yet frozen or executed.
+TRAIN labels or model promotion occurred. The separate
+[native comparison](native-reference-results-2026-11-06.md) then completed 384 games: raw 32/128, VF 19/128, AB 26/128. Its gate failed; both primary
+intervals cross zero. There is no automatic extension, confirmation or promotion.
+Relevant TRAIN diagnosis now identifies a purchase-before-trade/build planning
+gap for bounded engine factcheck and intervention testing; no fit has started.
 BC is optional; PPO remains deferred. No broad heuristic-competence claim,
 authentic VF/AB superiority or new model promotion is established.
 All results below retain their original experimental scope and gates.

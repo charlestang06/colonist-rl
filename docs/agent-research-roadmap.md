@@ -185,7 +185,8 @@ four-player play.
 | Order | Deliverable | Boundary |
 |---|---|---|
 | Complete | Three-arm screen and [policy card](working-player-card.md). |96completegames; H 5/raw 15/NN 2; no unique stronger arm, no neural promotion. |
-| Next | Separately freeze a direct raw challenger versus authentic VF/AB comparison. | Fresh all-seat paired boards, identical backgrounds/no-offer regime, declared effect/uncertainty/budget; no extension or reinterpretation of the completed screen. |
+| Complete | [Dedicated native comparison](native-reference-results-2026-11-06.md): 384 games, 32 fresh boards/all seats, raw 32/128, VF 19/128, AB 26/128. | Gate failed; both intervals cross zero. No confirmation, automatic extension or model promotion. |
+| Next | Certify a TRAIN bank-trade/city continuation, then test a bounded city-funding-trade-before-purchase intervention. | Eighteen public opportunities across 15 TRAIN episodes, not optimality labels. Preserve adverse controls, defaults and fresh-game advancement rules. |
 | Following diagnosed need | Confirm consequential weaknesses in relevant TRAIN decisions, then test one remedy. | EVAL concerns remain explanatory; affected-path checks, actual choices and fresh gameplay decide retention. No arbitrary universal label quota or automatic fit. |
 | 4 | Broader competence, strategic improvement and direct VF/AB confirmation as evidence warrants. | No automatic jump to PPO or large data generation. |
 
