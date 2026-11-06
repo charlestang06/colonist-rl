@@ -3,14 +3,15 @@
 Local Catan agent research with public observations, learned policies, value-guided
 search, resource beliefs and independent trade model plug-ins.
 
-The goal is a strong player-observable Catan decision maker: demonstrate sensible
-heuristic-level play, then reproducibly outperform authentic VF/AB references in
-complete games. The [research roadmap](docs/agent-research-roadmap.md) starts with
-costly decisions in fresh student games, trustworthy teaching targets and one
-controlled repair at a time. Terminal-outcome value learning is a separate bounded
-experiment; longer public search follows verified tactical coverage. BC is optional;
-PPO and new reward shaping follow demonstrated competence and a specific need.
-Adapters share the Observation/Action contract while learning gets priority.
+The goal is an intelligent player-observable Catan decision maker that reproducibly
+outperforms authentic VF and AB references in complete games. The
+[revised roadmap](docs/agent-research-roadmap.md) sets four milestones: reliable
+heuristic-level decisions, better planning and consequence estimates, demonstrated
+strength against harder opponents, and faithful adapter deployment. Research
+starts with costly mistakes in current-student games and tests one remedy at a
+time. Behavioral cloning, public search, value learning and PPO are candidate
+methods; none is the goal. PPO and new reward shaping remain deferred until
+competence and a specific need are demonstrated.
 
 The [current results](docs/training-status-2026-11-05.md) show no established VF/AB
 superiority. The 384-game feature comparison passed integrity review but failed its
@@ -91,7 +92,7 @@ with disclosed discard/trade shims and independent planning RNG. Small exposed-b
 reference profiles are recorded, while broader candidate comparisons remain
 pending. Their state never enters learner or teacher inputs. This asymmetric
 benchmark does not establish equal-information superiority.
-See the [native benchmark milestone](docs/agent-research-roadmap.md#how-an-intervention-earns-more-resources).
+See the [native benchmark milestone](docs/agent-research-roadmap.md#milestone-3-exceed-stronger-opponents-reproducibly).
 
 The learner cannot initiate or counter player trades in v1. It can respond to
 incoming offers, and bank/port trades remain ordinary actions. Scripted opponents

@@ -1,50 +1,49 @@
 # Strength objective and next work
 
-Direction revised 2026-11-06. Build a strong player-observable Catan decision maker:
-first demonstrate sensible heuristic-level play, then reproducible complete-game
-superiority over authentic pinned VF and AB. The [canonical roadmap](agent-research-roadmap.md)
-defines the goal, execution order, evidence gates and adapter boundaries.
+Direction revised 2026-11-06. The [canonical roadmap](agent-research-roadmap.md)
+now defines the full goal, four milestones, evidence gates and execution queue.
+Build an intelligent Catan decision maker from its player's observations, then
+reproducibly outperform authentic pinned VF and AB in complete games. Preserve
+all frozen experiment commitments and the user's separate [roadmap](roadmap.md).
 
-The main loop is fresh student games, public decision diagnosis, trustworthy
-teaching targets, one isolated repair and matched gameplay. Check the teacher
-rather than treating imitation accuracy as quality. Bank trades stay legal;
-GreedyNoTrade deliberately declines them. Preserve useful passes, acceptable
-alternatives and ambiguous judgments. Cover placement, trades/build/pass,
-domestic responses, robber/discard, development-card buying and play, road/army
-races and VP/endgame. Missing coverage prevents a broad competence claim.
+1. Establish reliably good decisions and heuristic-level play. Diagnose costly
+   mistakes in student-reached states, audit the teacher and legal alternatives,
+   and test one targeted remedy. Cover placement; bank/build/pass; domestic
+   responses; robber/discard; development-card purchase and play; road/army races;
+   and VP/endgame. Missing coverage stays unknown.
+2. Improve longer consequences with bounded public planning and the independent
+   terminal-outcome value experiment. Prediction gains require a separate gameplay
+   deployment test. Neither mechanism depends on completing PPO or more BC.
+3. Advance through harder opponents with a fixed evaluation panel. Compare the
+   best credible candidate directly with focal VF/AB, rotate all seats, account
+   for board-level uncertainty and replicate on fresh boards. PPO is optional
+   after competence and an identified strategic limitation.
+4. Transfer the decision maker through the shared Observation/Action contract.
+   Keep adapter extraction, beliefs, action mapping and visible execution separate.
+   Live Colonist capability and simulator strength require their own evidence.
 
-Next: recover/validate the recorded current-student corpus, audit its cases and run the frozen added-data-only
-comparison using the reviewed sparse fitter. In a separate bounded lane, complete the
-role-aware terminal-history collector and its reviewed 320-game schedule; test
-value prediction before policy deployment. A small tactical repair from fresh
-TRAIN failures can proceed alongside these experiments; it need not wait for BC.
-Validate/profile public cross-turn transitions before larger search. BC is optional.
-Compare the strongest competent candidate directly with VF/AB; PPO is not a
-prerequisite. PPO and new shaping follow demonstrated competence and a specific
-hypothesis. Maintain adapters behind the common Observation/Action
-contract while learning gets priority.
+Next primary work is strict zero-query recovery of the 48 recorded student games,
+then the prepared independent case audit and frozen added-data-only comparison.
+The independent bounded lane completes the 320-game terminal-history study.
+Rank fresh TRAIN failures to choose the following tactical/planning remedy. No
+new broad training run, model expansion or shaping is the default next step.
 
-No candidate is promoted. The 384-game eligibility comparison failed its primary
-rule: every candidate won 2/16 against trading H. The explanatory EVAL audit's
-17 reasonable/two ambiguous unique cases covered setup/bank/robber only. The
-native focal pilot scored raw/VF/AB2 3/0/4 per 16, which establishes no superiority
-over both references. These exposed data remain outside training.
+No candidate is promoted. The 384-game eligibility treatment failed its primary
+rule; each candidate won 2/16 against trading H. The focal raw/VF/AB2 pilot scored
+3/0/4 per 16 and establishes no superiority over both references. The limited
+17-reasonable/two-ambiguous audit cannot establish broad competence. All 48 student
+histories/4,729 own inputs survive a failed controller finalization; recovery,
+approved labels and data benefit remain unestablished. Main value collection and
+fitting remain unstarted. Engineering checks establish mechanisms, not strength.
+See [current results](training-status-2026-11-05.md) for measured work and limits.
 
-The separate complete-history cache repair passed engineering review on four
-saved games/361 inputs, preserving the first failed attempt. Main value collection
-and fitting remain unstarted. The sparse fitter's offset issue is repaired;
-43 focused and 11 legacy tests passed with independent source review.
-Neither result establishes stronger play. [Current status](training-status-2026-11-05.md)
-records evidence and limitations.
+Bank trades remain legal whenever the rules permit them. Strict GreedyNoTrade
+intentionally declines them; trading H is a separate control. Audit useful trades
+and sensible passes. Resource scarcity and trade valuations are state-dependent
+hypotheses. New reward shaping requires an isolated test of a demonstrated problem;
+trade frequency or VP cannot rescue a failed winning comparison.
 
-The student collector recorded all 48 fixed games/4,729 own inputs. Its Root
-controller failed on a temporary-file accounting race after gameplay completed;
-the original run stays failed. Independent metadata audit supports a separate
-zero-query corpus recovery. No case judgments, approved targets or new fits exist.
-
-Retire unchanged failed interventions. Compare on fresh boards, rotate every seat,
-retain strict GNT/trading-H controls and separate focal-native benchmarks from
-three-native stress panels. Scale after a primary measured benefit. Keep final
-boards `123100000..123100063` and legacy finals untouched until confirmation is
-frozen. [Historical results](training-history-through-checkpoint08.md) and
-[previous roadmaps](../runs/swarm-2026-11-04/research-roadmap-history/) remain available.
+Keep final boards `123100000..123100063` and legacy finals untouched until a frozen
+confirmation. Preserve failures, nulls, scoped resource HOLDs and exposed EVAL
+roles. Reuse the existing harness and applicable reviews. Report actual collected
+games, audited labels, fitted updates and strength results separately.
