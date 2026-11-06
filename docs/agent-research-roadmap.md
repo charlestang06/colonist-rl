@@ -170,6 +170,13 @@ when the evidence is unstable. A separate opening track searches the snake
 draft of placements. Both require fresh seeds and matched complete-game gates.
 The factorized actor remains isolated until a teacher qualifies.
 
+The [opening draft search](experiments/opening-draft-search-2026-11-06/RESULT.md)
+passed an eight-board pilot (+8 wins of 32) but failed its independent
+16-board confirmation: both arms won 23/64 games, despite +0.28125 mean VP
+for the search. Its frozen win and bootstrap gates failed. Keep the opening
+policy isolated. A new opening attempt must change the value mechanism and
+use fresh board roles; do not adjust this surrogate on confirmation boards.
+
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
   student reaches, preserving acceptable alternatives and ambiguity. Aggregate
