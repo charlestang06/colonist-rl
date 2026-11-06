@@ -43,6 +43,12 @@ PYTHONPATH=src python -m colonist_rl.experiment_cli \
 PYTHONPATH=src python -m colonist_rl.experiment_analysis \
   --run-dir /absolute/path/to/experiment-runs/paired-... \
   > /absolute/path/to/analysis.json
+
+# Add first-divergence turn paths when candidate steps were captured.
+PYTHONPATH=src python -m colonist_rl.experiment_analysis \
+  --run-dir /absolute/path/to/experiment-runs/paired-... \
+  --followthrough --detail-limit 32 \
+  > /absolute/path/to/followthrough-analysis.json
 ```
 
 The CLI prints the new run directory. It writes `manifest.json`, an append-only
@@ -64,6 +70,19 @@ first diverged, not which choice was optimal. The `search_work` section keeps
 searched-decision latency and reason counts separate from latency over all
 policy selections. A lower attempted-node count alone is not a runtime gain;
 compare timing and coverage on the same boards.
+
+The optional `--followthrough` report uses the same verified saved artifacts.
+For each matched seat whose **first** divergence is a different action in the
+same captured state on the focal player's own turn, it records both action
+sequences through that turn, their first city or settlement, whether the next
+action is a point build, and their known victory points at a recorded turn end.
+The aggregate covers every eligible pair even when `--detail-limit` omits case
+details; it reports the eligible, omitted, complete and incomplete counts.
+Known turn-end points are `null` if capture ends without an `END_TURN`, a
+recorded later turn, or termination. Setup and opponent-turn divergences are
+unassessed. Final saved wins appear beside each case only as later outcomes;
+neither those wins nor the turn-end point comparison establish which first
+action was better. `--followthrough` requires `capture_candidate_steps: true`.
 
 For at least eight matched complete boards, each comparison also reports a
 deterministic 20,000-resample percentile interval for paired win-rate and mean

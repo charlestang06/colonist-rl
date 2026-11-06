@@ -11,6 +11,7 @@ import argparse
 import json
 import math
 import random
+from collections import Counter
 from hashlib import sha256
 from pathlib import Path
 
@@ -33,6 +34,8 @@ _MAX_DETAIL_LIMIT = 64
 _BOOTSTRAP_MIN_BOARDS = 8
 _BOOTSTRAP_RESAMPLES = 20_000
 _BOOTSTRAP_SEED = 20_261_106
+_POINT_BUILDS = frozenset(("BUILD_SETTLEMENT", "BUILD_CITY"))
+_INITIAL_PHASES = frozenset(("BUILD_INITIAL_SETTLEMENT", "BUILD_INITIAL_ROAD"))
 
 
 def _read_json(path: Path):
@@ -393,10 +396,154 @@ def _trace_summary(pairs, traces, reference, arm, detail_limit):
     }
 
 
-def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT):
+def _compact_action(action):
+    compact = {"kind": action["kind"]}
+    for field in ("target", "resource", "second_resource", "partner", "offer_id"):
+        if action[field] is not None:
+            compact[field] = action[field]
+    for field in ("give", "receive"):
+        if any(action[field]):
+            compact[field] = action[field]
+    return compact
+
+
+def _own_turn_followthrough(steps, start, seat, turn_number):
+    """Describe recorded actions through an explicit own-turn boundary, if seen."""
+    actions = []
+    end_reason = "trace_end"
+    end_known_vp = None
+    last_after_vp = None
+    for step in steps[start:]:
+        public = _public_trace_step(step)
+        before = public["before"]
+        if before["turn_number"] != turn_number or before["turn_owner"] != seat:
+            end_reason = "next_recorded_turn"
+            end_known_vp = last_after_vp
+            break
+        actions.append(_compact_action(public["action"]))
+        last_after_vp = public["after"]["known_own_vp"]
+        if public["truncated"]:
+            end_reason = "truncated"
+            break
+        if public["terminated"]:
+            end_reason = "terminated"
+            end_known_vp = last_after_vp
+            break
+        if public["action"]["kind"] == "END_TURN":
+            end_reason = "END_TURN"
+            end_known_vp = last_after_vp
+            break
+    if not actions:
+        raise ValueError("first changed action is not in the recorded own turn")
+    first_build = next((
+        {"offset": offset, "kind": action["kind"], "target": action.get("target")}
+        for offset, action in enumerate(actions) if action["kind"] in _POINT_BUILDS
+    ), None)
+    return {
+        "first_action": actions[0],
+        "actions": actions,
+        "action_kinds": [action["kind"] for action in actions],
+        "first_point_build": first_build,
+        "end_reason": end_reason,
+        "end_known_vp": end_known_vp,
+    }
+
+
+def _turn_followthrough(pairs, traces, reference, arm, detail_limit):
+    """Summarize the first action divergence without inferring its causal value."""
+    transitions = Counter()
+    end_counts = {"arm_higher": 0, "equal": 0, "reference_higher": 0}
+    later_builds = {"reference": 0, "arm": 0}
+    immediate_builds = {"reference": 0, "arm": 0}
+    terminal_wins = {"reference": 0, "arm": 0}
+    first_action_divergence_count = eligible = unassessed = complete = 0
+    details = []
+    for seed, seat, reference_game, arm_game in pairs:
+        reference_steps = traces[(reference, seed, seat)]
+        arm_steps = traces[(arm, seed, seat)]
+        divergence = _first_trace_divergence(reference_steps, arm_steps)
+        if divergence["category"] != "same_before_state_different_action":
+            continue
+        first_action_divergence_count += 1
+        before = divergence["before"]
+        if before["turn_owner"] != seat or before["phase"] in _INITIAL_PHASES:
+            unassessed += 1
+            continue
+        eligible += 1
+        index = divergence["step_index"]
+        reference_turn = _own_turn_followthrough(
+            reference_steps, index, seat, before["turn_number"]
+        )
+        arm_turn = _own_turn_followthrough(arm_steps, index, seat, before["turn_number"])
+        turns = {"reference": reference_turn, "arm": arm_turn}
+        games = {"reference": reference_game, "arm": arm_game}
+        transitions[
+            reference_turn["first_action"]["kind"] + "->" +
+            arm_turn["first_action"]["kind"]
+        ] += 1
+        for name, turn in turns.items():
+            game_won = games[name].get("won")
+            if turn["end_reason"] == "terminated":
+                turn["terminal_win_on_divergent_turn"] = (
+                    game_won if type(game_won) is bool else None
+                )
+            else:
+                turn["terminal_win_on_divergent_turn"] = False
+            terminal_wins[name] += turn["terminal_win_on_divergent_turn"] is True
+            first_build = turn["first_point_build"]
+            if any(action["kind"] in _POINT_BUILDS for action in turn["actions"][1:]):
+                later_builds[name] += 1
+            if first_build is not None and first_build["offset"] == 1:
+                immediate_builds[name] += 1
+        reference_vp, arm_vp = (
+            reference_turn["end_known_vp"], arm_turn["end_known_vp"]
+        )
+        vp_delta = None
+        if reference_vp is not None and arm_vp is not None:
+            complete += 1
+            vp_delta = arm_vp - reference_vp
+            end_counts[
+                "arm_higher" if vp_delta > 0 else
+                "reference_higher" if vp_delta < 0 else "equal"
+            ] += 1
+        if len(details) < detail_limit:
+            details.append({
+                "board_seed": seed, "seat": seat, "step_index": index,
+                "turn_number": before["turn_number"],
+                "known_vp_at_divergence": before["known_own_vp"],
+                "reference": reference_turn, "arm": arm_turn,
+                "end_known_vp_delta": vp_delta,
+                "final_game_won": {
+                    "reference": (reference_game.get("won")
+                                  if type(reference_game.get("won")) is bool else None),
+                    "arm": arm_game.get("won") if type(arm_game.get("won")) is bool else None,
+                },
+            })
+    return {
+        "scope": "first_changed_action_on_matched_captured_own_turns",
+        "matched_game_count": len(pairs),
+        "first_action_divergence_count": first_action_divergence_count,
+        "eligible_own_turn_pair_count": eligible,
+        "unassessed_context_count": unassessed,
+        "complete_turn_pair_count": complete,
+        "incomplete_turn_pair_count": eligible - complete,
+        "end_known_vp_counts": end_counts,
+        "first_action_transitions": dict(sorted(transitions.items())),
+        "later_point_build_count": later_builds,
+        "immediate_followup_point_build_count": immediate_builds,
+        "terminal_win_on_divergent_turn_count": terminal_wins,
+        "details": details,
+        "omitted_detail_count": eligible - len(details),
+        "detail_limit": detail_limit,
+    }
+
+
+def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT, include_followthrough=False):
     """Compare each arm with the declared reference using saved run data only."""
     if type(detail_limit) is not int or not 0 <= detail_limit <= _MAX_DETAIL_LIMIT:
         raise ValueError(f"detail_limit must be an integer in [0, {_MAX_DETAIL_LIMIT}]")
+    if type(include_followthrough) is not bool:
+        raise ValueError("include_followthrough must be a boolean")
     directory = Path(run_dir).expanduser().resolve()
     manifest = _read_json(directory / "manifest.json")
     summary = _read_json(directory / "summary.json")
@@ -435,6 +582,8 @@ def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT):
     capture = validated.get("capture_candidate_steps")
     if type(capture) is not bool:
         raise ValueError("saved run manifest lacks a trace capture setting")
+    if include_followthrough and not capture:
+        raise ValueError("turn follow-through requires capture_candidate_steps=true")
     if summary.get("journal_valid") is not True:
         raise ValueError("run has no validated game journal")
 
@@ -471,6 +620,10 @@ def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT):
             comparison["trace_divergence"] = _trace_summary(
                 pairs, traces, reference, arm, detail_limit
             )
+            if include_followthrough:
+                comparison["turn_followthrough"] = _turn_followthrough(
+                    pairs, traces, reference, arm, detail_limit
+                )
         comparisons[arm] = comparison
     return {
         "format": "colonist-rl.paired-analysis", "version": 1,
@@ -486,9 +639,13 @@ def analyze_run(run_dir, *, detail_limit=_DEFAULT_DETAIL_LIMIT):
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Analyze a saved paired public experiment")
     parser.add_argument("--run-dir", type=Path, required=True)
+    parser.add_argument("--followthrough", action="store_true",
+                        help="include first changed own-turn action paths")
+    parser.add_argument("--detail-limit", type=int, default=_DEFAULT_DETAIL_LIMIT)
     args = parser.parse_args(argv)
     try:
-        result = analyze_run(args.run_dir)
+        result = analyze_run(args.run_dir, detail_limit=args.detail_limit,
+                             include_followthrough=args.followthrough)
     except ValueError as exc:
         parser.error(str(exc))
     print(json.dumps(result, sort_keys=True, indent=2, allow_nan=False))

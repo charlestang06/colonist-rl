@@ -201,6 +201,160 @@ def test_paired_outcomes_work_and_first_trace_divergences(tmp_path, capsys):
     assert json.loads(capsys.readouterr().out)["reference_arm"] == "z_raw"
 
 
+def test_followthrough_reports_both_own_turn_paths_after_first_changed_action(tmp_path):
+    seed = 101
+    arms = ("z_raw", "a_option")
+
+    def event(arm, seat, version, kind, before_vp, after_vp):
+        row = _step(arm, seed, seat)
+        row["before"].update(version=version, turn_number=20,
+                             known_own_vp=before_vp)
+        row["after"].update(version=version + 1, known_own_vp=after_vp)
+        row["action"] = _action(kind)
+        return row
+
+    raw = [
+        event("z_raw", 0, 100, "BUY_DEVELOPMENT_CARD", 3, 3),
+        event("z_raw", 0, 101, "MARITIME_TRADE", 3, 3),
+        event("z_raw", 0, 102, "BUILD_CITY", 3, 4),
+        event("z_raw", 0, 103, "END_TURN", 4, 4),
+    ]
+    raw[2]["action"]["target"] = 52
+    option = [
+        event("a_option", 0, 100, "MARITIME_TRADE", 3, 3),
+        event("a_option", 0, 101, "BUILD_SETTLEMENT", 3, 4),
+        event("a_option", 0, 102, "END_TURN", 4, 4),
+    ]
+    option[1]["action"]["target"] = 7
+    same = [event(arm, 1, 200, "END_TURN", 3, 3) for arm in arms]
+    before_mismatch = [event(arm, 2, 300, "END_TURN", 3, 3) for arm in arms]
+    before_mismatch[1]["before"]["hand"] = [2, 0, 0, 0, 0]
+    not_own_turn = [event(arm, 3, 400, kind, 3, 3)
+                    for arm, kind in zip(arms, ("DISCARD_RESOURCE", "END_TURN"))]
+    for row in not_own_turn:
+        row["before"]["phase"] = "DISCARD"
+        row["before"]["turn_owner"] = 2
+    run_dir = _write_run(
+        tmp_path / "run", seeds=[seed],
+        arm_reports={arm: _arm_report([(seed, "complete")]) for arm in arms},
+        games=[_game(arm, seed, seat, won=(arm == "a_option" and seat == 0))
+               for arm in arms for seat in range(4)],
+        capture=True, steps=raw + option + same + before_mismatch + not_own_turn,
+    )
+
+    comparison = analysis.analyze_run(
+        run_dir, include_followthrough=True, detail_limit=1
+    )["comparisons"]["a_option"]["turn_followthrough"]
+    assert comparison["first_action_divergence_count"] == 2
+    assert comparison["eligible_own_turn_pair_count"] == 1
+    assert comparison["unassessed_context_count"] == 1
+    assert comparison["complete_turn_pair_count"] == 1
+    assert comparison["end_known_vp_counts"] == {
+        "arm_higher": 0, "equal": 1, "reference_higher": 0
+    }
+    assert comparison["first_action_transitions"] == {
+        "BUY_DEVELOPMENT_CARD->MARITIME_TRADE": 1
+    }
+    assert comparison["later_point_build_count"] == {"reference": 1, "arm": 1}
+    assert comparison["immediate_followup_point_build_count"] == {
+        "reference": 0, "arm": 1
+    }
+    assert comparison["detail_limit"] == 1
+    assert comparison["omitted_detail_count"] == 0
+    detail = comparison["details"][0]
+    assert (detail["board_seed"], detail["seat"], detail["step_index"]) == (101, 0, 0)
+    assert detail["reference"]["action_kinds"] == [
+        "BUY_DEVELOPMENT_CARD", "MARITIME_TRADE", "BUILD_CITY", "END_TURN"
+    ]
+    assert detail["arm"]["action_kinds"] == [
+        "MARITIME_TRADE", "BUILD_SETTLEMENT", "END_TURN"
+    ]
+    assert detail["reference"]["first_point_build"] == {
+        "offset": 2, "kind": "BUILD_CITY", "target": 52
+    }
+    assert detail["arm"]["first_point_build"] == {
+        "offset": 1, "kind": "BUILD_SETTLEMENT", "target": 7
+    }
+    assert detail["reference"]["end_reason"] == "END_TURN"
+    assert detail["arm"]["end_reason"] == "END_TURN"
+    assert detail["end_known_vp_delta"] == 0
+    assert detail["final_game_won"] == {"reference": False, "arm": True}
+    assert "hidden" not in json.dumps(comparison)
+
+
+def test_followthrough_keeps_unbounded_turn_unknown_and_counts_later_point_builds(tmp_path):
+    seed = 101
+    arms = ("z_raw", "a_option")
+
+    def event(arm, seat, version, kind, before_vp, after_vp):
+        row = _step(arm, seed, seat)
+        row["before"].update(version=version, turn_number=20,
+                             known_own_vp=before_vp)
+        row["after"].update(version=version + 1, known_own_vp=after_vp)
+        row["action"] = _action(kind)
+        return row
+
+    raw = [
+        event("z_raw", 0, 100, "BUILD_CITY", 9, 10),
+        event("z_raw", 1, 200, "BUILD_CITY", 3, 4),
+        event("z_raw", 1, 201, "BUILD_SETTLEMENT", 4, 5),
+        event("z_raw", 1, 202, "END_TURN", 5, 5),
+        event("z_raw", 2, 300, "BUY_DEVELOPMENT_CARD", 3, 3),
+        event("z_raw", 3, 400, "END_TURN", 3, 3),
+    ]
+    raw[0]["terminated"] = True
+    option = [
+        event("a_option", 0, 100, "END_TURN", 9, 9),
+        event("a_option", 1, 200, "END_TURN", 3, 3),
+        event("a_option", 2, 300, "MARITIME_TRADE", 3, 3),
+        event("a_option", 3, 400, "END_TURN", 3, 3),
+    ]
+    run_dir = _write_run(
+        tmp_path / "run", seeds=[seed],
+        arm_reports={arm: _arm_report([(seed, "complete")]) for arm in arms},
+        games=[_game(arm, seed, seat, won=(arm == "z_raw" and seat == 0))
+               for arm in arms for seat in range(4)],
+        capture=True, steps=raw + option,
+    )
+
+    report = analysis.analyze_run(run_dir, include_followthrough=True, detail_limit=3)[
+        "comparisons"
+    ]["a_option"]["turn_followthrough"]
+    assert report["eligible_own_turn_pair_count"] == 3
+    assert report["complete_turn_pair_count"] == 2
+    assert report["incomplete_turn_pair_count"] == 1
+    assert report["end_known_vp_counts"] == {
+        "arm_higher": 0, "equal": 0, "reference_higher": 2
+    }
+    assert report["terminal_win_on_divergent_turn_count"] == {
+        "reference": 1, "arm": 0
+    }
+    assert report["later_point_build_count"]["reference"] == 1
+    assert report["details"][0]["reference"]["terminal_win_on_divergent_turn"] is True
+    assert report["details"][1]["reference"]["first_point_build"]["offset"] == 0
+    assert report["details"][2]["reference"]["end_reason"] == "trace_end"
+    assert report["details"][2]["end_known_vp_delta"] is None
+    bounded = analysis.analyze_run(
+        run_dir, include_followthrough=True, detail_limit=1
+    )["comparisons"]["a_option"]["turn_followthrough"]
+    assert bounded["eligible_own_turn_pair_count"] == 3
+    assert len(bounded["details"]) == 1
+    assert bounded["omitted_detail_count"] == 2
+
+
+def test_followthrough_requires_saved_candidate_steps(tmp_path):
+    seed = 101
+    arms = ("z_raw", "a_option")
+    run_dir = _write_run(
+        tmp_path / "run", seeds=[seed],
+        arm_reports={arm: _arm_report([(seed, "complete")]) for arm in arms},
+        games=[_game(arm, seed, seat) for arm in arms for seat in range(4)],
+        capture=False,
+    )
+    with pytest.raises(ValueError, match="requires capture_candidate_steps=true"):
+        analysis.analyze_run(run_dir, include_followthrough=True)
+
+
 def test_board_bootstrap_resamples_whole_matched_boards_deterministically(tmp_path):
     seeds = list(range(200, 208))
     reports = {
