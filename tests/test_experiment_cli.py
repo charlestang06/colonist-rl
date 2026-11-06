@@ -95,6 +95,33 @@ def _patch_runtime(monkeypatch):
     })
 
 
+def test_public_option_arm_validates_and_factory_wraps_fresh_raw_parent(tmp_path):
+    from colonist_rl.public_option_purchase import PublicOptionPurchasePolicy
+    from colonist_rl.public_turn_planner import PublicTurnPlannerPolicy
+
+    manifest = _manifest()
+    manifest["arms"]["option"] = {
+        "kind": "public_option_purchase",
+        "config": {"max_nodes": 111},
+        "gain_margin_micro": 375000,
+    }
+    validated, checkpoints = cli._validate_manifest(manifest, base=tmp_path)
+    assert checkpoints == {}
+    assert validated["arms"]["option"] == {
+        "kind": "public_option_purchase",
+        "config": {**validated["arms"]["raw"]["config"], "max_nodes": 111},
+        "gain_margin_micro": 375000,
+    }
+    factories = cli._factories(validated)
+    first, second = factories["option"](), factories["option"]()
+    assert isinstance(first, PublicOptionPurchasePolicy) and first.enabled is True
+    assert isinstance(first.parent, PublicTurnPlannerPolicy)
+    assert first.parent is not second.parent and first is not second
+    assert first.parent.gain_margin_micro == 375000
+    assert first.parent.config.max_nodes == 111
+    assert type(factories["raw"]()) is PublicTurnPlannerPolicy
+
+
 def test_one_board_two_arm_smoke_writes_fresh_validated_artifacts(tmp_path, monkeypatch, capsys):
     _patch_runtime(monkeypatch)
     manifest_path = tmp_path / "smoke.json"

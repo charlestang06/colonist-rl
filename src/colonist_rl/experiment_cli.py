@@ -150,11 +150,12 @@ def _validate_manifest(raw, *, base):
                 or name.strip() != name or not name.isprintable()):
             raise ValueError("arm names must be nonempty printable labels up to 64 chars")
         if type(spec) is not dict or spec.get("kind") not in (
-            "public_planner", "city_before_purchase", "graph_checkpoint"
+            "public_planner", "city_before_purchase", "public_option_purchase",
+            "graph_checkpoint"
         ):
             raise ValueError(f"unsupported arm kind: {name}")
         kind = spec["kind"]
-        if kind in ("public_planner", "city_before_purchase"):
+        if kind in ("public_planner", "city_before_purchase", "public_option_purchase"):
             _keys(spec, ("kind",), ("config", "gain_margin_micro"), label=f"arm {name}")
             config_input = spec.get("config", {})
             if type(config_input) is not dict:
@@ -230,6 +231,7 @@ def _load_graph_policy(path):
 
 def _factories(validated):
     from .city_before_purchase import CityBeforePurchasePolicy
+    from .public_option_purchase import PublicOptionPurchasePolicy
     from .public_turn_planner import PublicTurnPlannerPolicy, TurnPlannerConfig
 
     result = {}
@@ -247,10 +249,11 @@ def _factories(validated):
 
             def make(kind=kind, config=config, gain=gain):
                 parent = PublicTurnPlannerPolicy(config, gain_margin_micro=gain)
-                return (
-                    CityBeforePurchasePolicy(parent, enabled=True)
-                    if kind == "city_before_purchase" else parent
-                )
+                if kind == "city_before_purchase":
+                    return CityBeforePurchasePolicy(parent, enabled=True)
+                if kind == "public_option_purchase":
+                    return PublicOptionPurchasePolicy(parent, enabled=True)
+                return parent
 
             result[name] = make
     return result

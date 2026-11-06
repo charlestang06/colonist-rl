@@ -323,6 +323,86 @@ def test_changed_city_detail_tracks_next_executed_city_via_optional_step_callbac
     json.dumps(result, allow_nan=False)
 
 
+def test_public_option_changed_details_confirm_trade_build_and_pass_from_public_steps():
+    class OptionPlanner:
+        def plan(self, view):
+            version = view.context.version
+            if version == 10:
+                index, status = 1, "public_option_trade_build"
+            elif version == 20:
+                index, status = 1, "public_option_pass"
+            else:
+                index, status = 0, "ineligible_parent"
+            self.last_diagnostics = {
+                "status": status,
+                "parent_root_index": 0,
+                "parent_kind": "BUY_DEVELOPMENT_CARD" if index else view.legal_actions[0].kind,
+                "selected_build_kind": "BUILD_SETTLEMENT" if version == 10 else None,
+                "selected_build_target": 7 if version == 10 else None,
+                "card_option_credit_micro": 61_600_000,
+                "pass_reserve_micro": 70_000_000,
+                "score_buy_micro": 500_000_000,
+                "score_pass_micro": 510_000_000,
+                "score_trade_build_micro": 530_000_000 if version == 10 else None,
+            }
+            return NS(
+                first_action=view.legal_actions[index], root_index=index,
+                reason=status, search_stop="one_trade_build_complete" if version == 10
+                else "pass_complete", nodes=4, geometry_visits=9,
+                score_before_micro=450_000_000,
+                score_after_micro=530_000_000 if version == 10 else 510_000_000,
+            )
+
+    adapter = paired._PlannedPolicyAdapter(OptionPlanner(), board_seed=31)
+    before_trade = _view(0, 10, (Action("BUY_DEVELOPMENT_CARD"),
+                                 Action("MARITIME_TRADE")))
+    selected_trade, _ = adapter.act(before_trade)
+    after_trade = _view(0, 11, (Action("BUILD_SETTLEMENT", target=7),),
+                        hand=(0, 1, 2, 3, 4))
+    adapter.record_candidate_step(NS(before=before_trade, action=selected_trade,
+                                     after=after_trade))
+    selected_build, _ = adapter.act(after_trade)
+    after_build = _view(0, 12, (Action("END_TURN"),),
+                        buildings=(NS(vertex=7, owner=0, level=1),))
+    adapter.record_candidate_step(NS(before=after_trade, action=selected_build,
+                                     after=after_build))
+
+    before_pass = _view(0, 20, (Action("BUY_DEVELOPMENT_CARD"), Action("END_TURN")))
+    selected_pass, _ = adapter.act(before_pass)
+    after_pass = _view(0, 21, (Action("END_TURN"),), hand=(1, 2, 3, 4, 5))
+    adapter.record_candidate_step(NS(before=before_pass, action=selected_pass,
+                                     after=after_pass))
+
+    trade_detail, pass_detail = adapter.changed_details
+    assert trade_detail["status"] == "public_option_trade_build"
+    assert trade_detail["selected_legal_action"]["kind"] == "MARITIME_TRADE"
+    assert trade_detail["intended_build_kind"] == "BUILD_SETTLEMENT"
+    assert trade_detail["intended_build_target"] == 7
+    assert trade_detail["selected_action_executed"] is True
+    assert trade_detail["selected_after"]["version"] == 11
+    assert trade_detail["next_selected_action"]["kind"] == "BUILD_SETTLEMENT"
+    assert trade_detail["next_actual_action"]["target"] == 7
+    assert trade_detail["city_built_next_own_action"] is None
+    assert trade_detail["build_confirmed_next_own_action"] is True
+    assert trade_detail["card_option_credit_micro"] == 61_600_000
+    assert trade_detail["score_trade_build_micro"] == 530_000_000
+    assert pass_detail["status"] == "public_option_pass"
+    assert pass_detail["selected_legal_action"]["kind"] == "END_TURN"
+    assert pass_detail["selected_action_executed"] is True
+    assert pass_detail["selected_after"]["version"] == 21
+    assert pass_detail["pass_reserve_micro"] == 70_000_000
+    assert pass_detail["score_buy_micro"] == 500_000_000
+    assert pass_detail["score_pass_micro"] == 510_000_000
+    assert pass_detail["next_selected_action"] is None
+    adapter.act(_view(0, 30, (Action("END_TURN"),)))
+    assert pass_detail["next_selected_action"] is None
+    for _ in range(paired._CHANGED_DETAIL_LIMIT):
+        adapter.act(before_pass)
+    assert len(adapter.changed_details) == paired._CHANGED_DETAIL_LIMIT
+    assert adapter.changed_detail_omitted_count == 2
+    json.dumps(adapter.changed_details, allow_nan=False)
+
+
 def test_wrapper_projection_work_is_counted_when_fallback_returns_parent_plan(monkeypatch):
     class FallbackPlanner:
         def plan(self, view):

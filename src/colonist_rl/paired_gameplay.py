@@ -118,7 +118,9 @@ class _PlannedPolicyAdapter:
         if previous is not None:
             previous["next_selected_action"] = _action_record(action)
             self._awaiting_next_step[view.player_id] = previous
-        if changed and diagnostics["status"] == "city_before_purchase":
+        if changed and diagnostics["status"] in (
+            "city_before_purchase", "public_option_trade_build", "public_option_pass"
+        ):
             if len(self.changed_details) < _CHANGED_DETAIL_LIMIT:
                 detail = {
                     "board_seed": self.board_seed,
@@ -143,8 +145,21 @@ class _PlannedPolicyAdapter:
                     "next_actual_action": None,
                     "city_built_next_own_action": None,
                 }
+                if diagnostics["status"].startswith("public_option_"):
+                    detail.update({
+                        "selected_legal_index": index,
+                        "intended_build_kind": diagnostics.get("selected_build_kind"),
+                        "intended_build_target": diagnostics.get("selected_build_target"),
+                        "card_option_credit_micro": diagnostics.get("card_option_credit_micro"),
+                        "pass_reserve_micro": diagnostics.get("pass_reserve_micro"),
+                        "score_buy_micro": diagnostics.get("score_buy_micro"),
+                        "score_pass_micro": diagnostics.get("score_pass_micro"),
+                        "score_trade_build_micro": diagnostics.get("score_trade_build_micro"),
+                        "build_confirmed_next_own_action": None,
+                    })
                 self.changed_details.append(detail)
-                self._pending_changed[view.player_id] = detail
+                if diagnostics["status"] != "public_option_pass":
+                    self._pending_changed[view.player_id] = detail
                 record["_detail"] = detail
             else:
                 self.changed_detail_omitted_count += 1
@@ -169,16 +184,31 @@ class _PlannedPolicyAdapter:
         if previous is not None:
             previous["next_actual_action"] = _action_record(step.action)
             target = previous["intended_city_target"]
-            previous["city_built_next_own_action"] = bool(
-                step.action.kind == "BUILD_CITY"
-                and step.action.target == target
-                and any(
-                    building.owner == step.before.player_id
-                    and building.vertex == target
-                    and building.level == 2
-                    for building in step.after.buildings
+            if target is not None:
+                previous["city_built_next_own_action"] = bool(
+                    step.action.kind == "BUILD_CITY"
+                    and step.action.target == target
+                    and any(
+                        building.owner == step.before.player_id
+                        and building.vertex == target
+                        and building.level == 2
+                        for building in step.after.buildings
+                    )
                 )
-            )
+            kind = previous.get("intended_build_kind")
+            if kind in ("BUILD_CITY", "BUILD_SETTLEMENT"):
+                target = previous["intended_build_target"]
+                level = 2 if kind == "BUILD_CITY" else 1
+                previous["build_confirmed_next_own_action"] = bool(
+                    step.action.kind == kind
+                    and step.action.target == target
+                    and any(
+                        building.owner == step.before.player_id
+                        and building.vertex == target
+                        and building.level == level
+                        for building in step.after.buildings
+                    )
+                )
 
 
 class _GraphPolicyAdapter(_PlannedPolicyAdapter):
