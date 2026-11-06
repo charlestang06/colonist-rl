@@ -69,7 +69,10 @@ required next stage or a substitute for understanding obvious mistakes.
   This establishes a usable history/cache path, not a trained value model.
 - The accepted-alternative fitter now passes focused and legacy regressions plus
   independent source review after a reproduced numerical issue was repaired.
-  Collection, independent target approval and real-data benefit remain untested.
+  All 48 planned student games were recorded, but a Root output-accounting race
+  failed their finalization. Their 4,729 own inputs and matching teacher calls
+  passed independent metadata checks; a separate strict-codec recovery is pending.
+  Original failure remains recorded. Target approval and data benefit are untested.
 
 No candidate is promoted. No VF/AB superiority or broad heuristic competence has
 been demonstrated. Preserve failed attempts, resource HOLDs and null outcomes.
@@ -196,7 +199,7 @@ broad adapter refactoring remain later work.
 
 | Order | Deliverable | Decision it enables |
 |---|---|---|
-| Primary data lane | Use the reviewed sparse fitter to collect/audit the prepared current-student cases, then run the frozen added-data-only contrast. | Whether better on-policy targets improve decisions and games at equal work. |
+| Primary data lane | Recover and validate the recorded 48-game corpus without new model/teacher/game queries; audit its prepared cases, then run the frozen added-data-only contrast. | Whether better on-policy targets improve decisions and games at equal work. |
 | Parallel bounded lane | Complete the role-aware terminal-history collector and reviewed 320-game schedule; then fit the frozen value/data-size contrasts. | Whether real outcomes provide useful predictive information beyond existing public features. |
 | Parallel small remedy | Choose one tactical repair from fresh TRAIN failures and test it alone; it need not wait for sparse fitting or the data-only result. | Whether a concrete decision gap can be closed without broad retraining. |
 | After transition feasibility | Verify and profile public cross-turn transitions; compare bounded search with the current planner. | Whether planning farther pays for its cost. |

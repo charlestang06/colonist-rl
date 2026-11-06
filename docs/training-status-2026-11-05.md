@@ -9,6 +9,28 @@ is established.
 
 ## Latest preparation: cache repaired; sparse fitter verified
 
+The actual current-student collection recorded all 48 fixed games, but Root session
+15715 exited 125 after 106.952 seconds. Output accounting raced with removal of
+a temporary publication file and killed the last guard: eleven guards exited zero,
+student-val02 exited -9. The original attempt remains rejected.
+
+Independent failed-attempt assessment found all 48 complete histories/outcomes,
+4,729 original NN forwards and diagnostic teacher calls, 1,719 forced inputs,
+13,429 gameplay H.act/3,391 propose calls and 12 checkpoint loads. All 961 saved
+live samples met strict OS1/RSS 2 GiB; peak RSS was 731,004,928 bytes. Source,
+runtime and opaque parent hashes remained unchanged. Val02's four complete
+histories and raw journals survive; only final overlay/evaluator/result packaging
+is missing. Global latency aggregates and its missing normal guard finish are
+not reconstructed as facts. Tensor/codec assertions remain producer-bound.
+
+A separately reviewed recovery will retain all 48 original episodes and roles,
+strictly decode/re-export 9,458 before/after envelopes, and derive the missing
+teacher overlay from durable journals. It permits zero new games, model loads,
+NN/teacher queries or fits. Recovery has not run; no slots, judgments or targets
+are approved. The original failure cannot become an original-protocol PASS.
+[Failed-attempt assessment](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/independent-audit-001/failed-assessment-001/FAILED-ATTEMPT.md),
+[prospective recovery](../runs/swarm-2026-11-04/agent-research/current-student-data-collection-001/independent-audit-001/failed-assessment-001/RECOVERY-PROTOCOL-PROPOSAL.md).
+
 The separate cache-only repair completed on the original four engineering
 histories, preserving the failed attempt. It encoded all 361 own inputs in both
 recurrent-step and full-forward passes (722 observation passes), with one parent
@@ -53,8 +75,9 @@ or automatic continuation is authorized by those stub results.
 
 Its fixed 64 TRAIN/16 VAL board reservation passed a scoped metadata review;
 the actual runtime master is still unfrozen, with no main games collected or
-value heads fit. The student-history collector design was reviewed for pure
-implementation, with no collection yet. These are preparation milestones, not
+value heads fit. The student collector and controller passed source review and
+isolated tests before the actual failed finalization reported above. These are
+preparation/data-readiness milestones, not
 evidence of better decisions.
 [Value collector handoff](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/implementation-001/ROOT-HANDOFF.md),
 [reservation scope](../runs/swarm-2026-11-04/agent-research/complete-history-value-main-001/board-reservation-001/REPORT.md),

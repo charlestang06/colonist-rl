@@ -13,7 +13,7 @@ alternatives and ambiguous judgments. Cover placement, trades/build/pass,
 domestic responses, robber/discard, development-card buying and play, road/army
 races and VP/endgame. Missing coverage prevents a broad competence claim.
 
-Next: collect/audit current-student data and run the frozen added-data-only
+Next: recover/validate the recorded current-student corpus, audit its cases and run the frozen added-data-only
 comparison using the reviewed sparse fitter. In a separate bounded lane, complete the
 role-aware terminal-history collector and its reviewed 320-game schedule; test
 value prediction before policy deployment. A small tactical repair from fresh
@@ -36,6 +36,11 @@ and fitting remain unstarted. The sparse fitter's offset issue is repaired;
 43 focused and 11 legacy tests passed with independent source review.
 Neither result establishes stronger play. [Current status](training-status-2026-11-05.md)
 records evidence and limitations.
+
+The student collector recorded all 48 fixed games/4,729 own inputs. Its Root
+controller failed on a temporary-file accounting race after gameplay completed;
+the original run stays failed. Independent metadata audit supports a separate
+zero-query corpus recovery. No case judgments, approved targets or new fits exist.
 
 Retire unchanged failed interventions. Compare on fresh boards, rotate every seat,
 retain strict GNT/trading-H controls and separate focal-native benchmarks from
