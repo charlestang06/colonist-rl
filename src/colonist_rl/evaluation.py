@@ -60,6 +60,7 @@ def evaluate_blocks(
     on_candidate_step: Callable[[CandidatePublicStep], None] | None = None,
     opponent_lineup=None,
     historical_policies=(),
+    no_offers=False,
 ) -> dict:
     """Evaluate all four seats per board; ``deadline`` is absolute monotonic time.
 
@@ -76,6 +77,8 @@ def evaluate_blocks(
     terminal action, before any opponent acts. The after view explicitly observes
     the candidate seat even when the next actor changes. With no callback, no
     extra observations are taken. Game diagnostics remain in ``on_game_end``.
+    ``no_offers=True`` explicitly suppresses all domestic proposals, including
+    lineups without native opponents; the default preserves existing routing.
     """
     seeds = _seed_list(board_seeds)
     return _evaluate_matches(
@@ -92,6 +95,49 @@ def evaluate_blocks(
         on_candidate_step=on_candidate_step,
         opponent_lineup=opponent_lineup,
         historical_policies=historical_policies,
+        no_offers=no_offers,
+    )
+
+
+def evaluate_native_reference_blocks(
+    *,
+    reference,
+    board_seeds,
+    opponent_lineup,
+    deadline,
+    max_game_steps=20000,
+    no_offers=True,
+    on_game_end=None,
+) -> dict:
+    """Evaluate a privileged native focal reference, outside policy/label routes.
+
+    All four seats are evaluated on every explicit board. The native runner is
+    owned by this match loop, never supplied as a public candidate policy.
+    Only detached final game diagnostics are exposed; no step/teacher callback
+    or model/policy argument is accepted. Native continuations retain the exact
+    existing algorithms, source checks, chance semantics and phase shims.
+    """
+    if reference not in NATIVE_IDS:
+        raise ValueError("a pinned native focal reference identity is required")
+    if no_offers is not True:
+        raise ValueError("native focal references require no_offers=True")
+    if opponent_lineup is None:
+        raise ValueError("native focal references require an explicit opponent_lineup")
+    seeds = _seed_list(board_seeds)
+    return _evaluate_matches(
+        None,
+        [(seed, seat) for seed in seeds for seat in range(4)],
+        board_seeds=seeds,
+        candidate="heuristic",  # Internal public-selector placeholder, not a policy.
+        baseline="heuristic",  # Explicit lineup is the background authority.
+        max_game_steps=max_game_steps,
+        deterministic=True,
+        deadline=deadline,
+        strict_blocks=True,
+        on_game_end=on_game_end,
+        opponent_lineup=opponent_lineup,
+        no_offers=True,
+        _native_focal_identity=reference,
     )
 
 
@@ -111,10 +157,23 @@ def _evaluate_matches(
     on_candidate_step: Callable[[CandidatePublicStep], None] | None = None,
     opponent_lineup=None,
     historical_policies=(),
+    no_offers=False,
+    _native_focal_identity=None,
 ):
     """The authoritative evaluation match loop, also used by training.evaluate."""
     if isinstance(policy, NativeOpponentRunner):
         raise TypeError("native opponent runner cannot be a candidate policy")
+    if type(no_offers) is not bool:
+        raise ValueError("no_offers must be a boolean")
+    if _native_focal_identity is not None and (
+        _native_focal_identity not in NATIVE_IDS
+        or policy is not None
+        or candidate != "heuristic"
+        or not strict_blocks
+        or not no_offers
+        or on_candidate_step is not None
+    ):
+        raise ValueError("native focal selection is evaluation-only without a policy/step callback")
     if candidate not in ("heuristic", "random", "graph", "greedy_no_trade") or (
         candidate == "graph" and policy is None
     ):
@@ -144,7 +203,9 @@ def _evaluate_matches(
     if on_candidate_step is not None and not callable(on_candidate_step):
         raise ValueError("on_candidate_step must be callable or None")
     opponent_lineup = _lineup(opponent_lineup, allow_native=True)
-    has_native = any(name in NATIVE_IDS for name in (opponent_lineup or (baseline,)))
+    has_native = _native_focal_identity is not None or any(
+        name in NATIVE_IDS for name in (opponent_lineup or (baseline,))
+    )
     if has_native and deadline is None:
         raise ValueError("native evaluation requires an explicit whole-run deadline")
     historical = tuple(deepcopy(p).eval().requires_grad_(False) for p in historical_policies)
@@ -156,10 +217,14 @@ def _evaluate_matches(
         )
     greedy_candidate = isinstance(policy, GreedyNoTrade) or candidate == "greedy_no_trade"
     identity = (
-        "greedy_no_trade" if greedy_candidate else "graph" if policy is not None else candidate
+        "native_reference"
+        if _native_focal_identity is not None
+        else "greedy_no_trade" if greedy_candidate else "graph" if policy is not None else candidate
     )
     action_mode = (
-        "deterministic_greedy_no_trade"
+        "native_original_root_order"
+        if _native_focal_identity is not None
+        else "deterministic_greedy_no_trade"
         if greedy_candidate
         else ("deterministic" if deterministic else "stochastic")
         if policy is not None
@@ -193,17 +258,27 @@ def _evaluate_matches(
                 opponent_lineup=opponent_lineup,
                 allow_native=True,
             )
-            actor = (
-                (
-                    GreedyNoTrade()
-                    if candidate == "greedy_no_trade"
-                    else HeuristicPolicy(board_seed + 31 + seat)
-                    if candidate == "heuristic"
-                    else RandomPolicy(board_seed + 31 + seat)
+            native_focal = (
+                NativeOpponentRunner(
+                    env, seat, _native_focal_identity, planning_seed=board_seed * 97 + seat
                 )
-                if policy is None
-                else policy
+                if _native_focal_identity is not None
+                else None
             )
+            if native_focal is not None:
+                actor = None
+            else:
+                actor = (
+                    (
+                        GreedyNoTrade()
+                        if candidate == "greedy_no_trade"
+                        else HeuristicPolicy(board_seed + 31 + seat)
+                        if candidate == "heuristic"
+                        else RandomPolicy(board_seed + 31 + seat)
+                    )
+                    if policy is None
+                    else policy
+                )
             memory = None
             phases, kinds = Counter(), Counter()
             latency = []
@@ -213,7 +288,8 @@ def _evaluate_matches(
                 if deadline is not None and time.monotonic() >= deadline:
                     expired = True
                     break
-                driver.maybe_offer(deadline=deadline)
+                if not no_offers:
+                    driver.maybe_offer(deadline=deadline)
                 if deadline is not None and time.monotonic() >= deadline:
                     expired = True
                     break
@@ -227,7 +303,9 @@ def _evaluate_matches(
                     break
                 if view.player_id == seat:
                     start = time.perf_counter()
-                    if (
+                    if native_focal is not None:
+                        action = native_focal.select_action()
+                    elif (
                         reject_trades
                         and not greedy_candidate
                         and view.context.kind == "TRADE_RESPONSE"
@@ -280,7 +358,7 @@ def _evaluate_matches(
                     "phase_counts": dict(phases),
                     "action_kind_counts": dict(kinds),
                     **_latency_summary(latency),
-                    **_native_game_metrics(driver),
+                    **_native_game_metrics(driver, native_focal),
                 }
                 break
             # A final offer can reach the cap before another StepResult exists.
@@ -309,7 +387,7 @@ def _evaluate_matches(
                 "phase_counts": dict(phases),
                 "action_kind_counts": dict(kinds),
                 **_latency_summary(latency),
-                **_native_game_metrics(driver),
+                **_native_game_metrics(driver, native_focal),
             }
             finished.append((row, latency))
             if on_game_end is not None:
@@ -381,6 +459,16 @@ def _evaluate_matches(
         **_latency_summary(selected_latency),
         "candidate": identity,
         "action_mode": action_mode,
+        **(
+            {
+                "focal_role": "native_reference",
+                "focal_identity": _native_focal_identity,
+                "evaluation_only": True,
+                "training_labels_allowed": False,
+            }
+            if _native_focal_identity is not None
+            else {}
+        ),
         **({"candidate_identity": GreedyNoTrade().identity} if greedy_candidate else {}),
         **(
             {"baseline_identity": GreedyNoTrade().identity}
@@ -410,12 +498,20 @@ def _evaluate_matches(
         **(
             {
                 "native_protocol": {
-                    "information_regime": "public_only_candidate_vs_privileged_native_opponents",
+                    "information_regime": (
+                        "privileged_native_focal_reference_vs_declared_background"
+                        if _native_focal_identity is not None
+                        else "public_only_candidate_vs_privileged_native_opponents"
+                    ),
                     "domestic_trades": "disabled_all_seats",
                     "discard_adapter": "native_random_bulk_to_per_card",
                     "trade_adapter": "reject_synthetic_trade_response",
                     "full_rule_equivalence": False,
-                    "planning_seed_formula": "board_seed * 97 + opponent_seat",
+                    "planning_seed_formula": (
+                        "board_seed * 97 + native_seat"
+                        if _native_focal_identity is not None
+                        else "board_seed * 97 + opponent_seat"
+                    ),
                     "deadline_enforcement": "between_decisions; external_worker_hard_cap_required",
                     "search_nodes": None,
                 }
@@ -427,6 +523,7 @@ def _evaluate_matches(
         "baseline": baseline,
         "opponent_lineup": list(opponent_lineup) if opponent_lineup is not None else None,
         "reject_trades": reject_trades,
+        "no_offers": no_offers or has_native,
         "max_game_steps": max_game_steps,
         "outcomes": selected,
         "partial_outcomes": partial,
@@ -434,15 +531,29 @@ def _evaluate_matches(
     }
 
 
-def _native_game_metrics(driver):
-    if not getattr(driver, "native_opponents", None):
-        return {}
-    return {
-        "native_opponents": [
+def _native_game_metrics(driver, native_focal=None):
+    result = {}
+    if getattr(driver, "native_opponents", None):
+        result["native_opponents"] = [
             {"metadata": runner.metadata(), "metrics": runner.metrics()}
             for _, runner in sorted(driver.native_opponents.items())
         ]
-    }
+    if native_focal is not None:
+        for background in result.get("native_opponents", ()):
+            background["metadata"] = {
+                **background["metadata"],
+                "seat_role": "background_opponent",
+                "information_regime": "privileged_native_focal_reference_vs_declared_background",
+            }
+        result["native_focal"] = {
+            "metadata": {
+                **native_focal.metadata(),
+                "seat_role": "focal_reference",
+                "information_regime": "privileged_native_focal_reference_vs_declared_background",
+            },
+            "metrics": native_focal.metrics(),
+        }
+    return result
 
 
 def _latency_summary(seconds):
