@@ -60,4 +60,6 @@
 - [x] Reproduce a legal ordinary settlement cut, a thresholdless award and hidden tie-order ambiguity in red tests against the pinned engine; encode actor point lower bounds and BUY VP-draw uncertainty in v3.
 - [x] Reproduce a second enemy endpoint that makes the cut-player length uncertain and a BUILD_ROAD endpoint that would falsely claim an award; encode conservative bounds in v3.
 - [x] Rerun the focused tests, full suite, lint, 16-board TRAIN audit and late-road latency after the final v3 bound repair.
-- [ ] Obtain fresh read-only review before integration.
+- [x] Obtain fresh read-only review before integration. The v3 scoped review
+  independently reproduced the pinned-engine settlement award cases and found
+  all four prior findings addressed, with no new Critical or Important blocker.
