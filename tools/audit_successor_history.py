@@ -19,6 +19,7 @@ from colonist_rl.adapters.observation_io import view_from_dict
 from colonist_rl.contracts import RESOURCES, Building, Road
 from colonist_rl.successor_features import (
     SUCCESSOR_DIM,
+    SUCCESSOR_SCHEMA,
     successor_feature_values,
     successor_features_for_menu,
 )
@@ -37,6 +38,7 @@ def main() -> None:
     mismatches: list[tuple] = []
     sources = {}
     rows = known = masked = piece_checks = point_checks = winning_checks = 0
+    point_lower_bound_checks = uncertain_point_rows = guaranteed_win_checks = 0
     for path in files:
         raw = path.read_bytes()
         sources[path.parent.name] = hashlib.sha256(raw).hexdigest()
@@ -68,18 +70,31 @@ def main() -> None:
                         mismatches.append((*label, "hand", predicted, after.hand))
                 else:
                     masked += 1
-                if action.kind != "BUY_DEVELOPMENT_CARD":
-                    # Buying from a hidden deck may reveal a private VP card.
+                point_lower_bound_checks += 1
+                actual_gain = after.own_victory_points - before.own_victory_points
+                lower = values["point_gain_lower_bound"]
+                uncertain = bool(values["point_outcome_uncertain"])
+                if actual_gain < lower:
+                    mismatches.append((*label, "point_gain_lower_bound", lower, actual_gain))
+                if uncertain:
+                    uncertain_point_rows += 1
+                    # A hidden VP draw adds at most one; a road endpoint or
+                    # settlement cut can change the actor's award by two.
+                    possible_extra = 1 if action.kind == "BUY_DEVELOPMENT_CARD" else 2
+                    if actual_gain > lower + possible_extra:
+                        mismatches.append((*label, "point_gain_upper_bound", lower, actual_gain))
+                else:
                     point_checks += 1
-                    actual_gain = after.own_victory_points - before.own_victory_points
-                    if values["known_point_gain"] != actual_gain:
-                        mismatches.append((
-                            *label, "known_point_gain", values["known_point_gain"], actual_gain
-                        ))
+                    if lower != actual_gain:
+                        mismatches.append((*label, "point_gain_exact", lower, actual_gain))
+                actual_win = int(
+                    actual_gain > 0 and after.own_victory_points >= before.rules.victory_points
+                )
+                guaranteed_win_checks += 1
+                if values["wins_now"] and not actual_win:
+                    mismatches.append((*label, "guaranteed_win", values["wins_now"], actual_win))
+                if not uncertain:
                     winning_checks += 1
-                    actual_win = int(
-                        actual_gain > 0 and after.own_victory_points >= before.rules.victory_points
-                    )
                     if values["wins_now"] != actual_win:
                         mismatches.append((*label, "wins_now", values["wins_now"], actual_win))
                 if action.kind not in ("BUILD_ROAD", "BUILD_SETTLEMENT", "BUILD_CITY"):
@@ -104,7 +119,8 @@ def main() -> None:
                     if expected not in after.buildings:
                         mismatches.append((*label, "building_placement"))
     report = {
-        "schema": "candidate-successor-train-transition-audit-v2",
+        "schema": "candidate-successor-train-transition-audit-v3",
+        "feature_schema": SUCCESSOR_SCHEMA,
         "board_count": len(files),
         "episode_count": len(files) * 4,
         "rows": rows,
@@ -112,7 +128,10 @@ def main() -> None:
         "masked_hand_rows": masked,
         "piece_checks": piece_checks,
         "point_checks": point_checks,
+        "point_lower_bound_checks": point_lower_bound_checks,
+        "uncertain_point_rows": uncertain_point_rows,
         "winning_checks": winning_checks,
+        "guaranteed_win_checks": guaranteed_win_checks,
         "mismatch_count": len(mismatches),
         "mismatches": mismatches[:30],
         "executed_action_kinds": dict(kinds),

@@ -57,4 +57,7 @@
 - [x] Reproduce the review findings in red tests: no-victim robber, one-resource Plenty, public Largest Army and Longest Road, mixed parent dtypes and ambient device RNG.
 - [x] Encode the deterministic effects and preserve every inherited tensor's exact dtype and value. Bump the representation and checkpoint identity to v2.
 - [x] Expand the TRAIN transition audit to deterministic point changes and winning indicators, and add endpoint-blocking road geometry coverage.
-- [ ] Rerun the full suite, lint, late-road latency and fresh read-only review before integration.
+- [x] Reproduce a legal ordinary settlement cut, a thresholdless award and hidden tie-order ambiguity in red tests against the pinned engine; encode actor point lower bounds and BUY VP-draw uncertainty in v3.
+- [x] Reproduce a second enemy endpoint that makes the cut-player length uncertain and a BUILD_ROAD endpoint that would falsely claim an award; encode conservative bounds in v3.
+- [x] Rerun the focused tests, full suite, lint, 16-board TRAIN audit and late-road latency after the final v3 bound repair.
+- [ ] Obtain fresh read-only review before integration.

@@ -133,7 +133,7 @@ def test_new_checkpoint_has_strict_identity_and_roundtrips(tmp_path):
     child = candidate_successor_from_consequence(_parent())
     architecture = policy_architecture(child)
     assert architecture == {
-        "kind": "graph_candidate_successor_v2",
+        "kind": "graph_candidate_successor_v3",
         "hidden_size": 16,
         "feature_schema": "public-consequence-v1",
         "feature_set": "hand_recipe",
@@ -151,6 +151,7 @@ def test_new_checkpoint_has_strict_identity_and_roundtrips(tmp_path):
     assert all(torch.equal(t, loaded.state_dict()[name]) for name, t in child.state_dict().items())
     for wrong in (
         {**architecture, "kind": "graph_candidate_successor_v1"},
+        {**architecture, "kind": "graph_candidate_successor_v2"},
         {**architecture, "successor_schema": "future"},
         {**architecture, "successor_dim": SUCCESSOR_DIM + 1},
         {**architecture, "feature_set": "hand_recipe_and_connectivity"},

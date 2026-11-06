@@ -16,10 +16,10 @@ from .consequences import PUBLIC_BUILD_COSTS
 from .contracts import RESOURCES, Action, Building, Observation, PublicPlayer, Road
 from .settlement_sites import connected_settlement_sites
 
-SUCCESSOR_SCHEMA = "public-candidate-successor-v2"
+SUCCESSOR_SCHEMA = "public-candidate-successor-v3"
 _SCALARS = (
     "hand_known", "uncertain_resource_result", "unknown_dev_draw",
-    "known_point_gain", "wins_now", "road_pieces_after",
+    "point_gain_lower_bound", "point_outcome_uncertain", "wins_now", "road_pieces_after",
     "settlement_pieces_after", "city_pieces_after", "connected_sites_before",
     "connected_sites_after", "city_sites_before", "city_sites_after",
     "point_recipe_gap_before", "point_recipe_gap_after",
@@ -187,11 +187,11 @@ def _largest_army_gain(view: Observation, own: PublicPlayer) -> int:
     return 2 if holder is None or own.played_knights + 1 > holder.played_knights else 0
 
 
-def _longest_road_gain(view: Observation, own: PublicPlayer, target: int) -> int:
-    """Public edge-trail length in the component changed by this road placement."""
+def _road_award_bounds(view: Observation, own: PublicPlayer, target: int) -> tuple[int, bool]:
+    """Guaranteed award and uncertainty for the changed public road component."""
     if (own.has_longest_road or own.roads_left > 11 or
             view.context.kind in ("BUILD_INITIAL_ROAD", "SETUP_ROAD")):
-        return 0
+        return 0, False
     holder = next((p for p in view.players if p.has_longest_road), None)
     threshold = max(5, (holder.longest_road + 1) if holder is not None else 5)
     enemy_vertices = {b.vertex for b in view.buildings if b.owner != view.player_id}
@@ -203,8 +203,8 @@ def _longest_road_gain(view: Observation, own: PublicPlayer, target: int) -> int
         bit = 1 << edge_id
         neighbors.setdefault(a, []).append((b, bit))
         neighbors.setdefault(b, []).append((a, bit))
-    # Enemy buildings terminate a road. They can be endpoints of a path but
-    # cannot connect two components across the occupied vertex.
+    # Enemy buildings cannot connect two roads. An older enemy endpoint may
+    # also be absent from the backend's cached connected component.
     component = set()
     stack = [v for v in view.board.edges[target] if v not in enemy_vertices]
     while stack:
@@ -220,15 +220,86 @@ def _longest_road_gain(view: Observation, own: PublicPlayer, target: int) -> int
 
     @cache
     def longest_from(vertex: int, used: int) -> int:
-        if used and vertex in enemy_vertices:
-            return 0
         return max(
             (1 + longest_from(neighbor, used | bit)
-             for neighbor, bit in neighbors.get(vertex, ()) if not used & bit),
+             for neighbor, bit in neighbors.get(vertex, ())
+             if not used & bit and neighbor not in enemy_vertices),
             default=0,
         )
 
-    return 2 if any(longest_from(vertex, 0) >= threshold for vertex in component) else 0
+    lower = max((longest_from(vertex, 0) for vertex in component
+                 if vertex not in enemy_vertices), default=0)
+    upper = max((longest_from(vertex, 0) for vertex in component), default=0)
+    if lower >= threshold:
+        return 2, False
+    return 0, upper >= threshold
+
+
+def _public_road_length_bounds(view: Observation, owner: int,
+                               buildings: tuple[Building, ...],
+                               cut_vertex: int) -> tuple[int, int]:
+    """Backend length interval when old enemy endpoints may be uncached."""
+    enemy_vertices = {building.vertex for building in buildings if building.owner != owner}
+    neighbors: dict[int, list[tuple[int, int]]] = {}
+    for road in view.roads:
+        if road.owner != owner:
+            continue
+        a, b = view.board.edges[road.edge]
+        bit = 1 << road.edge
+        neighbors.setdefault(a, []).append((b, bit))
+        neighbors.setdefault(b, []).append((a, bit))
+
+    @cache
+    def longest_from(vertex: int, used: int) -> int:
+        return max(
+            (1 + longest_from(neighbor, used | bit)
+             for neighbor, bit in neighbors.get(vertex, ())
+             if not used & bit and neighbor not in enemy_vertices),
+            default=0,
+        )
+
+    # Every non-enemy road endpoint is in a backend component. The new cut
+    # vertex is also included by the backend's two post-cut DFS walks. Other
+    # enemy endpoints can be absent, depending on earlier placement order.
+    lower = max((longest_from(vertex, 0) for vertex in neighbors
+                 if vertex not in enemy_vertices or vertex == cut_vertex), default=0)
+    upper = max((longest_from(vertex, 0) for vertex in neighbors), default=0)
+    return lower, upper
+
+
+def _settlement_road_award(view: Observation, target: int) -> tuple[int, bool]:
+    """Actor award lower bound and uncertainty after a pinned-engine road cut."""
+    if view.context.kind in ("BUILD_INITIAL_SETTLEMENT", "SETUP_SETTLEMENT"):
+        return 0, False
+    incident: dict[int, int] = {}
+    for road in view.roads:
+        if road.owner != view.player_id and target in view.board.edges[road.edge]:
+            incident[road.owner] = incident.get(road.owner, 0) + 1
+    cut_players = [owner for owner, count in incident.items() if count == 2]
+    if not cut_players:
+        return 0, False
+
+    # Board.build_settlement recomputes only the plowed player's length. The
+    # other road_lengths entries retain their public cached values, including
+    # stale setup lengths. There is no five-road test on this path.
+    lengths = {player.player_id: player.longest_road for player in view.players}
+    buildings = view.buildings + (Building(target, view.player_id),)
+    # A hex vertex has at most three incident edges, so only one opponent can
+    # have the two roads that trigger the backend recomputation.
+    owner = cut_players[0]
+    lower, upper = _public_road_length_bounds(view, owner, buildings, target)
+    holder = next((p.player_id for p in view.players if p.has_longest_road), None)
+    actor = view.player_id
+    outcomes = set()
+    for length in range(lower, upper + 1):
+        lengths[owner] = length
+        maximum = max(lengths.values())
+        # The engine's max() breaks equal-length ties by road_lengths insertion
+        # order, which is absent from the immutable public observation.
+        winners = (p for p, value in lengths.items() if value == maximum)
+        outcomes.update(2 * int(winner == actor) - 2 * int(holder == actor)
+                        for winner in winners)
+    return min(outcomes), len(outcomes) > 1
 
 
 def _after_geometry(prepared: _Prepared, action: Action):
@@ -237,7 +308,8 @@ def _after_geometry(prepared: _Prepared, action: Action):
     roads_left = own.roads_left
     settlements_left = own.settlements_left
     cities_left = own.cities_left
-    point_gain = 0
+    point_gain_lower_bound = 0
+    point_outcome_uncertain = action.kind == "BUY_DEVELOPMENT_CARD"
     nominal_delta = [0.0] * 5
     unblocked_delta = [0.0] * 5
     port_ratios = list(prepared.port_ratios)
@@ -245,11 +317,18 @@ def _after_geometry(prepared: _Prepared, action: Action):
         roads = roads + (Road(action.target, view.player_id),)
         roads_left -= 1
         if action.kind == "BUILD_ROAD":
-            point_gain = _longest_road_gain(view, own, action.target)
+            point_gain_lower_bound, point_outcome_uncertain = _road_award_bounds(
+                view, own, action.target
+            )
     elif action.kind in _SETTLEMENT and action.target is not None:
         buildings = buildings + (Building(action.target, view.player_id),)
         settlements_left -= 1
-        point_gain = 1
+        point_gain_lower_bound = 1
+        if action.kind == "BUILD_SETTLEMENT":
+            award_lower_bound, point_outcome_uncertain = _settlement_road_award(
+                view, action.target
+            )
+            point_gain_lower_bound += award_lower_bound
         nominal_delta = list(prepared.vertex_pips[action.target])
         unblocked_delta = list(prepared.vertex_unblocked_pips[action.target])
         for port in view.board.ports:
@@ -265,11 +344,11 @@ def _after_geometry(prepared: _Prepared, action: Action):
         )
         settlements_left += 1
         cities_left -= 1
-        point_gain = 1
+        point_gain_lower_bound = 1
         nominal_delta = list(prepared.vertex_pips[action.target])
         unblocked_delta = list(prepared.vertex_unblocked_pips[action.target])
     elif action.kind == "PLAY_KNIGHT_CARD":
-        point_gain = _largest_army_gain(view, own)
+        point_gain_lower_bound = _largest_army_gain(view, own)
     elif action.kind == "MOVE_ROBBER" and action.target is not None:
         if action.target != view.robber_tile:
             for tile in view.board.tiles:
@@ -291,22 +370,26 @@ def _after_geometry(prepared: _Prepared, action: Action):
     )
     cities_after = sum(b.owner == view.player_id and b.level == 1 for b in buildings)
     return (sites_after, cities_after, roads_left, settlements_left, cities_left,
-            point_gain, nominal_delta, unblocked_delta, port_ratios)
+            point_gain_lower_bound, point_outcome_uncertain,
+            nominal_delta, unblocked_delta, port_ratios)
 
 
 def _values(prepared: _Prepared, action: Action) -> dict[str, float]:
     view = prepared.view
     hand = _hand_after(view, action)
     (sites_after, cities_after, roads_left, settlements_left, cities_left,
-     point_gain, nominal_delta, unblocked_delta, port_ratios) = _after_geometry(prepared, action)
-    own_vp_after = view.own_victory_points + point_gain
+     point_gain_lower_bound, point_outcome_uncertain,
+     nominal_delta, unblocked_delta, port_ratios) = _after_geometry(prepared, action)
+    own_vp_after = view.own_victory_points + point_gain_lower_bound
     values = dict.fromkeys(SUCCESSOR_COLUMNS, 0.0)
     values.update(
         hand_known=float(hand is not None),
         uncertain_resource_result=float(hand is None),
         unknown_dev_draw=float(action.kind == "BUY_DEVELOPMENT_CARD"),
-        known_point_gain=float(point_gain),
-        wins_now=float(bool(point_gain and own_vp_after >= view.rules.victory_points)),
+        point_gain_lower_bound=float(point_gain_lower_bound),
+        point_outcome_uncertain=float(point_outcome_uncertain),
+        wins_now=float(bool(point_gain_lower_bound > 0 and
+                            own_vp_after >= view.rules.victory_points)),
         road_pieces_after=_bounded(roads_left, 15),
         settlement_pieces_after=_bounded(settlements_left, 5),
         city_pieces_after=_bounded(cities_left, 4),

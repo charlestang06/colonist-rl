@@ -306,7 +306,7 @@ class ConsequenceGraphPolicy(GraphPolicy):
 class CandidateSuccessorPolicy(ConsequenceGraphPolicy):
     """Opt-in public candidate scorer with zero-start linear and nonlinear branches."""
 
-    architecture_kind = "graph_candidate_successor_v2"
+    architecture_kind = "graph_candidate_successor_v3"
 
     def __init__(self, hidden_size=64, *, residual_hidden_size=16):
         if type(residual_hidden_size) is not int or residual_hidden_size != 16:
