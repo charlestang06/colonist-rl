@@ -116,8 +116,10 @@ the observation contract and evaluation path and need not wait for every planner
 repair. Choose one hypothesis rather than automatically building this whole list.
 The [conditional student-state DAgger protocol](student-dagger-conditional-fit-2026-11-06.md)
 stopped before fitting when its H-disagreement gate failed. A new learning study
-must freeze its own selection and gates. Public planner point-route overrides
-on student-reached states are a candidate to audit, not approved supervision.
+must freeze its own selection and gates. The [planner point-route blind pilot](planner-point-pilot-protocol-2026-11-06.md)
+has frozen 15 TRAIN and seven separate label-validation student-reached cases
+before new labels. Its planner routes are hypotheses, not approved supervision;
+fit and gameplay remain conditional on independent strategic and factual gates.
 
 - **Relevant supervision:** check labels, candidate encoding, gradients and
   recurrent sequence handling before scaling BC. Audit consequential states the
@@ -213,7 +215,7 @@ and six-player learning follow reliable standard four-player play.
 | Complete | [BUY-continuation guard](public-buy-continuation-results-2026-11-06.md): 96 resolved games, three fresh guard changes; old/guard 8/32 wins and guard −0.0625 mean VP. | Retire guarded configuration under frozen rule; preserve screened code on isolated branch. |
 | Complete | [Direct current legal-win regression](public-turn-planner.md): exact public engine view and a terminating one-step replay. | Keep legal root identity and full root validation; no gameplay strength claim. |
 | Complete | [Audit student-reached trade/pass/BUY states](student-dagger-audit-results-2026-11-06.md): 20 TRAIN/five label-validation supported sets; only three TRAIN sets excluded H against the frozen minimum four. | Stop before fitting; preserve ambiguous cases and exact audit. |
-| Next learning candidate | Audit public planner point-route overrides on distinct student-reached TRAIN/label-validation states under a new protocol. | Check exact H disagreement, independent strategic labels, route feasibility and retention before any fit or fresh-game screen. |
+| Active learning pilot | [Audit public planner point-route overrides](planner-point-pilot-protocol-2026-11-06.md) on 15 TRAIN/seven label-validation student-reached cases. | Check exact H disagreement, independent strategic labels, route feasibility and retention before any fit or fresh-game screen. |
 | As earned | Integrate retained improvements, audit broad competence, confirm against VF/AB and finish a live game. | Each claim requires its own evidence. |
 
 One coordinator integrates results and owns the incumbent. Learning and adapter
