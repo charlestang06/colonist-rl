@@ -1,6 +1,7 @@
 # Conditional student-state DAgger fit
 
-**Status: frozen before final audited labels; no fit authorized.** This is a
+**Status: frozen protocol; final audit stopped before fitting.** See the
+[audit result](student-dagger-audit-results-2026-11-06.md). This is a
 small test of better supervision on states the seed-11 neural student actually
 reached. It changes label source and acceptable-action sets, not model size,
 reward, PPO schedule or terminal-outcome training.
@@ -12,7 +13,7 @@ boards and 16 labelVAL games on four separate boards. The deterministic
 public-only selector froze 64 TRAIN and 15 labelVAL blind packets; one of 16
 labelVAL slots was unfilled under the episode cap. The selection-manifest
 SHA-256 is
-`634994ae5f30a802e5c5cdb84218b2375f4f9167710baf9e4877a1278d85`,
+`634994ae5f30a802e5cee5c5cdb84218b2375f4f9167710baf9e4877a1278d85`,
 and the packet-index SHA-256 is
 `fdfc22cb14aedcb5d9d2369492b2f25d16dac8e045746582c04aeee6819e18cb`.
 The 12 bound source histories already have byte-identical copies in local

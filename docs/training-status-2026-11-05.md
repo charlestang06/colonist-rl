@@ -32,6 +32,13 @@ PPO remains deferred pending a specific strategic need. No broad heuristic-compe
 authentic VF/AB superiority or new model promotion is established.
 All results below retain their original experimental scope and gates.
 
+A later [79-case blind student-state audit](student-dagger-audit-results-2026-11-06.md)
+yielded 20 supported TRAIN and five label-validation accepted sets across eight
+and four boards. Only three TRAIN sets excluded the cached H singleton; its
+frozen minimum was four. It stopped before any fit or gameplay screen. This is
+separate from the earlier 88-case audit below, which failed its own coverage
+gate. The audit is archived with exact joins and corrected resource descriptions.
+
 ## Winning-prefix search: confirmed TRAIN win; fresh comparison tied
 
 The optional `search_build_win_before_buy=False` path passed nine targeted
