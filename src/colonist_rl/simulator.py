@@ -15,6 +15,7 @@ from catanatron.models.map import PORT_DIRECTION_TO_NODEREFS, NodeRef
 from catanatron.models.player import Color, Player
 
 from .board import BoardSpec, Port, RulesConfig
+from .catanatron_topology import TOPOLOGY_SHIM_ID, CorrectedBoard, reconcile_road_award
 from .contracts import (
     DEVELOPMENT_CARDS,
     RESOURCES,
@@ -56,13 +57,25 @@ class FourPlayerGame:
     explicit privileged-opponent exception; learners and teachers receive views.
     """
 
-    def __init__(self, rules: RulesConfig | None = None, *, max_steps: int = 20000):
+    def __init__(
+        self,
+        rules: RulesConfig | None = None,
+        *,
+        max_steps: int = 20000,
+        corrected_topology: bool = False,
+    ):
         self.rules = rules or RulesConfig.standard()
         if self.rules.player_count != 4 or self.rules.special_build:
             raise NotImplementedError(
                 "Catanatron supports four players; six-player simulation is unavailable"
             )
         verify_engine_installation()
+        if type(corrected_topology) is not bool:
+            raise ValueError("corrected_topology must be a bool")
+        self.corrected_topology = corrected_topology
+        self.backend_version = (
+            f"{BACKEND_VERSION}+{TOPOLOGY_SHIM_ID}" if corrected_topology else BACKEND_VERSION
+        )
         self.max_steps = max_steps
         self.version = 0
         self._rng_state = random.Random(0).getstate()
@@ -99,6 +112,8 @@ class FourPlayerGame:
                 for _ in range(count)
             ]
             random.shuffle(self.game.state.development_listdeck)
+            if self.corrected_topology:
+                self.game.state.board = CorrectedBoard.from_board(self.game.state.board)
         self.version = 0
         self._pending = None
         self._used_offer_ids = set()
@@ -365,6 +380,8 @@ class FourPlayerGame:
             )
             with self._randomness():
                 executed = self.game.execute(engine_action)
+            if self.corrected_topology and action.kind in ("BUILD_ROAD", "BUILD_SETTLEMENT"):
+                reconcile_road_award(self.game.state)
             if action.kind == "ROLL":
                 self._emit(
                     VisibleEvent(self.version, "DICE_ROLL", actor, count=sum(executed.result))
@@ -470,3 +487,21 @@ class FourPlayerGame:
 
 
 CatanSimulator = FourPlayerGame
+
+
+def corrected_game(rules: RulesConfig | None = None, *, max_steps: int = 20000) -> FourPlayerGame:
+    """Create an explicitly opt-in game for a corrected-engine study role."""
+    return FourPlayerGame(rules, max_steps=max_steps, corrected_topology=True)
+
+
+def require_corrected_game(game: FourPlayerGame) -> FourPlayerGame:
+    """Reject a study role that accidentally opens the legacy engine."""
+    if (
+        not isinstance(game, FourPlayerGame)
+        or not game.corrected_topology
+        or game.backend_version != f"{BACKEND_VERSION}+{TOPOLOGY_SHIM_ID}"
+        or not hasattr(game, "game")
+        or not isinstance(game.game.state.board, CorrectedBoard)
+    ):
+        raise ValueError("study role requires an initialized corrected topology game")
+    return game
